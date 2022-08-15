@@ -1,9 +1,9 @@
-# ∴ Therefore _(@zefiros-software/therefore)_
+# ∴ Therefore _(@skyleague/therefore)_
 
 <p>
-  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/zefiros-software/therefore">
-  <img alt="Version" src="https://img.shields.io/github/package-json/v/zefiros-software/therefore" />
-  <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/zefiros-software/therefore">
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/skyleague/therefore">
+  <img alt="Version" src="https://img.shields.io/github/package-json/v/skyleague/therefore" />
+  <img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/skyleague/therefore">
   <img src="https://img.shields.io/badge/node-%3E%3D16-blue.svg" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
@@ -68,7 +68,7 @@ In a nutshell:
 Install Therefore using [`npm`](https://www.npmjs.com/):
 
 ```console
- $ npm install --save-dev @zefiros-software/therefore
+ $ npm install --save-dev @skyleague/therefore
 ```
 
 ## Usage
@@ -78,7 +78,7 @@ Let's get started with a simple JSON Schema taken as an example:
 **example.schema.ts**
 
 ```ts
-import { $number, $object, $string, $validator } from '@zefiros-software/therefore'
+import { $number, $object, $string, $validator } from '@skyleague/therefore'
 
 export const person = $validator(
         $object({

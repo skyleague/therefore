@@ -11,7 +11,7 @@ describe('updatePet', () => {
         nock.enableNetConnect()
     })
 
-    const client = new PetStore({ prefixUrl, security: { apiKey: 'foo-key' } })
+    const client = new PetStore({ prefixUrl, auth: { apiKey: 'foo-key' } })
 
     test('gives valid response', async () => {
         const updatedPet: Pet = { name: 'FooPet', photoUrls: ['example.com'] }
