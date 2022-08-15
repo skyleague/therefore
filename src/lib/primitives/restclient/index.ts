@@ -1,0 +1,1 @@
+export { $restclient } from './restclient'

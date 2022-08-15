@@ -1,0 +1,86 @@
+{
+  "name": "@skyleague/therefore",
+  "version": "1.0.0-local",
+  "description": "",
+  "license": "MIT",
+  "main": ".main.js",
+  "types": "index.d.ts",
+  "sideEffects": false,
+  "bin": {
+    "therefore": "bin/run"
+  },
+  "node-standards": {
+    "type": "yargs-cli",
+    "template": {
+      "exclude": ["bin/run"]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skyleague/therefore.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "files": ["bin", ".main.js", ".main.js.map", "index.d.ts", "src/**/*.d.ts", "package.json"],
+  "scripts": {
+    "build": "npx ts-node esbuild.config.ts",
+    "build:clean": "npx tsc --build --clean && rm .main.js && rm .main.js.map",
+    "build:docs": "npx typedoc",
+    "check:cost": "npx cost-of-modules --no-install --include-dev",
+    "check:coverage": "npx jest --collectCoverage=true",
+    "check:full": "npm run lint && npm run check:types && npm run check:coverage && npm run build && npm run check:project",
+    "check:project": "npx node-standards lint",
+    "check:types": "npx tsc -p tsconfig.json",
+    "fix": "npm run lint -- --fix",
+    "format": "npx prettier \"**/*.{ts,js,json,yml,yaml}\" --ignore-path .gitignore --write",
+    "lint": "npx eslint \"{src,test,typing}/**/*.ts\" --no-eslintrc --cache -c .eslintrc.js --ignore-path .gitignore",
+    "lint:full": "bash -c \"FULL_LINT=true npm run lint\"",
+    "package": "rm -rf .dist && npm run build",
+    "prepare": "npx husky install || true",
+    "test": "npx jest"
+  },
+  "dependencies": {
+    "@types/inflection": "^1.13.0",
+    "@types/js-yaml": "^4.0.5",
+    "@skyleague/axioms": "^1.0.0",
+    "camelcase": "^6.3.0",
+    "code-block-writer": "^11.0.3",
+    "decamelize": "^5.0.0",
+    "inflection": "^1.13.2",
+    "js-yaml": "^4.1.0",
+    "jsonpointer": "^5.0.1",
+    "swagger2openapi": "^7.0.8",
+    "uuid": "^8.3.2",
+    "yargs": "^17.5.1"
+  },
+  "peerDependencies": {
+    "ajv": "^8.11.0",
+    "got": "^12.3.1",
+    "ts-node": "^10.9.1"
+  },
+  "peerDependenciesMeta": {
+    "got": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/source-map-support": "^0.5.4",
+    "@types/uuid": "^8.3.4",
+    "@types/yargs": "^17.0.11",
+    "@skyleague/node-standards": "^1.3.1",
+    "ajv": "^8.11.0",
+    "got": "^11.8.5",
+    "nock": "^13.2.9",
+    "openapi-types": "12.0.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4",
+    "yargs": "^17.5.1"
+  }
+}
