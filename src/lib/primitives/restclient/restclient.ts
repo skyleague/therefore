@@ -343,7 +343,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             .inlineBlock(() => {
                 writer.writeLine(`prefixUrl${defaultValue !== undefined ? ` = '${defaultValue}'` : ''},`)
                 writer.writeLine(`options,`)
-                writer.conditionalWriteLine(hasAuth, 'auth,')
+                writer.conditionalWriteLine(hasAuth, 'auth = {},')
                 writer.conditionalWriteLine(hasAuth, 'defaultAuth,')
             })
             .write(': ')

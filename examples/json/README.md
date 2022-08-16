@@ -21,7 +21,7 @@ Luckily for us, this means that we can redefined the typescript union almost dir
 
 **json.schema.ts**
 ```ts
-import { $array, $boolean, $dict, $null, $number, $ref, $string, $union } from '@zefiros-software/therefore'
+import { $array, $boolean, $dict, $null, $number, $ref, $string, $union } from '@skyleague/therefore'
 
 export const json = $union([
     $string,
@@ -107,7 +107,7 @@ is harder to read, and harder to parse for typescript, resulting in a hard requi
 type on the schema.
 
 ```ts
-import { $array, $boolean, $dict, $null, $number, $ref, $string, $union, RefType } from '@zefiros-software/therefore'
+import { $array, $boolean, $dict, $null, $number, $ref, $string, $union, RefType } from '@skyleague/therefore'
 
 export const jsonAdv: RefType = $ref({
     jsonRef: () =>
