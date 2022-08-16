@@ -101,7 +101,7 @@ export async function getRequestBody({
             references,
             exportAllSymbols: true,
         })
-        therefore.description.generateValidator = true
+        therefore.description.validator = { enabled: true, assert: true }
         return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:referenceName}}` }
     }
 
@@ -132,9 +132,8 @@ export async function getResponseBody({
             root: openapi as JsonSchema,
             references,
             exportAllSymbols: true,
-            generateValidator: true,
         })
-        therefore.description.generateValidator = true
+        therefore.description.validator = { enabled: true, assert: true }
         return therefore
     }
     return undefined

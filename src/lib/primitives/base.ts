@@ -108,7 +108,7 @@ export const descriptionKeys: readonly (keyof SchemaOptions<unknown>)[] = [
     'default',
     'readonly',
     'ajvOptions',
-    'generateValidator',
+    'validator',
 ] as const
 
 export type ThereforeMeta = {
@@ -119,7 +119,10 @@ export type ThereforeMeta = {
      */
     ajvOptions?: InstanceOptions
 
-    generateValidator?: boolean
+    validator?: {
+        enabled: boolean
+        assert: boolean
+    }
 }
 export type SchemaMeta<T = unknown> = MetaDescription<T> & ThereforeMeta
 export type SchemaOptions<O, T = unknown> = UndefinedFields<SimplifyOnce<MetaDescription<T> & O> & ThereforeMeta>

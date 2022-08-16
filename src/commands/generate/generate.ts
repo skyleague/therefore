@@ -103,10 +103,10 @@ export async function loadSymbol({
         definition: definition,
         schemaFile,
         compiledFile,
-        typeOnly: simplified.description.generateValidator !== true ?? false,
+        typeOnly: simplified.description.validator?.enabled !== true ?? false,
     })
 
-    if (definition.isExported && simplified.description.generateValidator) {
+    if (definition.isExported && simplified.description.validator?.enabled) {
         if (jsonschema.compiled === true) {
             const filePath = path.join(path.dirname(entry), compiledFile)
             file.attachedFiles.push({

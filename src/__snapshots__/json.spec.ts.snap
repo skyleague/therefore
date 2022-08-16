@@ -45,11 +45,6 @@ export const {{00010-000:symbolName}} = {
     source: \`\${__dirname}json.schema\`,
     sourceSymbol: 'json',
     is: (o: unknown): o is {{00010-000:symbolName}} => {{00010-000:symbolName}}.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!{{00010-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00010-000:symbolName}}.validate.errors ?? [])
-        }
-    },
 } as const
 
 export type {{00012-000:symbolName}} = {{00021-000:referenceName}}

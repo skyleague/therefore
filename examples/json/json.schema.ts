@@ -1,6 +1,8 @@
 import { $array, $boolean, $dict, $null, $number, $ref, $string, $union, $validator } from '../../src'
 
-export const json = $validator($union([$string, $null, $boolean, $number, $dict($ref(() => json)), $array($ref(() => json))]))
+export const json = $validator($union([$string, $null, $boolean, $number, $dict($ref(() => json)), $array($ref(() => json))]), {
+    assert: false,
+})
 
 export const jsonAdv = $validator(
     $ref(() =>

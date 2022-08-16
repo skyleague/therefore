@@ -76,17 +76,21 @@ export function writeThereforeSchema({
             writer.writeLine(`source: \`\${__dirname}${source}\`,`)
             writer.writeLine(`sourceSymbol: '${sourceSymbol}',`)
             writer.writeLine(`is: (o: unknown): o is {{${uuid}:symbolName}} => {{${uuid}:symbolName}}.validate(o) === true,`)
-            writer
-                // the full assertion syntax is not yet supported on properties
-                // https://github.com/microsoft/TypeScript/issues/34523
-                // .write(`assert: (o: unknown): asserts o is {{${uuid}:symbolName}} => `)
-                .write(`assert: (o: unknown) => `)
-                .inlineBlock(() => {
-                    writer.write(`if (!{{${uuid}:symbolName}}.validate(o))`).block(() => {
-                        writer.writeLine(`throw new AjvValidator.ValidationError({{${uuid}:symbolName}}.validate.errors ?? [])`)
+            if (description.validator?.enabled === true && description.validator.assert === true) {
+                writer
+                    // the full assertion syntax is not yet supported on properties
+                    // https://github.com/microsoft/TypeScript/issues/34523
+                    // .write(`assert: (o: unknown): asserts o is {{${uuid}:symbolName}} => `)
+                    .write(`assert: (o: unknown) => `)
+                    .inlineBlock(() => {
+                        writer.write(`if (!{{${uuid}:symbolName}}.validate(o))`).block(() => {
+                            writer.writeLine(
+                                `throw new AjvValidator.ValidationError({{${uuid}:symbolName}}.validate.errors ?? [])`
+                            )
+                        })
                     })
-                })
-                .write(',')
+                    .write(',')
+            }
         })
         .write(' as const\n')
         .toString()
@@ -369,8 +373,11 @@ export function toTypescriptDefinition({
         for (const child of schema.children) {
             walkCst($ref(child), typescriptVisitor, context)
         }
-    } else if (schema.description.generateValidator === true) {
-        imports.push(`import type { ValidateFunction } from 'ajv'`, `import AjvValidator from 'ajv'`)
+    } else if (schema.description.validator?.enabled === true) {
+        imports.push(`import type { ValidateFunction } from 'ajv'`)
+        if (schema.description.validator?.enabled === true && schema.description.validator.assert === true) {
+            imports.push(`import AjvValidator from 'ajv'`)
+        }
     }
 
     return {
