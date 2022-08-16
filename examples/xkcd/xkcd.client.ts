@@ -32,7 +32,7 @@ export class Xkcd {
      * Fetch comics and metadata  by comic id.
      *
      */
-    public async getInfo0Json({ path }: { path: { comicId: string } }): Promise<Comic> {
+    public async getInfo0JsonByComicId({ path }: { path: { comicId: string } }): Promise<Comic> {
         const result = await this.client.get(`${path.comicId}/info.0.json`).json<Comic>()
         return this.validateResponse(Comic, result)
     }

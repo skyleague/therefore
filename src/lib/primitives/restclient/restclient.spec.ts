@@ -38,4 +38,9 @@ describe('method name', () => {
             `"terminateUserEvent"`
         )
     })
+
+    test('make distinction', () => {
+        expect(methodName('/info.0.json', 'post', {} as Operation)).toMatchInlineSnapshot(`"createInfo0Json"`)
+        expect(methodName('/{comicId}/info.0.json', 'post', {} as Operation)).toMatchInlineSnapshot(`"createInfo0JsonByComicId"`)
+    })
 })
