@@ -24,11 +24,6 @@ export const Json = {
     source: `${__dirname}json.schema`,
     sourceSymbol: 'json',
     is: (o: unknown): o is Json => Json.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Json.validate(o)) {
-            throw new AjvValidator.ValidationError(Json.validate.errors ?? [])
-        }
-    },
 } as const
 
 export type JsonAdv = JsonLocal
