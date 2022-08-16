@@ -61,13 +61,13 @@ export function methodName(
         .replaceAll(':', '/')
         .split('/')
         .filter((p) => p.length > 0)
-        .map((p, i, xs) => ({ name: p, isLast: i === xs.length - 1 }))
+        .map((p, i, xs) => ({ name: p, isLast: i === xs.length - 1, isFirst: i === 0 }))
     const staticParts = pathParts
         .filter((p) => !p.name.includes('{'))
         .map((p) => (!p.isLast || methodIsMutation(method) ? inflection.singularize(p.name) : p.name))
     const dynamicParts = pathParts
         .filter((p) => p.name?.includes('{'))
-        .filter((x) => x.isLast)
+        .filter((x) => x.isLast || x.isFirst)
         .map((p) => p.name.match(/^{(.*)}$/)?.[1])
 
     return camelCase(
