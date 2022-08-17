@@ -101,9 +101,13 @@ export async function getRequestBody({
             references,
             exportAllSymbols: true,
         })
-        therefore.description.validator ??= { enabled: true, assert: true }
-        therefore.description.validator.assert = true
-        return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
+        if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
+            therefore.description.validator ??= { enabled: true, assert: true }
+            therefore.description.validator.assert = true
+            return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
+        } else {
+            return { name: 'body', type: 'body', declaration: therefore.type.replace('integer', 'number') }
+        }
     }
 
     const binaryContent = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(binaryMime))?.[1]
