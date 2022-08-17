@@ -30,7 +30,18 @@ import { $union } from '../union'
 import { $unknown } from '../unknown'
 
 import type { Json, UndefinedFields } from '@skyleague/axioms'
-import { asyncCollect, evaluate, entriesOf, keysOf, isArray, omitUndefined, isBoolean, pick, omit } from '@skyleague/axioms'
+import {
+    asyncCollect,
+    asyncMap,
+    evaluate,
+    entriesOf,
+    keysOf,
+    isArray,
+    omitUndefined,
+    isBoolean,
+    pick,
+    omit,
+} from '@skyleague/axioms'
 
 function annotate<T = unknown>(doc: JsonAnnotations, context: JsonSchemaContext): SchemaMeta<T> {
     return omitUndefined({
@@ -232,7 +243,7 @@ async function walkJsonschema({
     if (isArray(child)) {
         // tuple json schema definition
         return $tuple(
-            await asyncCollect(child.map((c) => walkJsonschema({ node: c, visitor, childProperty: undefined, context }))),
+            await asyncCollect(asyncMap(child, (c) => walkJsonschema({ node: c, visitor, childProperty: undefined, context }))),
             annotate(node, context)
         )
     }
@@ -307,6 +318,7 @@ async function walkJsonschema({
 export interface JsonSchemaOptions {
     metaSchemas?: Record<string, Promise<JsonSchema>>
     references?: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    reference?: string
     exportAllSymbols?: boolean
     root?: JsonSchema
     dereferenceRoot?: boolean
@@ -319,8 +331,12 @@ export interface JsonSchemaOptions {
  * @category $jsonschema
  */
 export async function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): Promise<ThereforeCst> {
-    const { root, name, dereferenceRoot = true } = options
-    const value = await walkJsonschema({
+    const { root, name, reference, references, dereferenceRoot = true } = options
+
+    if (references !== undefined && reference !== undefined && references.has(reference)) {
+        return evaluate(references.get(reference)?.[1]) as Promise<ThereforeCst>
+    }
+    let value = await walkJsonschema({
         name,
         node: schema,
         visitor: schemaWalker,
@@ -328,7 +344,8 @@ export async function $jsonschema(schema: JsonSchema, options: SchemaOptions<Jso
         context: { ...options, root: root ?? schema },
     })
     if (dereferenceRoot && value.type === 'ref') {
-        return evaluate(value.children[0]) as ThereforeCst
+        value = evaluate(value.children[0]) as ThereforeCst
     }
+
     return prepass(value)
 }

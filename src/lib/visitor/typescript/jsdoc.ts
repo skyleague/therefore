@@ -13,7 +13,7 @@ export function toJSDoc({ key, meta }: { key?: string; meta: MetaDescription }):
     const summary = meta.summary ?? meta.title
     const hasSummary = summary !== undefined && summary.length > 1
     if (hasSummary) {
-        docs.push(...escapeComment(summary).split('\n'))
+        docs.push(...escapeComment(summary.trim()).split('\n'))
     }
 
     const description = meta.description
@@ -21,7 +21,7 @@ export function toJSDoc({ key, meta }: { key?: string; meta: MetaDescription }):
         if (hasSummary) {
             docs.push('')
         }
-        docs.push(...escapeComment(description).split('\n'))
+        docs.push(...escapeComment(description.trim()).split('\n'))
     }
     const properties: string[] = []
 

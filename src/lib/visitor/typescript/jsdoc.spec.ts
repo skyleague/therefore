@@ -12,6 +12,15 @@ test('description', () => {
         `)
 })
 
+test('summary', () => {
+    expect(toJSDoc({ key: 'foo', meta: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+            "/**
+             * lorum ipsum
+             */
+            "
+        `)
+})
+
 test('examples', () => {
     expect(toJSDoc({ key: 'foo', meta: { examples: [] } })).toMatchInlineSnapshot(`undefined`)
     expect(

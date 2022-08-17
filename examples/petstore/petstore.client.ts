@@ -3,17 +3,20 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import got, { Got, Options } from 'got'
+import got from 'got'
+import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { ValidateFunction, ErrorObject } from 'ajv'
+import { IncomingHttpHeaders } from 'http'
 import {
-    ApiResponse,
-    CreateUsersWithListInputRequest,
-    FindPetsByStatusResponse,
-    FindPetsByTagsResponse,
     GetInventoryResponse,
-    LoginUserResponse,
-    Order,
     Pet,
+    LoginUserResponse,
+    FindPetsByStatusResponse,
+    Order,
+    ApiResponse,
     User,
+    FindPetsByTagsResponse,
+    CreateUsersWithListInputRequest,
 } from './petstore.type'
 
 export class PetStore {
@@ -41,7 +44,7 @@ export class PetStore {
         }
         defaultAuth?: string[][] | string[]
     }) {
-        this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
+        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth
@@ -52,29 +55,35 @@ export class PetStore {
      *
      * Update an existing pet by Id
      */
-    public async updatePet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }): Promise<Pet> {
+    public async updatePet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
         this.validateRequestBody(Pet, body)
 
-        const result = await this.buildClient(auth)
-            .put(`pet`, {
+        return this.awaitResponse(
+            this.buildClient(auth).put(`pet`, {
                 json: body,
-            })
-            .json<Pet>()
-        return this.validateResponse(Pet, result)
+                responseType: 'json',
+            }),
+            {
+                200: Pet,
+            }
+        )
     }
 
     /**
      * Add a new pet to the store
      */
-    public async addPet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }): Promise<Pet> {
+    public async addPet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
         this.validateRequestBody(Pet, body)
 
-        const result = await this.buildClient(auth)
-            .post(`pet`, {
+        return this.awaitResponse(
+            this.buildClient(auth).post(`pet`, {
                 json: body,
-            })
-            .json<Pet>()
-        return this.validateResponse(Pet, result)
+                responseType: 'json',
+            }),
+            {
+                200: Pet,
+            }
+        )
     }
 
     /**
@@ -88,13 +97,16 @@ export class PetStore {
     }: {
         query?: { status?: string }
         auth?: string[][] | string[]
-    }): Promise<FindPetsByStatusResponse> {
-        const result = await this.buildClient(auth)
-            .get(`pet/findByStatus`, {
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`pet/findByStatus`, {
                 searchParams: query ?? {},
-            })
-            .json<FindPetsByStatusResponse>()
-        return this.validateResponse(FindPetsByStatusResponse, result)
+                responseType: 'json',
+            }),
+            {
+                200: FindPetsByStatusResponse,
+            }
+        )
     }
 
     /**
@@ -108,13 +120,16 @@ export class PetStore {
     }: {
         query?: { tags?: string }
         auth?: string[][] | string[]
-    }): Promise<FindPetsByTagsResponse> {
-        const result = await this.buildClient(auth)
-            .get(`pet/findByTags`, {
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`pet/findByTags`, {
                 searchParams: query ?? {},
-            })
-            .json<FindPetsByTagsResponse>()
-        return this.validateResponse(FindPetsByTagsResponse, result)
+                responseType: 'json',
+            }),
+            {
+                200: FindPetsByTagsResponse,
+            }
+        )
     }
 
     /**
@@ -128,9 +143,15 @@ export class PetStore {
     }: {
         path: { petId: string }
         auth?: string[][] | string[]
-    }): Promise<Pet> {
-        const result = await this.buildClient(auth).get(`pet/${path.petId}`).json<Pet>()
-        return this.validateResponse(Pet, result)
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`pet/${path.petId}`, {
+                responseType: 'json',
+            }),
+            {
+                200: Pet,
+            }
+        )
     }
 
     /**
@@ -144,25 +165,17 @@ export class PetStore {
         path: { petId: string }
         query?: { name?: string; status?: string }
         auth?: string[][] | string[]
-    }): Promise<void> {
-        await this.buildClient(auth)
-            .post(`pet/${path.petId}`, {
-                searchParams: query ?? {},
-            })
-            .json()
+    }) {
+        return this.buildClient(auth).post(`pet/${path.petId}`, {
+            searchParams: query ?? {},
+        })
     }
 
     /**
      * Deletes a pet
      */
-    public async deletePet({
-        path,
-        auth = [['petstoreAuth']],
-    }: {
-        path: { petId: string }
-        auth?: string[][] | string[]
-    }): Promise<void> {
-        await this.buildClient(auth).delete(`pet/${path.petId}`).json()
+    public async deletePet({ path, auth = [['petstoreAuth']] }: { path: { petId: string }; auth?: string[][] | string[] }) {
+        return this.buildClient(auth).delete(`pet/${path.petId}`)
     }
 
     /**
@@ -178,14 +191,17 @@ export class PetStore {
         query?: { additionalMetadata?: string }
         body: string | Buffer
         auth?: string[][] | string[]
-    }): Promise<ApiResponse> {
-        const result = await this.buildClient(auth)
-            .post(`pet/${path.petId}/uploadImage`, {
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
                 body: body,
                 searchParams: query ?? {},
-            })
-            .json<ApiResponse>()
-        return this.validateResponse(ApiResponse, result)
+                responseType: 'json',
+            }),
+            {
+                200: ApiResponse,
+            }
+        )
     }
 
     /**
@@ -193,9 +209,15 @@ export class PetStore {
      *
      * Returns a map of status codes to quantities
      */
-    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] }): Promise<GetInventoryResponse> {
-        const result = await this.buildClient(auth).get(`store/inventory`).json<GetInventoryResponse>()
-        return this.validateResponse(GetInventoryResponse, result)
+    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] }) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`store/inventory`, {
+                responseType: 'json',
+            }),
+            {
+                200: GetInventoryResponse,
+            }
+        )
     }
 
     /**
@@ -203,15 +225,18 @@ export class PetStore {
      *
      * Place a new order in the store
      */
-    public async placeOrder({ body }: { body: Order }): Promise<Order> {
+    public async placeOrder({ body }: { body: Order }) {
         this.validateRequestBody(Order, body)
 
-        const result = await this.client
-            .post(`store/order`, {
+        return this.awaitResponse(
+            this.client.post(`store/order`, {
                 json: body,
-            })
-            .json<Order>()
-        return this.validateResponse(Order, result)
+                responseType: 'json',
+            }),
+            {
+                200: Order,
+            }
+        )
     }
 
     /**
@@ -219,9 +244,15 @@ export class PetStore {
      *
      * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
      */
-    public async getOrderById({ path }: { path: { orderId: string } }): Promise<Order> {
-        const result = await this.client.get(`store/order/${path.orderId}`).json<Order>()
-        return this.validateResponse(Order, result)
+    public async getOrderById({ path }: { path: { orderId: string } }) {
+        return this.awaitResponse(
+            this.client.get(`store/order/${path.orderId}`, {
+                responseType: 'json',
+            }),
+            {
+                200: Order,
+            }
+        )
     }
 
     /**
@@ -229,8 +260,8 @@ export class PetStore {
      *
      * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
      */
-    public async deleteOrder({ path }: { path: { orderId: string } }): Promise<void> {
-        await this.client.delete(`store/order/${path.orderId}`).json()
+    public async deleteOrder({ path }: { path: { orderId: string } }) {
+        return this.client.delete(`store/order/${path.orderId}`)
     }
 
     /**
@@ -238,55 +269,71 @@ export class PetStore {
      *
      * This can only be done by the logged in user.
      */
-    public async createUser({ body }: { body: User }): Promise<void> {
+    public async createUser({ body }: { body: User }) {
         this.validateRequestBody(User, body)
 
-        await this.client
-            .post(`user`, {
+        return this.awaitResponse(
+            this.client.post(`user`, {
                 json: body,
-            })
-            .json()
+                responseType: 'json',
+            }),
+            {
+                default: User,
+            }
+        )
     }
 
     /**
      * Creates list of users with given input array
      */
-    public async createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }): Promise<User> {
+    public async createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }) {
         this.validateRequestBody(CreateUsersWithListInputRequest, body)
 
-        const result = await this.client
-            .post(`user/createWithList`, {
+        return this.awaitResponse(
+            this.client.post(`user/createWithList`, {
                 json: body,
-            })
-            .json<User>()
-        return this.validateResponse(User, result)
+                responseType: 'json',
+            }),
+            {
+                200: User,
+            }
+        )
     }
 
     /**
      * Logs user into the system
      */
-    public async loginUser({ query }: { query?: { username?: string; password?: string } }): Promise<LoginUserResponse> {
-        const result = await this.client
-            .get(`user/login`, {
+    public async loginUser({ query }: { query?: { username?: string; password?: string } }) {
+        return this.awaitResponse(
+            this.client.get(`user/login`, {
                 searchParams: query ?? {},
-            })
-            .json<LoginUserResponse>()
-        return this.validateResponse(LoginUserResponse, result)
+                responseType: 'json',
+            }),
+            {
+                200: LoginUserResponse,
+            }
+        )
     }
 
     /**
      * Logs out current logged in user session
      */
-    public async logoutUser(): Promise<void> {
-        await this.client.get(`user/logout`).json()
+    public async logoutUser() {
+        return this.client.get(`user/logout`)
     }
 
     /**
      * Get user by user name
      */
-    public async getUserByName({ path }: { path: { username: string } }): Promise<User> {
-        const result = await this.client.get(`user/${path.username}`).json<User>()
-        return this.validateResponse(User, result)
+    public async getUserByName({ path }: { path: { username: string } }) {
+        return this.awaitResponse(
+            this.client.get(`user/${path.username}`, {
+                responseType: 'json',
+            }),
+            {
+                200: User,
+            }
+        )
     }
 
     /**
@@ -294,14 +341,12 @@ export class PetStore {
      *
      * This can only be done by the logged in user.
      */
-    public async updateUser({ path, body }: { path: { username: string }; body: User }): Promise<void> {
+    public async updateUser({ path, body }: { path: { username: string }; body: User }) {
         this.validateRequestBody(User, body)
 
-        await this.client
-            .put(`user/${path.username}`, {
-                json: body,
-            })
-            .json()
+        return this.client.put(`user/${path.username}`, {
+            json: body,
+        })
     }
 
     /**
@@ -309,8 +354,8 @@ export class PetStore {
      *
      * This can only be done by the logged in user.
      */
-    public async deleteUser({ path }: { path: { username: string } }): Promise<void> {
-        await this.client.delete(`user/${path.username}`).json()
+    public async deleteUser({ path }: { path: { username: string } }) {
+        return this.client.delete(`user/${path.username}`)
     }
 
     public validateRequestBody<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, body: T) {
@@ -318,9 +363,36 @@ export class PetStore {
         return body
     }
 
-    public validateResponse<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, response: T) {
-        schema.assert(response)
-        return response
+    public async awaitResponse<
+        T,
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate: ValidateFunction<T> }>
+    >(response: CancelableRequest<Response<unknown>>, schemas: S) {
+        type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
+            ? `${S}` extends `${T}${infer _X}`
+                ? S
+                : never
+            : never
+        type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S; assert: (o: unknown) => void } ? S : never
+        const result = await response
+        const validator = schemas[result.statusCode]
+        if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300) {
+            return {
+                statusCode: result.statusCode,
+                headers: result.headers,
+                left: result.body,
+                validationErrors: validator?.validate.errors ?? undefined,
+            } as {
+                statusCode: number
+                headers: IncomingHttpHeaders
+                left: InferSchemaType<S[keyof S]>
+                validationErrors?: ErrorObject[]
+            }
+        }
+        return { statusCode: result.statusCode, headers: result.headers, right: result.body } as {
+            statusCode: number
+            headers: IncomingHttpHeaders
+            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>
+        }
     }
 
     protected buildPetstoreAuthClient(client: Got) {

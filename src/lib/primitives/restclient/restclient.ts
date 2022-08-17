@@ -11,10 +11,10 @@ import type {
     PathItem,
     Reference,
     RequestBody,
-    Response,
     Responses,
     SecurityScheme,
     Server,
+    Response,
 } from '../../../openapi.type'
 import type { CstSubNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
@@ -24,7 +24,7 @@ import { createWriter } from '../../writer'
 import { $jsonschema } from '../jsonschema'
 import type { CustomType, ThereforeCst } from '../types'
 
-import { asyncCollect, entriesOf, hasPropertiesDefined, isDefined, keysOf, omitUndefined } from '@skyleague/axioms'
+import { asyncCollect, entriesOf, fromEntries, hasPropertiesDefined, isDefined, keysOf, omitUndefined } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import inflection from 'inflection'
 import * as pointer from 'jsonpointer'
@@ -101,8 +101,9 @@ export async function getRequestBody({
             references,
             exportAllSymbols: true,
         })
-        therefore.description.validator = { enabled: true, assert: true }
-        return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:referenceName}}` }
+        therefore.description.validator ??= { enabled: true, assert: true }
+        therefore.description.validator.assert = true
+        return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
     }
 
     const binaryContent = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(binaryMime))?.[1]
@@ -112,31 +113,44 @@ export async function getRequestBody({
     return undefined
 }
 
-export async function getResponseBody({
+export async function getResponseBodies({
     responses,
     openapi,
     method,
     references,
+    useEither,
 }: {
     responses: Responses | undefined
     openapi: OpenapiV3
     method: string
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    useEither: boolean
 }) {
-    if (responses?.['200'] !== undefined) {
-        const response = responses['200'] as Response
+    const result: [string, ThereforeCst][] = []
+    const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2')).length
+    for await (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
+        const reference = responseRef as Reference | Response
+        const response = (await jsonPointer({ schema: openapi, ptr: responseRef ?? {} })) as Response
         const content = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime))?.[1]
         const schema = content?.schema ?? {}
+
         const therefore = await $jsonschema(schema as JsonSchema, {
-            name: `${method}Response`,
+            name: `${method}Response${statusCode.startsWith('2') && successCodesCount <= 1 ? '' : statusCode}`,
             root: openapi as JsonSchema,
             references,
+            reference: '$ref' in reference ? reference.$ref : undefined,
             exportAllSymbols: true,
         })
-        therefore.description.validator = { enabled: true, assert: true }
-        return therefore
+        therefore.description.validator ??= { enabled: true, assert: false }
+        therefore.description.validator.assert ||= !useEither
+        if (therefore.type !== 'unknown') {
+            result.push([statusCode, therefore])
+        }
     }
-    return undefined
+    if (result.length > 0) {
+        return { right: fromEntries(result) }
+    }
+    return { left: undefined }
 }
 
 export function getPathParameters(parameters: Parameter[], _openapi: OpenapiV3) {
@@ -303,6 +317,7 @@ export async function getSecurity(
 
 export interface RestclientOptions {
     preferOperationId?: boolean
+    useEither?: boolean
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
 }
 
@@ -315,9 +330,14 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
+    const { useEither = true } = options
     const references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>()
 
     const children: ThereforeCst[] = []
+    const seenChildren = new WeakSet<ThereforeCst>()
+
+    let generateAwaitResponse = false
+    let generateValidateRequestBody = false
     await writer.blockAsync(async () => {
         const { prefixUrl, defaultValue } = getPrefixUrlConfiguration(openapi.servers)
         const { authDeclaration, securities, hasAuth } = await getSecurity(openapi.components?.securitySchemes, openapi)
@@ -361,7 +381,9 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         writer
             .block(() => {
                 writer.writeLine(
-                    'this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))'
+                    `this.client = got.extend(...[{ prefixUrl${
+                        useEither ? ', throwHttpErrors: false' : ''
+                    } }, options].filter((o): o is Options => o !== undefined))`
                 )
 
                 writer.conditionalWriteLine(hasAuth, 'this.auth = auth')
@@ -371,8 +393,6 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             .newLine()
             .newLine()
 
-        let generateValidateResponse = false
-        let generateValidateRequestBody = false
         for (const [path, item] of entriesOf(openapi.paths)) {
             let pathItem = item as PathItem
             if (path.startsWith('/')) {
@@ -414,27 +434,13 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     const pathParameters = getPathParameters(parameters, openapi)
                     const queryParameters = getQueryParameters(parameters, openapi)
 
-                    const response = await getResponseBody({
+                    const responses = await getResponseBodies({
                         responses: operation.responses,
                         openapi,
                         method,
                         references,
+                        useEither,
                     })
-                    let responseType = ''
-                    let resultStr = ''
-                    let returnStr = ''
-                    let responseTypeJson = ''
-                    if (response) {
-                        children.push(response)
-                        responseType = `: Promise<{{${response.uuid}:referenceName}}>`
-                        returnStr = `return this.validateResponse({{${response.uuid}:symbolName}}, result)`
-                        resultStr = 'const result = await '
-                        responseTypeJson = `<{{${response.uuid}:referenceName}}>`
-                        generateValidateResponse = true
-                    } else {
-                        responseType = ': Promise<void>'
-                        resultStr = 'await '
-                    }
 
                     let clientDecl = 'this.client'
                     const authMethods: string[] = []
@@ -484,31 +490,50 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         writer.write(jsdoc)
                     }
 
-                    writer.writeLine(`public async ${method}(${methodArguments})${responseType}`)
+                    writer.writeLine(`public async ${method}(${methodArguments})`)
                     writer
                         .block(() => {
                             const hasInputObj = request !== undefined || queryParameters.length > 0
-                            if (hasInputObj) {
-                                writer.conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
-                                writer
-                                    .writeLine(`${resultStr}${clientDecl}.${httpMethod}(\`${urlPath}\`,`)
-                                    .block(() => {
-                                        if (request !== undefined) {
-                                            writer.writeLine(`${request.type}: ${request.name},`)
-                                        }
-                                        writer.conditionalWriteLine(
-                                            queryParameters.length > 0,
-                                            `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
-                                        )
-                                    })
-                                    .writeLine(`).json${responseTypeJson}()`)
-                            } else {
-                                writer.writeLine(
-                                    `${resultStr}${clientDecl}.${httpMethod}(\`${urlPath}\`).json${responseTypeJson}()`
-                                )
-                            }
+                            const hasResponse = 'right' in responses
+                            generateAwaitResponse ||= hasResponse
 
-                            writer.conditionalWriteLine(returnStr !== '', returnStr)
+                            writer
+                                .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
+                                .conditionalWrite(hasResponse, 'return this.awaitResponse(')
+                                .conditionalWrite(!hasResponse, 'return ')
+                                .write(`${clientDecl}.${httpMethod}(\`${urlPath}\``)
+                            if (hasInputObj || hasResponse) {
+                                writer
+                                    .write(', ')
+                                    .inlineBlock(() => {
+                                        writer
+                                            .conditionalWrite(
+                                                request !== undefined,
+                                                `${request?.type ?? ''}: ${request?.name ?? ''},`
+                                            )
+                                            .conditionalWrite(
+                                                queryParameters.length > 0,
+                                                `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
+                                            )
+                                            .conditionalWrite(hasResponse, `responseType:'json',`)
+                                    })
+                                    .write(')')
+                            } else {
+                                writer.write(')')
+                            }
+                            if (hasResponse) {
+                                writer
+                                    .write(', ')
+                                    .inlineBlock(() => {
+                                        for (const [statusCode, response] of entriesOf(responses.right)) {
+                                            if (!seenChildren.has(response as ThereforeCst)) {
+                                                children.push(response as ThereforeCst)
+                                            }
+                                            writer.write(`${statusCode}: {{${response.uuid}:symbolName}},`)
+                                        }
+                                    })
+                                    .write(')')
+                            }
                         })
                         .newLine()
                 }
@@ -528,17 +553,55 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                 .newLine()
         }
 
-        if (generateValidateResponse) {
-            writer
-                .newLine()
-                .writeLine(
-                    `public validateResponse<T>(schema: { is: (o: unknown) => o is T, assert: (o: unknown) => void}, response: T)`
-                )
-                .block(() => {
-                    writer.writeLine('schema.assert(response)')
-                    writer.writeLine('return response')
-                })
-                .newLine()
+        if (generateAwaitResponse) {
+            if (useEither) {
+                writer
+                    .newLine()
+                    .writeLine(
+                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate: ValidateFunction<T> }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
+                    )
+                    .block(() => {
+                        writer
+                            .writeLine(
+                                'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never'
+                            )
+                            .writeLine(
+                                'type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S; assert: (o: unknown) => void } ? S : never'
+                            )
+                            .writeLine('const result = await response')
+                            .writeLine('const validator = schemas[result.statusCode]')
+                            .writeLine(
+                                'if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300)'
+                            )
+                            .block(() => {
+                                writer
+                                    .write(
+                                        'return {statusCode: result.statusCode, headers: result.headers, left: result.body, validationErrors: validator?.validate.errors ?? undefined } as '
+                                    )
+                                    .writeLine(
+                                        `{statusCode: number, headers: IncomingHttpHeaders, left: InferSchemaType<S[keyof S]>, validationErrors?: ErrorObject[]}`
+                                    )
+                            })
+                            .write(`return {statusCode: result.statusCode, headers: result.headers, right: result.body } as `)
+                            .writeLine(
+                                `{statusCode: number, headers: IncomingHttpHeaders, right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>}`
+                            )
+                    })
+                    .newLine()
+            } else {
+                writer
+                    .newLine()
+                    .writeLine(
+                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert: (o: unknown) => void }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
+                    )
+                    .block(() => {
+                        writer
+                            .writeLine('const result = await response')
+                            .writeLine('schemas[result.statusCode]?.assert(result.body)')
+                            .writeLine(`return {statusCode: result.statusCode, headers: result.headers, body: result.body }`)
+                    })
+                    .newLine()
+            }
         }
 
         if (securities.length > 0) {
@@ -576,7 +639,13 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         'custom',
         {
             typescript: {
-                imports: [`import got, { Got, Options } from 'got'`],
+                imports: [
+                    `import type { CancelableRequest, Got, Options, Response } from 'got'`,
+                    `import got from 'got'`,
+                    ...(generateAwaitResponse && useEither
+                        ? [`import type { ValidateFunction, ErrorObject } from 'ajv'`, `import {IncomingHttpHeaders} from 'http'`]
+                        : []),
+                ],
                 declaration: writer.toString(),
                 declType: 'class',
             },
