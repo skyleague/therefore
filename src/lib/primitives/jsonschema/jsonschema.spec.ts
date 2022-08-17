@@ -903,7 +903,7 @@ describe('petstore', () => {
                                 },
                                 "termsOfService": "http://swagger.io/terms/",
                                 "title": "Swagger Petstore - OpenAPI 3.0",
-                                "version": "1.0.14",
+                                "version": "1.0.15",
                               },
                               "openapi": "3.0.2",
                               "paths": Object {
@@ -2554,7 +2554,7 @@ describe('petstore', () => {
                             },
                             "termsOfService": "http://swagger.io/terms/",
                             "title": "Swagger Petstore - OpenAPI 3.0",
-                            "version": "1.0.14",
+                            "version": "1.0.15",
                           },
                           "openapi": "3.0.2",
                           "paths": Object {
@@ -3886,7 +3886,7 @@ describe('petstore', () => {
                                 },
                                 "termsOfService": "http://swagger.io/terms/",
                                 "title": "Swagger Petstore - OpenAPI 3.0",
-                                "version": "1.0.14",
+                                "version": "1.0.15",
                               },
                               "openapi": "3.0.2",
                               "paths": Object {

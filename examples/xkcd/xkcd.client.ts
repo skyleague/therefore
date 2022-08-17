@@ -3,7 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import got, { Got, Options } from 'got'
+import got from 'got'
+import type { CancelableRequest, Got, Options, Response } from 'got'
 import { Comic } from './xkcd.type'
 
 export class Xkcd {
@@ -21,24 +22,38 @@ export class Xkcd {
 
     /**
      * Fetch current comic and metadata.
-     *
      */
-    public async getInfo0Json(): Promise<Comic> {
-        const result = await this.client.get(`info.0.json`).json<Comic>()
-        return this.validateResponse(Comic, result)
+    public async getInfo0Json() {
+        return this.awaitResponse(
+            this.client.get(`info.0.json`, {
+                responseType: 'json',
+            }),
+            {
+                200: Comic,
+            }
+        )
     }
 
     /**
      * Fetch comics and metadata  by comic id.
-     *
      */
-    public async getInfo0JsonByComicId({ path }: { path: { comicId: string } }): Promise<Comic> {
-        const result = await this.client.get(`${path.comicId}/info.0.json`).json<Comic>()
-        return this.validateResponse(Comic, result)
+    public async getInfo0JsonByComicId({ path }: { path: { comicId: string } }) {
+        return this.awaitResponse(
+            this.client.get(`${path.comicId}/info.0.json`, {
+                responseType: 'json',
+            }),
+            {
+                200: Comic,
+            }
+        )
     }
 
-    public validateResponse<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, response: T) {
-        schema.assert(response)
-        return response
+    public async awaitResponse<
+        T,
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert: (o: unknown) => void }>
+    >(response: CancelableRequest<Response<unknown>>, schemas: S) {
+        const result = await response
+        schemas[result.statusCode]?.assert(result.body)
+        return { statusCode: result.statusCode, headers: result.headers, body: result.body }
     }
 }

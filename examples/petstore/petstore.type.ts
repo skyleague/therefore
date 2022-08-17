@@ -43,11 +43,6 @@ export const FindPetsByStatusResponse = {
     source: `${__dirname}petstore.schema`,
     sourceSymbol: 'findPetsByStatusResponse',
     is: (o: unknown): o is FindPetsByStatusResponse => FindPetsByStatusResponse.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!FindPetsByStatusResponse.validate(o)) {
-            throw new AjvValidator.ValidationError(FindPetsByStatusResponse.validate.errors ?? [])
-        }
-    },
 } as const
 
 export type FindPetsByTagsResponse = Pet[]
@@ -60,11 +55,6 @@ export const FindPetsByTagsResponse = {
     source: `${__dirname}petstore.schema`,
     sourceSymbol: 'findPetsByTagsResponse',
     is: (o: unknown): o is FindPetsByTagsResponse => FindPetsByTagsResponse.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!FindPetsByTagsResponse.validate(o)) {
-            throw new AjvValidator.ValidationError(FindPetsByTagsResponse.validate.errors ?? [])
-        }
-    },
 } as const
 
 export interface ApiResponse {
@@ -81,11 +71,6 @@ export const ApiResponse = {
     source: `${__dirname}petstore.schema`,
     sourceSymbol: 'ApiResponse',
     is: (o: unknown): o is ApiResponse => ApiResponse.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!ApiResponse.validate(o)) {
-            throw new AjvValidator.ValidationError(ApiResponse.validate.errors ?? [])
-        }
-    },
 } as const
 
 export interface GetInventoryResponse {
@@ -100,11 +85,6 @@ export const GetInventoryResponse = {
     source: `${__dirname}petstore.schema`,
     sourceSymbol: 'getInventoryResponse',
     is: (o: unknown): o is GetInventoryResponse => GetInventoryResponse.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!GetInventoryResponse.validate(o)) {
-            throw new AjvValidator.ValidationError(GetInventoryResponse.validate.errors ?? [])
-        }
-    },
 } as const
 
 export interface Order {
@@ -191,11 +171,6 @@ export const LoginUserResponse = {
     source: `${__dirname}petstore.schema`,
     sourceSymbol: 'loginUserResponse',
     is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!LoginUserResponse.validate(o)) {
-            throw new AjvValidator.ValidationError(LoginUserResponse.validate.errors ?? [])
-        }
-    },
 } as const
 
 export interface Category {

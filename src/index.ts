@@ -6,6 +6,7 @@ import { install } from 'source-map-support'
 import type { CommandModule } from 'yargs'
 
 export { OpenapiV3 } from './openapi.type'
+export { InferSchemaType, Schema } from './lib/types'
 export * from './lib/primitives'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/consistent-type-imports, @typescript-eslint/no-var-requires
