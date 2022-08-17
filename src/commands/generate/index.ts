@@ -1,5 +1,7 @@
 import { generate } from './generate'
 
+import { getExtension } from '../../common/template/path'
+
 import type { Argv } from 'yargs'
 
 export function builder(yargs: Argv) {
@@ -38,7 +40,7 @@ export async function handler(argv: ReturnType<typeof builder>['argv']): Promise
         globs: files.map((f) => f.toString()),
         ignore: ignorePatterns,
         extension: ext,
-        outputFileRename: (path: string) => path.replace(ext, outExt),
+        outputFileRename: (path: string) => path.replace(getExtension(path)!, outExt),
         compile,
     })
 }

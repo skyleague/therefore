@@ -25,7 +25,7 @@ export interface CustomTypeOptions {
         declaration?: string
     }
     fileSuffix?: string
-    fileName?: string
+    filePath?: string
 }
 
 export type CustomType = CstNode<'custom', CustomTypeOptions, unknown, ThereforeCst[]>

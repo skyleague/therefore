@@ -8,15 +8,15 @@ import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import { IncomingHttpHeaders } from 'http'
 import {
-    GetInventoryResponse,
     Pet,
-    LoginUserResponse,
-    FindPetsByStatusResponse,
-    Order,
-    ApiResponse,
     User,
     FindPetsByTagsResponse,
+    LoginUserResponse,
+    FindPetsByStatusResponse,
+    GetInventoryResponse,
     CreateUsersWithListInputRequest,
+    Order,
+    ApiResponse,
 } from './petstore.type'
 
 export class PetStore {

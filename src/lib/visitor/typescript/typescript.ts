@@ -14,7 +14,7 @@ import type { MetaDescription, ThereforeMeta } from '../../primitives/base'
 import type { CustomType, ThereforeCst } from '../../primitives/types'
 import { createWriter } from '../../writer'
 
-import { entriesOf, evaluate, groupBy, isAlphaNumeric, keysOf, mapValues, omitUndefined, valuesOf } from '@skyleague/axioms'
+import { entriesOf, evaluate, groupBy, isAlphaNumeric, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 
 export interface TypescriptWalkerContext {
@@ -322,7 +322,7 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
 export type TypescriptSubtree = {
     node: ThereforeCst
     fileSuffix?: string
-    fileName?: string
+    filePath?: string
 }
 
 export function toTypescriptDefinition({
@@ -330,16 +330,12 @@ export function toTypescriptDefinition({
     schema,
     fileHash = '',
     exportSymbol = true,
-    propagateFileSuffix = false,
-    propagateFileName = false,
     locals = {},
 }: {
     sourceSymbol: string
     schema: ThereforeCst & { uuid: string }
     fileHash?: string
     exportSymbol?: boolean
-    propagateFileSuffix?: boolean
-    propagateFileName?: boolean
     locals?: TypescriptDefinition['locals']
 }): { definition: TypescriptDefinition; subtrees: TypescriptSubtree[] } {
     // allow propagation and deduplication
@@ -362,13 +358,9 @@ export function toTypescriptDefinition({
     let imports: string[] = []
     if (schema.type === 'custom') {
         imports = schema.value.typescript?.imports ?? []
-        subtrees = schema.children.map((c) =>
-            omitUndefined({
-                node: c,
-                fileSuffix: propagateFileSuffix ? schema.value.fileSuffix : undefined,
-                fileName: propagateFileName ? schema.value.fileName : undefined,
-            })
-        )
+        subtrees = schema.children.map((c) => ({
+            node: c,
+        }))
         // make the references transitive
         for (const child of schema.children) {
             walkCst($ref(child), typescriptVisitor, context)
