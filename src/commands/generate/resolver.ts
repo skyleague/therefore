@@ -89,26 +89,6 @@ export function resolveTypescriptSchema({
         .flat(2)
     const uniqueRequires = [...unique(required, (a, b) => a.uuid === b.uuid)]
 
-    // definition.symbols.push(
-    //     ...Object.values(locals ?? {}).map((local) => ({
-    //         uuid: local.uuid,
-    //         symbolName: local.sourceSymbol,
-    //         definition: local,
-    //         typeOnly: true,
-    //     }))
-    // )
-
-    // for (const local of Object.values(locals ?? {})) {
-    //     if (definition.symbols.find((s) => s.uuid === local.uuid) !== undefined) {
-    //         definition.symbols.push({
-    //             uuid: local.uuid,
-    //             symbolName: local.sourceSymbol,
-    //             definition: local,
-    //             typeOnly: true,
-    //         })
-    //     }
-    // }
-
     for (const r of uniqueRequires) {
         definition.dependencies[r.targetPath] ??= []
         definition.dependencies[r.targetPath]?.push(r.uniqueSymbolName)
@@ -139,9 +119,7 @@ export function resolveTypescriptSchema({
     ])
 
     const schemaFile = path.relative(cwd, definition.targetPath).replace(/\\/g, '/')
-    const relativeSource = `./${path
-        .relative(path.dirname(schemaFile), path.relative(cwd, definition.srcPath))
-        .replace(/\.ts$/g, '')}`
+    const relativeSource = `./${path.relative(path.dirname(schemaFile), definition.srcPath).replace(/\.ts$/g, '')}`
     outputFiles.push(
         {
             targetPath,

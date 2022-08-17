@@ -34,7 +34,7 @@ export async function loadSymbol({
     definitions,
     entry,
     fileSuffix,
-    fileName,
+    filePath,
     outputFileRename,
 }: {
     srcPath: string
@@ -45,26 +45,28 @@ export async function loadSymbol({
     definitions: Record<string, FileDefinition>
     entry: string
     fileSuffix?: string | undefined
-    fileName?: string | undefined
+    filePath?: string | undefined
     outputFileRename: (path: string) => string
 }) {
     const simplified = await prepass(symbol)
+    let targetDir = '.'
     if (simplified.type === 'custom') {
         if (simplified.value.fileSuffix !== undefined) {
             fileSuffix = simplified.value.fileSuffix
         }
-        if (simplified.value.fileName !== undefined) {
-            fileName = simplified.value.fileName
+        if (simplified.value.filePath !== undefined) {
+            const dir = path.dirname(simplified.value.filePath)
+            const basename = path.basename(simplified.value.filePath)
+            filePath = basename
+            targetDir = dir
         }
     }
 
     const { base: baseName, dir: baseDir } = path.parse(srcPath)
     const ext = getExtension(srcPath) ?? ''
-    const targetSrcPath = `${baseDir}/${(fileName ?? baseName).replace(ext, '')}${ext}`
-    const targetPath = path.relative(
-        basePath,
-        fileSuffix !== undefined ? replaceExtension(targetSrcPath, fileSuffix) : outputFileRename(targetSrcPath)
-    )
+    const targetBaseDir = path.relative(basePath, path.join(baseDir, targetDir))
+    const targetSrcPath = `${targetBaseDir}/${(filePath ?? baseName).replace(ext, '')}${ext}`
+    const targetPath = fileSuffix !== undefined ? replaceExtension(targetSrcPath, fileSuffix) : outputFileRename(targetSrcPath)
 
     definitions[targetPath] ??= {
         srcPath: path.relative(basePath, srcPath),
@@ -86,7 +88,7 @@ export async function loadSymbol({
     const compiledFile = `./schemas/${schemaName}.schema.js`
 
     const jsonschema = toJsonSchema(simplified, compile)
-    const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, schema: simplified, propagateFileName: true })
+    const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, schema: simplified })
 
     file.symbols.push(
         ...Object.values(definition.locals ?? {}).map((local) => ({
@@ -108,16 +110,15 @@ export async function loadSymbol({
 
     if (definition.isExported && simplified.description.validator?.enabled) {
         if (jsonschema.compiled === true) {
-            const filePath = path.join(path.dirname(entry), compiledFile)
             file.attachedFiles.push({
-                targetPath: filePath,
+                targetPath: path.join(targetBaseDir, compiledFile),
                 content: `/**\n * ${generatedBy}\n * eslint-disable\n */\n${jsonschema.code}`,
                 prettify: false,
                 type: 'validator',
             })
         } else {
             file.attachedFiles.push({
-                targetPath: path.join(path.dirname(entry), schemaFile),
+                targetPath: path.join(targetBaseDir, schemaFile),
                 content: JSON.stringify(jsonschema.schema, null, 2),
                 prettify: true,
                 type: 'jsonschema',
@@ -126,16 +127,16 @@ export async function loadSymbol({
 
         console.debug(` - found ${definition.symbolName}`)
     }
-    for (const { node: subSymbol, fileSuffix: subFileSuffix, fileName: subFileName } of subtrees) {
+    for (const { node: subSymbol, fileSuffix: subFileSuffix, filePath: subFilePath } of subtrees) {
         await loadSymbol({
             symbol: subSymbol,
             basePath,
             sourceSymbol,
             compile,
             definitions,
-            srcPath,
+            srcPath: path.join(basePath, targetPath),
             fileSuffix: subFileSuffix,
-            fileName: subFileName,
+            filePath: subFilePath,
             entry,
             outputFileRename,
         })
