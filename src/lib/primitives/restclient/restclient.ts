@@ -24,7 +24,16 @@ import { createWriter } from '../../writer'
 import { $jsonschema } from '../jsonschema'
 import type { CustomType, ThereforeCst } from '../types'
 
-import { asyncCollect, entriesOf, fromEntries, hasPropertiesDefined, isDefined, keysOf, omitUndefined } from '@skyleague/axioms'
+import {
+    asyncCollect,
+    asyncMap,
+    entriesOf,
+    fromEntries,
+    hasPropertiesDefined,
+    isDefined,
+    keysOf,
+    omitUndefined,
+} from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import inflection from 'inflection'
 import * as pointer from 'jsonpointer'
@@ -277,7 +286,7 @@ export async function getSecurity(
     openapi: OpenapiV3
 ) {
     const securities = await asyncCollect(
-        entriesOf(securityRequirements ?? []).map(async ([name, securityRef]) => {
+        asyncMap(entriesOf(securityRequirements ?? []), async ([name, securityRef]) => {
             const security = (await jsonPointer({ schema: openapi, ptr: securityRef ?? {} })) as unknown as MappableSecurityScheme
             const type = security?.type ?? ('http' as const)
             const convert = toSecurityDeclaration[type]
@@ -428,7 +437,8 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     }
                     const parameters: Parameter[] = (
                         await asyncCollect(
-                            [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]?.map(
+                            asyncMap(
+                                [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])] ?? [],
                                 async (parameter) =>
                                     (await jsonPointer({ schema: openapi, ptr: parameter })) as Parameter | undefined
                             )

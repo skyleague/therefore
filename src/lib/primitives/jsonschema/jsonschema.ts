@@ -130,7 +130,8 @@ const schemaWalker: JsonSchemaWalker = {
         const { properties, indexSignature, indexPatterns } = await indexProperties(node, context)
         const mergedProperties = { ...properties, ...node.properties }
         const subSchemas = await asyncCollect(
-            entriesOf(mergedProperties).map(
+            asyncMap(
+                entriesOf(mergedProperties),
                 async ([name, v]) =>
                     [
                         name,
@@ -289,7 +290,7 @@ async function walkJsonschema({
     if (child.oneOf !== undefined) {
         return $union(
             await asyncCollect(
-                child.oneOf.map((c) =>
+                asyncMap(child.oneOf, (c) =>
                     walkJsonschema({
                         node: omitUndefined({ ...c }),
                         visitor,
@@ -304,7 +305,7 @@ async function walkJsonschema({
 
     if (isArray(child.type)) {
         return $union(
-            await asyncCollect(child.type.map(async (t) => visitor[t ?? 'object']({ ...child, type: t }, context))),
+            await asyncCollect(asyncMap(child.type, async (t) => visitor[t ?? 'object']({ ...child, type: t }, context))),
             context
         )
     }
