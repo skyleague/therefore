@@ -91,7 +91,7 @@ export function resolveTypescriptSchema({
 
     for (const r of uniqueRequires) {
         definition.dependencies[r.targetPath] ??= []
-        definition.dependencies[r.targetPath]?.push(r.uniqueSymbolName)
+        definition.dependencies[r.targetPath]?.push(r.symbolName)
     }
 
     for (const symbol of definition.symbols) {
