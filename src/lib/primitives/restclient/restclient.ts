@@ -458,14 +458,16 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
 
                     let clientDecl = 'this.client'
                     const authMethods: string[] = []
-                    if (operation.security !== undefined) {
-                        for (const secMethods of operation.security) {
+                    const security = operation.security ?? openapi.security
+                    if (security !== undefined) {
+                        const hasAuthParameters = operation.security !== undefined
+                        for (const secMethods of security) {
                             const required = keysOf(secMethods)
                                 .map((sm) => securities.find((s) => s.type === sm)?.name)
                                 .filter((x): x is string => x !== undefined)
                             authMethods.push(`[${required.map((r) => `'${r}'`).join(', ')}]`)
                         }
-                        clientDecl = `this.buildClient(auth)`
+                        clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
                     }
 
                     const parameterizedPath = pathParameters
