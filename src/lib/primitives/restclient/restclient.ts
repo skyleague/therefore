@@ -529,7 +529,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     writer.writeLine(`public async ${method}(${methodArguments})`)
                     writer
                         .block(() => {
-                            const hasInputObj = request !== undefined || queryParameters.length > 0 || queryParameters.length > 0
+                            const hasInputObj = request !== undefined || queryParameters.length > 0 || headerParameters.length > 0
                             const hasResponse = 'right' in responses
                             generateAwaitResponse ||= hasResponse
 
