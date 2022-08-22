@@ -5,7 +5,7 @@ import { bin } from '../package.json'
 import { install } from 'source-map-support'
 import type { CommandModule } from 'yargs'
 
-export { OpenapiV3 } from './openapi.type'
+export { OpenapiV3 } from './lib/primitives/restclient/openapi.type'
 export { InferSchemaType, Schema } from './lib/types'
 export * from './lib/primitives'
 

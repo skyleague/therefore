@@ -1,5 +1,5 @@
-import type { JsonSchema } from './json'
-import { $jsonschema } from './lib/primitives'
+import { $jsonschema } from '..'
+import type { JsonSchema } from '../../../json'
 
 import got from 'got'
 

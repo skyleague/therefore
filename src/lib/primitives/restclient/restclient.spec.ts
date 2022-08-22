@@ -1,6 +1,5 @@
+import type { Operation } from './openapi.type'
 import { methodName } from './restclient'
-
-import type { Operation } from '../../../openapi.type'
 
 describe('method name', () => {
     test('name from operation id', () => {

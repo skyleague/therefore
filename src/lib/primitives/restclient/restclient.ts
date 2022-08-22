@@ -1,5 +1,3 @@
-import { jsonPointer } from '../../../common/json/json'
-import type { JsonSchema } from '../../../json'
 import type {
     ApiKeySecurityScheme,
     HttpSecurityScheme,
@@ -15,7 +13,10 @@ import type {
     SecurityScheme,
     Server,
     Response,
-} from '../../../openapi.type'
+} from './openapi.type'
+
+import { jsonPointer } from '../../../common/json/json'
+import type { JsonSchema } from '../../../json'
 import type { CstSubNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import { toJSDoc } from '../../visitor/typescript/jsdoc'
