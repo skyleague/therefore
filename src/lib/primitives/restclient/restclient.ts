@@ -196,6 +196,21 @@ export function getQueryParameters(parameters: Parameter[], _openapi: OpenapiV3)
     return queryParameters
 }
 
+export function getHeaderParameters(parameters: Parameter[], _openapi: OpenapiV3) {
+    const headerParameters =
+        parameters
+            ?.filter((p) => p.in === 'header')
+            .map((p) => {
+                // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
+                return {
+                    name: p.name,
+                    required: p.required,
+                    type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+                }
+            }) ?? []
+    return headerParameters
+}
+
 export function getPrefixUrlConfiguration(servers?: Server[]) {
     const args: string[] = ['string']
     const defaultValues: string[] = []
@@ -447,6 +462,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
 
                     const pathParameters = getPathParameters(parameters, openapi)
                     const queryParameters = getQueryParameters(parameters, openapi)
+                    const headerParameters = getHeaderParameters(parameters, openapi)
 
                     const responses = await getResponseBodies({
                         responses: operation.responses,
@@ -481,13 +497,19 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         queryParameters?.map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`) ?? []
                     ).join(', ')
                     const queryOptionalStr = queryParameters?.every((q) => q.required === true) ? '' : '?'
+                    const headerArguments = (
+                        headerParameters?.map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`) ??
+                        []
+                    ).join(', ')
+                    const headerOptionalStr = headerParameters?.every((q) => q.required === true) ? '' : '?'
 
                     const methodArgumentsInner = [
-                        ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
-                        ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
                         ...(request?.declaration !== undefined
                             ? [[request.name, `${request.name}: ${request.declaration}`]]
                             : []),
+                        ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
+                        ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
+                        ...(headerArguments.length > 0 ? [['header', `header${headerOptionalStr}: { ${headerArguments} }`]] : []),
                         ...(operation.security?.length !== undefined && operation.security?.length > 0
                             ? [[`auth = [${authMethods.join(', ')}]`, `auth?: string[][] | string[]`]]
                             : []),
@@ -509,7 +531,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     writer.writeLine(`public async ${method}(${methodArguments})`)
                     writer
                         .block(() => {
-                            const hasInputObj = request !== undefined || queryParameters.length > 0
+                            const hasInputObj = request !== undefined || queryParameters.length > 0 || headerParameters.length > 0
                             const hasResponse = 'right' in responses
                             generateAwaitResponse ||= hasResponse
 
@@ -530,6 +552,10 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                             .conditionalWrite(
                                                 queryParameters.length > 0,
                                                 `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
+                                            )
+                                            .conditionalWrite(
+                                                headerParameters.length > 0,
+                                                `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
                                             )
                                             .conditionalWrite(hasResponse, `responseType:'json',`)
                                     })

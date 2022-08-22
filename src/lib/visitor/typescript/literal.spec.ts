@@ -3,8 +3,11 @@ import { objectProperty, toLiteral } from './literal'
 import { forAll, json, equal, string, tuple } from '@skyleague/axioms'
 
 describe('objectProperty', () => {
-    test('', () => {
+    test('dot', () => {
         expect(objectProperty('foo.bar')).toMatchInlineSnapshot(`"['foo.bar']"`)
+    })
+    test('dash', () => {
+        expect(objectProperty('foo-bar')).toMatchInlineSnapshot(`"['foo-bar']"`)
     })
 })
 

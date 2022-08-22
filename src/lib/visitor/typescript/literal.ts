@@ -1,7 +1,7 @@
 import { isAlphaNumeric, isDigits } from '@skyleague/axioms'
 
 export function objectProperty(x: string) {
-    if (x.includes('.')) {
+    if (x.includes('.') || x.includes('-')) {
         return `[${stringLiteral(x, { allowBacktick: true })}]`
     }
     return x
