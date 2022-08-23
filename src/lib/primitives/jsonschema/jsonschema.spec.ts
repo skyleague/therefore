@@ -2,12 +2,12 @@ import { $jsonschema } from './jsonschema'
 
 import { awaitAll } from '../../../common/util'
 import type { JsonSchema } from '../../../json'
-import type { OpenapiV3 } from '../../../openapi.type'
 import { walkCst } from '../../cst/visitor'
 import { jsonSchemaContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript'
 import { typeDefinitionVisitor } from '../../visitor/typescript/typescript'
 import { $object } from '../object'
+import type { OpenapiV3 } from '../restclient/openapi.type'
 
 import { entriesOf } from '@skyleague/axioms'
 import got from 'got'

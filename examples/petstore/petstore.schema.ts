@@ -1,5 +1,5 @@
-import { $restclient } from '../../src/lib/primitives/restclient/restclient'
-import type { OpenapiV3 } from '../../src/openapi.type'
+import type { OpenapiV3 } from '../../src/'
+import { $restclient } from '../../src/'
 
 import got from 'got'
 
