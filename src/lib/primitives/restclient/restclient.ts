@@ -510,7 +510,9 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                             : []),
                         ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
                         ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
-                        ...(headerArguments.length > 0 ? [['header', `header${headerOptionalStr}: { ${headerArguments} }`]] : []),
+                        ...(headerArguments.length > 0
+                            ? [['headers', `headers${headerOptionalStr}: { ${headerArguments} }`]]
+                            : []),
                         ...(operation.security?.length !== undefined && operation.security?.length > 0
                             ? [[`auth = [${authMethods.join(', ')}]`, `auth?: string[][] | string[]`]]
                             : []),
