@@ -514,8 +514,16 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         headerParameters?.map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`) ??
                         []
                     ).join(', ')
-                    const headerOptionalStr = headerParameters?.every((q) => q.required === true) ? '' : '?'
 
+                    const hasRequiredBody = request?.declaration !== undefined
+                    const hasRequiredPathArgument = pathArguments.length > 0
+                    const hasRequiredQueryArguments = queryArguments.length > 0
+                    const hasRequiredHeaderArguments = headerParameters?.some((q) => q.required === true)
+
+                    const hasRequiredArguments =
+                        hasRequiredBody || hasRequiredPathArgument || hasRequiredQueryArguments || hasRequiredHeaderArguments
+
+                    const headerOptionalStr = hasRequiredHeaderArguments ? '' : '?'
                     const methodArgumentsInner = [
                         ...(request?.declaration !== undefined
                             ? [[request.name, `${request.name}: ${request.declaration}`]]
@@ -543,7 +551,11 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         writer.write(jsdoc)
                     }
 
-                    writer.writeLine(`public async ${method}(${methodArguments})`)
+                    writer.writeLine(
+                        `public async ${method}(${methodArguments}${
+                            methodArgumentsInner.length > 0 && !hasRequiredArguments ? ' = {}' : ''
+                        })`
+                    )
                     writer
                         .block(() => {
                             const hasInputObj = request !== undefined || queryParameters.length > 0 || headerParameters.length > 0

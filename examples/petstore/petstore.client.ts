@@ -8,15 +8,15 @@ import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import { IncomingHttpHeaders } from 'http'
 import {
+    ApiResponse,
+    CreateUsersWithListInputRequest,
+    FindPetsByStatusResponse,
+    FindPetsByTagsResponse,
+    GetInventoryResponse,
+    LoginUserResponse,
+    Order,
     Pet,
     User,
-    FindPetsByTagsResponse,
-    LoginUserResponse,
-    FindPetsByStatusResponse,
-    GetInventoryResponse,
-    CreateUsersWithListInputRequest,
-    Order,
-    ApiResponse,
 } from './petstore.type'
 
 export class PetStore {
@@ -174,22 +174,32 @@ export class PetStore {
     /**
      * Deletes a pet
      */
-    public async deletePet({ path, auth = [['petstoreAuth']] }: { path: { petId: string }; auth?: string[][] | string[] }) {
-        return this.buildClient(auth).delete(`pet/${path.petId}`)
+    public async deletePet({
+        path,
+        headers,
+        auth = [['petstoreAuth']],
+    }: {
+        path: { petId: string }
+        headers?: { api_key?: string }
+        auth?: string[][] | string[]
+    }) {
+        return this.buildClient(auth).delete(`pet/${path.petId}`, {
+            headers: headers ?? {},
+        })
     }
 
     /**
      * uploads an image
      */
     public async uploadFile({
+        body,
         path,
         query,
-        body,
         auth = [['petstoreAuth']],
     }: {
+        body: string | Buffer
         path: { petId: string }
         query?: { additionalMetadata?: string }
-        body: string | Buffer
         auth?: string[][] | string[]
     }) {
         return this.awaitResponse(
@@ -209,7 +219,7 @@ export class PetStore {
      *
      * Returns a map of status codes to quantities
      */
-    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] }) {
+    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] } = {}) {
         return this.awaitResponse(
             this.buildClient(auth).get(`store/inventory`, {
                 responseType: 'json',
@@ -341,7 +351,7 @@ export class PetStore {
      *
      * This can only be done by the logged in user.
      */
-    public async updateUser({ path, body }: { path: { username: string }; body: User }) {
+    public async updateUser({ body, path }: { body: User; path: { username: string } }) {
         this.validateRequestBody(User, body)
 
         return this.client.put(`user/${path.username}`, {
@@ -372,7 +382,7 @@ export class PetStore {
                 ? S
                 : never
             : never
-        type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S; assert: (o: unknown) => void } ? S : never
+        type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
         const validator = schemas[result.statusCode]
         if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300) {
