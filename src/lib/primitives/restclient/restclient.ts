@@ -197,7 +197,7 @@ export function getQueryParameters(parameters: Parameter[], _openapi: OpenapiV3)
     return queryParameters
 }
 
-export function getHeaderParameters(parameters: Parameter[], _openapi: OpenapiV3) {
+export function getHeaderParameters(parameters: Parameter[], usedSecurityHeaders: string[], _openapi: OpenapiV3) {
     const headerParameters =
         parameters
             ?.filter((p) => p.in === 'header')
@@ -205,7 +205,7 @@ export function getHeaderParameters(parameters: Parameter[], _openapi: OpenapiV3
                 // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
                 return {
                     name: p.name,
-                    required: p.required,
+                    required: p.required && !usedSecurityHeaders.includes(p.name),
                     type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
                 }
             }) ?? []
@@ -263,10 +263,14 @@ const toSecurityDeclaration: {
 }
 
 const toSecurityHook: {
-    [T in MappableSecurityScheme['type']]: (s: Extract<MappableSecurityScheme, { type: T }>, name: string) => string | undefined
+    [T in MappableSecurityScheme['type']]: (
+        s: Extract<MappableSecurityScheme, { type: T }>,
+        name: string
+    ) => { decl: string; headers: string[] } | undefined
 } = {
     http: (s: HttpSecurityScheme & { type: 'http' }, name) => {
         const hook = createWriter()
+        const headers: string[] = []
         hook.writeLine('async (options) => ').block(() => {
             if (s.scheme === 'basic') {
                 hook.writeLine(`const ${name} = this.auth.${name}`)
@@ -280,9 +284,10 @@ const toSecurityHook: {
                 hook.writeLine(`const ${name} = this.auth.${name}!`)
                     .writeLine(`const token = typeof ${name} === 'function' ? await ${name}() : ${name}`)
                     .writeLine(`options.headers["Authorization"] = \`Bearer \${token}\``)
+                headers.push('Authorization')
             }
         })
-        return hook.toString()
+        return { decl: hook.toString(), headers }
     },
     apiKey: (s: ApiKeySecurityScheme, name) => {
         const hook = createWriter()
@@ -291,7 +296,7 @@ const toSecurityHook: {
                 .writeLine(`const key = typeof ${name} === 'function' ? await ${name}() : ${name}`)
                 .writeLine(`options.headers['${s.name}'] = key`)
         })
-        return hook.toString()
+        return { decl: hook.toString(), headers: [s.name] }
     },
     openIdConnect: (_s: OpenIdConnectSecurityScheme) => undefined,
     oauth2: (_s: OAuth2SecurityScheme) => undefined,
@@ -312,12 +317,12 @@ export async function getSecurity(
             const clientWriter = createWriter()
             const hook = toSecurityHook[type](security as never, camelName)
             clientWriter.writeLine(`protected ${clientRef}(client: Got)`).block(() => {
-                if (hook !== undefined && hook.length > 0) {
+                if (hook !== undefined && hook.decl.length > 0) {
                     clientWriter
                         .writeLine('return client.extend({')
                         .writeLine('hooks: {')
                         .writeLine('beforeRequest: [')
-                        .writeLine(hook)
+                        .writeLine(hook.decl)
                         .writeLine(`],},})`)
                 } else {
                     clientWriter.writeLine('return client')
@@ -326,6 +331,7 @@ export async function getSecurity(
 
             return {
                 type: name,
+                headers: hook?.headers,
                 required: false,
                 clientRef,
                 name: camelName,
@@ -461,9 +467,29 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         )
                     ).filter(isDefined)
 
+                    let clientDecl = 'this.client'
+                    const authMethods: string[] = []
+                    const security = operation.security ?? openapi.security
+                    const usedSecurityHeaders: string[] = []
+                    if (security !== undefined) {
+                        const hasAuthParameters = operation.security !== undefined
+                        for (const secMethods of security) {
+                            const required = keysOf(secMethods)
+                                .map((sm) => securities.find((s) => s.type === sm)?.name)
+                                .filter((x): x is string => x !== undefined)
+                            authMethods.push(`[${required.map((r) => `'${r}'`).join(', ')}]`)
+                            usedSecurityHeaders.push(
+                                ...keysOf(secMethods)
+                                    .flatMap((sm) => securities.find((s) => s.type === sm)?.headers)
+                                    .filter((x): x is string => x !== undefined)
+                            )
+                        }
+                        clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
+                    }
+
                     const pathParameters = getPathParameters(parameters, openapi)
                     const queryParameters = getQueryParameters(parameters, openapi)
-                    const headerParameters = getHeaderParameters(parameters, openapi)
+                    const headerParameters = getHeaderParameters(parameters, usedSecurityHeaders, openapi)
 
                     const responses = await getResponseBodies({
                         responses: operation.responses,
@@ -472,20 +498,6 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         references,
                         useEither,
                     })
-
-                    let clientDecl = 'this.client'
-                    const authMethods: string[] = []
-                    const security = operation.security ?? openapi.security
-                    if (security !== undefined) {
-                        const hasAuthParameters = operation.security !== undefined
-                        for (const secMethods of security) {
-                            const required = keysOf(secMethods)
-                                .map((sm) => securities.find((s) => s.type === sm)?.name)
-                                .filter((x): x is string => x !== undefined)
-                            authMethods.push(`[${required.map((r) => `'${r}'`).join(', ')}]`)
-                        }
-                        clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
-                    }
 
                     const parameterizedPath = pathParameters
                         .reduce<string>((p, x) => p.replace(`{${x.id}}`, `{${x.name}}`), path)
