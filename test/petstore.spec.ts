@@ -19,5 +19,9 @@ describe('updatePet', () => {
         nock('http://www.example.com:80').put('/pet').reply(200, updatedPet)
         const result = await client.updatePet({ body: updatedPet })
         expect(eitherToError(result)).toEqual(updatedPet)
+        if ('right' in result) {
+            const pet: Pet = result.right
+            expect(updatedPet).toEqual(pet)
+        }
     })
 })

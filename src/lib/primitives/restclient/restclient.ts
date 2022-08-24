@@ -622,9 +622,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                             .writeLine(
                                 'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never'
                             )
-                            .writeLine(
-                                'type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S; assert: (o: unknown) => void } ? S : never'
-                            )
+                            .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
                             .writeLine('const result = await response')
                             .writeLine('const validator = schemas[result.statusCode]')
                             .writeLine(
@@ -653,9 +651,15 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     )
                     .block(() => {
                         writer
+                            .writeLine(
+                                'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never'
+                            )
+                            .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
                             .writeLine('const result = await response')
                             .writeLine('schemas[result.statusCode]?.assert(result.body)')
-                            .writeLine(`return {statusCode: result.statusCode, headers: result.headers, body: result.body }`)
+                            .writeLine(
+                                `return {statusCode: result.statusCode, headers: result.headers, body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]> }`
+                            )
                     })
                     .newLine()
             }

@@ -1,9 +1,13 @@
 import { Xkcd } from '../examples/xkcd/xkcd.client'
+import type { Comic } from '../examples/xkcd/xkcd.type'
 
 describe('xkcd', () => {
     const client = new Xkcd()
     test('simple get', async () => {
-        expect(await client.getInfo0JsonByComicId({ path: { comicId: '2653' } })).toMatchInlineSnapshot(
+        const result = await client.getInfo0JsonByComicId({ path: { comicId: '2653' } })
+        const comic: Comic = result.body
+        void comic
+        expect(result).toMatchInlineSnapshot(
             {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 headers: expect.any(Object),
