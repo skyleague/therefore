@@ -517,7 +517,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
 
                     const hasRequiredBody = request?.declaration !== undefined
                     const hasRequiredPathArgument = pathArguments.length > 0
-                    const hasRequiredQueryArguments = queryArguments.length > 0
+                    const hasRequiredQueryArguments = queryParameters?.some((q) => q.required === true)
                     const hasRequiredHeaderArguments = headerParameters?.some((q) => q.required === true)
 
                     const hasRequiredArguments =
