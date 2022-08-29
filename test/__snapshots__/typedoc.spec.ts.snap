@@ -206,7 +206,7 @@ export interface {{00052-000:symbolName}} {
 export const {{00052-000:symbolName}} = {
     validate: require('./schemas/typedoc.schema.js') as ValidateFunction<{{00052-000:symbolName}}>,
     get schema() { return {{00052-000:symbolName}}.validate.schema},
-    source: \`\${__dirname}typedoc.schema\`,
+    source: \`\${__dirname}/typedoc.schema\`,
     sourceSymbol: 'typedoc',
     is: (o: unknown): o is {{00052-000:symbolName}} => {{00052-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {

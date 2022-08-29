@@ -15,7 +15,7 @@ export const Square = {
     get schema() {
         return Square.validate.schema
     },
-    source: `${__dirname}shapes.schema`,
+    source: `${__dirname}/shapes.schema`,
     sourceSymbol: 'square',
     is: (o: unknown): o is Square => Square.validate(o) === true,
     assert: (o: unknown) => {
@@ -35,7 +35,7 @@ export const Rectangle = {
     get schema() {
         return Rectangle.validate.schema
     },
-    source: `${__dirname}shapes.schema`,
+    source: `${__dirname}/shapes.schema`,
     sourceSymbol: 'rectangle',
     is: (o: unknown): o is Rectangle => Rectangle.validate(o) === true,
     assert: (o: unknown) => {
@@ -54,7 +54,7 @@ export const Circle = {
     get schema() {
         return Circle.validate.schema
     },
-    source: `${__dirname}shapes.schema`,
+    source: `${__dirname}/shapes.schema`,
     sourceSymbol: 'circle',
     is: (o: unknown): o is Circle => Circle.validate(o) === true,
     assert: (o: unknown) => {
@@ -71,7 +71,7 @@ export const Shape = {
     get schema() {
         return Shape.validate.schema
     },
-    source: `${__dirname}shapes.schema`,
+    source: `${__dirname}/shapes.schema`,
     sourceSymbol: 'shape',
     is: (o: unknown): o is Shape => Shape.validate(o) === true,
     assert: (o: unknown) => {

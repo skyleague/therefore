@@ -23,7 +23,7 @@ export const Pet = {
     get schema() {
         return Pet.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'Pet',
     is: (o: unknown): o is Pet => Pet.validate(o) === true,
     assert: (o: unknown) => {
@@ -40,7 +40,7 @@ export const FindPetsByStatusResponse = {
     get schema() {
         return FindPetsByStatusResponse.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'findPetsByStatusResponse',
     is: (o: unknown): o is FindPetsByStatusResponse => FindPetsByStatusResponse.validate(o) === true,
 } as const
@@ -52,7 +52,7 @@ export const FindPetsByTagsResponse = {
     get schema() {
         return FindPetsByTagsResponse.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'findPetsByTagsResponse',
     is: (o: unknown): o is FindPetsByTagsResponse => FindPetsByTagsResponse.validate(o) === true,
 } as const
@@ -68,7 +68,7 @@ export const ApiResponse = {
     get schema() {
         return ApiResponse.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'ApiResponse',
     is: (o: unknown): o is ApiResponse => ApiResponse.validate(o) === true,
 } as const
@@ -82,7 +82,7 @@ export const GetInventoryResponse = {
     get schema() {
         return GetInventoryResponse.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'getInventoryResponse',
     is: (o: unknown): o is GetInventoryResponse => GetInventoryResponse.validate(o) === true,
 } as const
@@ -104,7 +104,7 @@ export const Order = {
     get schema() {
         return Order.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'Order',
     is: (o: unknown): o is Order => Order.validate(o) === true,
     assert: (o: unknown) => {
@@ -133,7 +133,7 @@ export const User = {
     get schema() {
         return User.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'User',
     is: (o: unknown): o is User => User.validate(o) === true,
     assert: (o: unknown) => {
@@ -151,7 +151,7 @@ export const CreateUsersWithListInputRequest = {
     get schema() {
         return CreateUsersWithListInputRequest.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'createUsersWithListInputRequest',
     is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -168,7 +168,7 @@ export const LoginUserResponse = {
     get schema() {
         return LoginUserResponse.validate.schema
     },
-    source: `${__dirname}petstore.client`,
+    source: `${__dirname}/petstore.client`,
     sourceSymbol: 'loginUserResponse',
     is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
 } as const
