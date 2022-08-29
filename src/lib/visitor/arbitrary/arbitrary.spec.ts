@@ -2,6 +2,7 @@ import { toArbitrary } from './arbitrary'
 
 import { $array, $boolean, $integer, $null, $object } from '../../primitives'
 import { $number } from '../../primitives/number'
+import { $optional } from '../../primitives/optional'
 import { $string } from '../../primitives/string'
 import { $unknown } from '../../primitives/unknown'
 
@@ -71,4 +72,8 @@ test('object - with index', () => {
           },
         }
     `)
+})
+
+test('optional - primitive', () => {
+    forAll(toArbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })

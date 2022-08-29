@@ -1,11 +1,15 @@
+import type { JsonSchema } from '../../../json'
 import type { CstNode } from '../../cst/cst'
 import type { CstVisitor } from '../../cst/visitor'
 import { walkCst } from '../../cst/visitor'
 import { isNamedArray } from '../../guard'
-import type { ThereforeCst } from '../../primitives/types'
+import { $jsonschema } from '../../primitives/jsonschema'
+import type { AyncThereforeCst, ThereforeCst } from '../../primitives/types'
+import type { Schema } from '../../types'
 
 import type { Arbitrary } from '@skyleague/axioms'
 import {
+    optional,
     chainArbitrary,
     domain,
     datetime,
@@ -25,7 +29,6 @@ import {
     oneOf,
     tuple,
     nullable,
-    optional,
 } from '@skyleague/axioms'
 
 export interface ArbitraryContext {
@@ -91,19 +94,77 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     },
 }
 
+function transform(
+    { description }: CstNode<string, unknown, unknown, unknown[]>,
+    arbitrary: Arbitrary<unknown>
+): Arbitrary<unknown> {
+    if (description.nullable === true) {
+        arbitrary = nullable(arbitrary)
+    }
+    if (description.optional === true) {
+        arbitrary = optional(arbitrary, { symbol: undefined })
+    }
+    return arbitrary
+}
+
+export interface ToArbitraryOptions {
+    useSchema?: boolean
+}
+
+export function toArbitrary<T = unknown>(schema: Schema<T> & { sourceSymbol: `${string}.${string}` }): Promise<Arbitrary<T>>
+export function toArbitrary<T = unknown>(schema: Schema<T>, options: { useSchema: false }): Promise<Arbitrary<T>>
+export function toArbitrary<T = unknown>(schema: ThereforeCst, options?: ToArbitraryOptions): Arbitrary<T>
+export function toArbitrary<T = unknown>(schema: Schema<T> | ThereforeCst, options?: ToArbitraryOptions): Arbitrary<T>
 export function toArbitrary<T = unknown>(
-    schema: ThereforeCst | { source: string; sourceSymbol: string; is: (o: unknown) => o is T }
-): Arbitrary<T> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
-    return walkCst('source' in schema ? (require(schema.source)[schema.sourceSymbol] as CstNode) : schema, arbitraryVisitor, {
-        transform: ({ description }, arbitrary) => {
-            if (description.nullable === true) {
-                arbitrary = nullable(arbitrary)
+    schema: AyncThereforeCst | Schema<T>,
+    options: ToArbitraryOptions = {}
+): Arbitrary<T> | Promise<Arbitrary<T>> {
+    if ('source' in schema) {
+        try {
+            if (options.useSchema !== false) {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const module = require(schema.source) as Record<string, AyncThereforeCst>
+                if (schema.sourceSymbol.includes('.')) {
+                    const [sourceSymbol, name] = schema.sourceSymbol.split('.')
+
+                    if ('then' in module[sourceSymbol]) {
+                        return Promise.resolve(module[sourceSymbol]).then(({ children }) =>
+                            walkCst((children as ThereforeCst[]).find((c) => c.name === name)!, arbitraryVisitor, {
+                                transform,
+                            })
+                        )
+                    }
+                    return walkCst(
+                        (module[sourceSymbol].children as ThereforeCst[]).find((c) => c.name === name)!,
+                        arbitraryVisitor,
+                        {
+                            transform,
+                        }
+                    )
+                } else {
+                    if ('then' in module[schema.sourceSymbol]) {
+                        return Promise.resolve(module[schema.sourceSymbol]).then((s) =>
+                            walkCst(s, arbitraryVisitor, {
+                                transform,
+                            })
+                        )
+                    }
+                    return walkCst(module[schema.sourceSymbol], arbitraryVisitor, {
+                        transform,
+                    })
+                }
             }
-            if (description.optional === true) {
-                arbitrary = optional(arbitrary)
-            }
-            return arbitrary
-        },
+        } catch (_: unknown) {
+            //
+        }
+
+        return Promise.resolve($jsonschema(schema.schema as JsonSchema)).then((s) => {
+            return walkCst(s, arbitraryVisitor, {
+                transform,
+            })
+        })
+    }
+    return walkCst(schema, arbitraryVisitor, {
+        transform,
     })
 }
