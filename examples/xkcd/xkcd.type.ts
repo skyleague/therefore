@@ -25,8 +25,8 @@ export const Comic = {
     get schema() {
         return Comic.validate.schema
     },
-    source: `${__dirname}/xkcd.client`,
-    sourceSymbol: 'comic',
+    source: `${__dirname}/xkcd.schema`,
+    sourceSymbol: 'XKCD.comic',
     is: (o: unknown): o is Comic => Comic.validate(o) === true,
     assert: (o: unknown) => {
         if (!Comic.validate(o)) {

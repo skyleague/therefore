@@ -36,6 +36,7 @@ export async function loadSymbol({
     fileSuffix,
     filePath,
     outputFileRename,
+    appendSourceSymbolName: appendSourceName = false,
 }: {
     srcPath: string
     basePath: string
@@ -47,6 +48,7 @@ export async function loadSymbol({
     fileSuffix?: string | undefined
     filePath?: string | undefined
     outputFileRename: (path: string) => string
+    appendSourceSymbolName?: boolean
 }) {
     const simplified = await prepass(symbol)
     let targetDir = '.'
@@ -81,14 +83,15 @@ export async function loadSymbol({
     if (file.symbols.find((s) => s.uuid === simplified.uuid)) {
         return
     }
+    const symbolName = simplified.name ?? sourceSymbol
 
-    sourceSymbol = simplified.name ?? sourceSymbol
-    const schemaName = decamelize(sourceSymbol, { separator: '-' })
+    sourceSymbol = appendSourceName && simplified.name !== undefined ? `${sourceSymbol}.${simplified.name}` : symbolName
+    const schemaName = decamelize(symbolName, { separator: '-' })
     const schemaFile = `./schemas/${schemaName}.schema.json`
     const compiledFile = `./schemas/${schemaName}.schema.js`
 
     const jsonschema = toJsonSchema(simplified, compile)
-    const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, schema: simplified })
+    const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
 
     file.symbols.push(
         ...Object.values(definition.locals ?? {}).map((local) => ({
@@ -101,7 +104,7 @@ export async function loadSymbol({
 
     file.symbols.push({
         uuid: simplified.uuid,
-        symbolName: sourceSymbol,
+        symbolName,
         definition: definition,
         schemaFile,
         compiledFile,
@@ -134,11 +137,12 @@ export async function loadSymbol({
             sourceSymbol,
             compile,
             definitions,
-            srcPath: path.join(basePath, targetPath),
+            srcPath,
             fileSuffix: subFileSuffix,
             filePath: subFilePath,
             entry,
             outputFileRename,
+            appendSourceSymbolName: true,
         })
     }
 }
