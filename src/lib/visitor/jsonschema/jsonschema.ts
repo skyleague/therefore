@@ -186,12 +186,17 @@ export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaVali
             ...defaultAjvConfig,
             ...obj.description.ajvOptions,
             code: {
+                ...defaultAjvConfig.code,
                 source: true,
-                optimize: true,
             },
         })
         const validator = ajv.compile(definition)
-        return { schema: definition, code: standaloneCode(ajv, validator), validator, compiled: true }
+        return {
+            schema: definition,
+            code: `${standaloneCode(ajv, validator)};validate10.schema=schema11;`,
+            validator,
+            compiled: true,
+        }
     }
     return { schema: definition, compiled: false }
 }

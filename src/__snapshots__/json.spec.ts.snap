@@ -42,7 +42,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 } | ({{00010-000:referenceName}})[]
 
 export const {{00010-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false}).compile<{{00010-000:symbolName}}>(jsonSchema),
+    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
     schema: jsonSchema,
     source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'json',
@@ -52,7 +52,7 @@ export const {{00010-000:symbolName}} = {
 export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 
 export const {{00012-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
+    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
     schema: jsonAdvSchema,
     source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'jsonAdv',
@@ -217,7 +217,7 @@ import type { ValidateFunction } from 'ajv'
 export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 
 export const {{0005-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false}).compile<{{0005-000:symbolName}}>(simpleSchema),
+    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
     schema: simpleSchema,
     source: \`\${__dirname}/simple.schema\`,
     sourceSymbol: 'simple',

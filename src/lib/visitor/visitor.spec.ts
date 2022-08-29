@@ -10,50 +10,50 @@ import { $unknown } from '../primitives/unknown'
 
 import { forAll } from '@skyleague/axioms'
 
-test('string', () => {
+test('string', async () => {
     const arb = $string()
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('number', () => {
+test('number', async () => {
     const arb = $number()
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('integer', () => {
+test('integer', async () => {
     const arb = $integer({ maximum: 600 })
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('boolean', () => {
+test('boolean', async () => {
     const arb = $boolean()
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('null', () => {
+test('null', async () => {
     const arb = $null()
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('unknown', () => {
+test('unknown', async () => {
     const arb = $unknown()
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('object', () => {
+test('object', async () => {
     const arb = $object({ foo: $string() }, { indexSignature: $unknown() })
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
 
-test('array', () => {
+test('array', async () => {
     const arb = $array($unknown)
     const val = toJsonSchema(arb, true)
-    forAll(toArbitrary(arb), (x) => val.validator(x))
+    forAll(await Promise.resolve(toArbitrary(arb)), (x) => val.validator(x))
 })
