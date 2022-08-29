@@ -6,7 +6,7 @@ describe('schema', () => {
             await compileOutputFiles(['examples/typedoc/typedoc.schema.ts'], {
                 outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
                 cwd: process.cwd(),
-                compile: false,
+                compile: true,
             })
         ).toMatchSnapshot()
     })

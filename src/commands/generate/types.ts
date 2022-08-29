@@ -46,7 +46,7 @@ export interface FileSymbol {
     uuid: string
     symbolName: string
     schemaFile?: string
-    compiledFile?: string
+    compiledFile?: string | undefined
     definition: TypescriptDefinition
     typeOnly: boolean
 }

@@ -107,7 +107,7 @@ export async function loadSymbol({
         symbolName,
         definition: definition,
         schemaFile,
-        compiledFile,
+        compiledFile: compile ? compiledFile : undefined,
         typeOnly: simplified.description.validator?.enabled !== true ?? false,
     })
 
