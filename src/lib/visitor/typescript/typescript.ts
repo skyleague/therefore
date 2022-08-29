@@ -64,7 +64,7 @@ export function writeThereforeSchema({
             writer.writeLine(
                 isCompiled
                     ? `validate: require('${validatorFile}') as ValidateFunction<{{${uuid}:symbolName}}>,`
-                    : `new AjvValidator(${JSON.stringify({
+                    : `validate: new AjvValidator(${JSON.stringify({
                           ...defaultAjvConfig,
                           ...description.ajvOptions,
                       })}).compile<{{${uuid}:symbolName}}>(${schemaReference}),`
