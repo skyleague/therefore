@@ -121,6 +121,7 @@ Array [
 * Do not manually touch this
 */
 /* eslint-disable */
+import extensionSchema from './schemas/extension.schema.json'
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
@@ -526,8 +527,8 @@ export interface {{000143-000:symbolName}} {
 }
 
 export const {{000143-000:symbolName}} = {
-    validate: require('./schemas/extension.schema.js') as ValidateFunction<{{000143-000:symbolName}}>,
-    get schema() { return {{000143-000:symbolName}}.validate.schema},
+    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false}).compile<{{000143-000:symbolName}}>(extensionSchema),
+    schema: extensionSchema,
     source: \`\${__dirname}/extension.schema\`,
     sourceSymbol: 'extension',
     is: (o: unknown): o is {{000143-000:symbolName}} => {{000143-000:symbolName}}.validate(o) === true,
