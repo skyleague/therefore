@@ -42,7 +42,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 export const {{00010-000:symbolName}} = {
     validate: require('./schemas/json.schema.js') as ValidateFunction<{{00010-000:symbolName}}>,
     get schema() { return {{00010-000:symbolName}}.validate.schema},
-    source: \`\${__dirname}json.schema\`,
+    source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'json',
     is: (o: unknown): o is {{00010-000:symbolName}} => {{00010-000:symbolName}}.validate(o) === true,
 } as const
@@ -52,7 +52,7 @@ export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 export const {{00012-000:symbolName}} = {
     validate: require('./schemas/json-adv.schema.js') as ValidateFunction<{{00012-000:symbolName}}>,
     get schema() { return {{00012-000:symbolName}}.validate.schema},
-    source: \`\${__dirname}json.schema\`,
+    source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'jsonAdv',
     is: (o: unknown): o is {{00012-000:symbolName}} => {{00012-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
@@ -216,7 +216,7 @@ export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 export const {{0005-000:symbolName}} = {
     validate: require('./schemas/simple.schema.js') as ValidateFunction<{{0005-000:symbolName}}>,
     get schema() { return {{0005-000:symbolName}}.validate.schema},
-    source: \`\${__dirname}simple.schema\`,
+    source: \`\${__dirname}/simple.schema\`,
     sourceSymbol: 'simple',
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {

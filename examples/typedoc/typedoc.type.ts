@@ -167,7 +167,7 @@ export const Typedoc = {
     get schema() {
         return Typedoc.validate.schema
     },
-    source: `${__dirname}typedoc.schema`,
+    source: `${__dirname}/typedoc.schema`,
     sourceSymbol: 'typedoc',
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
     assert: (o: unknown) => {

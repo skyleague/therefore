@@ -21,7 +21,7 @@ export const Json = {
     get schema() {
         return Json.validate.schema
     },
-    source: `${__dirname}json.schema`,
+    source: `${__dirname}/json.schema`,
     sourceSymbol: 'json',
     is: (o: unknown): o is Json => Json.validate(o) === true,
 } as const
@@ -33,7 +33,7 @@ export const JsonAdv = {
     get schema() {
         return JsonAdv.validate.schema
     },
-    source: `${__dirname}json.schema`,
+    source: `${__dirname}/json.schema`,
     sourceSymbol: 'jsonAdv',
     is: (o: unknown): o is JsonAdv => JsonAdv.validate(o) === true,
     assert: (o: unknown) => {

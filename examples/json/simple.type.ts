@@ -13,7 +13,7 @@ export const Simple = {
     get schema() {
         return Simple.validate.schema
     },
-    source: `${__dirname}simple.schema`,
+    source: `${__dirname}/simple.schema`,
     sourceSymbol: 'simple',
     is: (o: unknown): o is Simple => Simple.validate(o) === true,
     assert: (o: unknown) => {

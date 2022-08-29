@@ -94,10 +94,7 @@ export class PetStore {
     public async findPetsByStatus({
         query,
         auth = [['petstoreAuth']],
-    }: {
-        query?: { status?: string }
-        auth?: string[][] | string[]
-    }) {
+    }: { query?: { status?: string }; auth?: string[][] | string[] } = {}) {
         return this.awaitResponse(
             this.buildClient(auth).get(`pet/findByStatus`, {
                 searchParams: query ?? {},
@@ -117,10 +114,7 @@ export class PetStore {
     public async findPetsByTags({
         query,
         auth = [['petstoreAuth']],
-    }: {
-        query?: { tags?: string }
-        auth?: string[][] | string[]
-    }) {
+    }: { query?: { tags?: string }; auth?: string[][] | string[] } = {}) {
         return this.awaitResponse(
             this.buildClient(auth).get(`pet/findByTags`, {
                 searchParams: query ?? {},
@@ -313,7 +307,7 @@ export class PetStore {
     /**
      * Logs user into the system
      */
-    public async loginUser({ query }: { query?: { username?: string; password?: string } }) {
+    public async loginUser({ query }: { query?: { username?: string; password?: string } } = {}) {
         return this.awaitResponse(
             this.client.get(`user/login`, {
                 searchParams: query ?? {},
