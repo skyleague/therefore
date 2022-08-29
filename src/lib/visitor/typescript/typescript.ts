@@ -246,14 +246,15 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
         if (!isSmall(items)) {
             const { locals } = context
             if (locals[items.uuid] === undefined) {
+                const sourceSymbol = `${context.symbolName}${
+                    context.property !== undefined
+                        ? camelCase(context.property, {
+                              pascalCase: true,
+                          })
+                        : ''
+                }${camelCase(obj.type, { pascalCase: true })}`
                 const { definition: local } = toTypescriptDefinition({
-                    sourceSymbol: `${context.symbolName}${
-                        context.property !== undefined
-                            ? camelCase(context.property, {
-                                  pascalCase: true,
-                              })
-                            : ''
-                    }${camelCase(obj.type, { pascalCase: true })}`,
+                    sourceSymbol,
                     schema: items,
                     exportSymbol: false,
                     locals,
@@ -327,12 +328,14 @@ export type TypescriptSubtree = {
 
 export function toTypescriptDefinition({
     sourceSymbol,
+    symbolName,
     schema,
     fileHash = '',
     exportSymbol = true,
     locals = {},
 }: {
     sourceSymbol: string
+    symbolName?: string
     schema: ThereforeCst & { uuid: string }
     fileHash?: string
     exportSymbol?: boolean
@@ -342,10 +345,10 @@ export function toTypescriptDefinition({
     locals ??= {}
     const references: TypescriptDefinition['references'] = []
 
-    const symbolName = camelCase(sourceSymbol.replaceAll(':', ''), { pascalCase: true })
+    const readableSymbolName = camelCase((symbolName ?? sourceSymbol).replaceAll(':', ''), { pascalCase: true })
 
     const context = {
-        symbolName,
+        symbolName: readableSymbolName,
         references,
         locals,
         exportKeyword: exportSymbol ? 'export ' : '',
@@ -377,7 +380,7 @@ export function toTypescriptDefinition({
             imports,
             references,
             sourceSymbol,
-            symbolName,
+            symbolName: readableSymbolName,
             uuid: schema.uuid,
             declaration: declaration.declaration,
             referenceName: declaration.referenceName,
