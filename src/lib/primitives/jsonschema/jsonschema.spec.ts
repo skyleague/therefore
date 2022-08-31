@@ -36,11 +36,11 @@ describe('person', () => {
     const therefore = () => $jsonschema(schema)
     test('definition', async () => {
         expect(await therefore()).toMatchInlineSnapshot(`
-            Object {
-              "children": Array [
-                Object {
-                  "children": Array [],
-                  "description": Object {
+            {
+              "children": [
+                {
+                  "children": [],
+                  "description": {
                     "description": "The person's first name.",
                     "name": "firstName",
                     "optional": true,
@@ -48,16 +48,16 @@ describe('person', () => {
                   "name": "firstName",
                   "type": "string",
                   "uuid": "0004-000",
-                  "value": Object {
+                  "value": {
                     "format": undefined,
                     "maxLength": undefined,
                     "minLength": undefined,
                     "pattern": undefined,
                   },
                 },
-                Object {
-                  "children": Array [],
-                  "description": Object {
+                {
+                  "children": [],
+                  "description": {
                     "description": "The person's last name.",
                     "name": "lastName",
                     "optional": true,
@@ -65,16 +65,16 @@ describe('person', () => {
                   "name": "lastName",
                   "type": "string",
                   "uuid": "0005-000",
-                  "value": Object {
+                  "value": {
                     "format": undefined,
                     "maxLength": undefined,
                     "minLength": undefined,
                     "pattern": undefined,
                   },
                 },
-                Object {
-                  "children": Array [],
-                  "description": Object {
+                {
+                  "children": [],
+                  "description": {
                     "description": "Age in years which must be equal to or greater than zero.",
                     "name": "age",
                     "optional": true,
@@ -82,20 +82,20 @@ describe('person', () => {
                   "name": "age",
                   "type": "integer",
                   "uuid": "0006-000",
-                  "value": Object {
+                  "value": {
                     "maximum": undefined,
                     "minimum": 0,
                     "multipleOf": undefined,
                   },
                 },
               ],
-              "description": Object {
+              "description": {
                 "title": "Person",
               },
               "prepass": true,
               "type": "object",
               "uuid": "0007-000",
-              "value": Object {},
+              "value": {},
             }
         `)
     })
@@ -103,21 +103,21 @@ describe('person', () => {
     test('jsonschema', async () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
-              "properties": Object {
-                "age": Object {
+              "properties": {
+                "age": {
                   "description": "Age in years which must be equal to or greater than zero.",
                   "minimum": 0,
                   "title": "age",
                   "type": "integer",
                 },
-                "firstName": Object {
+                "firstName": {
                   "description": "The person's first name.",
                   "title": "firstName",
                   "type": "string",
                 },
-                "lastName": Object {
+                "lastName": {
                   "description": "The person's last name.",
                   "title": "lastName",
                   "type": "string",
@@ -137,7 +137,7 @@ describe('person', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "/**
              * Person
              */
@@ -193,24 +193,24 @@ describe('coordinates', () => {
     test('jsonschema', async () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
               "description": "A geographical coordinate.",
-              "properties": Object {
-                "latitude": Object {
+              "properties": {
+                "latitude": {
                   "maximum": 90,
                   "minimum": -90,
                   "title": "latitude",
                   "type": "number",
                 },
-                "longitude": Object {
+                "longitude": {
                   "maximum": 180,
                   "minimum": -180,
                   "title": "longitude",
                   "type": "number",
                 },
               },
-              "required": Array [
+              "required": [
                 "latitude",
                 "longitude",
               ],
@@ -228,7 +228,7 @@ describe('coordinates', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "/**
              * Longitude and Latitude Values
              * 
@@ -292,19 +292,19 @@ describe('array', () => {
     test('jsonschema', async () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
               "description": "A representation of a person, company, organization, or place",
-              "properties": Object {
-                "fruits": Object {
-                  "items": Object {
+              "properties": {
+                "fruits": {
+                  "items": {
                     "type": "string",
                   },
                   "title": "fruits",
                   "type": "array",
                 },
-                "vegetables": Object {
-                  "items": Object {
+                "vegetables": {
+                  "items": {
                     "$ref": "#/$defs/{{00010-000:uniqueSymbolName}}",
                   },
                   "title": "vegetables",
@@ -324,7 +324,7 @@ describe('array', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "/**
              * A representation of a person, company, organization, or place
              */
@@ -347,7 +347,7 @@ describe('petstore', () => {
     const therefore = async () => {
         const schema = await openapi()
         const entries = Object.fromEntries(
-            await awaitAll(entriesOf(schema?.['components']?.['schemas']), async ([name, v]) => [
+            await awaitAll(entriesOf(schema?.['components']?.['schemas'] ?? {}), async ([name, v]) => [
                 name,
                 await $jsonschema(v as JsonSchema, { root: schema as JsonSchema }),
             ])

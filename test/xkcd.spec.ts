@@ -13,9 +13,9 @@ describe('xkcd', () => {
                 headers: expect.any(Object),
             },
             `
-            Object {
-              "body": Object {
-                "alt": "\\"My parents were both omnitaurs, which is how I got interested in recombination,\\" said the normal human.",
+            {
+              "body": {
+                "alt": ""My parents were both omnitaurs, which is how I got interested in recombination," said the normal human.",
                 "day": "1",
                 "img": "https://imgs.xkcd.com/comics/omnitaur.png",
                 "link": "",

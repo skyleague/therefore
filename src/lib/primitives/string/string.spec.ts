@@ -10,11 +10,11 @@ test('minLength', () => {
             minLength: 2,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "string",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "minLength": 2,
           },
         }
@@ -27,11 +27,11 @@ test('maxLength', () => {
             maxLength: 2,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "string",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "maxLength": 2,
           },
         }
@@ -44,11 +44,11 @@ test('pattern', () => {
             pattern: /foo/,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "string",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "pattern": /foo/,
           },
         }
@@ -61,11 +61,11 @@ test('format', () => {
             format: 'date',
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "string",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "format": "date",
           },
         }
@@ -80,11 +80,11 @@ test('all', () => {
             pattern: /foo/,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "string",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "maxLength": 2,
             "minLength": 2,
             "pattern": /foo/,

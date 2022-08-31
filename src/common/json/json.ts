@@ -3,7 +3,7 @@ import type { JsonSchema } from '../../json'
 import got from 'got'
 import pointer from 'jsonpointer'
 
-export async function jsonPointer<T>({
+export async function jsonPointer<T extends {}>({
     schema,
     ptr,
     metaSchemas,

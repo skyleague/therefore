@@ -8,44 +8,44 @@ test('function', () => {
 
 test('expand', () => {
     expect($tuple([$string])).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "tuple",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('example', () => {
     expect($tuple([$string], { examples: [['bar']] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "examples": Array [
-              Array [
+          "description": {
+            "examples": [
+              [
                 "bar",
               ],
             ],
           },
           "type": "tuple",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 
@@ -55,23 +55,23 @@ test('example', () => {
 
 test('default', () => {
     expect($tuple([$string], { default: ['bar'] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "default": Array [
+          "description": {
+            "default": [
               "bar",
             ],
           },
           "type": "tuple",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 

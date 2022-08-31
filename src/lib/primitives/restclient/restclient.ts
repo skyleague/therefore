@@ -594,7 +594,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                 writer
                                     .write(', ')
                                     .inlineBlock(() => {
-                                        for (const [statusCode, response] of entriesOf(responses.right)) {
+                                        for (const [statusCode, response] of entriesOf(responses.right ?? {})) {
                                             if (!seenChildren.has(response as ThereforeCst)) {
                                                 children.push(response as ThereforeCst)
                                             }
