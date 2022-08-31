@@ -121,7 +121,7 @@ export function toArbitrary<T = unknown>(
 ): Arbitrary<T> | Promise<Arbitrary<T>> {
     if ('source' in schema) {
         try {
-            if (options.useSchema !== false) {
+            if (options.useSchema !== false && !schema.sourceSymbol.includes('.')) {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const module = require(schema.source) as Record<string, AyncThereforeCst>
                 if (schema.sourceSymbol.includes('.')) {
