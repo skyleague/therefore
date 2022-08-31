@@ -12,25 +12,25 @@ test('function', () => {
 
 test('expand', () => {
     expect($ref(foo)).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "children": Array [
-                Object {
-                  "description": Object {},
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "description": {},
                   "type": "string",
-                  "value": Object {},
+                  "value": {},
                 },
               ],
-              "description": Object {},
+              "description": {},
               "type": "dict",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "ref",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
@@ -38,45 +38,45 @@ test('expand', () => {
 test('self reference', () => {
     const json = $union([$string, $array($ref(() => json)), $ref(() => json)])
     expect(json).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0004-000",
-              "value": Object {},
+              "value": {},
             },
-            Object {
-              "children": Array [
-                Object {
-                  "children": Array [
+            {
+              "children": [
+                {
+                  "children": [
                     [Function],
                   ],
-                  "description": Object {},
+                  "description": {},
                   "type": "ref",
                   "uuid": "0001-000",
-                  "value": Object {},
+                  "value": {},
                 },
               ],
-              "description": Object {},
+              "description": {},
               "type": "array",
               "uuid": "0002-000",
-              "value": Object {},
+              "value": {},
             },
-            Object {
-              "children": Array [
+            {
+              "children": [
                 [Function],
               ],
-              "description": Object {},
+              "description": {},
               "type": "ref",
               "uuid": "0003-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "union",
           "uuid": "0005-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
@@ -85,19 +85,19 @@ test('uuid reference', () => {
     const value = $string()
     const json = $ref(value)
     expect(json).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "ref",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
@@ -105,39 +105,39 @@ test('uuid reference', () => {
 test('description ', () => {
     const json = $union([$string, $array($ref({ description: 'foo array', reference: ['json', () => json] }))])
     expect(json).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0003-000",
-              "value": Object {},
+              "value": {},
             },
-            Object {
-              "children": Array [
-                Object {
-                  "children": Array [
+            {
+              "children": [
+                {
+                  "children": [
                     [Function],
                   ],
-                  "description": Object {
+                  "description": {
                     "description": "foo array",
                   },
                   "name": "json",
                   "type": "ref",
                   "uuid": "0001-000",
-                  "value": Object {},
+                  "value": {},
                 },
               ],
-              "description": Object {},
+              "description": {},
               "type": "array",
               "uuid": "0002-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "union",
           "uuid": "0004-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })

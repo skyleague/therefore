@@ -6,16 +6,16 @@ test('function', () => {
 
 test('example', () => {
     expect($boolean({ examples: [true, false] })).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {
-            "examples": Array [
+        {
+          "description": {
+            "examples": [
               true,
               false,
             ],
           },
           "type": "boolean",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -25,13 +25,13 @@ test('example', () => {
 
 test('default', () => {
     expect($boolean({ default: true })).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {
+        {
+          "description": {
             "default": true,
           },
           "type": "boolean",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

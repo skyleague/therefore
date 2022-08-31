@@ -4,82 +4,82 @@ import { $boolean, $string } from '..'
 
 test('simple', () => {
     expect($array($boolean())).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "boolean",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "array",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('simple unexpanded', () => {
     expect($array($boolean)).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "boolean",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "array",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('expand', () => {
     expect($array($string)).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "array",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('example', () => {
     expect($array($string, { examples: [['bar']] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "examples": Array [
-              Array [
+          "description": {
+            "examples": [
+              [
                 "bar",
               ],
             ],
           },
           "type": "array",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -89,23 +89,23 @@ test('example', () => {
 
 test('default', () => {
     expect($array($string, { default: ['bar'] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "default": Array [
+          "description": {
+            "default": [
               "bar",
             ],
           },
           "type": "array",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

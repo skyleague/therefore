@@ -40,7 +40,7 @@ describe('toType', () => {
 describe('annotate', () => {
     test('title', () => {
         expect(annotate({ title: 'foo title' })).toMatchInlineSnapshot(`
-            Object {
+            {
               "title": "foo title",
             }
         `)
@@ -48,7 +48,7 @@ describe('annotate', () => {
 
     test('description', () => {
         expect(annotate({ description: 'foo description' })).toMatchInlineSnapshot(`
-            Object {
+            {
               "description": "foo description",
             }
         `)
@@ -56,13 +56,13 @@ describe('annotate', () => {
 
     test('default', () => {
         expect(annotate({ default: 'default string' })).toMatchInlineSnapshot(`
-            Object {
+            {
               "default": "default string",
             }
         `)
         expect(annotate({ default: { foo: 'default string' } })).toMatchInlineSnapshot(`
-            Object {
-              "default": Object {
+            {
+              "default": {
                 "foo": "default string",
               },
             }
@@ -71,12 +71,12 @@ describe('annotate', () => {
 
     test('readonly', () => {
         expect(annotate({ readonly: true })).toMatchInlineSnapshot(`
-            Object {
+            {
               "readonly": true,
             }
         `)
         expect(annotate({ readonly: false })).toMatchInlineSnapshot(`
-            Object {
+            {
               "readonly": false,
             }
         `)
@@ -84,8 +84,8 @@ describe('annotate', () => {
 
     test('examples', () => {
         expect(annotate({ examples: ['foo', 'bar'] })).toMatchInlineSnapshot(`
-            Object {
-              "examples": Array [
+            {
+              "examples": [
                 "foo",
                 "bar",
               ],
@@ -97,7 +97,7 @@ describe('annotate', () => {
 describe('toTypeDefinition', () => {
     test('string', () => {
         expect(walkCst($string(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "string",
             }
         `)
@@ -105,7 +105,7 @@ describe('toTypeDefinition', () => {
 
     test('number', () => {
         expect(walkCst($number(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "number",
             }
         `)
@@ -113,7 +113,7 @@ describe('toTypeDefinition', () => {
 
     test('integer', () => {
         expect(walkCst($integer(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "integer",
             }
         `)
@@ -121,7 +121,7 @@ describe('toTypeDefinition', () => {
 
     test('boolean', () => {
         expect(walkCst($boolean(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "boolean",
             }
         `)
@@ -129,31 +129,31 @@ describe('toTypeDefinition', () => {
 
     test('null', () => {
         expect(walkCst($null(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "null",
             }
         `)
     })
 
     test('unknown', () => {
-        expect(walkCst($unknown(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`Object {}`)
+        expect(walkCst($unknown(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`{}`)
     })
 
     test('enum', () => {
         expect(walkCst($enum(['foo', 'bar', { foo: 'bar' }]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "enum": Array [
+            {
+              "enum": [
                 "foo",
                 "bar",
-                Object {
+                {
                   "foo": "bar",
                 },
               ],
             }
         `)
         expect(walkCst($enum({ foo: 'bar', bar: 1, baz: true }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "enum": Array [
+            {
+              "enum": [
                 "bar",
                 1,
                 true,
@@ -161,10 +161,10 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(walkCst($enum({ foo: 'bar', bar: [1, 2, 3] }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "enum": Array [
+            {
+              "enum": [
                 "bar",
-                Array [
+                [
                   1,
                   2,
                   3,
@@ -173,7 +173,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(walkCst($enum(['foobar']), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "const": "foobar",
             }
         `)
@@ -181,8 +181,8 @@ describe('toTypeDefinition', () => {
 
     test('array', () => {
         expect(walkCst($array($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "items": Object {
+            {
+              "items": {
                 "type": "string",
               },
               "type": "array",
@@ -190,12 +190,12 @@ describe('toTypeDefinition', () => {
         `)
         expect(walkCst($array($enum(['foo', 'bar', { foo: 'bar' }])), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
-            Object {
-              "items": Object {
-                "enum": Array [
+            {
+              "items": {
+                "enum": [
                   "foo",
                   "bar",
-                  Object {
+                  {
                     "foo": "bar",
                   },
                 ],
@@ -204,13 +204,13 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(walkCst($array($union([$string, $integer])), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "items": Object {
-                "oneOf": Array [
-                  Object {
+            {
+              "items": {
+                "oneOf": [
+                  {
                     "type": "string",
                   },
-                  Object {
+                  {
                     "type": "integer",
                   },
                 ],
@@ -222,16 +222,16 @@ describe('toTypeDefinition', () => {
 
     test('tuple', () => {
         expect(walkCst($tuple([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalItems": false,
-              "items": Array [
-                Object {
+              "items": [
+                {
                   "type": "string",
                 },
-                Object {
+                {
                   "type": "string",
                 },
-                Object {
+                {
                   "type": "integer",
                 },
               ],
@@ -253,13 +253,13 @@ describe('toTypeDefinition', () => {
                 jsonSchemaContext()
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalItems": false,
-              "items": Array [
-                Object {
+              "items": [
+                {
                   "type": "string",
                 },
-                Object {
+                {
                   "type": "integer",
                 },
               ],
@@ -274,20 +274,21 @@ describe('toTypeDefinition', () => {
                     y: $number,
                     z: $number,
                 }),
+
                 jsonSchemaVisitor,
                 jsonSchemaContext()
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalItems": false,
-              "items": Array [
-                Object {
+              "items": [
+                {
                   "type": "number",
                 },
-                Object {
+                {
                   "type": "number",
                 },
-                Object {
+                {
                   "type": "number",
                 },
               ],
@@ -299,8 +300,8 @@ describe('toTypeDefinition', () => {
 
     test('dict', () => {
         expect(walkCst($dict($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "additionalProperties": Object {
+            {
+              "additionalProperties": {
                 "type": "string",
               },
               "type": "object",
@@ -311,19 +312,19 @@ describe('toTypeDefinition', () => {
     test('ref', () => {
         const foo = $dict($string)
         expect(walkCst($ref(foo), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
             }
         `)
         // test the stable uuid referencing
         expect(walkCst($union([$ref(foo), $dict($ref(foo))]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "oneOf": Array [
-                Object {
+            {
+              "oneOf": [
+                {
                   "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                 },
-                Object {
-                  "additionalProperties": Object {
+                {
+                  "additionalProperties": {
                     "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                   },
                   "type": "object",
@@ -333,18 +334,18 @@ describe('toTypeDefinition', () => {
         `)
         expect(walkCst($union([$ref(foo), $dict($nullable($ref(foo)))]), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
-            Object {
-              "oneOf": Array [
-                Object {
+            {
+              "oneOf": [
+                {
                   "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                 },
-                Object {
-                  "additionalProperties": Object {
-                    "oneOf": Array [
-                      Object {
+                {
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
                         "type": "null",
                       },
-                      Object {
+                      {
                         "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                       },
                     ],
@@ -358,24 +359,24 @@ describe('toTypeDefinition', () => {
 
     test('union', () => {
         expect(walkCst($union([$string]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "oneOf": Array [
-                Object {
+            {
+              "oneOf": [
+                {
                   "type": "string",
                 },
               ],
             }
         `)
         expect(walkCst($union([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
-              "oneOf": Array [
-                Object {
+            {
+              "oneOf": [
+                {
                   "type": "string",
                 },
-                Object {
+                {
                   "type": "string",
                 },
-                Object {
+                {
                   "type": "integer",
                 },
               ],
@@ -385,14 +386,14 @@ describe('toTypeDefinition', () => {
 
     test('object', () => {
         expect(walkCst($object({ foo: $string }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
-              "properties": Object {
-                "foo": Object {
+              "properties": {
+                "foo": {
                   "type": "string",
                 },
               },
-              "required": Array [
+              "required": [
                 "foo",
               ],
               "type": "object",
@@ -405,23 +406,23 @@ describe('toTypeDefinition', () => {
                 jsonSchemaContext()
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
-              "properties": Object {
-                "bar": Object {
-                  "type": Array [
+              "properties": {
+                "bar": {
+                  "type": [
                     "integer",
                     "null",
                   ],
                 },
-                "baz": Object {
+                "baz": {
                   "type": "integer",
                 },
-                "foo": Object {
+                "foo": {
                   "type": "string",
                 },
               },
-              "required": Array [
+              "required": [
                 "foo",
                 "bar",
               ],
@@ -435,18 +436,18 @@ describe('toTypeDefinition', () => {
                 jsonSchemaContext()
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
-              "properties": Object {
-                "bar": Object {
+              "properties": {
+                "bar": {
                   "description": "fooscription",
                   "type": "string",
                 },
-                "foo": Object {
+                "foo": {
                   "type": "string",
                 },
               },
-              "required": Array [
+              "required": [
                 "foo",
                 "bar",
               ],
@@ -468,22 +469,22 @@ describe('toTypeDefinition', () => {
                 jsonSchemaContext()
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "additionalProperties": false,
-              "default": Object {
+              "default": {
                 "bar": "foo",
                 "foo": "bar",
               },
-              "properties": Object {
-                "bar": Object {
+              "properties": {
+                "bar": {
                   "description": "fooscription",
                   "type": "string",
                 },
-                "foo": Object {
+                "foo": {
                   "type": "string",
                 },
               },
-              "required": Array [
+              "required": [
                 "foo",
                 "bar",
               ],
@@ -496,9 +497,9 @@ describe('toTypeDefinition', () => {
 describe('toJsonSchema', () => {
     test('simple', () => {
         expect(toJsonSchema($string())).toMatchInlineSnapshot(`
-            Object {
+            {
               "compiled": false,
-              "schema": Object {
+              "schema": {
                 "$schema": "http://json-schema.org/draft-07/schema#",
                 "type": "string",
               },
@@ -519,25 +520,25 @@ describe('toJsonSchema', () => {
                 )
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "compiled": false,
-              "schema": Object {
+              "schema": {
                 "$schema": "http://json-schema.org/draft-07/schema#",
                 "additionalProperties": false,
-                "default": Object {
+                "default": {
                   "bar": "foo",
                   "foo": "bar",
                 },
-                "properties": Object {
-                  "bar": Object {
+                "properties": {
+                  "bar": {
                     "description": "fooscription",
                     "type": "string",
                   },
-                  "foo": Object {
+                  "foo": {
                     "type": "string",
                   },
                 },
-                "required": Array [
+                "required": [
                   "foo",
                   "bar",
                 ],
@@ -550,29 +551,29 @@ describe('toJsonSchema', () => {
     test('ref', () => {
         const foo = $dict($string)
         expect(toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
-            Object {
+            {
               "compiled": false,
-              "schema": Object {
-                "$defs": Object {
-                  "{{0002-000:uniqueSymbolName}}": Object {
-                    "additionalProperties": Object {
+              "schema": {
+                "$defs": {
+                  "{{0002-000:uniqueSymbolName}}": {
+                    "additionalProperties": {
                       "type": "string",
                     },
                     "type": "object",
                   },
                 },
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "oneOf": Array [
-                  Object {
+                "oneOf": [
+                  {
                     "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                   },
-                  Object {
-                    "additionalProperties": Object {
-                      "oneOf": Array [
-                        Object {
+                  {
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
                           "type": "null",
                         },
-                        Object {
+                        {
                           "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                         },
                       ],

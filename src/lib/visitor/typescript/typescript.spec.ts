@@ -236,7 +236,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = string
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -252,7 +252,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = number
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -268,7 +268,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = number
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -284,7 +284,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = boolean
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -300,7 +300,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = null
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -316,7 +316,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = unknown
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -332,7 +332,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0001-000:symbolName}} = 'foo' | 'bar' | { foo: 'bar' }
             ",
               "referenceName": "{{0001-000:symbolName}}",
@@ -345,7 +345,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "enum {{0002-000:symbolName}} {
                 foo = 'bar',
                 bar = 1,
@@ -363,7 +363,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "const {{0003-000:symbolName}}Enum = {
                 foo: 'bar',
                 bar: [1, 2, 3],
@@ -384,7 +384,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0002-000:symbolName}} = (string)[]
             ",
               "referenceName": "{{0002-000:symbolName}}",
@@ -397,7 +397,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0004-000:symbolName}} = ('foo' | 'bar' | { foo: 'bar' })[]
             ",
               "referenceName": "{{0004-000:symbolName}}",
@@ -411,13 +411,13 @@ describe('toTypeDefinition', () => {
                 locals,
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0008-000:symbolName}} = (string | number)[]
             ",
               "referenceName": "{{0008-000:symbolName}}",
             }
         `)
-        expect(locals).toMatchInlineSnapshot(`Object {}`)
+        expect(locals).toMatchInlineSnapshot(`{}`)
     })
 
     test('tuple', () => {
@@ -428,7 +428,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0004-000:symbolName}} = [string, string, number]
             ",
               "referenceName": "{{0004-000:symbolName}}",
@@ -448,7 +448,7 @@ describe('toTypeDefinition', () => {
                 { references: [], symbolName: 'Foo', locals: {} } as unknown as TypescriptWalkerContext
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0003-000:symbolName}} = [foo: string, boo: number]
             ",
               "referenceName": "{{0003-000:symbolName}}",
@@ -466,7 +466,7 @@ describe('toTypeDefinition', () => {
                 { references: [], symbolName: 'Foo', locals: {} } as unknown as TypescriptWalkerContext
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0007-000:symbolName}} = [x: number, y: number, z: number]
             ",
               "referenceName": "{{0007-000:symbolName}}",
@@ -482,7 +482,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "interface {{0002-000:symbolName}} {
                 [k: string]: ( string ) | undefined
             }
@@ -503,7 +503,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0003-000:symbolName}} = {{0002-000:referenceName}}
             ",
               "referenceName": "{{0003-000:symbolName}}",
@@ -519,7 +519,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0007-000:symbolName}} = {{0002-000:referenceName}} | {
                 [k: string]: ( {{0002-000:referenceName}} ) | undefined
             }
@@ -539,7 +539,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0002-000:symbolName}} = string
             ",
               "referenceName": "{{0002-000:symbolName}}",
@@ -554,7 +554,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "type {{0006-000:symbolName}} = string | string | number
             ",
               "referenceName": "{{0006-000:symbolName}}",
@@ -572,7 +572,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "interface {{0002-000:symbolName}} {
                 foo: string
             }
@@ -589,7 +589,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "interface {{0008-000:symbolName}} {
                 foo: string
                 bar: (number | null)
@@ -608,7 +608,7 @@ describe('toTypeDefinition', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "interface {{00011-000:symbolName}} {
                 foo: string
                 /**
@@ -641,7 +641,7 @@ describe('toTypeDefinition', () => {
                 } as unknown as TypescriptWalkerContext
             )
         ).toMatchInlineSnapshot(`
-            Object {
+            {
               "declaration": "/**
              * @default { foo: 'bar', bar: 'foo' }
              */
@@ -667,7 +667,7 @@ describe('toTypeDefinition', () => {
             locals: {},
         } as unknown as TypescriptWalkerContext)
     ).toMatchInlineSnapshot(`
-        Object {
+        {
           "declaration": "interface {{undefined:symbolName}} {
             foo: string
             [k: string]: number
@@ -683,7 +683,7 @@ describe('toTypeDefinition', () => {
 describe('toTypescriptDefinition', () => {
     // test('string', () => {
     //     expect(toTypescriptDefinition('foo', $string()).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = string
     //         ",
     //           "referenceName": "Foo",
@@ -693,7 +693,7 @@ describe('toTypescriptDefinition', () => {
 
     // test('number', () => {
     //     expect(toTypescriptDefinition('foo', $number())).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = number
     //         ",
     //           "referenceName": "Foo",
@@ -703,7 +703,7 @@ describe('toTypescriptDefinition', () => {
 
     // test('integer', () => {
     //     expect(toTypescriptDefinition('foo', $integer())).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = number
     //         ",
     //           "referenceName": "Foo",
@@ -713,7 +713,7 @@ describe('toTypescriptDefinition', () => {
 
     // test('boolean', () => {
     //     expect(toTypescriptDefinition('foo', $boolean())).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = boolean
     //         ",
     //           "referenceName": "Foo",
@@ -723,7 +723,7 @@ describe('toTypescriptDefinition', () => {
 
     // test('null', () => {
     //     expect(toTypescriptDefinition('foo', $null())).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = null
     //         ",
     //           "referenceName": "Foo",
@@ -733,7 +733,7 @@ describe('toTypescriptDefinition', () => {
 
     // test('unknown', () => {
     //     expect(toTypescriptDefinition('foo', $unknown())).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = unknown
     //         ",
     //           "referenceName": "Foo",
@@ -748,7 +748,7 @@ describe('toTypescriptDefinition', () => {
     //             symbolName: 'Foo',
     //         })
     //     ).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export type Foo = 'foo' | 'bar' | { foo: 'bar' }
     //         ",
     //           "referenceName": "Foo",
@@ -760,7 +760,7 @@ describe('toTypescriptDefinition', () => {
     //             symbolName: 'Foo',
     //         })
     //     ).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export enum Foo {
     //             foo = 'bar',
     //             bar = 1,
@@ -777,7 +777,7 @@ describe('toTypescriptDefinition', () => {
     //             symbolName: 'Foo',
     //         })
     //     ).toMatchInlineSnapshot(`
-    //         Object {
+    //         {
     //           "declaration": "export const Foo = {
     //             foo: 'bar' as const,
     //             bar: [1, 2, 3] as const,
@@ -791,62 +791,62 @@ describe('toTypescriptDefinition', () => {
 
     test('array', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($string) })).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0002-000:symbolName}} = (string)[]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0002-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0002-000:symbolName}}",
                 "uuid": "0002-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($enum(['foo', 'bar', { foo: 'bar' }])) }))
             .toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0004-000:symbolName}} = ('foo' | 'bar' | { foo: 'bar' })[]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0004-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0004-000:symbolName}}",
                 "uuid": "0004-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($union([$string, $integer])) }))
             .toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0008-000:symbolName}} = (string | number)[]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0008-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0008-000:symbolName}}",
                 "uuid": "0008-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
     })
@@ -854,22 +854,22 @@ describe('toTypescriptDefinition', () => {
     test('tuple', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $tuple([$string, $string, $integer]) }))
             .toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0004-000:symbolName}} = [string, string, number]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0004-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0004-000:symbolName}}",
                 "uuid": "0004-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
     })
@@ -884,22 +884,22 @@ describe('toTypescriptDefinition', () => {
                 }),
             })
         ).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0003-000:symbolName}} = [foo: string, boo: number]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0003-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0003-000:symbolName}}",
                 "uuid": "0003-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(
@@ -912,46 +912,46 @@ describe('toTypescriptDefinition', () => {
                 }),
             })
         ).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export type {{0007-000:symbolName}} = [x: number, y: number, z: number]
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0007-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0007-000:symbolName}}",
                 "uuid": "0007-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
     })
 
     test('dict', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $dict($string) })).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{0002-000:symbolName}} {
                 [k: string]: ( string ) | undefined
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0002-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0002-000:symbolName}}",
                 "uuid": "0002-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
     })
@@ -959,34 +959,34 @@ describe('toTypescriptDefinition', () => {
     test('ref', () => {
         const foo = $dict($string)
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ bar: $ref(foo) }) })).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{0004-000:symbolName}} {
                 bar: {{0002-000:referenceName}}
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0004-000:symbolName}}",
-                "references": Array [
-                  Object {
+                "references": [
+                  {
                     "exportSymbol": false,
                     "name": undefined,
-                    "reference": Array [
-                      Object {
-                        "children": Array [
-                          Object {
-                            "description": Object {},
+                    "reference": [
+                      {
+                        "children": [
+                          {
+                            "description": {},
                             "type": "string",
                             "uuid": "0001-000",
-                            "value": Object {},
+                            "value": {},
                           },
                         ],
-                        "description": Object {},
+                        "description": {},
                         "type": "dict",
                         "uuid": "0002-000",
-                        "value": Object {},
+                        "value": {},
                       },
                     ],
                     "referenceName": "{{0002-000:referenceName}}",
@@ -999,12 +999,12 @@ describe('toTypescriptDefinition', () => {
                 "uniqueSymbolName": "{{0004-000:symbolName}}",
                 "uuid": "0004-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         // expect(toTypescriptDefinition('foo', $ref({ foo }))).toMatchInlineSnapshot(`
-        //     Object {
-        //       "interface": Object {
+        //     {
+        //       "interface": {
         //         "declaration": "export type Foo = {{0001-000}}
         //     ",
         //         "interfaceName": "Foo",
@@ -1013,8 +1013,8 @@ describe('toTypescriptDefinition', () => {
         //         "symbolName": "foo",
         //         "uuid": undefined,
         //       },
-        //       "references": Array [
-        //         Object {
+        //       "references": [
+        //         {
         //           "hash": "0001-000",
         //           "name": "foo",
         //         },
@@ -1023,8 +1023,8 @@ describe('toTypescriptDefinition', () => {
         // `)
         // // test the stable uuid referencing
         // expect(toTypescriptDefinition('foo', $union([$ref({ foo }), $dict($ref({ foo }))]))).toMatchInlineSnapshot(`
-        //     Object {
-        //       "interface": Object {
+        //     {
+        //       "interface": {
         //         "declaration": "export type Foo = {{0001-000}} | {
         //         [k: string]: ( {{0001-000}} ) | undefined
         //     }
@@ -1035,8 +1035,8 @@ describe('toTypescriptDefinition', () => {
         //         "symbolName": "foo",
         //         "uuid": undefined,
         //       },
-        //       "references": Array [
-        //         Object {
+        //       "references": [
+        //         {
         //           "hash": "0001-000",
         //           "name": "foo",
         //         },
@@ -1047,8 +1047,8 @@ describe('toTypescriptDefinition', () => {
 
     // test('union', () => {
     //     expect(toTypescriptDefinition('foo', $union([$string]))).toMatchInlineSnapshot(`
-    //         Object {
-    //           "interface": Object {
+    //         {
+    //           "interface": {
     //             "declaration": "export type Foo = string
     //         ",
     //             "interfaceName": "Foo",
@@ -1057,12 +1057,12 @@ describe('toTypescriptDefinition', () => {
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
-    //           "references": Array [],
+    //           "references": [],
     //         }
     //     `)
     //     expect(toTypescriptDefinition('foo', $union([$string, $string, $integer]))).toMatchInlineSnapshot(`
-    //         Object {
-    //           "interface": Object {
+    //         {
+    //           "interface": {
     //             "declaration": "export type Foo = string | string | number
     //         ",
     //             "interfaceName": "Foo",
@@ -1071,15 +1071,15 @@ describe('toTypescriptDefinition', () => {
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
-    //           "references": Array [],
+    //           "references": [],
     //         }
     //     `)
     // })
 
     // test('intersection', () => {
     //     expect(toTypescriptDefinition('foo', $intersection([$string]))).toMatchInlineSnapshot(`
-    //         Object {
-    //           "interface": Object {
+    //         {
+    //           "interface": {
     //             "declaration": "export type Foo = (string)
     //         ",
     //             "interfaceName": "Foo",
@@ -1088,12 +1088,12 @@ describe('toTypescriptDefinition', () => {
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
-    //           "references": Array [],
+    //           "references": [],
     //         }
     //     `)
     //     expect(toTypescriptDefinition('foo', $intersection([$string, $integer]))).toMatchInlineSnapshot(`
-    //         Object {
-    //           "interface": Object {
+    //         {
+    //           "interface": {
     //             "declaration": "export type Foo = (string & number)
     //         ",
     //             "interfaceName": "Foo",
@@ -1102,7 +1102,7 @@ describe('toTypescriptDefinition', () => {
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
-    //           "references": Array [],
+    //           "references": [],
     //         }
     //     `)
     // })
@@ -1110,8 +1110,8 @@ describe('toTypescriptDefinition', () => {
     // test('union & intersection', () => {
     //     expect(toTypescriptDefinition('foo', $union([$string, $intersection([$string, $integer]), $integer])))
     //         .toMatchInlineSnapshot(`
-    //         Object {
-    //           "interface": Object {
+    //         {
+    //           "interface": {
     //             "declaration": "export type Foo = string | (string & number) | number
     //         ",
     //             "interfaceName": "Foo",
@@ -1120,31 +1120,31 @@ describe('toTypescriptDefinition', () => {
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
-    //           "references": Array [],
+    //           "references": [],
     //         }
     //     `)
     // })
 
     test('object', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ foo: $string }) })).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{0002-000:symbolName}} {
                 foo: string
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0002-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0002-000:symbolName}}",
                 "uuid": "0002-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(
@@ -1153,26 +1153,26 @@ describe('toTypescriptDefinition', () => {
                 schema: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
             })
         ).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{0008-000:symbolName}} {
                 foo: string
                 bar: (number | null)
                 baz?: number
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{0008-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{0008-000:symbolName}}",
                 "uuid": "0008-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(
@@ -1181,8 +1181,8 @@ describe('toTypescriptDefinition', () => {
                 schema: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
             })
         ).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{00011-000:symbolName}} {
                 foo: string
                 /**
@@ -1191,18 +1191,18 @@ describe('toTypescriptDefinition', () => {
                 bar: string
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{00011-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{00011-000:symbolName}}",
                 "uuid": "00011-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
         expect(
@@ -1211,24 +1211,24 @@ describe('toTypescriptDefinition', () => {
                 schema: $object({ foo: $enum(['foo', 'bar']) }),
             })
         ).toMatchInlineSnapshot(`
-            Object {
-              "definition": Object {
+            {
+              "definition": {
                 "declaration": "export interface {{00013-000:symbolName}} {
                 foo: 'foo' | 'bar'
             }
             ",
-                "imports": Array [],
+                "imports": [],
                 "isExported": true,
-                "locals": Object {},
+                "locals": {},
                 "referenceName": "{{00013-000:symbolName}}",
-                "references": Array [],
+                "references": [],
                 "schema": [Function],
                 "sourceSymbol": "foo",
                 "symbolName": "Foo",
                 "uniqueSymbolName": "{{00013-000:symbolName}}",
                 "uuid": "00013-000",
               },
-              "subtrees": Array [],
+              "subtrees": [],
             }
         `)
     })
@@ -1243,7 +1243,7 @@ describe('getIndexSignatureType', () => {
 
     test('simple union', () => {
         expect(getIndexSignatureType('foo|bar')).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "\`\${string}foo | bar\${string}\`",
             }
         `)
@@ -1251,7 +1251,7 @@ describe('getIndexSignatureType', () => {
 
     test('simple union with start string', () => {
         expect(getIndexSignatureType('^(foo|bar)')).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "\`foo | bar\${string}\`",
             }
         `)
@@ -1259,7 +1259,7 @@ describe('getIndexSignatureType', () => {
 
     test('complicated pattern', () => {
         expect(getIndexSignatureType('^[1-5](?:\\d{2}|XX)$')).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "string",
             }
         `)
@@ -1267,7 +1267,7 @@ describe('getIndexSignatureType', () => {
 
     test('complicated pattern 2', () => {
         expect(getIndexSignatureType('^\\/')).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "\`/\${string}\`",
             }
         `)
@@ -1275,7 +1275,7 @@ describe('getIndexSignatureType', () => {
 
     test('simple start pattern', () => {
         expect(getIndexSignatureType('^x-')).toMatchInlineSnapshot(`
-            Object {
+            {
               "type": "\`x-\${string}\`",
             }
         `)

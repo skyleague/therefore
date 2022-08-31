@@ -6,11 +6,11 @@ test('function', () => {
 
 test('simple', () => {
     expect($null()).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "null",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })

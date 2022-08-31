@@ -6,17 +6,17 @@ test('function', () => {
 
 test('values', () => {
     expect($enum([1, 2, 3, '4'])).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
+        {
+          "children": [
             1,
             2,
             3,
             "4",
           ],
-          "description": Object {},
+          "description": {},
           "type": "enum",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
@@ -28,21 +28,21 @@ test('named', () => {
             woo: 'baz',
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Array [
+        {
+          "children": [
+            [
               "foo",
               "bar",
             ],
-            Array [
+            [
               "woo",
               "baz",
             ],
           ],
-          "description": Object {},
+          "description": {},
           "type": "enum",
           "uuid": "0001-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })

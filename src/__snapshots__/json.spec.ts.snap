@@ -1,22 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`json 1`] = `
-Array [
-  Object {
-    "data": Object {
-      "00010-000": Object {
+[
+  {
+    "data": {
+      "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "Json",
         "uniqueSymbolName": "{{00010-000:symbolName}}",
       },
-      "00012-000": Object {
+      "00012-000": {
         "referenceName": "{{00012-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonAdv",
         "uniqueSymbolName": "{{00012-000:symbolName}}",
       },
-      "00021-000": Object {
+      "00021-000": {
         "referenceName": "{{00021-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonLocal",
@@ -42,7 +42,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 } | ({{00010-000:referenceName}})[]
 
 export const {{00010-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
+    validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"code":{"optimize":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
     schema: jsonSchema,
     source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'json',
@@ -52,7 +52,7 @@ export const {{00010-000:symbolName}} = {
 export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 
 export const {{00012-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
+    validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"code":{"optimize":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
     schema: jsonAdvSchema,
     source: \`\${__dirname}/json.schema\`,
     sourceSymbol: 'jsonAdv',
@@ -71,21 +71,21 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
 ",
     "type": "typescript",
   },
-  Object {
-    "data": Object {
-      "00010-000": Object {
+  {
+    "data": {
+      "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "Json",
         "uniqueSymbolName": "{{00010-000:symbolName}}",
       },
-      "00012-000": Object {
+      "00012-000": {
         "referenceName": "{{00012-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonAdv",
         "uniqueSymbolName": "{{00012-000:symbolName}}",
       },
-      "00021-000": Object {
+      "00021-000": {
         "referenceName": "{{00021-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonLocal",
@@ -96,51 +96,51 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "relativeSource": "./json.schema",
     "targetPath": "examples/json/schemas/json.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"oneOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
     {
-      \\"type\\": \\"string\\"
+      "type": "string"
     },
     {
-      \\"type\\": \\"null\\"
+      "type": "null"
     },
     {
-      \\"type\\": \\"boolean\\"
+      "type": "boolean"
     },
     {
-      \\"type\\": \\"number\\"
+      "type": "number"
     },
     {
-      \\"type\\": \\"object\\",
-      \\"additionalProperties\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#"
       }
     },
     {
-      \\"type\\": \\"array\\",
-      \\"items\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "array",
+      "items": {
+        "$ref": "#"
       }
     }
   ]
 }",
     "type": "jsonschema",
   },
-  Object {
-    "data": Object {
-      "00010-000": Object {
+  {
+    "data": {
+      "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "Json",
         "uniqueSymbolName": "{{00010-000:symbolName}}",
       },
-      "00012-000": Object {
+      "00012-000": {
         "referenceName": "{{00012-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonAdv",
         "uniqueSymbolName": "{{00012-000:symbolName}}",
       },
-      "00021-000": Object {
+      "00021-000": {
         "referenceName": "{{00021-000:symbolName}}",
         "srcPath": "examples/json/json.schema.type.ts",
         "symbolName": "JsonLocal",
@@ -151,34 +151,34 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "relativeSource": "./json.schema",
     "targetPath": "examples/json/schemas/json-adv.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"$ref\\": \\"#/$defs/{{00021-000:uniqueSymbolName}}\\",
-  \\"$defs\\": {
-    \\"{{00021-000:uniqueSymbolName}}\\": {
-      \\"title\\": \\"jsonLocal\\",
-      \\"oneOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/$defs/{{00021-000:uniqueSymbolName}}",
+  "$defs": {
+    "{{00021-000:uniqueSymbolName}}": {
+      "title": "jsonLocal",
+      "oneOf": [
         {
-          \\"type\\": \\"string\\"
+          "type": "string"
         },
         {
-          \\"type\\": \\"null\\"
+          "type": "null"
         },
         {
-          \\"type\\": \\"boolean\\"
+          "type": "boolean"
         },
         {
-          \\"type\\": \\"number\\"
+          "type": "number"
         },
         {
-          \\"type\\": \\"object\\",
-          \\"additionalProperties\\": {
-            \\"$ref\\": \\"#\\"
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#"
           }
         },
         {
-          \\"type\\": \\"array\\",
-          \\"items\\": {
-            \\"$ref\\": \\"#\\"
+          "type": "array",
+          "items": {
+            "$ref": "#"
           }
         }
       ]
@@ -191,10 +191,10 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
 `;
 
 exports[`simple 1`] = `
-Array [
-  Object {
-    "data": Object {
-      "0005-000": Object {
+[
+  {
+    "data": {
+      "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
         "srcPath": "examples/json/simple.schema.type.ts",
         "symbolName": "Simple",
@@ -217,7 +217,7 @@ import type { ValidateFunction } from 'ajv'
 export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 
 export const {{0005-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"code\\":{\\"optimize\\":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
+    validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"code":{"optimize":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
     schema: simpleSchema,
     source: \`\${__dirname}/simple.schema\`,
     sourceSymbol: 'simple',
@@ -232,9 +232,9 @@ export const {{0005-000:symbolName}} = {
 ",
     "type": "typescript",
   },
-  Object {
-    "data": Object {
-      "0005-000": Object {
+  {
+    "data": {
+      "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
         "srcPath": "examples/json/simple.schema.type.ts",
         "symbolName": "Simple",
@@ -245,15 +245,15 @@ export const {{0005-000:symbolName}} = {
     "relativeSource": "./simple.schema",
     "targetPath": "examples/json/schemas/simple.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"oneOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
     {
-      \\"type\\": \\"number\\"
+      "type": "number"
     },
     {
-      \\"type\\": \\"array\\",
-      \\"items\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "array",
+      "items": {
+        "$ref": "#"
       }
     }
   ]

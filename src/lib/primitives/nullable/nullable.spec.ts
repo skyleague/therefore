@@ -4,26 +4,26 @@ import { $string } from '..'
 
 test('string', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {
+        {
+          "description": {
             "nullable": true,
           },
           "type": "string",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('string expanded', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {
+        {
+          "description": {
             "nullable": true,
           },
           "type": "string",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })

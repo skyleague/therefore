@@ -10,11 +10,11 @@ test('multipleOf', () => {
             multipleOf: 0.01,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "number",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "multipleOf": 0.01,
           },
         }
@@ -27,11 +27,11 @@ test('maximum', () => {
             maximum: 100,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "number",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "maximum": 100,
           },
         }
@@ -44,11 +44,11 @@ test('minimum', () => {
             minimum: 100,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "number",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "minimum": 100,
           },
         }
@@ -63,11 +63,11 @@ test('combined', () => {
             minimum: 100,
         })
     ).toMatchInlineSnapshot(`
-        Object {
-          "description": Object {},
+        {
+          "description": {},
           "type": "number",
           "uuid": "0001-000",
-          "value": Object {
+          "value": {
             "maximum": 100,
             "minimum": 100,
             "multipleOf": 0.01,

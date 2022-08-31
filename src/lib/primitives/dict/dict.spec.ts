@@ -8,44 +8,44 @@ test('function', () => {
 
 test('expand', () => {
     expect($dict($string)).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "dict",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('example', () => {
     expect($dict($string, { examples: [{ foo: 'bar' }] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "examples": Array [
-              Object {
+          "description": {
+            "examples": [
+              {
                 "foo": "bar",
               },
             ],
           },
           "type": "dict",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -55,23 +55,23 @@ test('example', () => {
 
 test('default', () => {
     expect($dict($string, { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "default": Object {
+          "description": {
+            "default": {
               "foo": "bar",
             },
           },
           "type": "dict",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

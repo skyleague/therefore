@@ -8,65 +8,65 @@ test('function', () => {
 
 test('expand', () => {
     expect($union([$string])).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {},
+          "description": {},
           "type": "union",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('example', () => {
     expect($union([$string], { examples: ['bar'] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "examples": Array [
+          "description": {
+            "examples": [
               "bar",
             ],
           },
           "type": "union",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
 
 test('default', () => {
     expect($union([$string], { default: ['bar'] })).toMatchInlineSnapshot(`
-        Object {
-          "children": Array [
-            Object {
-              "description": Object {},
+        {
+          "children": [
+            {
+              "description": {},
               "type": "string",
               "uuid": "0001-000",
-              "value": Object {},
+              "value": {},
             },
           ],
-          "description": Object {
-            "default": Array [
+          "description": {
+            "default": [
               "bar",
             ],
           },
           "type": "union",
           "uuid": "0002-000",
-          "value": Object {},
+          "value": {},
         }
     `)
 })
