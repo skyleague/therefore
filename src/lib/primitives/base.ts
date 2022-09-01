@@ -1,5 +1,5 @@
 import type { SimplifyOnce, UndefinedFields } from '@skyleague/axioms'
-import type { InstanceOptions } from 'ajv'
+import type { Options } from 'ajv'
 
 export type TypeDiscriminator =
     | 'array'
@@ -117,7 +117,7 @@ export type ThereforeMeta = {
     /**
      * The ajv options to validate this object with
      */
-    ajvOptions?: InstanceOptions
+    ajvOptions?: Options
 
     validator?: {
         enabled: boolean
