@@ -1,1 +1,1 @@
-export { ObjectOptions, $object, ObjectType } from './object'
+export { ObjectOptions, ObjectPropertiesArg, $object, ObjectType, LazyObjectOptions } from './object'

@@ -16,7 +16,7 @@ export interface ObjectOptions {
     indexPatterns?: Record<string, CstNode>
 }
 
-type LazyObjectOptions = Omit<ObjectOptions, 'indexSignature'> & {
+export type LazyObjectOptions = Omit<ObjectOptions, 'indexSignature'> & {
     indexSignature?: CstSubNode
 }
 
