@@ -42,4 +42,10 @@ describe('method name', () => {
         expect(methodName('/info.0.json', 'post', {} as Operation)).toMatchInlineSnapshot(`"createInfo0Json"`)
         expect(methodName('/{comicId}/info.0.json', 'post', {} as Operation)).toMatchInlineSnapshot(`"createInfo0JsonByComicId"`)
     })
+
+    test('two following parameters', () => {
+        expect(methodName('/api/projects/{id}{.format}', 'post', {} as Operation)).toMatchInlineSnapshot(
+            `"createApiProjectByFormat"`
+        )
+    })
 })
