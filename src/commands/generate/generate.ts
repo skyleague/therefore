@@ -37,6 +37,7 @@ export async function loadSymbol({
     filePath,
     outputFileRename,
     appendSourceSymbolName: appendSourceName = false,
+    rootPath = srcPath,
 }: {
     srcPath: string
     basePath: string
@@ -49,6 +50,7 @@ export async function loadSymbol({
     filePath?: string | undefined
     outputFileRename: (path: string) => string
     appendSourceSymbolName?: boolean
+    rootPath?: string
 }) {
     const simplified = await prepass(symbol)
     let targetDir = '.'
@@ -71,7 +73,7 @@ export async function loadSymbol({
     const targetPath = fileSuffix !== undefined ? replaceExtension(targetSrcPath, fileSuffix) : outputFileRename(targetSrcPath)
 
     definitions[targetPath] ??= {
-        srcPath: path.relative(basePath, srcPath),
+        srcPath: path.relative(basePath, rootPath),
         targetPath,
         attachedFiles: [],
         symbols: [],
@@ -137,7 +139,8 @@ export async function loadSymbol({
             sourceSymbol,
             compile,
             definitions,
-            srcPath,
+            srcPath: path.join(basePath, targetPath),
+            rootPath: srcPath,
             fileSuffix: subFileSuffix,
             filePath: subFilePath,
             entry,

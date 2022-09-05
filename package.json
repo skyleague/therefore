@@ -71,7 +71,7 @@
   "devDependencies": {
     "@types/source-map-support": "^0.5.6",
     "@types/uuid": "^8.3.4",
-    "@types/yargs": "^17.0.11",
+    "@types/yargs": "^17.0.12",
     "@skyleague/node-standards": "^1.7.0",
     "ajv": "^8.11.0",
     "got": "^11.8.5",
