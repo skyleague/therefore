@@ -69,6 +69,7 @@ export function methodName(
 
     const pathParts = relevantPath
         .replaceAll(':', '/')
+        .replaceAll('}{', '}/{')
         .split('/')
         .filter((p) => p.length > 0)
         .map((p, i, xs) => ({ name: p, isLast: i === xs.length - 1, isFirst: i === 0 }))
