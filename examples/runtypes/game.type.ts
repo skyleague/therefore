@@ -48,8 +48,6 @@ export const SpaceObject = {
     get schema() {
         return SpaceObject.validate.schema
     },
-    source: `${__dirname}/game.schema`,
-    sourceSymbol: 'spaceObject',
     is: (o: unknown): o is SpaceObject => SpaceObject.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpaceObject.validate(o)) {

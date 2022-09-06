@@ -100,7 +100,6 @@ export interface JsonObjectInstance {
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.7
 export interface JsonBooleanLogic {
     allOf?: ReadonlyArray<JsonSchema>
-    /** @deprecated */
     anyOf?: ReadonlyArray<JsonSchema>
     oneOf?: ReadonlyArray<JsonSchema>
     /** @deprecated */

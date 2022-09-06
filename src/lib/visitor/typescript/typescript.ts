@@ -45,15 +45,11 @@ export function writeThereforeSchema({
     uuid,
     schemaReference,
     validatorFile,
-    source,
-    sourceSymbol,
     description,
 }: {
     uuid: string
     schemaReference: string
     validatorFile: string | undefined
-    source: string
-    sourceSymbol: string
     description: MetaDescription & ThereforeMeta
 }): string {
     const writer = createWriter()
@@ -73,8 +69,6 @@ export function writeThereforeSchema({
             writer.writeLine(
                 isCompiled ? `get schema() { return {{${uuid}:symbolName}}.validate.schema},` : `schema: ${schemaReference},`
             )
-            writer.writeLine(`source: \`\${__dirname}/${source}\`,`)
-            writer.writeLine(`sourceSymbol: '${sourceSymbol}',`)
             writer.writeLine(`is: (o: unknown): o is {{${uuid}:symbolName}} => {{${uuid}:symbolName}}.validate(o) === true,`)
             if (description.validator?.enabled === true && description.validator.assert === true) {
                 writer

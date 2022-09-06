@@ -20,8 +20,6 @@ export const Person = {
     get schema() {
         return Person.validate.schema
     },
-    source: `${__dirname}/example.schema`,
-    sourceSymbol: 'person',
     is: (o: unknown): o is Person => Person.validate(o) === true,
     assert: (o: unknown) => {
         if (!Person.validate(o)) {

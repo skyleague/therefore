@@ -77,3 +77,7 @@ test('object - with index', () => {
 test('optional - primitive', () => {
     forAll(toArbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })
+
+test('union with enum and supertype', () => {
+    forAll(toArbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
+})
