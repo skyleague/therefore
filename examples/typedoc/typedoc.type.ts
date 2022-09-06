@@ -7,6 +7,24 @@ import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
 /**
+ * Specify the path to the theme that should be used.
+ */
+export type Theme = 'default' | 'minimal' | string
+
+export const Theme = {
+    validate: require('./schemas/theme.schema.js') as ValidateFunction<Theme>,
+    get schema() {
+        return Theme.validate.schema
+    },
+    is: (o: unknown): o is Theme => Theme.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Theme.validate(o)) {
+            throw new AjvValidator.ValidationError(Theme.validate.errors ?? [])
+        }
+    },
+} as const
+
+/**
  * JSON Schema for typedoc.json
  */
 export interface Typedoc {
@@ -167,8 +185,6 @@ export const Typedoc = {
     get schema() {
         return Typedoc.validate.schema
     },
-    source: `${__dirname}/typedoc.schema`,
-    sourceSymbol: 'typedoc',
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
     assert: (o: unknown) => {
         if (!Typedoc.validate(o)) {
@@ -192,8 +208,3 @@ type Readme = 'none' | string
  * DEPRECATED: Use inputFiles instead.
  */
 type Src = string | string[]
-
-/**
- * Specify the path to the theme that should be used.
- */
-type Theme = 'default' | 'minimal' | string

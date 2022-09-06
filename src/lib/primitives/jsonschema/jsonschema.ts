@@ -287,6 +287,22 @@ async function walkJsonschema({
         })
     }
 
+    if (child.anyOf !== undefined) {
+        return $union(
+            await asyncCollect(
+                asyncMap(child.anyOf, (c) =>
+                    walkJsonschema({
+                        node: omitUndefined({ ...c }),
+                        visitor,
+                        childProperty: undefined,
+                        context,
+                    })
+                )
+            ),
+            annotate(node, context)
+        )
+    }
+
     if (child.oneOf !== undefined) {
         return $union(
             await asyncCollect(

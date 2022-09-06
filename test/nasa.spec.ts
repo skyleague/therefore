@@ -1,4 +1,4 @@
-import { Theme, Typedoc } from '../examples/typedoc/typedoc.type'
+import { Project } from '../examples/nasa/astroids/nasa.type'
 import { toArbitrary } from '../src'
 import { compileOutputFiles } from '../src/commands/generate/generate'
 
@@ -6,7 +6,7 @@ import { forAll } from '@skyleague/axioms'
 
 test('output generation', async () => {
     expect(
-        await compileOutputFiles(['examples/typedoc/typedoc.schema.ts'], {
+        await compileOutputFiles(['examples/nasa/nasa.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
             cwd: process.cwd(),
             compile: true,
@@ -14,10 +14,6 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('arbitrary typedoc', async () => {
-    forAll(await toArbitrary(Typedoc), (p) => Typedoc.assert(p))
-})
-
-test('arbitrary theme', async () => {
-    forAll(await toArbitrary(Theme), (t) => Theme.assert(t))
+test('arbitrary', async () => {
+    forAll(await toArbitrary(Project), (p) => Project.is(p))
 })

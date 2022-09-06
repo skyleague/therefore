@@ -137,8 +137,6 @@ export const Project = {
     get schema() {
         return Project.validate.schema
     },
-    source: `${__dirname}/../nasa.schema`,
-    sourceSymbol: 'Astroids.project',
     is: (o: unknown): o is Project => Project.validate(o) === true,
 } as const
 
@@ -152,8 +150,6 @@ export const GetApiByResponse = {
     get schema() {
         return GetApiByResponse.validate.schema
     },
-    source: `${__dirname}/../nasa.schema`,
-    sourceSymbol: 'Astroids.getApiByResponse',
     is: (o: unknown): o is GetApiByResponse => GetApiByResponse.validate(o) === true,
 } as const
 

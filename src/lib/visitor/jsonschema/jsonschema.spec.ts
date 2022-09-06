@@ -206,7 +206,7 @@ describe('toTypeDefinition', () => {
         expect(walkCst($array($union([$string, $integer])), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "items": {
-                "oneOf": [
+                "anyOf": [
                   {
                     "type": "string",
                   },
@@ -319,7 +319,7 @@ describe('toTypeDefinition', () => {
         // test the stable uuid referencing
         expect(walkCst($union([$ref(foo), $dict($ref(foo))]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
-              "oneOf": [
+              "anyOf": [
                 {
                   "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                 },
@@ -335,7 +335,7 @@ describe('toTypeDefinition', () => {
         expect(walkCst($union([$ref(foo), $dict($nullable($ref(foo)))]), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
             {
-              "oneOf": [
+              "anyOf": [
                 {
                   "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                 },
@@ -360,7 +360,7 @@ describe('toTypeDefinition', () => {
     test('union', () => {
         expect(walkCst($union([$string]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
-              "oneOf": [
+              "anyOf": [
                 {
                   "type": "string",
                 },
@@ -369,7 +369,7 @@ describe('toTypeDefinition', () => {
         `)
         expect(walkCst($union([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
-              "oneOf": [
+              "anyOf": [
                 {
                   "type": "string",
                 },
@@ -563,7 +563,7 @@ describe('toJsonSchema', () => {
                   },
                 },
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "oneOf": [
+                "anyOf": [
                   {
                     "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
                   },

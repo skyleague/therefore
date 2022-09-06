@@ -73,8 +73,4 @@ describe('entities satisfy arbitrary', () => {
     test('LoginUserResponse', async () => {
         forAll(await toArbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
     })
-
-    test('use schema', async () => {
-        forAll(await toArbitrary(LoginUserResponse, { useSchema: false }), (x) => LoginUserResponse.is(x))
-    })
 })

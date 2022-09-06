@@ -12,7 +12,5 @@ export const GetApodResponse = {
     get schema() {
         return GetApodResponse.validate.schema
     },
-    source: `${__dirname}/../nasa.schema`,
-    sourceSymbol: 'Apod.getApodResponse',
     is: (o: unknown): o is GetApodResponse => GetApodResponse.validate(o) === true,
 } as const

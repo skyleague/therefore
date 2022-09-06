@@ -414,8 +414,6 @@ export const Extension = {
     get schema() {
         return Extension.validate.schema
     },
-    source: `${__dirname}/extension.schema`,
-    sourceSymbol: 'extension',
     is: (o: unknown): o is Extension => Extension.validate(o) === true,
     assert: (o: unknown) => {
         if (!Extension.validate(o)) {

@@ -10,7 +10,7 @@ import { evaluate, hasPropertiesDefined, unique } from '@skyleague/axioms'
 
 import path from 'path'
 
-export function renderTypescriptSchema(definition: FileDefinition, relativeSource: string) {
+export function renderTypescriptSchema(definition: FileDefinition) {
     const writer = createWriter()
     writer
         .writeLine('/**')
@@ -56,8 +56,6 @@ export function renderTypescriptSchema(definition: FileDefinition, relativeSourc
                     uuid: symbol.definition.uuid,
                     schemaReference: `${symbol.symbolName}Schema`,
                     validatorFile: symbol.compiledFile,
-                    source: relativeSource.replace('./', ''),
-                    sourceSymbol: symbol.definition.sourceSymbol,
                     description: evaluate(symbol.definition.schema).description,
                 })
             )
@@ -125,7 +123,7 @@ export function resolveTypescriptSchema({
             targetPath,
             relativeSource,
             type: 'typescript',
-            template: renderTypescriptSchema(definition, relativeSource),
+            template: renderTypescriptSchema(definition),
             data: { ...localReferences, ...references },
             prettify: true,
         },

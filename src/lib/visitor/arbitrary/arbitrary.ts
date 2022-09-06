@@ -107,62 +107,15 @@ function transform(
     return arbitrary
 }
 
-export interface ToArbitraryOptions {
-    useSchema?: boolean
-}
-
-export function toArbitrary<T = unknown>(schema: Schema<T> & { sourceSymbol: `${string}.${string}` }): Promise<Arbitrary<T>>
-export function toArbitrary<T = unknown>(schema: Schema<T>, options: { useSchema: false }): Promise<Arbitrary<T>>
-export function toArbitrary<T = unknown>(schema: ThereforeCst, options?: ToArbitraryOptions): Arbitrary<T>
-export function toArbitrary<T = unknown>(schema: Schema<T> | ThereforeCst, options?: ToArbitraryOptions): Arbitrary<T>
-export function toArbitrary<T = unknown>(
-    schema: AyncThereforeCst | Schema<T>,
-    options: ToArbitraryOptions = {}
-): Arbitrary<T> | Promise<Arbitrary<T>> {
-    if ('source' in schema) {
-        try {
-            if (options.useSchema !== false && !schema.sourceSymbol.includes('.')) {
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const module = require(schema.source) as Record<string, AyncThereforeCst>
-                if (schema.sourceSymbol.includes('.')) {
-                    const [sourceSymbol, name] = schema.sourceSymbol.split('.')
-
-                    if ('then' in module[sourceSymbol]) {
-                        return Promise.resolve(module[sourceSymbol]).then(({ children }) =>
-                            walkCst((children as ThereforeCst[]).find((c) => c.name === name)!, arbitraryVisitor, {
-                                transform,
-                            })
-                        )
-                    }
-                    return walkCst(
-                        (module[sourceSymbol].children as ThereforeCst[]).find((c) => c.name === name)!,
-                        arbitraryVisitor,
-                        {
-                            transform,
-                        }
-                    )
-                } else {
-                    if ('then' in module[schema.sourceSymbol]) {
-                        return Promise.resolve(module[schema.sourceSymbol]).then((s) =>
-                            walkCst(s, arbitraryVisitor, {
-                                transform,
-                            })
-                        )
-                    }
-                    return walkCst(module[schema.sourceSymbol], arbitraryVisitor, {
-                        transform,
-                    })
-                }
-            }
-        } catch (_: unknown) {
-            //
-        }
-
-        return Promise.resolve($jsonschema(schema.schema as JsonSchema)).then((s) => {
-            return walkCst(s, arbitraryVisitor, {
+export function toArbitrary<T = unknown>(schema: ThereforeCst): Arbitrary<T>
+export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>>
+export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>> {
+    if ('schema' in schema) {
+        return Promise.resolve($jsonschema(schema.schema as JsonSchema)).then((s) =>
+            walkCst(s, arbitraryVisitor, {
                 transform,
             })
-        })
+        )
     }
     return walkCst(schema, arbitraryVisitor, {
         transform,

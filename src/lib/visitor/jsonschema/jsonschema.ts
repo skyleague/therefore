@@ -74,7 +74,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
     },
     union: ({ children }, context) => {
         return {
-            oneOf: children.map((u) => walkCst(u, jsonSchemaVisitor, context)),
+            anyOf: children.map((u) => walkCst(u, jsonSchemaVisitor, context)),
         }
     },
     object: ({ children, value }, context) => {

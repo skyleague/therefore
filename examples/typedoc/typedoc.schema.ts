@@ -13,10 +13,12 @@ const src = $union([$string, $array($string)], {
     description: 'The sources files from which to build documentation.\nDEPRECATED: Use inputFiles instead.',
 })
 
-const theme = $union([$enum(['default', 'minimal']), $string], {
-    name: 'theme',
-    description: 'Specify the path to the theme that should be used.',
-})
+export const theme = $validator(
+    $union([$enum(['default', 'minimal']), $string], {
+        name: 'theme',
+        description: 'Specify the path to the theme that should be used.',
+    })
+)
 
 export const typedoc = $validator(
     $object({
