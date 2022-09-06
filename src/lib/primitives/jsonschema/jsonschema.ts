@@ -74,15 +74,21 @@ export function retrievePropertiesFromPattern(indexPattern: string) {
 export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
     let indexSignature: CstNode | undefined = undefined
     let indexPatterns: Record<string, CstNode> | undefined = undefined
+    let additionalProperties: boolean | undefined = undefined
     const properties: Record<string, JsonSchema> = {}
-    if (node.additionalProperties !== undefined && node.additionalProperties !== false) {
-        indexSignature = await walkJsonschema({
-            node: node.additionalProperties,
-            visitor: schemaWalker,
-            childProperty: undefined,
-            context,
-        })
+    if (node.additionalProperties !== undefined) {
+        if (isBoolean(node.additionalProperties)) {
+            additionalProperties = node.additionalProperties ? true : undefined
+        } else {
+            indexSignature = await walkJsonschema({
+                node: node.additionalProperties,
+                visitor: schemaWalker,
+                childProperty: undefined,
+                context,
+            })
+        }
     }
+
     if (node.patternProperties !== undefined) {
         for (const [pattern, value] of Object.entries(node.patternProperties)) {
             const property = retrievePropertiesFromPattern(pattern)
@@ -104,6 +110,7 @@ export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & 
 
     return {
         properties,
+        additionalProperties,
         indexSignature,
         indexPatterns,
     }
@@ -127,7 +134,7 @@ const schemaWalker: JsonSchemaWalker = {
         ) {
             return $unknown({ ...annotate(node, context) })
         }
-        const { properties, indexSignature, indexPatterns } = await indexProperties(node, context)
+        const { properties, indexSignature, indexPatterns, additionalProperties } = await indexProperties(node, context)
         const mergedProperties = { ...properties, ...node.properties }
         const subSchemas = await asyncCollect(
             asyncMap(
@@ -154,6 +161,7 @@ const schemaWalker: JsonSchemaWalker = {
                     return [name, node.required?.includes(name.toString()) ? value : $optional(value)]
                 })
             ),
+            additionalProperties,
             indexSignature,
             indexPatterns,
             ...annotate(node, context),

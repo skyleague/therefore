@@ -90,8 +90,11 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
             type: 'object',
             properties,
             required: required.length > 0 ? required : undefined,
-            additionalProperties:
-                value.indexSignature !== undefined ? walkCst(value.indexSignature, jsonSchemaVisitor, context) : false,
+            additionalProperties: value.additionalProperties
+                ? true
+                : value.indexSignature !== undefined
+                ? walkCst(value.indexSignature, jsonSchemaVisitor, context)
+                : false,
             patternProperties:
                 value.indexPatterns !== undefined
                     ? (Object.fromEntries(

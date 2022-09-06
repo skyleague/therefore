@@ -83,7 +83,7 @@ export interface JsonObjectInstance {
     required?: ReadonlyArray<string>
     properties?: Record<string, JsonSchema>
     patternProperties?: Record<string, JsonSchema>
-    additionalProperties?: JsonSchema | false
+    additionalProperties?: JsonSchema | boolean
     dependencies?: Record<string, JsonSchema | ReadonlyArray<string>>
     /** @deprecated */
     propertyNames?: JsonSchema
