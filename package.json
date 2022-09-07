@@ -66,9 +66,6 @@
     "ts-node": "^10.9.1"
   },
   "peerDependenciesMeta": {
-    "got": {
-      "optional": true
-    },
     "prettier": {
       "optional": true
     }
