@@ -501,6 +501,7 @@ describe('toJsonSchema', () => {
               "compiled": false,
               "schema": {
                 "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "{{0001-000:uniqueSymbolName}}",
                 "type": "string",
               },
             }
@@ -542,6 +543,7 @@ describe('toJsonSchema', () => {
                   "foo",
                   "bar",
                 ],
+                "title": "{{0003-000:uniqueSymbolName}}",
                 "type": "object",
               },
             }
@@ -559,6 +561,7 @@ describe('toJsonSchema', () => {
                     "additionalProperties": {
                       "type": "string",
                     },
+                    "title": "{{0002-000:uniqueSymbolName}}",
                     "type": "object",
                   },
                 },
@@ -581,6 +584,7 @@ describe('toJsonSchema', () => {
                     "type": "object",
                   },
                 ],
+                "title": "{{0007-000:uniqueSymbolName}}",
               },
             }
         `)

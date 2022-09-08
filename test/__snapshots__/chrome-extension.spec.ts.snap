@@ -703,8 +703,8 @@ type {{00024-000:symbolName}} = (string)[]
     "targetPath": "examples/chrome/schemas/extension.schema.json",
     "template": "{
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
   "title": "JSON schema for Google Chrome extension manifest files",
+  "type": "object",
   "properties": {
     "manifest_version": {
       "description": "One integer specifying the version of the manifest file format your package requires.",
@@ -1352,20 +1352,20 @@ type {{00024-000:symbolName}} = (string)[]
   "$defs": {
     "{{00015-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "versionString",
+      "title": "{{00015-000:uniqueSymbolName}}",
       "pattern": "^(?:\\\\d{1,5}\\\\.){0,3}\\\\d{1,5}$"
     },
     "{{0002-000:uniqueSymbolName}}": {
-      "title": "icon",
+      "title": "{{0002-000:uniqueSymbolName}}",
       "$ref": "#/$defs/{{0001-000:uniqueSymbolName}}"
     },
     "{{0001-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "uri"
+      "title": "{{0001-000:uniqueSymbolName}}"
     },
     "{{00010-000:uniqueSymbolName}}": {
       "type": "object",
-      "title": "action",
+      "title": "{{00010-000:uniqueSymbolName}}",
       "properties": {
         "default_title": {
           "type": "string",
@@ -1410,7 +1410,7 @@ type {{00024-000:symbolName}} = (string)[]
     },
     "{{00018-000:uniqueSymbolName}}": {
       "type": "array",
-      "title": "scripts",
+      "title": "{{00018-000:uniqueSymbolName}}",
       "items": {
         "$ref": "#/$defs/{{0001-000:uniqueSymbolName}}"
       },
@@ -1418,12 +1418,12 @@ type {{00024-000:symbolName}} = (string)[]
       "uniqueItems": true
     },
     "{{00016-000:uniqueSymbolName}}": {
-      "title": "page",
+      "title": "{{00016-000:uniqueSymbolName}}",
       "$ref": "#/$defs/{{0001-000:uniqueSymbolName}}"
     },
     "{{00014-000:uniqueSymbolName}}": {
       "type": "object",
-      "title": "command",
+      "title": "{{00014-000:uniqueSymbolName}}",
       "properties": {
         "description": {
           "type": "string"
@@ -1443,26 +1443,26 @@ type {{00024-000:symbolName}} = (string)[]
     },
     "{{00021-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "match pattern"
+      "title": "{{00021-000:uniqueSymbolName}}"
     },
     "{{00020-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "glob pattern"
+      "title": "{{00020-000:uniqueSymbolName}}"
     },
     "{{00019-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "contentSecurityPolicy",
+      "title": "{{00019-000:uniqueSymbolName}}",
       "description": "This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.",
       "default": "script-src 'self'; object-src 'self'"
     },
     "{{00022-000:uniqueSymbolName}}": {
       "type": "string",
-      "title": "mime_type",
+      "title": "{{00022-000:uniqueSymbolName}}",
       "pattern": "^(?:application|audio|image|message|model|multipart|text|video)\\\\/[-+.\\\\\\\\w]+$"
     },
     "{{00024-000:uniqueSymbolName}}": {
       "type": "array",
-      "title": "permissions",
+      "title": "{{00024-000:uniqueSymbolName}}",
       "items": {
         "type": "string"
       }
