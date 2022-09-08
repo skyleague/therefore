@@ -103,7 +103,10 @@ export async function getRequestBody({
     method: string
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
 }) {
-    const jsonContent = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime))?.[1]
+    const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
+        undefined,
+        undefined,
+    ]
     if (jsonContent !== undefined) {
         const schema = jsonContent.schema ?? {}
         const therefore = await $jsonschema(schema as JsonSchema, {
@@ -115,15 +118,29 @@ export async function getRequestBody({
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
             therefore.description.validator ??= { enabled: true, assert: true }
             therefore.description.validator.assert = true
-            return { schema: therefore, name: 'body', type: 'json', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
+            return {
+                schema: therefore,
+                mimeType: jsonMimeType,
+                name: 'body',
+                type: 'json',
+                declaration: `{{${therefore.uuid}:uniqueSymbolName}}`,
+            }
         } else {
-            return { name: 'body', type: 'body', declaration: therefore.type.replace('integer', 'number') }
+            return {
+                name: 'body',
+                type: 'body',
+                mimeType: jsonMimeType,
+                declaration: therefore.type.replace('integer', 'number'),
+            }
         }
     }
 
-    const binaryContent = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(binaryMime))?.[1]
+    const [binaryMimeType, binaryContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(binaryMime)) ?? [
+        undefined,
+        undefined,
+    ]
     if (binaryContent !== undefined) {
-        return { name: 'body', type: 'body', declaration: 'string | Buffer' }
+        return { name: 'body', type: 'body', mimeType: binaryMimeType, declaration: 'string | Buffer' }
     }
     return undefined
 }
@@ -141,12 +158,15 @@ export async function getResponseBodies({
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
     useEither: boolean
 }) {
-    const result: [string, ThereforeCst][] = []
+    const result: [string, { schema: ThereforeCst; mimeType: string | undefined }][] = []
     const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2')).length
     for await (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
         const reference = responseRef as Reference | Response
         const response = (await jsonPointer({ schema: openapi, ptr: responseRef ?? {} })) as Response
-        const content = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime))?.[1]
+        const [mimeType, content] = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
+            undefined,
+            undefined,
+        ]
         const schema = content?.schema ?? {}
 
         const therefore = await $jsonschema(schema as JsonSchema, {
@@ -159,7 +179,7 @@ export async function getResponseBodies({
         therefore.description.validator ??= { enabled: true, assert: false }
         therefore.description.validator.assert ||= !useEither
         if (therefore.type !== 'unknown') {
-            result.push([statusCode, therefore])
+            result.push([statusCode, { schema: therefore, mimeType }])
         }
     }
     if (result.length > 0) {
@@ -354,6 +374,7 @@ export async function getSecurity(
 export interface RestclientOptions {
     preferOperationId?: boolean
     useEither?: boolean
+    explicitContentNegotiation?: boolean
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
 }
 
@@ -366,7 +387,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
-    const { useEither = true } = options
+    const { useEither = true, explicitContentNegotiation = false } = options
     const references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>()
 
     const children: ThereforeCst[] = []
@@ -559,8 +580,12 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     )
                     writer
                         .block(() => {
-                            const hasInputObj = request !== undefined || queryParameters.length > 0 || headerParameters.length > 0
-                            const hasResponse = 'right' in responses
+                            const hasInputObj =
+                                request !== undefined ||
+                                queryParameters.length > 0 ||
+                                headerParameters.length > 0 ||
+                                explicitContentNegotiation
+                            const hasResponse = 'right' in responses && responses.right !== undefined
                             generateAwaitResponse ||= hasResponse
 
                             writer
@@ -581,11 +606,32 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                                 queryParameters.length > 0,
                                                 `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
                                             )
-                                            .conditionalWrite(
-                                                headerParameters.length > 0,
-                                                `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
-                                            )
-                                            .conditionalWrite(hasResponse, `responseType:'json',`)
+
+                                        let hasWrittenHeaders = false
+                                        if (explicitContentNegotiation && hasResponse) {
+                                            const eligibleMimeTypes = entriesOf(responses.right)
+                                                .filter(([statusCode]) => statusCode.startsWith('2'))
+                                                .map(([, response]) => response.mimeType)
+                                                .filter(isDefined)
+                                            if (eligibleMimeTypes.length > 0) {
+                                                writer
+                                                    .conditionalWrite(
+                                                        headerParameters.length > 0,
+                                                        `headers: { Accept: "${eligibleMimeTypes[0]}", ...headers },`
+                                                    )
+                                                    .conditionalWrite(
+                                                        headerParameters.length === 0,
+                                                        `headers: { Accept: "${eligibleMimeTypes[0]}" },`
+                                                    )
+                                                hasWrittenHeaders = true
+                                            }
+                                        }
+                                        writer.conditionalWrite(
+                                            headerParameters.length > 0 && !hasWrittenHeaders,
+                                            `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
+                                        )
+
+                                        writer.conditionalWrite(hasResponse, `responseType:'json',`)
                                     })
                                     .write(')')
                             } else {
@@ -595,11 +641,11 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                 writer
                                     .write(', ')
                                     .inlineBlock(() => {
-                                        for (const [statusCode, response] of entriesOf(responses.right ?? {})) {
-                                            if (!seenChildren.has(response as ThereforeCst)) {
-                                                children.push(response as ThereforeCst)
+                                        for (const [statusCode, { schema: responseSchema }] of entriesOf(responses.right ?? {})) {
+                                            if (!seenChildren.has(responseSchema as ThereforeCst)) {
+                                                children.push(responseSchema as ThereforeCst)
                                             }
-                                            writer.write(`${statusCode}: {{${response.uuid}:symbolName}},`)
+                                            writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName}},`)
                                         }
                                     })
                                     .write(')')
