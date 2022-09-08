@@ -143,7 +143,9 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
 
         if (definitions[`{{${uuid}:uniqueSymbolName}}`] === undefined) {
             definitions[`{{${uuid}:uniqueSymbolName}}`] = {} // mark spot as taken (prevents recursion)
-            definitions[`{{${uuid}:uniqueSymbolName}}`] = walkCst(reference, jsonSchemaVisitor, context)
+            const node: JsonSchema = walkCst(reference, jsonSchemaVisitor, context)
+            node.title = `{{${uuid}:uniqueSymbolName}}`
+            definitions[`{{${uuid}:uniqueSymbolName}}`] = node
         }
         if (description.nullable) {
             return { oneOf: [{ type: 'null' }, { $ref: `#/$defs/{{${uuid}:uniqueSymbolName}}` }] }
@@ -179,8 +181,10 @@ export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaVali
     const context = jsonSchemaContext(obj)
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
+        title: `{{${obj.uuid}:uniqueSymbolName}}`,
         ...walkCst(obj, jsonSchemaVisitor, context),
     }
+
     if (Object.keys(context.definitions).length > 0) {
         definition.$defs = context.definitions
     }

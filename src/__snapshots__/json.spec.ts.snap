@@ -93,6 +93,7 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "targetPath": "examples/json/schemas/json.schema.json",
     "template": "{
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{00010-000:uniqueSymbolName}}",
   "anyOf": [
     {
       "type": "string"
@@ -148,10 +149,11 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "targetPath": "examples/json/schemas/json-adv.schema.json",
     "template": "{
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{00012-000:uniqueSymbolName}}",
   "$ref": "#/$defs/{{00021-000:uniqueSymbolName}}",
   "$defs": {
     "{{00021-000:uniqueSymbolName}}": {
-      "title": "jsonLocal",
+      "title": "{{00021-000:uniqueSymbolName}}",
       "anyOf": [
         {
           "type": "string"
@@ -240,6 +242,7 @@ export const {{0005-000:symbolName}} = {
     "targetPath": "examples/json/schemas/simple.schema.json",
     "template": "{
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{0005-000:uniqueSymbolName}}",
   "anyOf": [
     {
       "type": "number"
