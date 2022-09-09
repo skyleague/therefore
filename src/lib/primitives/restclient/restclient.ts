@@ -580,14 +580,14 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     )
                     writer
                         .block(() => {
+                            const hasResponse = 'right' in responses && responses.right !== undefined
                             const hasInputObj =
                                 request !== undefined ||
                                 queryParameters.length > 0 ||
                                 headerParameters.length > 0 ||
-                                explicitContentNegotiation
-                            const hasResponse = 'right' in responses && responses.right !== undefined
-                            generateAwaitResponse ||= hasResponse
+                                (explicitContentNegotiation && hasResponse)
 
+                            generateAwaitResponse ||= hasResponse
                             writer
                                 .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                                 .conditionalWrite(hasResponse, 'return this.awaitResponse(')
