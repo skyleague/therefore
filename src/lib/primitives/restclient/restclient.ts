@@ -690,7 +690,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                 .block(() => {
                     writer
                         .writeLine(
-                            `const auth = (auths ?? []).map(auth => Array.isArray(auth) ? auth : [auth]).filter((auth) => auth.every((a) => this.availableAuth.has(a)))`
+                            `const auth = (auths ?? [...this.availableAuth]).map(auth => Array.isArray(auth) ? auth : [auth]).filter((auth) => auth.every((a) => this.availableAuth.has(a)))`
                         )
                         .writeLine(`for (const chosen of auth[0] ?? [])`)
                         .block(() => {
