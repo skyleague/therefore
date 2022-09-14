@@ -18,6 +18,7 @@ import nock from 'nock'
 const prefixUrl = 'http://www.example.com'
 
 describe('updatePet', () => {
+    beforeEach(() => nock.disableNetConnect())
     afterEach(() => {
         nock.cleanAll()
         nock.enableNetConnect()
@@ -33,6 +34,27 @@ describe('updatePet', () => {
         if ('right' in result) {
             const pet: Pet = result.right
             expect(updatedPet).toEqual(pet)
+        }
+    })
+
+    test('allows additional properties', async () => {
+        const updatedPet: Pet = { name: 'FooPet', photoUrls: ['example.com'] }
+        nock('http://www.example.com:80')
+            .put('/pet')
+            .reply(200, { ...updatedPet, foo: 'bar' })
+        const result = await client.updatePet({ body: updatedPet })
+        expect(eitherToError(result)).toEqual({ ...updatedPet, foo: 'bar' })
+        if ('right' in result) {
+            const pet: Pet = result.right
+            expect(pet).toMatchInlineSnapshot(`
+                {
+                  "foo": "bar",
+                  "name": "FooPet",
+                  "photoUrls": [
+                    "example.com",
+                  ],
+                }
+            `)
         }
     })
 })

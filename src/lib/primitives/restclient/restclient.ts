@@ -98,11 +98,13 @@ export async function getRequestBody({
     openapi,
     method,
     references,
+    strict,
 }: {
     request: RequestBody | undefined
     openapi: OpenapiV3
     method: string
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    strict: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
         undefined,
@@ -115,6 +117,7 @@ export async function getRequestBody({
             root: openapi as JsonSchema,
             references,
             exportAllSymbols: true,
+            strict,
         })
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
             therefore.description.validator ??= { enabled: true, assert: true }
@@ -144,6 +147,7 @@ export async function getRequestBody({
             root: openapi as JsonSchema,
             references,
             exportAllSymbols: true,
+            strict,
         })
         therefore.description.validator ??= { enabled: true, assert: true }
         therefore.description.validator.assert = true
@@ -166,12 +170,14 @@ export async function getResponseBodies({
     method,
     references,
     useEither,
+    strict,
 }: {
     responses: Responses | undefined
     openapi: OpenapiV3
     method: string
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
     useEither: boolean
+    strict: boolean
 }) {
     const result: [string, { schema: ThereforeCst; mimeType: string | undefined }][] = []
     const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2')).length
@@ -190,6 +196,7 @@ export async function getResponseBodies({
             references,
             reference: '$ref' in reference ? reference.$ref : undefined,
             exportAllSymbols: true,
+            strict,
         })
         therefore.description.validator ??= { enabled: true, assert: false }
         therefore.description.validator.assert ||= !useEither
@@ -388,6 +395,7 @@ export async function getSecurity(
 
 export interface RestclientOptions {
     preferOperationId?: boolean
+    strict?: boolean
     useEither?: boolean
     explicitContentNegotiation?: boolean
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
@@ -402,7 +410,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
-    const { useEither = true, explicitContentNegotiation = false } = options
+    const { useEither = true, explicitContentNegotiation = false, strict = true } = options
     const references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>()
 
     const children: ThereforeCst[] = []
@@ -487,6 +495,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         openapi,
                         method,
                         references,
+                        strict,
                     })
                     let requestValidationStr = ''
                     if (request?.schema !== undefined) {
@@ -534,6 +543,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         method,
                         references,
                         useEither,
+                        strict,
                     })
 
                     const parameterizedPath = pathParameters
