@@ -91,6 +91,7 @@ export function methodName(
 }
 
 const jsonMime = /(application|\*)\/(.*json|\*)/
+const formUrlEncodedMime = /^application\/x-www-form-urlencoded$/
 const binaryMime = /application\/.*octet-stream/
 export async function getRequestBody({
     request,
@@ -133,6 +134,20 @@ export async function getRequestBody({
                 declaration: therefore.type.replace('integer', 'number'),
             }
         }
+    }
+
+    const formContent = entriesOf(request?.content ?? {}).find(([mime]) => formUrlEncodedMime.test(mime))?.[1]
+    if (formContent !== undefined) {
+        const schema = formContent.schema ?? {}
+        const therefore = await $jsonschema(schema as JsonSchema, {
+            name: `${method}Request`,
+            root: openapi as JsonSchema,
+            references,
+            exportAllSymbols: true,
+        })
+        therefore.description.validator ??= { enabled: true, assert: true }
+        therefore.description.validator.assert = true
+        return { schema: therefore, name: 'body', type: 'form', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
     }
 
     const [binaryMimeType, binaryContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(binaryMime)) ?? [
