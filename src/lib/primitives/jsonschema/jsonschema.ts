@@ -87,6 +87,8 @@ export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & 
                 context,
             })
         }
+    } else if (context.strict === false) {
+        additionalProperties = true
     }
 
     if (node.patternProperties !== undefined) {
@@ -209,6 +211,7 @@ const schemaWalker: JsonSchemaWalker = {
 }
 
 interface JsonSchemaContext {
+    strict: boolean
     metaSchemas: Record<string, Promise<JsonSchema>>
     references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
     root: JsonSchema
@@ -236,6 +239,7 @@ async function walkJsonschema({
         root = node,
         cache = new Map<string, Promise<AyncThereforeCst>>(),
         exportAllSymbols = false,
+        strict = true,
         ...rest
     } = maybeContext
     const context = {
@@ -245,6 +249,7 @@ async function walkJsonschema({
         cache,
         name,
         exportAllSymbols,
+        strict,
         ...omit(pick(rest, descriptionKeys), ['name']),
     }
     const child = childProperty !== undefined ? node[childProperty] ?? { type: 'object' } : node
@@ -341,6 +346,7 @@ async function walkJsonschema({
  * @category JsonSchema
  */
 export interface JsonSchemaOptions {
+    strict?: boolean
     metaSchemas?: Record<string, Promise<JsonSchema>>
     references?: Map<string, [name: string, value: () => Promise<CstSubNode>]>
     reference?: string
