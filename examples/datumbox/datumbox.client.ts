@@ -5,6 +5,8 @@
 /* eslint-disable */
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { ValidateFunction, ErrorObject } from 'ajv'
+import { IncomingHttpHeaders } from 'http'
 import {
     AdultContentDetectionRequest,
     CommercialDetectionRequest,
@@ -43,9 +45,14 @@ export class PetStore {
     public async adultContentDetection({ body }: { body: AdultContentDetectionRequest }) {
         this.validateRequestBody(AdultContentDetectionRequest, body)
 
-        return this.client.post(`1.0/AdultContentDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/AdultContentDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -56,9 +63,14 @@ export class PetStore {
     public async commercialDetection({ body }: { body: CommercialDetectionRequest }) {
         this.validateRequestBody(CommercialDetectionRequest, body)
 
-        return this.client.post(`1.0/CommercialDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/CommercialDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -69,9 +81,14 @@ export class PetStore {
     public async documentSimilarity({ body }: { body: DocumentSimilarityRequest }) {
         this.validateRequestBody(DocumentSimilarityRequest, body)
 
-        return this.client.post(`1.0/DocumentSimilarity.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/DocumentSimilarity.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -82,9 +99,14 @@ export class PetStore {
     public async educationalDetection({ body }: { body: EducationalDetectionRequest }) {
         this.validateRequestBody(EducationalDetectionRequest, body)
 
-        return this.client.post(`1.0/EducationalDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/EducationalDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -95,9 +117,14 @@ export class PetStore {
     public async genderDetection({ body }: { body: GenderDetectionRequest }) {
         this.validateRequestBody(GenderDetectionRequest, body)
 
-        return this.client.post(`1.0/GenderDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/GenderDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -108,9 +135,14 @@ export class PetStore {
     public async keywordExtraction({ body }: { body: KeywordExtractionRequest }) {
         this.validateRequestBody(KeywordExtractionRequest, body)
 
-        return this.client.post(`1.0/KeywordExtraction.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/KeywordExtraction.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -121,9 +153,14 @@ export class PetStore {
     public async languageDetection({ body }: { body: LanguageDetectionRequest }) {
         this.validateRequestBody(LanguageDetectionRequest, body)
 
-        return this.client.post(`1.0/LanguageDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/LanguageDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -134,9 +171,14 @@ export class PetStore {
     public async readabilityAssessment({ body }: { body: ReadabilityAssessmentRequest }) {
         this.validateRequestBody(ReadabilityAssessmentRequest, body)
 
-        return this.client.post(`1.0/ReadabilityAssessment.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/ReadabilityAssessment.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -147,9 +189,14 @@ export class PetStore {
     public async sentimentAnalysis({ body }: { body: SentimentAnalysisRequest }) {
         this.validateRequestBody(SentimentAnalysisRequest, body)
 
-        return this.client.post(`1.0/SentimentAnalysis.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/SentimentAnalysis.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -160,9 +207,14 @@ export class PetStore {
     public async spamDetection({ body }: { body: SpamDetectionRequest }) {
         this.validateRequestBody(SpamDetectionRequest, body)
 
-        return this.client.post(`1.0/SpamDetection.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/SpamDetection.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -173,9 +225,14 @@ export class PetStore {
     public async subjectivityAnalysis({ body }: { body: SubjectivityAnalysisRequest }) {
         this.validateRequestBody(SubjectivityAnalysisRequest, body)
 
-        return this.client.post(`1.0/SubjectivityAnalysis.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/SubjectivityAnalysis.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -186,9 +243,14 @@ export class PetStore {
     public async textExtraction({ body }: { body: TextExtractionRequest }) {
         this.validateRequestBody(TextExtractionRequest, body)
 
-        return this.client.post(`1.0/TextExtraction.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/TextExtraction.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -199,9 +261,14 @@ export class PetStore {
     public async topicClassification({ body }: { body: TopicClassificationRequest }) {
         this.validateRequestBody(TopicClassificationRequest, body)
 
-        return this.client.post(`1.0/TopicClassification.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/TopicClassification.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -212,13 +279,50 @@ export class PetStore {
     public async twitterSentimentAnalysis({ body }: { body: TwitterSentimentAnalysisRequest }) {
         this.validateRequestBody(TwitterSentimentAnalysisRequest, body)
 
-        return this.client.post(`1.0/TwitterSentimentAnalysis.json`, {
-            form: body,
-        })
+        return this.awaitResponse(
+            this.client.post(`1.0/TwitterSentimentAnalysis.json`, {
+                form: body,
+            }),
+            {
+                200: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     public validateRequestBody<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, body: T) {
         schema.assert(body)
         return body
+    }
+
+    public async awaitResponse<
+        T,
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate?: ValidateFunction<T> }>
+    >(response: CancelableRequest<Response<unknown>>, schemas: S) {
+        type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
+            ? `${S}` extends `${T}${infer _X}`
+                ? S
+                : never
+            : never
+        type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
+        const result = await response
+        const validator = schemas[result.statusCode] ?? schemas.default
+        if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300) {
+            return {
+                statusCode: result.statusCode,
+                headers: result.headers,
+                left: result.body,
+                validationErrors: validator?.validate?.errors ?? undefined,
+            } as {
+                statusCode: number
+                headers: IncomingHttpHeaders
+                left: InferSchemaType<S[keyof S]>
+                validationErrors?: ErrorObject[]
+            }
+        }
+        return { statusCode: result.statusCode, headers: result.headers, right: result.body } as {
+            statusCode: number
+            headers: IncomingHttpHeaders
+            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>
+        }
     }
 }

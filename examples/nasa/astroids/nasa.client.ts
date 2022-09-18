@@ -7,7 +7,7 @@ import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import { IncomingHttpHeaders } from 'http'
-import { GetApiByResponse, Project } from './nasa.type'
+import { GetApiByResponse200, Project } from './nasa.type'
 
 export class Astroids {
     public client: Got
@@ -26,7 +26,9 @@ export class Astroids {
      * Returns the swagger specification for the API.
      */
     public async getApi() {
-        return this.client.get(`api`)
+        return this.awaitResponse(this.client.get(`api`, {}), {
+            200: { is: (x: unknown): x is string => true },
+        })
     }
 
     /**
@@ -54,14 +56,14 @@ export class Astroids {
                 responseType: 'json',
             }),
             {
-                200: GetApiByResponse,
+                200: GetApiByResponse200,
             }
         )
     }
 
     public async awaitResponse<
         T,
-        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate: ValidateFunction<T> }>
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate?: ValidateFunction<T> }>
     >(response: CancelableRequest<Response<unknown>>, schemas: S) {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
             ? `${S}` extends `${T}${infer _X}`
@@ -70,13 +72,13 @@ export class Astroids {
             : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
-        const validator = schemas[result.statusCode]
+        const validator = schemas[result.statusCode] ?? schemas.default
         if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300) {
             return {
                 statusCode: result.statusCode,
                 headers: result.headers,
                 left: result.body,
-                validationErrors: validator?.validate.errors ?? undefined,
+                validationErrors: validator?.validate?.errors ?? undefined,
             } as {
                 statusCode: number
                 headers: IncomingHttpHeaders
@@ -87,7 +89,7 @@ export class Astroids {
         return { statusCode: result.statusCode, headers: result.headers, right: result.body } as {
             statusCode: number
             headers: IncomingHttpHeaders
-            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>
+            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>
         }
     }
 }
