@@ -499,6 +499,7 @@ export type {{00094-000:symbolName}} = string
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "000128-000": {
         "referenceName": "{{000128-000:symbolName}}",
@@ -602,6 +603,7 @@ export type {{00094-000:symbolName}} = string
     "type": "validator",
   },
   {
+    "clean": [Function],
     "data": {
       "000128-000": {
         "referenceName": "{{000128-000:symbolName}}",
@@ -1043,6 +1045,7 @@ export const {{000136-000:symbolName}} = {
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "000128-000": {
         "referenceName": "{{000128-000:symbolName}}",

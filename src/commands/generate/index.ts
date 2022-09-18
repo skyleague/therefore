@@ -31,10 +31,14 @@ export function builder(yargs: Argv) {
             default: '.type.ts',
             type: 'string',
         })
+        .option('clean', {
+            default: false,
+            type: 'boolean',
+        })
 }
 
 export async function handler(argv: ReturnType<typeof builder>['argv']): Promise<void> {
-    const { files = [], 'ignore-pattern': ignorePatterns, ext, 'out-ext': outExt, compile } = await argv
+    const { files = [], 'ignore-pattern': ignorePatterns, ext, 'out-ext': outExt, compile, clean } = await argv
 
     await generate({
         globs: files.map((f) => f.toString()),
@@ -42,6 +46,7 @@ export async function handler(argv: ReturnType<typeof builder>['argv']): Promise
         extension: ext,
         outputFileRename: (path: string) => path.replace(getExtension(path)!, outExt),
         compile,
+        clean,
     })
 }
 

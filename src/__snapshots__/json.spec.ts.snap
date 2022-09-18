@@ -68,6 +68,7 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
@@ -124,6 +125,7 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "type": "jsonschema",
   },
   {
+    "clean": [Function],
     "data": {
       "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
@@ -229,6 +231,7 @@ export const {{0005-000:symbolName}} = {
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
