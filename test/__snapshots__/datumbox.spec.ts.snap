@@ -4,35 +4,41 @@ exports[`output generation 1`] = `
 [
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -40,59 +46,53 @@ exports[`output generation 1`] = `
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": true,
@@ -105,10 +105,12 @@ exports[`output generation 1`] = `
 /* eslint-disable */
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { ValidateFunction, ErrorObject } from 'ajv'
+import {IncomingHttpHeaders} from 'http'
 import { AdultContentDetectionRequest, CommercialDetectionRequest, DocumentSimilarityRequest, EducationalDetectionRequest, GenderDetectionRequest, KeywordExtractionRequest, LanguageDetectionRequest, ReadabilityAssessmentRequest, SentimentAnalysisRequest, SpamDetectionRequest, SubjectivityAnalysisRequest, TextExtractionRequest, TopicClassificationRequest, TwitterSentimentAnalysisRequest } from './datumbox.client.type'
 
 
-export class {{00075-000:symbolName}} {
+export class {{00061-000:symbolName}} {
     public client: Got
 
     public constructor(
@@ -132,8 +134,10 @@ export class {{00075-000:symbolName}} {
     {
         this.validateRequestBody({{0004-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/AdultContentDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/AdultContentDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -142,12 +146,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Commercial Detection function labels the documents as commercial or non-commercial based on their keywords and expressions. It can be used to detect whether a website is commercial or not.
      */
-    public async commercialDetection({body}: {body: {{0009-000:uniqueSymbolName}}})
+    public async commercialDetection({body}: {body: {{0008-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{0009-000:symbolName}}, body)
+        this.validateRequestBody({{0008-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/CommercialDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/CommercialDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -156,12 +162,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Document Similarity function estimates the degree of similarity between two documents. It can be used to detect duplicate webpages or detect plagiarism.
      */
-    public async documentSimilarity({body}: {body: {{00016-000:uniqueSymbolName}}})
+    public async documentSimilarity({body}: {body: {{00014-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00016-000:symbolName}}, body)
+        this.validateRequestBody({{00014-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/DocumentSimilarity.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/DocumentSimilarity.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -170,12 +178,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Educational Detection function classifies the documents as educational or non-educational based on their context. It can be used to detect whether a website is educational or not.
      */
-    public async educationalDetection({body}: {body: {{00021-000:uniqueSymbolName}}})
+    public async educationalDetection({body}: {body: {{00018-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00021-000:symbolName}}, body)
+        this.validateRequestBody({{00018-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/EducationalDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/EducationalDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -184,12 +194,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Gender Detection function identifies if a particular document is written-by or targets-to a man or a woman based on the context, the words and the idioms found in the text.
      */
-    public async genderDetection({body}: {body: {{00026-000:uniqueSymbolName}}})
+    public async genderDetection({body}: {body: {{00022-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00026-000:symbolName}}, body)
+        this.validateRequestBody({{00022-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/GenderDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/GenderDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -198,12 +210,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Keyword Extraction function enables you to extract from an arbitrary document all the keywords and word-combinations along with their occurrences in the text.
      */
-    public async keywordExtraction({body}: {body: {{00033-000:uniqueSymbolName}}})
+    public async keywordExtraction({body}: {body: {{00028-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00033-000:symbolName}}, body)
+        this.validateRequestBody({{00028-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/KeywordExtraction.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/KeywordExtraction.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -212,12 +226,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Language Detection function identifies the natural language of the given document based on its words and context. This classifier is able to detect 96 different languages.
      */
-    public async languageDetection({body}: {body: {{00038-000:uniqueSymbolName}}})
+    public async languageDetection({body}: {body: {{00032-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00038-000:symbolName}}, body)
+        this.validateRequestBody({{00032-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/LanguageDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/LanguageDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -226,12 +242,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Readability Assessment function determines the degree of readability of a document based on its terms and idioms. The texts are classified as basic, intermediate and advanced depending their difficulty.
      */
-    public async readabilityAssessment({body}: {body: {{00043-000:uniqueSymbolName}}})
+    public async readabilityAssessment({body}: {body: {{00036-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00043-000:symbolName}}, body)
+        this.validateRequestBody({{00036-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/ReadabilityAssessment.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/ReadabilityAssessment.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -240,12 +258,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Sentiment Analysis function classifies documents as positive, negative or neutral (lack of sentiment) depending on whether they express a positive, negative or neutral opinion.
      */
-    public async sentimentAnalysis({body}: {body: {{00048-000:uniqueSymbolName}}})
+    public async sentimentAnalysis({body}: {body: {{00040-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00048-000:symbolName}}, body)
+        this.validateRequestBody({{00040-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/SentimentAnalysis.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/SentimentAnalysis.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -254,12 +274,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Spam Detection function labels documents as spam or nospam by taking into account their context. It can be used to filter out spam emails and comments.
      */
-    public async spamDetection({body}: {body: {{00053-000:uniqueSymbolName}}})
+    public async spamDetection({body}: {body: {{00044-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00053-000:symbolName}}, body)
+        this.validateRequestBody({{00044-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/SpamDetection.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/SpamDetection.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -268,12 +290,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Subjectivity Analysis function categorizes documents as subjective or objective based on their writing style. Texts that express personal opinions are labeled as subjective and the others as objective.
      */
-    public async subjectivityAnalysis({body}: {body: {{00058-000:uniqueSymbolName}}})
+    public async subjectivityAnalysis({body}: {body: {{00048-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00058-000:symbolName}}, body)
+        this.validateRequestBody({{00048-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/SubjectivityAnalysis.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/SubjectivityAnalysis.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -282,12 +306,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Text Extraction function enables you to extract the important information from a given webpage. Extracting the clear text of the documents is an important step before any other analysis.
      */
-    public async textExtraction({body}: {body: {{00063-000:uniqueSymbolName}}})
+    public async textExtraction({body}: {body: {{00052-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00063-000:symbolName}}, body)
+        this.validateRequestBody({{00052-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/TextExtraction.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/TextExtraction.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -296,12 +322,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Topic Classification function assigns documents in 12 thematic categories based on their keywords, idioms and jargon. It can be used to identify the topic of the texts.
      */
-    public async topicClassification({body}: {body: {{00068-000:uniqueSymbolName}}})
+    public async topicClassification({body}: {body: {{00056-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00068-000:symbolName}}, body)
+        this.validateRequestBody({{00056-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/TopicClassification.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/TopicClassification.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -310,12 +338,14 @@ export class {{00075-000:symbolName}} {
      * 
      * The Twitter Sentiment Analysis function allows you to perform Sentiment Analysis on Twitter. It classifies the tweets as positive, negative or neutral depending on their context.
      */
-    public async twitterSentimentAnalysis({body}: {body: {{00073-000:uniqueSymbolName}}})
+    public async twitterSentimentAnalysis({body}: {body: {{00060-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00073-000:symbolName}}, body)
+        this.validateRequestBody({{00060-000:symbolName}}, body)
 
-        return this.client.post(\`1.0/TwitterSentimentAnalysis.json\`, {
+        return this.awaitResponse(this.client.post(\`1.0/TwitterSentimentAnalysis.json\`, {
             form: body,
+        }), {
+            200: {is: (x: unknown): x is string => true},
         })
     }
 
@@ -324,6 +354,21 @@ export class {{00075-000:symbolName}} {
         schema.assert(body)
         return body
     }
+
+    public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate?: ValidateFunction<T> }>>(response: CancelableRequest<Response<unknown>>, schemas: S)
+    {
+        type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? \`\${S}\` extends \`\${T}\${infer _X}\` ? S : never : never
+        type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
+        const result = await response
+        const validator = schemas[result.statusCode] ?? schemas.default
+        if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300)
+        {
+            return {statusCode: result.statusCode, headers: result.headers, left: result.body, validationErrors: validator?.validate?.errors ?? undefined } as 
+            {statusCode: number, headers: IncomingHttpHeaders, left: InferSchemaType<S[keyof S]>, validationErrors?: ErrorObject[]}
+        }
+        return {statusCode: result.statusCode, headers: result.headers, right: result.body } as 
+        {statusCode: number, headers: IncomingHttpHeaders, right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>}
+    }
 }
 
 ",
@@ -331,35 +376,41 @@ export class {{00075-000:symbolName}} {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -367,59 +418,53 @@ export class {{00075-000:symbolName}} {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": true,
@@ -456,7 +501,7 @@ export const {{0004-000:symbolName}} = {
     },
 } as const
 
-export interface {{0009-000:symbolName}} {
+export interface {{0008-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -467,18 +512,18 @@ export interface {{0009-000:symbolName}} {
     text?: string
 }
 
-export const {{0009-000:symbolName}} = {
-    validate: require('./schemas/commercial-detection-request.schema.js') as ValidateFunction<{{0009-000:symbolName}}>,
-    get schema() { return {{0009-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{0009-000:symbolName}} => {{0009-000:symbolName}}.validate(o) === true,
+export const {{0008-000:symbolName}} = {
+    validate: require('./schemas/commercial-detection-request.schema.js') as ValidateFunction<{{0008-000:symbolName}}>,
+    get schema() { return {{0008-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{0008-000:symbolName}} => {{0008-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{0009-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{0009-000:symbolName}}.validate.errors ?? [])
+        if (!{{0008-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{0008-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00016-000:symbolName}} {
+export interface {{00014-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -493,18 +538,18 @@ export interface {{00016-000:symbolName}} {
     original?: string
 }
 
-export const {{00016-000:symbolName}} = {
-    validate: require('./schemas/document-similarity-request.schema.js') as ValidateFunction<{{00016-000:symbolName}}>,
-    get schema() { return {{00016-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00016-000:symbolName}} => {{00016-000:symbolName}}.validate(o) === true,
+export const {{00014-000:symbolName}} = {
+    validate: require('./schemas/document-similarity-request.schema.js') as ValidateFunction<{{00014-000:symbolName}}>,
+    get schema() { return {{00014-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00014-000:symbolName}} => {{00014-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00016-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00016-000:symbolName}}.validate.errors ?? [])
+        if (!{{00014-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00014-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00021-000:symbolName}} {
+export interface {{00018-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -515,18 +560,18 @@ export interface {{00021-000:symbolName}} {
     text?: string
 }
 
-export const {{00021-000:symbolName}} = {
-    validate: require('./schemas/educational-detection-request.schema.js') as ValidateFunction<{{00021-000:symbolName}}>,
-    get schema() { return {{00021-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00021-000:symbolName}} => {{00021-000:symbolName}}.validate(o) === true,
+export const {{00018-000:symbolName}} = {
+    validate: require('./schemas/educational-detection-request.schema.js') as ValidateFunction<{{00018-000:symbolName}}>,
+    get schema() { return {{00018-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00018-000:symbolName}} => {{00018-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00021-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00021-000:symbolName}}.validate.errors ?? [])
+        if (!{{00018-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00018-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00026-000:symbolName}} {
+export interface {{00022-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -537,18 +582,18 @@ export interface {{00026-000:symbolName}} {
     text?: string
 }
 
-export const {{00026-000:symbolName}} = {
-    validate: require('./schemas/gender-detection-request.schema.js') as ValidateFunction<{{00026-000:symbolName}}>,
-    get schema() { return {{00026-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00026-000:symbolName}} => {{00026-000:symbolName}}.validate(o) === true,
+export const {{00022-000:symbolName}} = {
+    validate: require('./schemas/gender-detection-request.schema.js') as ValidateFunction<{{00022-000:symbolName}}>,
+    get schema() { return {{00022-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00022-000:symbolName}} => {{00022-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00026-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00026-000:symbolName}}.validate.errors ?? [])
+        if (!{{00022-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00022-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00033-000:symbolName}} {
+export interface {{00028-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -563,18 +608,18 @@ export interface {{00033-000:symbolName}} {
     text?: string
 }
 
-export const {{00033-000:symbolName}} = {
-    validate: require('./schemas/keyword-extraction-request.schema.js') as ValidateFunction<{{00033-000:symbolName}}>,
-    get schema() { return {{00033-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00033-000:symbolName}} => {{00033-000:symbolName}}.validate(o) === true,
+export const {{00028-000:symbolName}} = {
+    validate: require('./schemas/keyword-extraction-request.schema.js') as ValidateFunction<{{00028-000:symbolName}}>,
+    get schema() { return {{00028-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00028-000:symbolName}} => {{00028-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00033-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00033-000:symbolName}}.validate.errors ?? [])
+        if (!{{00028-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00028-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00038-000:symbolName}} {
+export interface {{00032-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -585,18 +630,18 @@ export interface {{00038-000:symbolName}} {
     text?: string
 }
 
-export const {{00038-000:symbolName}} = {
-    validate: require('./schemas/language-detection-request.schema.js') as ValidateFunction<{{00038-000:symbolName}}>,
-    get schema() { return {{00038-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00038-000:symbolName}} => {{00038-000:symbolName}}.validate(o) === true,
+export const {{00032-000:symbolName}} = {
+    validate: require('./schemas/language-detection-request.schema.js') as ValidateFunction<{{00032-000:symbolName}}>,
+    get schema() { return {{00032-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00032-000:symbolName}} => {{00032-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00038-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00038-000:symbolName}}.validate.errors ?? [])
+        if (!{{00032-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00032-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00043-000:symbolName}} {
+export interface {{00036-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -607,13 +652,57 @@ export interface {{00043-000:symbolName}} {
     text?: string
 }
 
-export const {{00043-000:symbolName}} = {
-    validate: require('./schemas/readability-assessment-request.schema.js') as ValidateFunction<{{00043-000:symbolName}}>,
-    get schema() { return {{00043-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00043-000:symbolName}} => {{00043-000:symbolName}}.validate(o) === true,
+export const {{00036-000:symbolName}} = {
+    validate: require('./schemas/readability-assessment-request.schema.js') as ValidateFunction<{{00036-000:symbolName}}>,
+    get schema() { return {{00036-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00036-000:symbolName}} => {{00036-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00043-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00043-000:symbolName}}.validate.errors ?? [])
+        if (!{{00036-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00036-000:symbolName}}.validate.errors ?? [])
+        }
+    },
+} as const
+
+export interface {{00040-000:symbolName}} {
+    /**
+     * Your API Key
+     */
+    api_key: string
+    /**
+     * The text that you want to analyze. It should not contain HTML tags.
+     */
+    text?: string
+}
+
+export const {{00040-000:symbolName}} = {
+    validate: require('./schemas/sentiment-analysis-request.schema.js') as ValidateFunction<{{00040-000:symbolName}}>,
+    get schema() { return {{00040-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00040-000:symbolName}} => {{00040-000:symbolName}}.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!{{00040-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00040-000:symbolName}}.validate.errors ?? [])
+        }
+    },
+} as const
+
+export interface {{00044-000:symbolName}} {
+    /**
+     * Your API Key
+     */
+    api_key: string
+    /**
+     * The text that you want to analyze. It should not contain HTML tags.
+     */
+    text?: string
+}
+
+export const {{00044-000:symbolName}} = {
+    validate: require('./schemas/spam-detection-request.schema.js') as ValidateFunction<{{00044-000:symbolName}}>,
+    get schema() { return {{00044-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00044-000:symbolName}} => {{00044-000:symbolName}}.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!{{00044-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00044-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
@@ -630,7 +719,7 @@ export interface {{00048-000:symbolName}} {
 }
 
 export const {{00048-000:symbolName}} = {
-    validate: require('./schemas/sentiment-analysis-request.schema.js') as ValidateFunction<{{00048-000:symbolName}}>,
+    validate: require('./schemas/subjectivity-analysis-request.schema.js') as ValidateFunction<{{00048-000:symbolName}}>,
     get schema() { return {{00048-000:symbolName}}.validate.schema},
     is: (o: unknown): o is {{00048-000:symbolName}} => {{00048-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
@@ -640,51 +729,7 @@ export const {{00048-000:symbolName}} = {
     },
 } as const
 
-export interface {{00053-000:symbolName}} {
-    /**
-     * Your API Key
-     */
-    api_key: string
-    /**
-     * The text that you want to analyze. It should not contain HTML tags.
-     */
-    text?: string
-}
-
-export const {{00053-000:symbolName}} = {
-    validate: require('./schemas/spam-detection-request.schema.js') as ValidateFunction<{{00053-000:symbolName}}>,
-    get schema() { return {{00053-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00053-000:symbolName}} => {{00053-000:symbolName}}.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!{{00053-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00053-000:symbolName}}.validate.errors ?? [])
-        }
-    },
-} as const
-
-export interface {{00058-000:symbolName}} {
-    /**
-     * Your API Key
-     */
-    api_key: string
-    /**
-     * The text that you want to analyze. It should not contain HTML tags.
-     */
-    text?: string
-}
-
-export const {{00058-000:symbolName}} = {
-    validate: require('./schemas/subjectivity-analysis-request.schema.js') as ValidateFunction<{{00058-000:symbolName}}>,
-    get schema() { return {{00058-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00058-000:symbolName}} => {{00058-000:symbolName}}.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!{{00058-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00058-000:symbolName}}.validate.errors ?? [])
-        }
-    },
-} as const
-
-export interface {{00063-000:symbolName}} {
+export interface {{00052-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -695,18 +740,18 @@ export interface {{00063-000:symbolName}} {
     text?: string
 }
 
-export const {{00063-000:symbolName}} = {
-    validate: require('./schemas/text-extraction-request.schema.js') as ValidateFunction<{{00063-000:symbolName}}>,
-    get schema() { return {{00063-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00063-000:symbolName}} => {{00063-000:symbolName}}.validate(o) === true,
+export const {{00052-000:symbolName}} = {
+    validate: require('./schemas/text-extraction-request.schema.js') as ValidateFunction<{{00052-000:symbolName}}>,
+    get schema() { return {{00052-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00052-000:symbolName}} => {{00052-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00063-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00063-000:symbolName}}.validate.errors ?? [])
+        if (!{{00052-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00052-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00068-000:symbolName}} {
+export interface {{00056-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -717,18 +762,18 @@ export interface {{00068-000:symbolName}} {
     text?: string
 }
 
-export const {{00068-000:symbolName}} = {
-    validate: require('./schemas/topic-classification-request.schema.js') as ValidateFunction<{{00068-000:symbolName}}>,
-    get schema() { return {{00068-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00068-000:symbolName}} => {{00068-000:symbolName}}.validate(o) === true,
+export const {{00056-000:symbolName}} = {
+    validate: require('./schemas/topic-classification-request.schema.js') as ValidateFunction<{{00056-000:symbolName}}>,
+    get schema() { return {{00056-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00056-000:symbolName}} => {{00056-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00068-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00068-000:symbolName}}.validate.errors ?? [])
+        if (!{{00056-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00056-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
 
-export interface {{00073-000:symbolName}} {
+export interface {{00060-000:symbolName}} {
     /**
      * Your API Key
      */
@@ -739,13 +784,13 @@ export interface {{00073-000:symbolName}} {
     text?: string
 }
 
-export const {{00073-000:symbolName}} = {
-    validate: require('./schemas/twitter-sentiment-analysis-request.schema.js') as ValidateFunction<{{00073-000:symbolName}}>,
-    get schema() { return {{00073-000:symbolName}}.validate.schema},
-    is: (o: unknown): o is {{00073-000:symbolName}} => {{00073-000:symbolName}}.validate(o) === true,
+export const {{00060-000:symbolName}} = {
+    validate: require('./schemas/twitter-sentiment-analysis-request.schema.js') as ValidateFunction<{{00060-000:symbolName}}>,
+    get schema() { return {{00060-000:symbolName}}.validate.schema},
+    is: (o: unknown): o is {{00060-000:symbolName}} => {{00060-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
-        if (!{{00073-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00073-000:symbolName}}.validate.errors ?? [])
+        if (!{{00060-000:symbolName}}.validate(o)) {
+            throw new AjvValidator.ValidationError({{00060-000:symbolName}}.validate.errors ?? [])
         }
     },
 } as const
@@ -755,35 +800,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -791,59 +842,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -858,35 +903,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -894,59 +945,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -961,35 +1006,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -997,59 +1048,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1064,35 +1109,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1100,59 +1151,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1167,35 +1212,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1203,59 +1254,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1270,35 +1315,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1306,59 +1357,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1373,35 +1418,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1409,59 +1460,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1476,35 +1521,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1512,59 +1563,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1579,35 +1624,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1615,59 +1666,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1682,35 +1727,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1718,59 +1769,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1785,35 +1830,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1821,59 +1872,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1888,35 +1933,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -1924,59 +1975,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -1991,35 +2036,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -2027,59 +2078,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,
@@ -2094,35 +2139,41 @@ export const {{00073-000:symbolName}} = {
   },
   {
     "data": {
-      "00016-000": {
-        "referenceName": "{{00016-000:symbolName}}",
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "DocumentSimilarityRequest",
-        "uniqueSymbolName": "{{00016-000:symbolName}}",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
       },
-      "00021-000": {
-        "referenceName": "{{00021-000:symbolName}}",
+      "00018-000": {
+        "referenceName": "{{00018-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "EducationalDetectionRequest",
-        "uniqueSymbolName": "{{00021-000:symbolName}}",
+        "uniqueSymbolName": "{{00018-000:symbolName}}",
       },
-      "00026-000": {
-        "referenceName": "{{00026-000:symbolName}}",
+      "00022-000": {
+        "referenceName": "{{00022-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "GenderDetectionRequest",
-        "uniqueSymbolName": "{{00026-000:symbolName}}",
+        "uniqueSymbolName": "{{00022-000:symbolName}}",
       },
-      "00033-000": {
-        "referenceName": "{{00033-000:symbolName}}",
+      "00028-000": {
+        "referenceName": "{{00028-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "KeywordExtractionRequest",
-        "uniqueSymbolName": "{{00033-000:symbolName}}",
+        "uniqueSymbolName": "{{00028-000:symbolName}}",
       },
-      "00038-000": {
-        "referenceName": "{{00038-000:symbolName}}",
+      "00032-000": {
+        "referenceName": "{{00032-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "LanguageDetectionRequest",
-        "uniqueSymbolName": "{{00038-000:symbolName}}",
+        "uniqueSymbolName": "{{00032-000:symbolName}}",
+      },
+      "00036-000": {
+        "referenceName": "{{00036-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "ReadabilityAssessmentRequest",
+        "uniqueSymbolName": "{{00036-000:symbolName}}",
       },
       "0004-000": {
         "referenceName": "{{0004-000:symbolName}}",
@@ -2130,59 +2181,53 @@ export const {{00073-000:symbolName}} = {
         "symbolName": "AdultContentDetectionRequest",
         "uniqueSymbolName": "{{0004-000:symbolName}}",
       },
-      "00043-000": {
-        "referenceName": "{{00043-000:symbolName}}",
+      "00040-000": {
+        "referenceName": "{{00040-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "ReadabilityAssessmentRequest",
-        "uniqueSymbolName": "{{00043-000:symbolName}}",
+        "symbolName": "SentimentAnalysisRequest",
+        "uniqueSymbolName": "{{00040-000:symbolName}}",
+      },
+      "00044-000": {
+        "referenceName": "{{00044-000:symbolName}}",
+        "srcPath": "examples/datumbox/datumbox.client.type.ts",
+        "symbolName": "SpamDetectionRequest",
+        "uniqueSymbolName": "{{00044-000:symbolName}}",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SentimentAnalysisRequest",
+        "symbolName": "SubjectivityAnalysisRequest",
         "uniqueSymbolName": "{{00048-000:symbolName}}",
       },
-      "00053-000": {
-        "referenceName": "{{00053-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SpamDetectionRequest",
-        "uniqueSymbolName": "{{00053-000:symbolName}}",
-      },
-      "00058-000": {
-        "referenceName": "{{00058-000:symbolName}}",
-        "srcPath": "examples/datumbox/datumbox.client.type.ts",
-        "symbolName": "SubjectivityAnalysisRequest",
-        "uniqueSymbolName": "{{00058-000:symbolName}}",
-      },
-      "00063-000": {
-        "referenceName": "{{00063-000:symbolName}}",
+      "00052-000": {
+        "referenceName": "{{00052-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TextExtractionRequest",
-        "uniqueSymbolName": "{{00063-000:symbolName}}",
+        "uniqueSymbolName": "{{00052-000:symbolName}}",
       },
-      "00068-000": {
-        "referenceName": "{{00068-000:symbolName}}",
+      "00056-000": {
+        "referenceName": "{{00056-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TopicClassificationRequest",
-        "uniqueSymbolName": "{{00068-000:symbolName}}",
+        "uniqueSymbolName": "{{00056-000:symbolName}}",
       },
-      "00073-000": {
-        "referenceName": "{{00073-000:symbolName}}",
+      "00060-000": {
+        "referenceName": "{{00060-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "TwitterSentimentAnalysisRequest",
-        "uniqueSymbolName": "{{00073-000:symbolName}}",
+        "uniqueSymbolName": "{{00060-000:symbolName}}",
       },
-      "00075-000": {
-        "referenceName": "{{00075-000:symbolName}}",
+      "00061-000": {
+        "referenceName": "{{00061-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.ts",
         "symbolName": "PetStore",
-        "uniqueSymbolName": "{{00075-000:symbolName}}",
+        "uniqueSymbolName": "{{00061-000:symbolName}}",
       },
-      "0009-000": {
-        "referenceName": "{{0009-000:symbolName}}",
+      "0008-000": {
+        "referenceName": "{{0008-000:symbolName}}",
         "srcPath": "examples/datumbox/datumbox.client.type.ts",
         "symbolName": "CommercialDetectionRequest",
-        "uniqueSymbolName": "{{0009-000:symbolName}}",
+        "uniqueSymbolName": "{{0008-000:symbolName}}",
       },
     },
     "prettify": false,

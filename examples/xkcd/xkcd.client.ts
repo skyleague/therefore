@@ -50,7 +50,7 @@ export class Xkcd {
 
     public async awaitResponse<
         T,
-        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert: (o: unknown) => void }>
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>
     >(response: CancelableRequest<Response<unknown>>, schemas: S) {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
             ? `${S}` extends `${T}${infer _X}`
@@ -59,11 +59,12 @@ export class Xkcd {
             : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
-        schemas[result.statusCode]?.assert(result.body)
+        const schema = schemas[result.statusCode] ?? schemas.default
+        schema?.assert?.(result.body)
         return {
             statusCode: result.statusCode,
             headers: result.headers,
-            body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>,
+            body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>,
         }
     }
 }

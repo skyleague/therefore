@@ -65,6 +65,9 @@ export class PetStore {
             }),
             {
                 200: Pet,
+                400: { is: (x: unknown): x is unknown => true },
+                404: { is: (x: unknown): x is unknown => true },
+                405: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -82,6 +85,7 @@ export class PetStore {
             }),
             {
                 200: Pet,
+                405: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -102,6 +106,7 @@ export class PetStore {
             }),
             {
                 200: FindPetsByStatusResponse,
+                400: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -122,6 +127,7 @@ export class PetStore {
             }),
             {
                 200: FindPetsByTagsResponse,
+                400: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -144,6 +150,8 @@ export class PetStore {
             }),
             {
                 200: Pet,
+                400: { is: (x: unknown): x is unknown => true },
+                404: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -160,9 +168,14 @@ export class PetStore {
         query?: { name?: string; status?: string }
         auth?: string[][] | string[]
     }) {
-        return this.buildClient(auth).post(`pet/${path.petId}`, {
-            searchParams: query ?? {},
-        })
+        return this.awaitResponse(
+            this.buildClient(auth).post(`pet/${path.petId}`, {
+                searchParams: query ?? {},
+            }),
+            {
+                405: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -177,9 +190,14 @@ export class PetStore {
         headers?: { api_key?: string }
         auth?: string[][] | string[]
     }) {
-        return this.buildClient(auth).delete(`pet/${path.petId}`, {
-            headers: headers ?? {},
-        })
+        return this.awaitResponse(
+            this.buildClient(auth).delete(`pet/${path.petId}`, {
+                headers: headers ?? {},
+            }),
+            {
+                400: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -239,6 +257,7 @@ export class PetStore {
             }),
             {
                 200: Order,
+                405: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -255,6 +274,8 @@ export class PetStore {
             }),
             {
                 200: Order,
+                400: { is: (x: unknown): x is unknown => true },
+                404: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -265,7 +286,10 @@ export class PetStore {
      * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
      */
     public async deleteOrder({ path }: { path: { orderId: string } }) {
-        return this.client.delete(`store/order/${path.orderId}`)
+        return this.awaitResponse(this.client.delete(`store/order/${path.orderId}`, {}), {
+            400: { is: (x: unknown): x is string => true },
+            404: { is: (x: unknown): x is string => true },
+        })
     }
 
     /**
@@ -315,6 +339,7 @@ export class PetStore {
             }),
             {
                 200: LoginUserResponse,
+                400: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -323,7 +348,9 @@ export class PetStore {
      * Logs out current logged in user session
      */
     public async logoutUser() {
-        return this.client.get(`user/logout`)
+        return this.awaitResponse(this.client.get(`user/logout`, {}), {
+            default: { is: (x: unknown): x is string => true },
+        })
     }
 
     /**
@@ -336,6 +363,8 @@ export class PetStore {
             }),
             {
                 200: User,
+                400: { is: (x: unknown): x is unknown => true },
+                404: { is: (x: unknown): x is unknown => true },
             }
         )
     }
@@ -348,9 +377,14 @@ export class PetStore {
     public async updateUser({ body, path }: { body: User; path: { username: string } }) {
         this.validateRequestBody(User, body)
 
-        return this.client.put(`user/${path.username}`, {
-            json: body,
-        })
+        return this.awaitResponse(
+            this.client.put(`user/${path.username}`, {
+                json: body,
+            }),
+            {
+                default: { is: (x: unknown): x is string => true },
+            }
+        )
     }
 
     /**
@@ -359,7 +393,10 @@ export class PetStore {
      * This can only be done by the logged in user.
      */
     public async deleteUser({ path }: { path: { username: string } }) {
-        return this.client.delete(`user/${path.username}`)
+        return this.awaitResponse(this.client.delete(`user/${path.username}`, {}), {
+            400: { is: (x: unknown): x is string => true },
+            404: { is: (x: unknown): x is string => true },
+        })
     }
 
     public validateRequestBody<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, body: T) {
@@ -369,7 +406,7 @@ export class PetStore {
 
     public async awaitResponse<
         T,
-        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate: ValidateFunction<T> }>
+        S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate?: ValidateFunction<T> }>
     >(response: CancelableRequest<Response<unknown>>, schemas: S) {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
             ? `${S}` extends `${T}${infer _X}`
@@ -378,13 +415,13 @@ export class PetStore {
             : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
-        const validator = schemas[result.statusCode]
+        const validator = schemas[result.statusCode] ?? schemas.default
         if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300) {
             return {
                 statusCode: result.statusCode,
                 headers: result.headers,
                 left: result.body,
-                validationErrors: validator?.validate.errors ?? undefined,
+                validationErrors: validator?.validate?.errors ?? undefined,
             } as {
                 statusCode: number
                 headers: IncomingHttpHeaders
@@ -395,7 +432,7 @@ export class PetStore {
         return { statusCode: result.statusCode, headers: result.headers, right: result.body } as {
             statusCode: number
             headers: IncomingHttpHeaders
-            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>
+            right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>
         }
     }
 

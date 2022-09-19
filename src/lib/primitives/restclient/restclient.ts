@@ -34,6 +34,7 @@ import {
     isDefined,
     keysOf,
     omitUndefined,
+    valuesOf,
 } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import inflection from 'inflection'
@@ -91,6 +92,7 @@ export function methodName(
 }
 
 const jsonMime = /(application|\*)\/(.*json|\*)/
+const yamlMime = /(application|\*)\/(.*yaml|\*)/
 const formUrlEncodedMime = /^application\/x-www-form-urlencoded$/
 const binaryMime = /application\/.*octet-stream/
 export async function getRequestBody({
@@ -164,6 +166,11 @@ export async function getRequestBody({
     return undefined
 }
 
+const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
+
+export const isStringIs = '{is: (x: unknown): x is string => true}'
+export const isUnknownIs = '{is: (x: unknown): x is unknown => true}'
+
 export async function getResponseBodies({
     responses,
     openapi,
@@ -179,30 +186,68 @@ export async function getResponseBodies({
     useEither: boolean
     strict: boolean
 }) {
-    const result: [string, { schema: ThereforeCst; mimeType: string | undefined }][] = []
-    const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2')).length
+    const result: [
+        string,
+        (
+            | {
+                  schema: ThereforeCst
+                  mimeType: string
+                  type: 'json'
+                  isUnknown?: boolean
+              }
+            | {
+                  schema: ThereforeCst | undefined
+                  mimeType: string | undefined
+                  type: 'text'
+                  isUnknown?: boolean
+              }
+        )
+    ][] = []
+    const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2') || s === 'default').length
     for await (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
         const reference = responseRef as Reference | Response
         const response = (await jsonPointer({ schema: openapi, ptr: responseRef ?? {} })) as Response
-        const [mimeType, content] = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
+        const isOnlySuccess = (statusCode.startsWith('2') || statusCode === 'default') && successCodesCount <= 1
+        const [jsonMimeType, jsonContent] = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
             undefined,
             undefined,
         ]
-        const schema = content?.schema ?? {}
+        if (jsonContent !== undefined) {
+            const schema = jsonContent?.schema ?? {}
 
-        const therefore = await $jsonschema(schema as JsonSchema, {
-            name: `${method}Response${statusCode.startsWith('2') && successCodesCount <= 1 ? '' : statusCode}`,
-            root: openapi as JsonSchema,
-            references,
-            reference: '$ref' in reference ? reference.$ref : undefined,
-            exportAllSymbols: true,
-            strict,
-        })
-        therefore.description.validator ??= { enabled: true, assert: false }
-        therefore.description.validator.assert ||= !useEither
-        if (therefore.type !== 'unknown') {
-            result.push([statusCode, { schema: therefore, mimeType }])
+            const therefore = await $jsonschema(schema as JsonSchema, {
+                name: `${method}Response${isOnlySuccess ? '' : capitalize(statusCode)}`,
+                root: openapi as JsonSchema,
+                references,
+                reference: '$ref' in reference ? reference.$ref : undefined,
+                exportAllSymbols: true,
+                strict,
+            })
+            therefore.description.validator ??= { enabled: true, assert: false }
+            therefore.description.validator.assert ||= !useEither
+            result.push([statusCode, { schema: therefore, mimeType: jsonMimeType, type: 'json' }])
+            continue
         }
+
+        const [yamlMimeType, yamlContent] = entriesOf(response.content ?? {}).find(([mime]) => mime.match(yamlMime)) ?? [
+            undefined,
+            undefined,
+        ]
+        if (yamlContent !== undefined) {
+            result.push([statusCode, { schema: undefined, mimeType: yamlMimeType, type: 'text' }])
+
+            continue
+        }
+
+        result.push([
+            statusCode,
+            {
+                schema: undefined,
+                mimeType: undefined,
+                type: 'text',
+                isUnknown: true,
+            },
+        ])
     }
     if (result.length > 0) {
         return { right: fromEntries(result) }
@@ -598,21 +643,22 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         writer.write(jsdoc)
                     }
 
+                    const hasResponse = 'right' in responses && responses.right !== undefined
+                    let responseType: 'json' | 'text' | undefined
+                    generateAwaitResponse ||= hasResponse
+
                     writer.writeLine(
-                        `public async ${method}(${methodArguments}${
+                        `public ${hasResponse ? 'async' : ''} ${method}(${methodArguments}${
                             methodArgumentsInner.length > 0 && !hasRequiredArguments ? ' = {}' : ''
                         })`
                     )
                     writer
                         .block(() => {
-                            const hasResponse = 'right' in responses && responses.right !== undefined
                             const hasInputObj =
                                 request !== undefined ||
                                 queryParameters.length > 0 ||
                                 headerParameters.length > 0 ||
                                 (explicitContentNegotiation && hasResponse)
-
-                            generateAwaitResponse ||= hasResponse
                             writer
                                 .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                                 .conditionalWrite(hasResponse, 'return this.awaitResponse(')
@@ -632,31 +678,69 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                                 `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
                                             )
 
+                                        const successResponses = hasResponse
+                                            ? entriesOf(responses.right)
+                                                  .filter((r) => r[1].isUnknown !== true)
+                                                  .filter(([statusCode]) => statusCode.startsWith('2'))
+                                            : ([undefined] as const)
+                                        const defaultResponse = hasResponse
+                                            ? entriesOf(responses.right).filter(
+                                                  ([statusCode, response]) =>
+                                                      response.isUnknown !== true && statusCode.startsWith('default')
+                                              )
+                                            : ([undefined] as const)
+                                        const errorResponses = hasResponse
+                                            ? entriesOf(responses.right).filter(
+                                                  ([statusCode, response]) =>
+                                                      response.isUnknown !== true &&
+                                                      (statusCode.startsWith('4') || statusCode.startsWith('5'))
+                                              )
+                                            : ([undefined] as const)
+                                        const eligibleResponseTypes = hasResponse
+                                            ? successResponses.length > 0
+                                                ? successResponses
+                                                : defaultResponse.length > 0
+                                                ? defaultResponse
+                                                : errorResponses
+                                            : ([undefined] as const)
+                                        const eligibleResponse = eligibleResponseTypes[0]
                                         let hasWrittenHeaders = false
-                                        if (explicitContentNegotiation && hasResponse) {
-                                            const eligibleMimeTypes = entriesOf(responses.right)
-                                                .filter(([statusCode]) => statusCode.startsWith('2'))
-                                                .map(([, response]) => response.mimeType)
-                                                .filter(isDefined)
-                                            if (eligibleMimeTypes.length > 0) {
-                                                writer
-                                                    .conditionalWrite(
-                                                        headerParameters.length > 0,
-                                                        `headers: { Accept: "${eligibleMimeTypes[0]}", ...headers },`
-                                                    )
-                                                    .conditionalWrite(
-                                                        headerParameters.length === 0,
-                                                        `headers: { Accept: "${eligibleMimeTypes[0]}" },`
-                                                    )
-                                                hasWrittenHeaders = true
-                                            }
+                                        if (
+                                            explicitContentNegotiation &&
+                                            hasResponse &&
+                                            eligibleResponse?.[1].mimeType !== undefined
+                                        ) {
+                                            writer
+                                                .conditionalWrite(
+                                                    headerParameters.length > 0,
+                                                    `headers: { Accept: "${eligibleResponse[1].mimeType}", ...headers },`
+                                                )
+                                                .conditionalWrite(
+                                                    headerParameters.length === 0,
+                                                    `headers: { Accept: "${eligibleResponse[1].mimeType}" },`
+                                                )
+                                            hasWrittenHeaders = true
                                         }
                                         writer.conditionalWrite(
                                             headerParameters.length > 0 && !hasWrittenHeaders,
                                             `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
                                         )
-
-                                        writer.conditionalWrite(hasResponse, `responseType:'json',`)
+                                        if (eligibleResponse !== undefined) {
+                                            responseType = eligibleResponse[1].type
+                                            writer.write(`responseType: '${eligibleResponse[1].type}',`)
+                                        } else if (hasResponse) {
+                                            const found = [
+                                                ...new Set(
+                                                    ...valuesOf(responses.right)
+                                                        .filter((r) => r.isUnknown !== true)
+                                                        .map((r) => r.type)
+                                                ),
+                                            ]
+                                            if (found.length === 1) {
+                                                responseType = found[0] as typeof responseType
+                                                writer.write(`responseType: '${found[0]}',`)
+                                            }
+                                        }
                                     })
                                     .write(')')
                             } else {
@@ -666,11 +750,23 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                 writer
                                     .write(', ')
                                     .inlineBlock(() => {
-                                        for (const [statusCode, { schema: responseSchema }] of entriesOf(responses.right ?? {})) {
-                                            if (!seenChildren.has(responseSchema as ThereforeCst)) {
-                                                children.push(responseSchema as ThereforeCst)
+                                        for (const [statusCode, { schema: responseSchema, isUnknown }] of entriesOf(
+                                            responses.right ?? {}
+                                        )) {
+                                            if (responseSchema !== undefined && isUnknown !== true) {
+                                                if (!seenChildren.has(responseSchema as ThereforeCst)) {
+                                                    children.push(responseSchema as ThereforeCst)
+                                                }
+                                                writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName}},`)
+                                            } else if (statusCode !== 'default' || entriesOf(responses.right).length === 1) {
+                                                writer.write(
+                                                    `${statusCode}: ${
+                                                        responseType === 'text' || responseType === undefined
+                                                            ? isStringIs
+                                                            : isUnknownIs
+                                                    },`
+                                                )
                                             }
-                                            writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName}},`)
                                         }
                                     })
                                     .write(')')
@@ -699,7 +795,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                 writer
                     .newLine()
                     .writeLine(
-                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate: ValidateFunction<T> }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
+                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; validate?: ValidateFunction<T> }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
                     )
                     .block(() => {
                         writer
@@ -708,14 +804,14 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                             )
                             .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
                             .writeLine('const result = await response')
-                            .writeLine('const validator = schemas[result.statusCode]')
+                            .writeLine('const validator = schemas[result.statusCode] ?? schemas.default')
                             .writeLine(
                                 'if (validator?.is(result.body) === false || result.statusCode < 200 || result.statusCode >= 300)'
                             )
                             .block(() => {
                                 writer
                                     .write(
-                                        'return {statusCode: result.statusCode, headers: result.headers, left: result.body, validationErrors: validator?.validate.errors ?? undefined } as '
+                                        'return {statusCode: result.statusCode, headers: result.headers, left: result.body, validationErrors: validator?.validate?.errors ?? undefined } as '
                                     )
                                     .writeLine(
                                         `{statusCode: number, headers: IncomingHttpHeaders, left: InferSchemaType<S[keyof S]>, validationErrors?: ErrorObject[]}`
@@ -723,7 +819,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                             })
                             .write(`return {statusCode: result.statusCode, headers: result.headers, right: result.body } as `)
                             .writeLine(
-                                `{statusCode: number, headers: IncomingHttpHeaders, right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]>}`
+                                `{statusCode: number, headers: IncomingHttpHeaders, right: InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>}`
                             )
                     })
                     .newLine()
@@ -731,7 +827,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                 writer
                     .newLine()
                     .writeLine(
-                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert: (o: unknown) => void }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
+                        `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: CancelableRequest<Response<unknown>>, schemas: S)`
                     )
                     .block(() => {
                         writer
@@ -740,9 +836,10 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                             )
                             .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
                             .writeLine('const result = await response')
-                            .writeLine('schemas[result.statusCode]?.assert(result.body)')
+                            .writeLine('const schema = schemas[result.statusCode] ?? schemas.default')
+                            .writeLine('schema?.assert?.(result.body)')
                             .writeLine(
-                                `return {statusCode: result.statusCode, headers: result.headers, body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2'>>]> }`
+                                `return {statusCode: result.statusCode, headers: result.headers, body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]> }`
                             )
                     })
                     .newLine()

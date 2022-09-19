@@ -140,17 +140,17 @@ export const Project = {
     is: (o: unknown): o is Project => Project.validate(o) === true,
 } as const
 
-export interface GetApiByResponse {
+export interface GetApiByResponse200 {
     id?: number
     lastUpdated?: string
 }
 
-export const GetApiByResponse = {
-    validate: require('./schemas/get-api-by-response.schema.js') as ValidateFunction<GetApiByResponse>,
+export const GetApiByResponse200 = {
+    validate: require('./schemas/get-api-by-response200.schema.js') as ValidateFunction<GetApiByResponse200>,
     get schema() {
-        return GetApiByResponse.validate.schema
+        return GetApiByResponse200.validate.schema
     },
-    is: (o: unknown): o is GetApiByResponse => GetApiByResponse.validate(o) === true,
+    is: (o: unknown): o is GetApiByResponse200 => GetApiByResponse200.validate(o) === true,
 } as const
 
 /**

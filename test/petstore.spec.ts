@@ -57,6 +57,21 @@ describe('updatePet', () => {
             `)
         }
     })
+
+    test('create user with default response', async () => {
+        const user: User = { id: 1 }
+        nock('http://www.example.com:80').post('/user').reply(200, user)
+        const result = await client.createUser({ body: user })
+        expect(eitherToError(result)).toEqual(user)
+        if ('right' in result) {
+            const createdUser: User = result.right
+            expect(createdUser).toMatchInlineSnapshot(`
+                {
+                  "id": 1,
+                }
+            `)
+        }
+    })
 })
 
 describe('entities satisfy arbitrary', () => {
