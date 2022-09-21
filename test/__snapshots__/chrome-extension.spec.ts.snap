@@ -588,6 +588,7 @@ type {{00024-000:symbolName}} = (string)[]
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "0001-000": {
         "referenceName": "{{0001-000:symbolName}}",

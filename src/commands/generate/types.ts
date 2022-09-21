@@ -54,7 +54,7 @@ export interface FileSymbol {
 export interface FileDefinition {
     srcPath: string
     targetPath: string
-    attachedFiles: { targetPath: string; content: string; prettify: boolean; type: ThereforeOutputType }[]
+    attachedFiles: { targetPath: string; content: string; prettify: boolean; type: ThereforeOutputType; clean?: () => void }[]
     symbols: FileSymbol[]
     dependencies: Record<string, string[] | undefined>
 }

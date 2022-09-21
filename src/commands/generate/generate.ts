@@ -114,12 +114,20 @@ export async function loadSymbol({
     })
 
     if (definition.isExported && simplified.description.validator?.enabled) {
+        const cleanSchemasFolder = () => {
+            const targetFolder = path.dirname(path.join(targetBaseDir, compiledFile))
+            if (fs.existsSync(targetFolder)) {
+                console.warn(`Cleaning ${targetFolder}`)
+                fs.rmSync(targetFolder, { force: true, recursive: true })
+            }
+        }
         if (jsonschema.compiled === true) {
             file.attachedFiles.push({
                 targetPath: path.join(targetBaseDir, compiledFile),
                 content: `/**\n * ${generatedBy}\n * eslint-disable\n */\n${jsonschema.code}`,
                 prettify: false,
                 type: 'validator',
+                clean: cleanSchemasFolder,
             })
         } else {
             file.attachedFiles.push({
@@ -127,6 +135,7 @@ export async function loadSymbol({
                 content: JSON.stringify(jsonschema.schema, null, 2),
                 prettify: true,
                 type: 'jsonschema',
+                clean: cleanSchemasFolder,
             })
         }
 
@@ -228,6 +237,7 @@ export async function compileOutputFiles(
         data: Record<string, ReferenceData>
         type: ThereforeOutputType
         prettify: boolean
+        clean?: () => void
     }[]
 > {
     const outputFiles: OutputFile[] = []
@@ -248,12 +258,14 @@ export async function generate({
     extension,
     compile,
     outputFileRename,
+    clean,
 }: {
     globs: string[]
     ignore: string[]
     extension: string
     compile: boolean
     outputFileRename: (path: string) => string
+    clean: boolean
 }): Promise<void> {
     const cwd = process.cwd()
     const entries = await expandGlobs({ patterns: globs, ignore: [`!${extension}`, ...ignore], cwd, extension })
@@ -263,6 +275,15 @@ export async function generate({
         outputFileRename,
         compile,
     })
+
+    if (clean) {
+        for (const of of outputFiles) {
+            if (of.clean !== undefined) {
+                of.clean()
+            }
+        }
+    }
+
     const prettier = maybeLoadPrettier()
 
     const data = outputFiles.reduce<Record<string, ReferenceData>>(

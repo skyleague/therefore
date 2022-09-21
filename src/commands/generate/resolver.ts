@@ -134,6 +134,7 @@ export function resolveTypescriptSchema({
             template: j.content,
             data: { ...localReferences, ...references },
             prettify: j.prettify,
+            clean: j.clean,
         }))
     )
 }

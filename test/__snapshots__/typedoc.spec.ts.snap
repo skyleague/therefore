@@ -250,6 +250,7 @@ type {{00010-000:symbolName}} = string | (string)[]
     "type": "typescript",
   },
   {
+    "clean": [Function],
     "data": {
       "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
@@ -293,6 +294,7 @@ type {{00010-000:symbolName}} = string | (string)[]
     "type": "validator",
   },
   {
+    "clean": [Function],
     "data": {
       "00010-000": {
         "referenceName": "{{00010-000:symbolName}}",
