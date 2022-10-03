@@ -3,13 +3,14 @@ import { $jsonschema } from './jsonschema'
 import { awaitAll } from '../../../common/util'
 import type { JsonSchema } from '../../../json'
 import { walkCst } from '../../cst/visitor'
+import { toArbitrary } from '../../visitor'
 import { jsonSchemaContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript'
 import { typeDefinitionVisitor } from '../../visitor/typescript/typescript'
 import { $object } from '../object'
 import type { OpenapiV3 } from '../restclient/openapi.type'
 
-import { entriesOf } from '@skyleague/axioms'
+import { entriesOf, forAll } from '@skyleague/axioms'
 import got from 'got'
 
 describe('person', () => {
@@ -373,4 +374,8 @@ describe('petstore', () => {
             } as unknown as TypescriptWalkerContext)
         ).toMatchSnapshot()
     })
+})
+
+test('primitives', async () => {
+    forAll(toArbitrary<string>(await $jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
 })

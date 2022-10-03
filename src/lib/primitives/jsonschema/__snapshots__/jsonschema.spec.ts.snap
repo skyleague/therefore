@@ -547,7 +547,7 @@ Some useful links:
                     },
                     "termsOfService": "http://swagger.io/terms/",
                     "title": "Swagger Petstore - OpenAPI 3.0",
-                    "version": "1.0.15",
+                    "version": "1.0.17",
                   },
                   "openapi": "3.0.2",
                   "paths": {
@@ -2199,7 +2199,7 @@ Some useful links:
                 },
                 "termsOfService": "http://swagger.io/terms/",
                 "title": "Swagger Petstore - OpenAPI 3.0",
-                "version": "1.0.15",
+                "version": "1.0.17",
               },
               "openapi": "3.0.2",
               "paths": {
@@ -3532,7 +3532,7 @@ Some useful links:
                     },
                     "termsOfService": "http://swagger.io/terms/",
                     "title": "Swagger Petstore - OpenAPI 3.0",
-                    "version": "1.0.15",
+                    "version": "1.0.17",
                   },
                   "openapi": "3.0.2",
                   "paths": {
