@@ -45,7 +45,7 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
             return domain()
         }
         return string({
-            minLength: image.maxLength,
+            minLength: image.minLength,
             maxLength: image.maxLength,
         })
     },
