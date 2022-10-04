@@ -74,6 +74,7 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
         return array(child, {
             minLength: image.minItems,
             maxLength: image.maxItems,
+            uniqueItems: image.uniqueItems,
         })
     },
     tuple: ({ children }, context) =>
