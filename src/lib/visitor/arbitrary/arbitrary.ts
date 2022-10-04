@@ -40,7 +40,7 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
         if (image.format === 'date') {
             return date()
         } else if (image.format === 'date-time') {
-            return mapArbitrary((x) => toISO8601Date(x, { format: 'date-time' }), datetime())
+            return mapArbitrary(datetime(), (x) => toISO8601Date(x, { format: 'date-time' }))
         } else if (image.format === 'hostname') {
             return domain()
         }
