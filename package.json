@@ -1,8 +1,9 @@
 {
   "name": "@skyleague/therefore",
   "version": "1.0.0-local",
-  "description": "",
+  "description": "Therefore the JSON TypeScript toolkit.",
   "license": "MIT",
+  "author": "SkyLeague Technologies B.V. <technologies@skyleague.io> (https://skyleague.io)",
   "main": ".main.js",
   "types": "index.d.ts",
   "sideEffects": false,
