@@ -134,7 +134,7 @@ const schemaWalker: JsonSchemaWalker = {
                 (isBoolean(node.additionalProperties) && keysOf(node.additionalProperties).length === 0)) &&
             (node.patternProperties === undefined || keysOf(node.patternProperties).length === 0)
         ) {
-            return $unknown({ ...annotate(node, context) })
+            return $unknown({ ...annotate(node, context), json: true })
         }
         const { properties, indexSignature, indexPatterns, additionalProperties } = await indexProperties(node, context)
         const mergedProperties = { ...properties, ...node.properties }

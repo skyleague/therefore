@@ -5,7 +5,9 @@ import type { SchemaOptions } from '../base'
 /**
  * @category $unknown
  */
-export interface UnknownOptions {}
+export interface UnknownOptions {
+    json: boolean
+}
 
 export type UnknownType = CstNode<'unknown', UnknownOptions>
 
