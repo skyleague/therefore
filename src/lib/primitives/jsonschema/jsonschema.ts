@@ -18,10 +18,13 @@ import { $boolean } from '../boolean'
 import { $const } from '../const'
 import { $enum } from '../enum'
 import { $integer } from '../integer'
+import { $intersection } from '../intersection'
 import { $number } from '../number'
+import type { ObjectType } from '../object'
 import { $object } from '../object'
 import { $optional } from '../optional'
 import { $ref } from '../ref'
+import type { AsyncRefType } from '../ref/ref'
 import { $string } from '../string'
 import type { StringOptions } from '../string'
 import { $tuple } from '../tuple'
@@ -218,6 +221,7 @@ interface JsonSchemaContext {
     cache: Map<string, Promise<AyncThereforeCst>>
     exportAllSymbols: boolean
     name?: string | undefined
+    allowIntersectionTypes?: boolean
 }
 
 async function walkJsonschema({
@@ -240,6 +244,7 @@ async function walkJsonschema({
         cache = new Map<string, Promise<AyncThereforeCst>>(),
         exportAllSymbols = false,
         strict = true,
+        allowIntersectionTypes = false,
         ...rest
     } = maybeContext
     const context = {
@@ -332,6 +337,27 @@ async function walkJsonschema({
         )
     }
 
+    const validAllOf = child.allOf?.filter((c) => c.properties !== undefined || c.$ref !== undefined) ?? []
+    if (validAllOf.length > 0) {
+        if (allowIntersectionTypes) {
+            return $intersection(
+                (await asyncCollect(
+                    asyncMap(child.allOf!, (c) =>
+                        walkJsonschema({
+                            node: omitUndefined({ ...c }),
+                            visitor,
+                            childProperty: undefined,
+                            context,
+                        })
+                    )
+                )) as (AsyncRefType | ObjectType)[],
+                annotate(node, context)
+            )
+        } else {
+            console.warn('Encountered intersection type in jsonschema without explicitly allowing it, defaulting to unknown')
+        }
+    }
+
     if (isArray(child.type)) {
         return $union(
             await asyncCollect(asyncMap(child.type, async (t) => visitor[t ?? 'object']({ ...child, type: t }, context))),
@@ -353,6 +379,7 @@ export interface JsonSchemaOptions {
     exportAllSymbols?: boolean
     root?: JsonSchema
     dereferenceRoot?: boolean
+    allowIntersectionTypes?: boolean
 }
 
 /**

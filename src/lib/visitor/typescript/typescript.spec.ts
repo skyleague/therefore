@@ -15,6 +15,7 @@ import {
     $dict,
     $enum,
     $integer,
+    $intersection,
     $null,
     $nullable,
     $number,
@@ -171,6 +172,28 @@ describe('typescriptVisitor', () => {
         expect(
             walkCst($union([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"string | string | number"`)
+    })
+
+    test('intersection', () => {
+        expect(walkCst($intersection([$object({ foo: $string })]), typescriptVisitor, {} as TypescriptWalkerContext))
+            .toMatchInlineSnapshot(`
+            "{
+                foo: string
+            }"
+        `)
+        expect(
+            walkCst(
+                $intersection([$object({ foo: $string }), $object({ bar: $string })]),
+                typescriptVisitor,
+                {} as TypescriptWalkerContext
+            )
+        ).toMatchInlineSnapshot(`
+            "{
+                foo: string
+            } & {
+                bar: string
+            }"
+        `)
     })
 
     test('object', () => {
@@ -560,6 +583,43 @@ describe('toTypeDefinition', () => {
               "referenceName": "{{0006-000:symbolName}}",
               "render": [Function],
               "sourceSymbol": undefined,
+            }
+        `)
+    })
+
+    test('intersection', () => {
+        expect(
+            walkCst($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+            {
+              "declaration": "type {{0005-000:symbolName}} = {
+                foo: string
+            } & {
+                bar: string
+            }
+            ",
+              "referenceName": "{{0005-000:symbolName}}",
+            }
+        `)
+        expect(
+            walkCst($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+            {
+              "declaration": "type {{00010-000:symbolName}} = {
+                foo: string
+            } & {
+                bar: string
+            }
+            ",
+              "referenceName": "{{00010-000:symbolName}}",
             }
         `)
     })

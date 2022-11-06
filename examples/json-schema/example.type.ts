@@ -27,3 +27,27 @@ export const Person = {
         }
     },
 } as const
+
+export type SalesPerson = {
+    sales: number
+} & {
+    /**
+     * The person's first name.
+     */
+    firstName: string
+    lastName: string
+    age: number
+}
+
+export const SalesPerson = {
+    validate: require('./schemas/sales-person.schema.js') as ValidateFunction<SalesPerson>,
+    get schema() {
+        return SalesPerson.validate.schema
+    },
+    is: (o: unknown): o is SalesPerson => SalesPerson.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!SalesPerson.validate(o)) {
+            throw new AjvValidator.ValidationError(SalesPerson.validate.errors ?? [])
+        }
+    },
+} as const

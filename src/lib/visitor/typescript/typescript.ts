@@ -170,6 +170,8 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
     enum: ({ children }) => children.map((v) => toLiteral(v)).join(' | '),
     union: ({ children }, context) =>
         children.map((v) => walkCst<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' | '),
+    intersection: ({ children }, context) =>
+        children.map((v) => walkCst<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' & '),
     object: ({ children, value }, context) => {
         const writer = createWriter()
         writer.block(() => {
