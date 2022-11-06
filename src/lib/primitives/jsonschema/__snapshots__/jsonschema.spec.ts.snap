@@ -228,6 +228,10 @@ exports[`petstore definition 1`] = `
                 "exportSymbol": false,
                 "metaSchemas": {},
                 "references": Map {
+                  "#" => [
+                    undefined,
+                    [Function],
+                  ],
                   "#/components/schemas/Address" => [
                     "Address",
                     [Function],
@@ -1876,6 +1880,10 @@ Some useful links:
             "exportSymbol": false,
             "metaSchemas": {},
             "references": Map {
+              "#" => [
+                undefined,
+                [Function],
+              ],
               "#/components/schemas/Category" => [
                 "Category",
                 [Function],
@@ -3209,6 +3217,10 @@ Some useful links:
                 "exportSymbol": false,
                 "metaSchemas": {},
                 "references": Map {
+                  "#" => [
+                    undefined,
+                    [Function],
+                  ],
                   "#/components/schemas/Category" => [
                     "Category",
                     [Function],

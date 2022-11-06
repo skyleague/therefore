@@ -1,4 +1,4 @@
-import { $integer, $intersection, $number, $object, $string, $validator } from '../../src'
+import { $integer, $intersection, $jsonschema, $number, $object, $string, $validator } from '../../src'
 
 export const person = $validator(
     $object({
@@ -17,4 +17,14 @@ export const salesPerson = $validator(
         }),
         person,
     ])
+)
+
+export const selfReference = $jsonschema(
+    {
+        properties: {
+            foo: { type: 'string' },
+            bar: { $ref: '#' },
+        },
+    },
+    { validator: { enabled: true, assert: true } }
 )
