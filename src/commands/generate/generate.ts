@@ -1,4 +1,4 @@
-import { generatedBy } from './constants'
+import { generatedAjv, generatedBy } from './constants'
 import { expandGlobs } from './glob'
 import { formatFile, maybeLoadPrettier } from './prettier'
 import { resolveTypescriptSchema } from './resolver'
@@ -124,7 +124,7 @@ export async function loadSymbol({
         if (jsonschema.compiled === true) {
             file.attachedFiles.push({
                 targetPath: path.join(targetBaseDir, compiledFile),
-                content: `/**\n * ${generatedBy}\n * eslint-disable\n */\n${jsonschema.code}`,
+                content: `/**\n * ${generatedAjv} \n * eslint-disable\n */\n${jsonschema.code}`,
                 prettify: false,
                 type: 'validator',
                 clean: cleanSchemasFolder,
