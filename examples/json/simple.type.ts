@@ -13,6 +13,9 @@ export const Simple = {
     get schema() {
         return Simple.validate.schema
     },
+    get errors() {
+        return Simple.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Simple => Simple.validate(o) === true,
     assert: (o: unknown) => {
         if (!Simple.validate(o)) {

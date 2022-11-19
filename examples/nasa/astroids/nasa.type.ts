@@ -137,6 +137,9 @@ export const Project = {
     get schema() {
         return Project.validate.schema
     },
+    get errors() {
+        return Project.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Project => Project.validate(o) === true,
 } as const
 
@@ -149,6 +152,9 @@ export const GetApiByResponse200 = {
     validate: require('./schemas/get-api-by-response200.schema.js') as ValidateFunction<GetApiByResponse200>,
     get schema() {
         return GetApiByResponse200.validate.schema
+    },
+    get errors() {
+        return GetApiByResponse200.validate.errors ?? undefined
     },
     is: (o: unknown): o is GetApiByResponse200 => GetApiByResponse200.validate(o) === true,
 } as const

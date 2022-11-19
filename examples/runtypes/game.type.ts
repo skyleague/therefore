@@ -48,6 +48,9 @@ export const SpaceObject = {
     get schema() {
         return SpaceObject.validate.schema
     },
+    get errors() {
+        return SpaceObject.validate.errors ?? undefined
+    },
     is: (o: unknown): o is SpaceObject => SpaceObject.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpaceObject.validate(o)) {

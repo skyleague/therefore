@@ -493,6 +493,7 @@ export interface {{0004-000:symbolName}} {
 export const {{0004-000:symbolName}} = {
     validate: require('./schemas/adult-content-detection-request.schema.js') as ValidateFunction<{{0004-000:symbolName}}>,
     get schema() { return {{0004-000:symbolName}}.validate.schema},
+    get errors() { return {{0004-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0004-000:symbolName}} => {{0004-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0004-000:symbolName}}.validate(o)) {
@@ -515,6 +516,7 @@ export interface {{0008-000:symbolName}} {
 export const {{0008-000:symbolName}} = {
     validate: require('./schemas/commercial-detection-request.schema.js') as ValidateFunction<{{0008-000:symbolName}}>,
     get schema() { return {{0008-000:symbolName}}.validate.schema},
+    get errors() { return {{0008-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0008-000:symbolName}} => {{0008-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0008-000:symbolName}}.validate(o)) {
@@ -541,6 +543,7 @@ export interface {{00014-000:symbolName}} {
 export const {{00014-000:symbolName}} = {
     validate: require('./schemas/document-similarity-request.schema.js') as ValidateFunction<{{00014-000:symbolName}}>,
     get schema() { return {{00014-000:symbolName}}.validate.schema},
+    get errors() { return {{00014-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00014-000:symbolName}} => {{00014-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00014-000:symbolName}}.validate(o)) {
@@ -563,6 +566,7 @@ export interface {{00018-000:symbolName}} {
 export const {{00018-000:symbolName}} = {
     validate: require('./schemas/educational-detection-request.schema.js') as ValidateFunction<{{00018-000:symbolName}}>,
     get schema() { return {{00018-000:symbolName}}.validate.schema},
+    get errors() { return {{00018-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00018-000:symbolName}} => {{00018-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00018-000:symbolName}}.validate(o)) {
@@ -585,6 +589,7 @@ export interface {{00022-000:symbolName}} {
 export const {{00022-000:symbolName}} = {
     validate: require('./schemas/gender-detection-request.schema.js') as ValidateFunction<{{00022-000:symbolName}}>,
     get schema() { return {{00022-000:symbolName}}.validate.schema},
+    get errors() { return {{00022-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00022-000:symbolName}} => {{00022-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00022-000:symbolName}}.validate(o)) {
@@ -611,6 +616,7 @@ export interface {{00028-000:symbolName}} {
 export const {{00028-000:symbolName}} = {
     validate: require('./schemas/keyword-extraction-request.schema.js') as ValidateFunction<{{00028-000:symbolName}}>,
     get schema() { return {{00028-000:symbolName}}.validate.schema},
+    get errors() { return {{00028-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00028-000:symbolName}} => {{00028-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00028-000:symbolName}}.validate(o)) {
@@ -633,6 +639,7 @@ export interface {{00032-000:symbolName}} {
 export const {{00032-000:symbolName}} = {
     validate: require('./schemas/language-detection-request.schema.js') as ValidateFunction<{{00032-000:symbolName}}>,
     get schema() { return {{00032-000:symbolName}}.validate.schema},
+    get errors() { return {{00032-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00032-000:symbolName}} => {{00032-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00032-000:symbolName}}.validate(o)) {
@@ -655,6 +662,7 @@ export interface {{00036-000:symbolName}} {
 export const {{00036-000:symbolName}} = {
     validate: require('./schemas/readability-assessment-request.schema.js') as ValidateFunction<{{00036-000:symbolName}}>,
     get schema() { return {{00036-000:symbolName}}.validate.schema},
+    get errors() { return {{00036-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00036-000:symbolName}} => {{00036-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00036-000:symbolName}}.validate(o)) {
@@ -677,6 +685,7 @@ export interface {{00040-000:symbolName}} {
 export const {{00040-000:symbolName}} = {
     validate: require('./schemas/sentiment-analysis-request.schema.js') as ValidateFunction<{{00040-000:symbolName}}>,
     get schema() { return {{00040-000:symbolName}}.validate.schema},
+    get errors() { return {{00040-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00040-000:symbolName}} => {{00040-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00040-000:symbolName}}.validate(o)) {
@@ -699,6 +708,7 @@ export interface {{00044-000:symbolName}} {
 export const {{00044-000:symbolName}} = {
     validate: require('./schemas/spam-detection-request.schema.js') as ValidateFunction<{{00044-000:symbolName}}>,
     get schema() { return {{00044-000:symbolName}}.validate.schema},
+    get errors() { return {{00044-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00044-000:symbolName}} => {{00044-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00044-000:symbolName}}.validate(o)) {
@@ -721,6 +731,7 @@ export interface {{00048-000:symbolName}} {
 export const {{00048-000:symbolName}} = {
     validate: require('./schemas/subjectivity-analysis-request.schema.js') as ValidateFunction<{{00048-000:symbolName}}>,
     get schema() { return {{00048-000:symbolName}}.validate.schema},
+    get errors() { return {{00048-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00048-000:symbolName}} => {{00048-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00048-000:symbolName}}.validate(o)) {
@@ -743,6 +754,7 @@ export interface {{00052-000:symbolName}} {
 export const {{00052-000:symbolName}} = {
     validate: require('./schemas/text-extraction-request.schema.js') as ValidateFunction<{{00052-000:symbolName}}>,
     get schema() { return {{00052-000:symbolName}}.validate.schema},
+    get errors() { return {{00052-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00052-000:symbolName}} => {{00052-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00052-000:symbolName}}.validate(o)) {
@@ -765,6 +777,7 @@ export interface {{00056-000:symbolName}} {
 export const {{00056-000:symbolName}} = {
     validate: require('./schemas/topic-classification-request.schema.js') as ValidateFunction<{{00056-000:symbolName}}>,
     get schema() { return {{00056-000:symbolName}}.validate.schema},
+    get errors() { return {{00056-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00056-000:symbolName}} => {{00056-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00056-000:symbolName}}.validate(o)) {
@@ -787,6 +800,7 @@ export interface {{00060-000:symbolName}} {
 export const {{00060-000:symbolName}} = {
     validate: require('./schemas/twitter-sentiment-analysis-request.schema.js') as ValidateFunction<{{00060-000:symbolName}}>,
     get schema() { return {{00060-000:symbolName}}.validate.schema},
+    get errors() { return {{00060-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00060-000:symbolName}} => {{00060-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00060-000:symbolName}}.validate(o)) {

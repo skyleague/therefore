@@ -414,6 +414,9 @@ export const Extension = {
     get schema() {
         return Extension.validate.schema
     },
+    get errors() {
+        return Extension.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Extension => Extension.validate(o) === true,
     assert: (o: unknown) => {
         if (!Extension.validate(o)) {

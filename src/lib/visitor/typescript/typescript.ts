@@ -69,6 +69,7 @@ export function writeThereforeSchema({
             writer.writeLine(
                 isCompiled ? `get schema() { return {{${uuid}:symbolName}}.validate.schema},` : `schema: ${schemaReference},`
             )
+            writer.writeLine(`get errors() { return {{${uuid}:symbolName}}.validate.errors ?? undefined },`)
             writer.writeLine(`is: (o: unknown): o is {{${uuid}:symbolName}} => {{${uuid}:symbolName}}.validate(o) === true,`)
             if (description.validator?.enabled === true && description.validator.assert === true) {
                 writer

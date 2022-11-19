@@ -15,6 +15,9 @@ export const Square = {
     get schema() {
         return Square.validate.schema
     },
+    get errors() {
+        return Square.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Square => Square.validate(o) === true,
     assert: (o: unknown) => {
         if (!Square.validate(o)) {
@@ -33,6 +36,9 @@ export const Rectangle = {
     get schema() {
         return Rectangle.validate.schema
     },
+    get errors() {
+        return Rectangle.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Rectangle => Rectangle.validate(o) === true,
     assert: (o: unknown) => {
         if (!Rectangle.validate(o)) {
@@ -50,6 +56,9 @@ export const Circle = {
     get schema() {
         return Circle.validate.schema
     },
+    get errors() {
+        return Circle.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Circle => Circle.validate(o) === true,
     assert: (o: unknown) => {
         if (!Circle.validate(o)) {
@@ -64,6 +73,9 @@ export const Shape = {
     validate: require('./schemas/shape.schema.js') as ValidateFunction<Shape>,
     get schema() {
         return Shape.validate.schema
+    },
+    get errors() {
+        return Shape.validate.errors ?? undefined
     },
     is: (o: unknown): o is Shape => Shape.validate(o) === true,
     assert: (o: unknown) => {

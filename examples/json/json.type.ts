@@ -21,6 +21,9 @@ export const Json = {
     get schema() {
         return Json.validate.schema
     },
+    get errors() {
+        return Json.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Json => Json.validate(o) === true,
 } as const
 
@@ -30,6 +33,9 @@ export const JsonAdv = {
     validate: require('./schemas/json-adv.schema.js') as ValidateFunction<JsonAdv>,
     get schema() {
         return JsonAdv.validate.schema
+    },
+    get errors() {
+        return JsonAdv.validate.errors ?? undefined
     },
     is: (o: unknown): o is JsonAdv => JsonAdv.validate(o) === true,
     assert: (o: unknown) => {
