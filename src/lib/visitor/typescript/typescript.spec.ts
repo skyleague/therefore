@@ -28,7 +28,7 @@ import {
     $unknown,
 } from '../../primitives'
 
-import { alphaNumericString, forAll, omitUndefined } from '@skyleague/axioms'
+import { alphaNumeric, forAll, omitUndefined } from '@skyleague/axioms'
 
 describe('optional', () => {
     test('undefined', () => {
@@ -1300,7 +1300,7 @@ describe('toTypescriptDefinition', () => {
 
 describe('getIndexSignatureType', () => {
     test('simple literal', () => {
-        forAll(alphaNumericString({ minLength: 1 }), (a) =>
+        forAll(alphaNumeric({ minLength: 1 }), (a) =>
             expect(getIndexSignatureType(a)).toEqual({ type: `\`\${string}${a}\${string}\`` })
         )
     })

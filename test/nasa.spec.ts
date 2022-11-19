@@ -14,6 +14,6 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('arbitrary', async () => {
-    forAll(await arbitrary(Project), (p) => Project.is(p))
+test('arbitrary', () => {
+    forAll(arbitrary(Project), (p) => Project.is(p))
 })

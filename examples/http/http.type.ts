@@ -21,7 +21,7 @@ export const Headers = {
     is: (o: unknown): o is Headers => Headers.validate(o) === true,
     assert: (o: unknown) => {
         if (!Headers.validate(o)) {
-            throw new AjvValidator.ValidationError(Headers.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Headers.errors ?? [])
         }
     },
 } as const
@@ -41,7 +41,7 @@ export const Query = {
     is: (o: unknown): o is Query => Query.validate(o) === true,
     assert: (o: unknown) => {
         if (!Query.validate(o)) {
-            throw new AjvValidator.ValidationError(Query.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Query.errors ?? [])
         }
     },
 } as const

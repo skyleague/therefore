@@ -40,7 +40,7 @@ export const JsonAdv = {
     is: (o: unknown): o is JsonAdv => JsonAdv.validate(o) === true,
     assert: (o: unknown) => {
         if (!JsonAdv.validate(o)) {
-            throw new AjvValidator.ValidationError(JsonAdv.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(JsonAdv.errors ?? [])
         }
     },
 } as const

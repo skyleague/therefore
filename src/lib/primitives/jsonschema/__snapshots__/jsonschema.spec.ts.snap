@@ -111,7 +111,7 @@ exports[`petstore definition 1`] = `
           },
           "name": "id",
           "type": "integer",
-          "uuid": "00020-000",
+          "uuid": "00018-000",
           "value": {
             "maximum": undefined,
             "minimum": undefined,
@@ -126,7 +126,7 @@ exports[`petstore definition 1`] = `
           },
           "name": "username",
           "type": "string",
-          "uuid": "00021-000",
+          "uuid": "00019-000",
           "value": {
             "format": undefined,
             "maxLength": undefined,
@@ -221,9 +221,7 @@ exports[`petstore definition 1`] = `
               "type": "ref",
               "uuid": "00016-000",
               "value": {
-                "cache": Map {
-                  "#/components/schemas/Address" => Promise {},
-                },
+                "cache": Map {},
                 "exportAllSymbols": false,
                 "exportSymbol": false,
                 "metaSchemas": {},
@@ -1479,7 +1477,7 @@ Some useful links:
           },
           "name": "address",
           "type": "array",
-          "uuid": "00022-000",
+          "uuid": "00020-000",
           "value": {
             "maxItems": undefined,
             "minItems": undefined,
@@ -1491,7 +1489,7 @@ Some useful links:
       "name": "Customer",
       "prepass": true,
       "type": "object",
-      "uuid": "00023-000",
+      "uuid": "00021-000",
       "value": {},
     },
     {
@@ -1797,7 +1795,7 @@ Some useful links:
           },
           "name": "id",
           "type": "integer",
-          "uuid": "00082-000",
+          "uuid": "00075-000",
           "value": {
             "maximum": undefined,
             "minimum": undefined,
@@ -1831,7 +1829,7 @@ Some useful links:
                   },
                   "name": "id",
                   "type": "integer",
-                  "uuid": "00076-000",
+                  "uuid": "00082-000",
                   "value": {
                     "maximum": undefined,
                     "minimum": undefined,
@@ -1846,7 +1844,7 @@ Some useful links:
                   },
                   "name": "name",
                   "type": "string",
-                  "uuid": "00077-000",
+                  "uuid": "00083-000",
                   "value": {
                     "format": undefined,
                     "maxLength": undefined,
@@ -1860,7 +1858,7 @@ Some useful links:
               },
               "name": "Category",
               "type": "object",
-              "uuid": "00078-000",
+              "uuid": "00084-000",
               "value": {},
             },
           ],
@@ -1870,12 +1868,9 @@ Some useful links:
           },
           "name": "category",
           "type": "ref",
-          "uuid": "00083-000",
+          "uuid": "00076-000",
           "value": {
-            "cache": Map {
-              "#/components/schemas/Category" => Promise {},
-              "#/components/schemas/Tag" => Promise {},
-            },
+            "cache": Map {},
             "exportAllSymbols": false,
             "exportSymbol": false,
             "metaSchemas": {},
@@ -3134,7 +3129,7 @@ Some useful links:
               "children": [],
               "description": {},
               "type": "string",
-              "uuid": "00071-000",
+              "uuid": "00070-000",
               "value": {
                 "format": undefined,
                 "maxLength": undefined,
@@ -3148,7 +3143,7 @@ Some useful links:
           },
           "name": "photoUrls",
           "type": "array",
-          "uuid": "00072-000",
+          "uuid": "00071-000",
           "value": {
             "maxItems": undefined,
             "minItems": undefined,
@@ -3207,12 +3202,9 @@ Some useful links:
               },
               "name": "Tag",
               "type": "ref",
-              "uuid": "00074-000",
+              "uuid": "00072-000",
               "value": {
-                "cache": Map {
-                  "#/components/schemas/Category" => Promise {},
-                  "#/components/schemas/Tag" => Promise {},
-                },
+                "cache": Map {},
                 "exportAllSymbols": false,
                 "exportSymbol": false,
                 "metaSchemas": {},
@@ -4472,7 +4464,7 @@ Some useful links:
           },
           "name": "tags",
           "type": "array",
-          "uuid": "00084-000",
+          "uuid": "00077-000",
           "value": {
             "maxItems": undefined,
             "minItems": undefined,
@@ -4492,7 +4484,7 @@ Some useful links:
           },
           "name": "status",
           "type": "enum",
-          "uuid": "00085-000",
+          "uuid": "00078-000",
           "value": {},
         },
       ],
@@ -4500,7 +4492,7 @@ Some useful links:
       "name": "Pet",
       "prepass": true,
       "type": "object",
-      "uuid": "00086-000",
+      "uuid": "00079-000",
       "value": {},
     },
     {
@@ -4687,7 +4679,7 @@ exports[`petstore jsonschema 1`] = `
       "additionalProperties": true,
       "properties": {
         "category": {
-          "$ref": "#/$defs/{{00078-000:uniqueSymbolName}}",
+          "$ref": "#/$defs/{{00084-000:uniqueSymbolName}}",
           "title": "category",
         },
         "id": {
@@ -4845,7 +4837,7 @@ exports[`petstore typescript 1`] = `
     Pet: {
         id?: number
         name: string
-        category?: {{00078-000:referenceName}}
+        category?: {{00084-000:referenceName}}
         photoUrls: (string)[]
         tags?: ({{00089-000:referenceName}})[]
         /**

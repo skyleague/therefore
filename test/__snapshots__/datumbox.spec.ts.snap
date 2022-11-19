@@ -110,6 +110,11 @@ import {IncomingHttpHeaders} from 'http'
 import { AdultContentDetectionRequest, CommercialDetectionRequest, DocumentSimilarityRequest, EducationalDetectionRequest, GenderDetectionRequest, KeywordExtractionRequest, LanguageDetectionRequest, ReadabilityAssessmentRequest, SentimentAnalysisRequest, SpamDetectionRequest, SubjectivityAnalysisRequest, TextExtractionRequest, TopicClassificationRequest, TwitterSentimentAnalysisRequest } from './datumbox.client.type'
 
 
+/**
+ * api.datumbox.com
+ * 
+ * Datumbox offers a Machine Learning platform composed of 14 classifiers and Natural Language processing functions. Functions include sentiment analysis, topic classification, readability assessment, language detection, and much more.
+ */
 export class {{00061-000:symbolName}} {
     public client: Got
 
@@ -497,7 +502,7 @@ export const {{0004-000:symbolName}} = {
     is: (o: unknown): o is {{0004-000:symbolName}} => {{0004-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0004-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{0004-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{0004-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -520,7 +525,7 @@ export const {{0008-000:symbolName}} = {
     is: (o: unknown): o is {{0008-000:symbolName}} => {{0008-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0008-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{0008-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{0008-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -547,7 +552,7 @@ export const {{00014-000:symbolName}} = {
     is: (o: unknown): o is {{00014-000:symbolName}} => {{00014-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00014-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00014-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00014-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -570,7 +575,7 @@ export const {{00018-000:symbolName}} = {
     is: (o: unknown): o is {{00018-000:symbolName}} => {{00018-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00018-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00018-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00018-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -593,7 +598,7 @@ export const {{00022-000:symbolName}} = {
     is: (o: unknown): o is {{00022-000:symbolName}} => {{00022-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00022-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00022-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00022-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -620,7 +625,7 @@ export const {{00028-000:symbolName}} = {
     is: (o: unknown): o is {{00028-000:symbolName}} => {{00028-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00028-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00028-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00028-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -643,7 +648,7 @@ export const {{00032-000:symbolName}} = {
     is: (o: unknown): o is {{00032-000:symbolName}} => {{00032-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00032-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00032-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00032-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -666,7 +671,7 @@ export const {{00036-000:symbolName}} = {
     is: (o: unknown): o is {{00036-000:symbolName}} => {{00036-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00036-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00036-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00036-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -689,7 +694,7 @@ export const {{00040-000:symbolName}} = {
     is: (o: unknown): o is {{00040-000:symbolName}} => {{00040-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00040-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00040-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00040-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -712,7 +717,7 @@ export const {{00044-000:symbolName}} = {
     is: (o: unknown): o is {{00044-000:symbolName}} => {{00044-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00044-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00044-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00044-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -735,7 +740,7 @@ export const {{00048-000:symbolName}} = {
     is: (o: unknown): o is {{00048-000:symbolName}} => {{00048-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00048-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00048-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00048-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -758,7 +763,7 @@ export const {{00052-000:symbolName}} = {
     is: (o: unknown): o is {{00052-000:symbolName}} => {{00052-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00052-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00052-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00052-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -781,7 +786,7 @@ export const {{00056-000:symbolName}} = {
     is: (o: unknown): o is {{00056-000:symbolName}} => {{00056-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00056-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00056-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00056-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -804,7 +809,7 @@ export const {{00060-000:symbolName}} = {
     is: (o: unknown): o is {{00060-000:symbolName}} => {{00060-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00060-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00060-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00060-000:symbolName}}.errors ?? [])
         }
     },
 } as const

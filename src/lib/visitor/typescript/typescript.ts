@@ -79,9 +79,7 @@ export function writeThereforeSchema({
                     .write(`assert: (o: unknown) => `)
                     .inlineBlock(() => {
                         writer.write(`if (!{{${uuid}:symbolName}}.validate(o))`).block(() => {
-                            writer.writeLine(
-                                `throw new AjvValidator.ValidationError({{${uuid}:symbolName}}.validate.errors ?? [])`
-                            )
+                            writer.writeLine(`throw new AjvValidator.ValidationError({{${uuid}:symbolName}}.errors ?? [])`)
                         })
                     })
                     .write(',')

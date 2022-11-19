@@ -1,6 +1,5 @@
 import { $jsonschema } from './jsonschema'
 
-import { awaitAll } from '../../../common/util'
 import type { JsonSchema } from '../../../json'
 import { walkCst } from '../../cst/visitor'
 import { arbitrary } from '../../visitor'
@@ -35,8 +34,8 @@ describe('person', () => {
         additionalProperties: false,
     }
     const therefore = () => $jsonschema(schema)
-    test('definition', async () => {
-        expect(await therefore()).toMatchInlineSnapshot(`
+    test('definition', () => {
+        expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
                 {
@@ -101,8 +100,8 @@ describe('person', () => {
         `)
     })
 
-    test('jsonschema', async () => {
-        const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
+    test('jsonschema', () => {
+        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -130,9 +129,9 @@ describe('person', () => {
         `)
     })
 
-    test('typescript', async () => {
+    test('typescript', () => {
         expect(
-            walkCst(await therefore(), typeDefinitionVisitor, {
+            walkCst(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -188,11 +187,52 @@ describe('coordinates', () => {
     }
     const therefore = () => $jsonschema(schema)
     test('definition', () => {
-        expect(therefore()).toMatchInlineSnapshot(`Promise {}`)
+        expect(therefore()).toMatchInlineSnapshot(`
+            {
+              "children": [
+                {
+                  "children": [],
+                  "description": {
+                    "name": "latitude",
+                  },
+                  "name": "latitude",
+                  "type": "number",
+                  "uuid": "0001-000",
+                  "value": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "multipleOf": undefined,
+                  },
+                },
+                {
+                  "children": [],
+                  "description": {
+                    "name": "longitude",
+                  },
+                  "name": "longitude",
+                  "type": "number",
+                  "uuid": "0002-000",
+                  "value": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "multipleOf": undefined,
+                  },
+                },
+              ],
+              "description": {
+                "description": "A geographical coordinate.",
+                "title": "Longitude and Latitude Values",
+              },
+              "prepass": true,
+              "type": "object",
+              "uuid": "0003-000",
+              "value": {},
+            }
+        `)
     })
 
-    test('jsonschema', async () => {
-        const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
+    test('jsonschema', () => {
+        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -221,9 +261,9 @@ describe('coordinates', () => {
         `)
     })
 
-    test('typescript', async () => {
+    test('typescript', () => {
         expect(
-            walkCst(await therefore(), typeDefinitionVisitor, {
+            walkCst(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -287,11 +327,172 @@ describe('array', () => {
     const therefore = () => $jsonschema(schema)
 
     test('definition', () => {
-        expect(therefore()).toMatchInlineSnapshot(`Promise {}`)
+        expect(therefore()).toMatchInlineSnapshot(`
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "description": {},
+                      "type": "string",
+                      "uuid": "0001-000",
+                      "value": {
+                        "format": undefined,
+                        "maxLength": undefined,
+                        "minLength": undefined,
+                        "pattern": undefined,
+                      },
+                    },
+                  ],
+                  "description": {
+                    "name": "fruits",
+                    "optional": "implicit",
+                  },
+                  "name": "fruits",
+                  "type": "array",
+                  "uuid": "0005-000",
+                  "value": {
+                    "maxItems": undefined,
+                    "minItems": undefined,
+                    "uniqueItems": undefined,
+                  },
+                },
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [],
+                              "description": {
+                                "description": "The name of the vegetable.",
+                                "name": "veggieName",
+                              },
+                              "name": "veggieName",
+                              "type": "string",
+                              "uuid": "0008-000",
+                              "value": {
+                                "format": undefined,
+                                "maxLength": undefined,
+                                "minLength": undefined,
+                                "pattern": undefined,
+                              },
+                            },
+                            {
+                              "children": [],
+                              "description": {
+                                "description": "Do I like this vegetable?",
+                                "name": "veggieLike",
+                              },
+                              "name": "veggieLike",
+                              "type": "boolean",
+                              "uuid": "0009-000",
+                              "value": {},
+                            },
+                          ],
+                          "description": {
+                            "name": "veggie",
+                          },
+                          "name": "veggie",
+                          "type": "object",
+                          "uuid": "00010-000",
+                          "value": {},
+                        },
+                      ],
+                      "description": {
+                        "name": undefined,
+                      },
+                      "name": "veggie",
+                      "type": "ref",
+                      "uuid": "0003-000",
+                      "value": {
+                        "cache": Map {},
+                        "exportAllSymbols": false,
+                        "exportSymbol": false,
+                        "metaSchemas": {},
+                        "references": Map {
+                          "#" => [
+                            undefined,
+                            [Function],
+                          ],
+                          "#/$defs/veggie" => [
+                            "veggie",
+                            [Function],
+                          ],
+                        },
+                        "root": {
+                          "$defs": {
+                            "veggie": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "veggieLike": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                                "veggieName": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "veggieName",
+                                "veggieLike",
+                              ],
+                              "type": "object",
+                            },
+                          },
+                          "$id": "https://example.com/arrays.schema.json",
+                          "additionalProperties": false,
+                          "description": "A representation of a person, company, organization, or place",
+                          "properties": {
+                            "fruits": {
+                              "items": {
+                                "type": "string",
+                              },
+                              "type": "array",
+                            },
+                            "vegetables": {
+                              "items": {
+                                "$ref": "#/$defs/veggie",
+                              },
+                              "type": "array",
+                            },
+                          },
+                          "type": "object",
+                        },
+                        "strict": true,
+                      },
+                    },
+                  ],
+                  "description": {
+                    "name": "vegetables",
+                    "optional": "implicit",
+                  },
+                  "name": "vegetables",
+                  "type": "array",
+                  "uuid": "0006-000",
+                  "value": {
+                    "maxItems": undefined,
+                    "minItems": undefined,
+                    "uniqueItems": undefined,
+                  },
+                },
+              ],
+              "description": {
+                "description": "A representation of a person, company, organization, or place",
+              },
+              "prepass": true,
+              "type": "object",
+              "uuid": "0007-000",
+              "value": {},
+            }
+        `)
     })
 
-    test('jsonschema', async () => {
-        const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
+    test('jsonschema', () => {
+        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -317,9 +518,9 @@ describe('array', () => {
         `)
     })
 
-    test('typescript', async () => {
+    test('typescript', () => {
         expect(
-            walkCst(await therefore(), typeDefinitionVisitor, {
+            walkCst(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -329,12 +530,12 @@ describe('array', () => {
               "declaration": "/**
              * A representation of a person, company, organization, or place
              */
-            interface {{0009-000:symbolName}} {
+            interface {{0007-000:symbolName}} {
                 fruits?: (string)[]
                 vegetables?: ({{00010-000:referenceName}})[]
             }
             ",
-              "referenceName": "{{0009-000:symbolName}}",
+              "referenceName": "{{0007-000:symbolName}}",
               "render": [Function],
               "sourceSymbol": undefined,
             }
@@ -348,9 +549,9 @@ describe('petstore', () => {
     const therefore = async () => {
         const schema = await openapi()
         const entries = Object.fromEntries(
-            await awaitAll(entriesOf(schema?.['components']?.['schemas'] ?? {}), async ([name, v]) => [
+            entriesOf((schema?.['components'] as any)?.['schemas'] ?? {}).map(([name, v]) => [
                 name,
-                await $jsonschema(v as JsonSchema, { root: schema as JsonSchema }),
+                $jsonschema(v as JsonSchema, { root: schema as JsonSchema }),
             ])
         )
         return $object(entries)
@@ -376,6 +577,6 @@ describe('petstore', () => {
     })
 })
 
-test('primitives', async () => {
-    forAll(arbitrary<string>(await $jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
+test('primitives', () => {
+    forAll(arbitrary<string>($jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
 })

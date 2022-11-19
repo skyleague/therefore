@@ -75,39 +75,39 @@ describe('updatePet', () => {
 })
 
 describe('entities satisfy arbitrary', () => {
-    test('Pet', async () => {
-        forAll(await arbitrary(Pet), (x) => Pet.is(x))
+    test('Pet', () => {
+        forAll(arbitrary(Pet), (x) => Pet.is(x))
     })
 
-    test('FindPetsByStatusResponse', async () => {
-        forAll(await arbitrary(FindPetsByStatusResponse), (x) => FindPetsByStatusResponse.is(x))
+    test('FindPetsByStatusResponse', () => {
+        forAll(arbitrary(FindPetsByStatusResponse), (x) => FindPetsByStatusResponse.is(x))
     })
 
-    test('FindPetsByTagsResponse', async () => {
-        forAll(await arbitrary(FindPetsByTagsResponse), (x) => FindPetsByTagsResponse.is(x))
+    test('FindPetsByTagsResponse', () => {
+        forAll(arbitrary(FindPetsByTagsResponse), (x) => FindPetsByTagsResponse.is(x))
     })
 
-    test('ApiResponse', async () => {
-        forAll(await arbitrary(ApiResponse), (x) => ApiResponse.is(x))
+    test('ApiResponse', () => {
+        forAll(arbitrary(ApiResponse), (x) => ApiResponse.is(x))
     })
 
-    test('GetInventoryResponse', async () => {
-        forAll(await arbitrary(GetInventoryResponse), (x) => GetInventoryResponse.is(x))
+    test('GetInventoryResponse', () => {
+        forAll(arbitrary(GetInventoryResponse), (x) => GetInventoryResponse.is(x))
     })
 
-    test('Order', async () => {
-        forAll(await arbitrary(Order), (x) => Order.is(x))
+    test('Order', () => {
+        forAll(arbitrary(Order), (x) => Order.is(x))
     })
 
-    test('User', async () => {
-        forAll(await arbitrary(User), (x) => User.is(x))
+    test('User', () => {
+        forAll(arbitrary(User), (x) => User.is(x))
     })
 
-    test('CreateUsersWithListInputRequest', async () => {
-        forAll(await arbitrary(CreateUsersWithListInputRequest), (x) => CreateUsersWithListInputRequest.is(x))
+    test('CreateUsersWithListInputRequest', () => {
+        forAll(arbitrary(CreateUsersWithListInputRequest), (x) => CreateUsersWithListInputRequest.is(x))
     })
 
-    test('LoginUserResponse', async () => {
-        forAll(await arbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
+    test('LoginUserResponse', () => {
+        forAll(arbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
     })
 })

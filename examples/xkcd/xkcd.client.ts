@@ -7,6 +7,11 @@ import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import { Comic } from './xkcd.type'
 
+/**
+ * XKCD
+ *
+ * Webcomic of romance, sarcasm, math, and language.
+ */
 export class XKCD {
     public client: Got
 

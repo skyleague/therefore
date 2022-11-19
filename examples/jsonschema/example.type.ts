@@ -26,7 +26,7 @@ export const Person = {
     is: (o: unknown): o is Person => Person.validate(o) === true,
     assert: (o: unknown) => {
         if (!Person.validate(o)) {
-            throw new AjvValidator.ValidationError(Person.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Person.errors ?? [])
         }
     },
 } as const
@@ -53,7 +53,7 @@ export const SalesPerson = {
     is: (o: unknown): o is SalesPerson => SalesPerson.validate(o) === true,
     assert: (o: unknown) => {
         if (!SalesPerson.validate(o)) {
-            throw new AjvValidator.ValidationError(SalesPerson.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(SalesPerson.errors ?? [])
         }
     },
 } as const
@@ -62,3 +62,46 @@ export interface SelfReference {
     foo?: string
     bar?: SelfReference
 }
+
+export const SelfReference = {
+    validate: require('./schemas/self-reference.schema.js') as ValidateFunction<SelfReference>,
+    get schema() {
+        return SelfReference.validate.schema
+    },
+    get errors() {
+        return SelfReference.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is SelfReference => SelfReference.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!SelfReference.validate(o)) {
+            throw new AjvValidator.ValidationError(SelfReference.errors ?? [])
+        }
+    },
+} as const
+
+export interface Defaults {
+    /**
+     * @default 'foobar'
+     */
+    str?: string
+    /**
+     * @default 42
+     */
+    int?: number
+}
+
+export const Defaults = {
+    validate: require('./schemas/defaults.schema.js') as ValidateFunction<Defaults>,
+    get schema() {
+        return Defaults.validate.schema
+    },
+    get errors() {
+        return Defaults.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Defaults => Defaults.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Defaults.validate(o)) {
+            throw new AjvValidator.ValidationError(Defaults.errors ?? [])
+        }
+    },
+} as const

@@ -533,7 +533,7 @@ export const {{000143-000:symbolName}} = {
     is: (o: unknown): o is {{000143-000:symbolName}} => {{000143-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{000143-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{000143-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{000143-000:symbolName}}.errors ?? [])
         }
     },
 } as const

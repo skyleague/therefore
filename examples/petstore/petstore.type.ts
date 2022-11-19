@@ -29,7 +29,7 @@ export const Pet = {
     is: (o: unknown): o is Pet => Pet.validate(o) === true,
     assert: (o: unknown) => {
         if (!Pet.validate(o)) {
-            throw new AjvValidator.ValidationError(Pet.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Pet.errors ?? [])
         }
     },
 } as const
@@ -115,7 +115,7 @@ export const Order = {
     is: (o: unknown): o is Order => Order.validate(o) === true,
     assert: (o: unknown) => {
         if (!Order.validate(o)) {
-            throw new AjvValidator.ValidationError(Order.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Order.errors ?? [])
         }
     },
 } as const
@@ -145,7 +145,7 @@ export const User = {
     is: (o: unknown): o is User => User.validate(o) === true,
     assert: (o: unknown) => {
         if (!User.validate(o)) {
-            throw new AjvValidator.ValidationError(User.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(User.errors ?? [])
         }
     },
 } as const
@@ -164,7 +164,7 @@ export const CreateUsersWithListInputRequest = {
     is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!CreateUsersWithListInputRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(CreateUsersWithListInputRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(CreateUsersWithListInputRequest.errors ?? [])
         }
     },
 } as const

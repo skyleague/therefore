@@ -31,7 +31,7 @@ export const Comic = {
     is: (o: unknown): o is Comic => Comic.validate(o) === true,
     assert: (o: unknown) => {
         if (!Comic.validate(o)) {
-            throw new AjvValidator.ValidationError(Comic.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Comic.errors ?? [])
         }
     },
 } as const

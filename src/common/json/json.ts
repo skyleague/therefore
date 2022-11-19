@@ -2,8 +2,9 @@ import type { JsonSchema } from '../../json'
 
 import got from 'got'
 import pointer from 'jsonpointer'
+import makeSynchronous from 'make-synchronous'
 
-export async function jsonPointer<T extends {}>({
+export function jsonPointer<T extends {}>({
     schema,
     ptr,
     metaSchemas,
@@ -15,8 +16,8 @@ export async function jsonPointer<T extends {}>({
               $ref: string
           }
         | undefined
-    metaSchemas?: Record<string, Promise<JsonSchema>>
-}): Promise<JsonSchema | undefined> {
+    metaSchemas?: Record<string, JsonSchema>
+}): JsonSchema | undefined {
     if (ptr !== undefined && '$ref' in ptr) {
         if (ptr.$ref.startsWith('#')) {
             return pointer.get(schema, ptr.$ref.slice(1)) as JsonSchema | undefined
@@ -26,14 +27,16 @@ export async function jsonPointer<T extends {}>({
             const metaSchema = metaSchemas?.[url]
 
             if (metaSchema !== undefined) {
-                return pointer.get(await metaSchema, reference) as Promise<JsonSchema | undefined>
+                return pointer.get(metaSchema, reference) as JsonSchema | undefined
             }
 
             console.log(`fetching schema from ${url}`)
 
-            metaSchemas[url] = got.get(url).json<JsonSchema>()
+            const json = makeSynchronous(async () => got.get(url).json<JsonSchema>())
 
-            return pointer.get(await metaSchemas[url], reference) as Promise<JsonSchema | undefined>
+            metaSchemas[url] = json()
+
+            return pointer.get(metaSchemas[url], reference) as JsonSchema | undefined
         }
         throw new Error('unsupported reference type')
     }

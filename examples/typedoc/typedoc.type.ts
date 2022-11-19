@@ -22,7 +22,7 @@ export const Theme = {
     is: (o: unknown): o is Theme => Theme.validate(o) === true,
     assert: (o: unknown) => {
         if (!Theme.validate(o)) {
-            throw new AjvValidator.ValidationError(Theme.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Theme.errors ?? [])
         }
     },
 } as const
@@ -194,7 +194,7 @@ export const Typedoc = {
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
     assert: (o: unknown) => {
         if (!Typedoc.validate(o)) {
-            throw new AjvValidator.ValidationError(Typedoc.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Typedoc.errors ?? [])
         }
     },
 } as const

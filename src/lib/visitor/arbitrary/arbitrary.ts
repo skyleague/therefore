@@ -4,10 +4,10 @@ import type { CstVisitor } from '../../cst/visitor'
 import { walkCst } from '../../cst/visitor'
 import { isNamedArray } from '../../guard'
 import { $jsonschema } from '../../primitives/jsonschema'
-import type { AyncThereforeCst, ThereforeCst } from '../../primitives/types'
+import type { ThereforeCst } from '../../primitives/types'
 import type { Schema } from '../../types'
 
-import type { Arbitrary, Dependent, Promisable } from '@skyleague/axioms'
+import type { Arbitrary, Dependent } from '@skyleague/axioms'
 import {
     allOf,
     array,
@@ -99,28 +99,22 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     },
 }
 
-function transform(
-    { description }: CstNode<string, unknown, unknown, unknown[]>,
-    arbitrary: Arbitrary<unknown>
-): Arbitrary<unknown> {
+function transform({ description }: CstNode<string, unknown, unknown, unknown[]>, arb: Arbitrary<unknown>): Arbitrary<unknown> {
     if (description.nullable === true) {
-        arbitrary = nullable(arbitrary)
+        arb = nullable(arb)
     }
     if (description.optional !== undefined) {
-        arbitrary = optional(arbitrary, { symbol: undefined })
+        arb = optional(arb, { symbol: undefined })
     }
-    return arbitrary
+    return arb
 }
 
-export function arbitrary<T = unknown>(schema: ThereforeCst): Dependent<T>
-export function arbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Promisable<Dependent<T>>
-export function arbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Promisable<Dependent<T>> {
+export function arbitrary<T = unknown>(schema: Schema<T> | ThereforeCst): Dependent<T> {
     if ('schema' in schema) {
-        return Promise.resolve($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true })).then((s) =>
-            walkCst(s, arbitraryVisitor, {
-                transform,
-            })
-        )
+        // as the therefore schemas are very strict by default, we can allow intersection types here
+        return walkCst($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true }), arbitraryVisitor, {
+            transform,
+        })
     }
     return walkCst(schema, arbitraryVisitor, {
         transform,

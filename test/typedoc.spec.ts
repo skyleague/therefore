@@ -14,10 +14,10 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('arbitrary typedoc', async () => {
-    forAll(await arbitrary(Typedoc), (p) => Typedoc.assert(p))
+test('arbitrary typedoc', () => {
+    forAll(arbitrary(Typedoc), (p) => Typedoc.assert(p))
 })
 
-test('arbitrary theme', async () => {
-    forAll(await arbitrary(Theme), (t) => Theme.assert(t))
+test('arbitrary theme', () => {
+    forAll(arbitrary(Theme), (t) => Theme.assert(t))
 })
