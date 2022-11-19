@@ -15,6 +15,9 @@ export interface ObjectOptions {
     indexSignature?: CstNode | undefined
     indexPatterns?: Record<string, CstNode>
     additionalProperties?: boolean
+    defaults?: {
+        additionalProperties?: boolean
+    }
 }
 
 export type LazyObjectOptions = Omit<ObjectOptions, 'indexSignature'> & {

@@ -105,7 +105,7 @@ describe('person', () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "age": {
                   "description": "Age in years which must be equal to or greater than zero.",
@@ -195,7 +195,7 @@ describe('coordinates', () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "description": "A geographical coordinate.",
               "properties": {
                 "latitude": {
@@ -294,7 +294,7 @@ describe('array', () => {
         const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "description": "A representation of a person, company, organization, or place",
               "properties": {
                 "fruits": {

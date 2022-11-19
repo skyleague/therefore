@@ -14,7 +14,9 @@ import Ajv from 'ajv'
 import standaloneCode from 'ajv/dist/standalone'
 
 export interface JsonSchemaWalkerContext {
-    //references: Record<string, string>
+    defaults: {
+        additionalProperties: boolean
+    }
     entry?: CstNode | undefined
     definitions: NonNullable<JsonSchema['definitions']>
     transform: (node: CstNode, schema: RelaxedPartial<JsonSchema>) => JsonSchema
@@ -112,7 +114,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
                 ? true
                 : value.indexSignature !== undefined
                 ? walkCst(value.indexSignature, jsonSchemaVisitor, context)
-                : false,
+                : value.additionalProperties ?? context.defaults.additionalProperties,
             patternProperties:
                 value.indexPatterns !== undefined
                     ? (Object.fromEntries(
@@ -181,6 +183,10 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
 
 export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
     return {
+        defaults: {
+            additionalProperties: true,
+            ...(obj !== undefined && 'defaults' in obj.value ? obj?.value.defaults ?? {} : {}),
+        },
         definitions: {},
         entry: obj,
         transform: (node, schema): JsonSchema => {

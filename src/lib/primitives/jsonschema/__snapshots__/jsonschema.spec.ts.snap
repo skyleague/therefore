@@ -4570,10 +4570,10 @@ Some useful links:
 
 exports[`petstore jsonschema 1`] = `
 {
-  "additionalProperties": false,
+  "additionalProperties": true,
   "properties": {
     "Address": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "city": {
           "title": "city",
@@ -4595,7 +4595,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "ApiResponse": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "code": {
           "title": "code",
@@ -4613,7 +4613,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "Category": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "id": {
           "title": "id",
@@ -4627,7 +4627,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "Customer": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "address": {
           "items": {
@@ -4648,7 +4648,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "Order": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "complete": {
           "title": "complete",
@@ -4684,7 +4684,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "Pet": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "category": {
           "$ref": "#/$defs/{{00078-000:uniqueSymbolName}}",
@@ -4729,7 +4729,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "Tag": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "id": {
           "title": "id",
@@ -4743,7 +4743,7 @@ exports[`petstore jsonschema 1`] = `
       "type": "object",
     },
     "User": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "email": {
           "title": "email",
