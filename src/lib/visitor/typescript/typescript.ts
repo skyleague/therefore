@@ -34,7 +34,7 @@ export function escapeProperty(prop: string): string {
 }
 
 export function optional(meta: MetaDescription): string {
-    return meta.optional === true ? '?' : ''
+    return meta.optional !== undefined ? '?' : ''
 }
 
 export function readonly(meta: MetaDescription): string {
@@ -179,9 +179,10 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
                 const { name, description } = property
                 const child = walkCst(property, typescriptVisitor, { ...context, property: name })
                 const jsdoc = toJSDoc({ key: name, meta: description })
+                const nestedChild = description.nullable ? `(${child} | null)` : child
                 writer.writeLine(
                     `${jsdoc ?? ''}${readonly(description)}${escapeProperty(name)}${optional(description)}: ${
-                        description.nullable ? `(${child} | null)` : child
+                        description.optional === 'explicit' ? `(${nestedChild} | undefined)` : nestedChild
                     }`
                 )
             }
