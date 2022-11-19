@@ -1,6 +1,6 @@
 import type {
-    ApiKeySecurityScheme,
-    HttpSecurityScheme,
+    APIKeySecurityScheme,
+    HTTPSecurityScheme,
     OAuth2SecurityScheme,
     OpenapiV3,
     OpenIdConnectSecurityScheme,
@@ -329,15 +329,15 @@ export function getPrefixUrlConfiguration(servers?: Server[]) {
 }
 
 type MappableSecurityScheme =
-    | ApiKeySecurityScheme
+    | APIKeySecurityScheme
     | OAuth2SecurityScheme
     | OpenIdConnectSecurityScheme
-    | (HttpSecurityScheme & { type: 'http' })
+    | (HTTPSecurityScheme & { type: 'http' })
 
 const toSecurityDeclaration: {
     [T in MappableSecurityScheme['type']]: (s: Extract<MappableSecurityScheme, { type: T }>) => string | undefined
 } = {
-    http: (s: HttpSecurityScheme & { type: 'http' }) => {
+    http: (s: HTTPSecurityScheme & { type: 'http' }) => {
         if (s.scheme === 'basic') {
             return '[username: string, password: string] | (() => Promise<[username: string, password: string]>)'
         } else if (s.scheme === 'bearer') {
@@ -345,7 +345,7 @@ const toSecurityDeclaration: {
         }
         return ''
     },
-    apiKey: (_s: ApiKeySecurityScheme) => 'string | (() => Promise<string>)',
+    apiKey: (_s: APIKeySecurityScheme) => 'string | (() => Promise<string>)',
     openIdConnect: (_s: OpenIdConnectSecurityScheme) => 'string | (() => Promise<string>)',
     oauth2: (_s: OAuth2SecurityScheme) => 'string | (() => Promise<string>)',
 }
@@ -356,7 +356,7 @@ const toSecurityHook: {
         name: string
     ) => { decl: string; headers: string[] } | undefined
 } = {
-    http: (s: HttpSecurityScheme & { type: 'http' }, name) => {
+    http: (s: HTTPSecurityScheme & { type: 'http' }, name) => {
         const hook = createWriter()
         const headers: string[] = []
         hook.writeLine('async (options) => ').block(() => {
@@ -377,7 +377,7 @@ const toSecurityHook: {
         })
         return { decl: hook.toString(), headers }
     },
-    apiKey: (s: ApiKeySecurityScheme, name) => {
+    apiKey: (s: APIKeySecurityScheme, name) => {
         const hook = createWriter()
         hook.writeLine('async (options) => ').block(() => {
             hook.writeLine(`const ${name} = this.auth.${name}`)

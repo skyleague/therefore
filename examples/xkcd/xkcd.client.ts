@@ -7,7 +7,7 @@ import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import { Comic } from './xkcd.type'
 
-export class Xkcd {
+export class XKCD {
     public client: Got
 
     public constructor({

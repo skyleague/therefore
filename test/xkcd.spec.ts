@@ -1,8 +1,8 @@
-import { Xkcd } from '../examples/xkcd/xkcd.client'
+import { XKCD } from '../examples/xkcd/xkcd.client'
 import type { Comic } from '../examples/xkcd/xkcd.type'
 
 describe('xkcd', () => {
-    const client = new Xkcd()
+    const client = new XKCD()
     test('simple get', async () => {
         const result = await client.getInfo0JsonByComicId({ path: { comicId: '2653' } })
         const comic: Comic = result.body

@@ -221,7 +221,7 @@ export interface Schema {
      * @default false
      */
     deprecated?: boolean
-    xml?: Xml
+    xml?: XML
     [k: `x-${string}`]: unknown
 }
 
@@ -236,7 +236,7 @@ export interface Discriminator {
     }
 }
 
-export interface Xml {
+export interface XML {
     name?: string
     namespace?: string
     prefix?: string
@@ -398,9 +398,9 @@ export interface Components {
     [k: `x-${string}`]: unknown
 }
 
-export type SecurityScheme = ApiKeySecurityScheme | HttpSecurityScheme | OAuth2SecurityScheme | OpenIdConnectSecurityScheme
+export type SecurityScheme = APIKeySecurityScheme | HTTPSecurityScheme | OAuth2SecurityScheme | OpenIdConnectSecurityScheme
 
-export interface ApiKeySecurityScheme {
+export interface APIKeySecurityScheme {
     type: 'apiKey'
     name: string
     in: 'header' | 'query' | 'cookie'
@@ -408,7 +408,7 @@ export interface ApiKeySecurityScheme {
     [k: `x-${string}`]: unknown
 }
 
-export type HttpSecurityScheme =
+export type HTTPSecurityScheme =
     | {
           scheme?: string
       }

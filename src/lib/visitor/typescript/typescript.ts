@@ -247,9 +247,10 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
                     context.property !== undefined
                         ? camelCase(context.property, {
                               pascalCase: true,
+                              preserveConsecutiveUppercase: true,
                           })
                         : ''
-                }${camelCase(obj.type, { pascalCase: true })}`
+                }${camelCase(obj.type, { pascalCase: true, preserveConsecutiveUppercase: true })}`
                 const { definition: local } = toTypescriptDefinition({
                     sourceSymbol,
                     schema: items,
@@ -301,7 +302,9 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
         const uuid = reference.uuid
         if (references.find((d) => d.uuid === uuid) === undefined) {
             const referenceName =
-                reference.name !== undefined ? camelCase(reference.name, { pascalCase: true }) : `{{${uuid}:referenceName}}`
+                reference.name !== undefined
+                    ? camelCase(reference.name, { pascalCase: true, preserveConsecutiveUppercase: true })
+                    : `{{${uuid}:referenceName}}`
 
             references.push({
                 reference: [reference],
@@ -342,7 +345,10 @@ export function toTypescriptDefinition({
     locals ??= {}
     const references: TypescriptDefinition['references'] = []
 
-    const readableSymbolName = camelCase((symbolName ?? sourceSymbol).replaceAll(':', ''), { pascalCase: true })
+    const readableSymbolName = camelCase((symbolName ?? sourceSymbol).replaceAll(':', ''), {
+        pascalCase: true,
+        preserveConsecutiveUppercase: true,
+    })
 
     const context = {
         symbolName: readableSymbolName,
