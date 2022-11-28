@@ -11,7 +11,7 @@ export function stringLiteral(x: string, { allowBacktick = false }: { allowBackt
     const escaped = x.replaceAll('\\', '\\\\')
     if (escaped.includes("'") || escaped.includes('"')) {
         if (allowBacktick) {
-            return `\`${escaped.replaceAll(/`/g, '\\`')}\``
+            return `\`${escaped.replaceAll(/`/g, '\\`').replaceAll('${', '\\${')}\``
         }
         return `'${escaped.replaceAll(/'/g, "\\'")}'`
     }
