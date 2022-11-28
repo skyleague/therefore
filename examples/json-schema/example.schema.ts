@@ -1,4 +1,4 @@
-import { $number, $object, $string, $validator } from '../../src'
+import { $integer, $intersection, $number, $object, $string, $validator } from '../../src'
 
 export const person = $validator(
     $object({
@@ -8,4 +8,13 @@ export const person = $validator(
         lastName: $string,
         age: $number,
     })
+)
+
+export const salesPerson = $validator(
+    $intersection([
+        $object({
+            sales: $integer,
+        }),
+        person,
+    ])
 )

@@ -9,6 +9,7 @@ export type TypeDiscriminator =
     | 'enum'
     | 'enumValue'
     | 'integer'
+    | 'intersection'
     | 'null'
     | 'number'
     | 'object'

@@ -3,6 +3,7 @@ import type { BooleanType } from './boolean'
 import type { DictType } from './dict'
 import type { EnumType } from './enum'
 import type { IntegerType } from './integer'
+import type { IntersectionType } from './intersection'
 import type { NullType } from './null'
 import type { NumberType } from './number'
 import type { ObjectType } from './object'
@@ -37,6 +38,7 @@ export type ThereforeCst =
     | DictType
     | EnumType
     | IntegerType
+    | IntersectionType
     | NullType
     | NumberType
     | ObjectType
@@ -47,6 +49,8 @@ export type ThereforeCst =
     | UnknownType
 
 export type AyncThereforeCst = AsyncRefType | Exclude<ThereforeCst, { type: 'ref' }>
+
+export type ThereforeSchema = AyncThereforeCst
 
 export function isThereforeExport(x: ThereforeCst | unknown): x is ThereforeCst {
     return isObject(x) && 'type' in x && 'uuid' in x && 'value' in x && 'description' in x

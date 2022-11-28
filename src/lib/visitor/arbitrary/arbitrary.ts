@@ -9,6 +9,7 @@ import type { Schema } from '../../types'
 
 import type { Arbitrary } from '@skyleague/axioms'
 import {
+    allOf,
     array,
     boolean,
     chainArbitrary,
@@ -58,6 +59,8 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     unknown: ({ value: image }) => (image.json ? json() : unknown()),
     enum: ({ children }) => oneOf(...(isNamedArray(children) ? children.map(([, c]) => c) : children).map((c) => constant(c))),
     union: ({ children }, context) => oneOf(...children.map((c) => walkCst(c, arbitraryVisitor, context))),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    intersection: ({ children }, context) => allOf(...(children.map((c) => walkCst(c, arbitraryVisitor, context)) as any)),
     object: ({ children, value: { indexSignature } }, context) =>
         indexSignature !== undefined
             ? chainArbitrary(array(string()), (dictKeys) =>
@@ -113,7 +116,7 @@ export function toArbitrary<T = unknown>(schema: ThereforeCst): Arbitrary<T>
 export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>>
 export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>> {
     if ('schema' in schema) {
-        return Promise.resolve($jsonschema(schema.schema as JsonSchema)).then((s) =>
+        return Promise.resolve($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true })).then((s) =>
             walkCst(s, arbitraryVisitor, {
                 transform,
             })

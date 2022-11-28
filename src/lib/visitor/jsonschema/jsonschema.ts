@@ -77,6 +77,24 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
             anyOf: children.map((u) => walkCst(u, jsonSchemaVisitor, context)),
         }
     },
+    intersection: ({ children }, context) => {
+        return {
+            allOf: children.map((u) =>
+                walkCst(
+                    {
+                        ...u,
+                        value: {
+                            ...u.value,
+                            // force non strict subsets
+                            additionalProperties: true,
+                        },
+                    },
+                    jsonSchemaVisitor,
+                    context
+                )
+            ),
+        }
+    },
     object: ({ children, value }, context) => {
         const properties: NonNullable<JsonSchema['properties']> = {}
         const required: string[] = []
