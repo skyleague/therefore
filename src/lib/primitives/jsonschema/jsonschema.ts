@@ -389,18 +389,28 @@ export interface JsonSchemaOptions {
  * @category $jsonschema
  */
 export async function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): Promise<ThereforeCst> {
-    const { root, name, reference, references, dereferenceRoot = true } = options
+    const {
+        root,
+        name,
+        reference,
+        references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>(),
+        dereferenceRoot = true,
+    } = options
 
-    if (references !== undefined && reference !== undefined && references.has(reference)) {
+    if (reference !== undefined && references.has(reference)) {
         return evaluate(references.get(reference)?.[1]) as Promise<ThereforeCst>
     }
-    let value = await walkJsonschema({
+
+    const self = walkJsonschema({
         name,
         node: schema,
         visitor: schemaWalker,
         childProperty: undefined,
-        context: { ...options, root: root ?? schema },
+        context: { ...options, references, root: root ?? schema },
     })
+    references.set('#', [reference!, async () => self])
+
+    let value = await self
     if (dereferenceRoot && value.type === 'ref') {
         value = evaluate(value.children[0]) as ThereforeCst
     }

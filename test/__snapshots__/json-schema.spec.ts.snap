@@ -4,6 +4,12 @@ exports[`output generation 1`] = `
 [
   {
     "data": {
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
+        "srcPath": "examples/json-schema/example.schema.type.ts",
+        "symbolName": "SelfReference",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
+      },
       "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
         "srcPath": "examples/json-schema/example.schema.type.ts",
@@ -71,12 +77,23 @@ export const {{0009-000:symbolName}} = {
     },
 } as const
 
+export interface {{00014-000:symbolName}} {
+    foo?: string
+    bar?: {{00014-000:referenceName}}
+}
+
 ",
     "type": "typescript",
   },
   {
     "clean": [Function],
     "data": {
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
+        "srcPath": "examples/json-schema/example.schema.type.ts",
+        "symbolName": "SelfReference",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
+      },
       "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
         "srcPath": "examples/json-schema/example.schema.type.ts",
@@ -103,6 +120,12 @@ export const {{0009-000:symbolName}} = {
   {
     "clean": [Function],
     "data": {
+      "00014-000": {
+        "referenceName": "{{00014-000:symbolName}}",
+        "srcPath": "examples/json-schema/example.schema.type.ts",
+        "symbolName": "SelfReference",
+        "uniqueSymbolName": "{{00014-000:symbolName}}",
+      },
       "0005-000": {
         "referenceName": "{{0005-000:symbolName}}",
         "srcPath": "examples/json-schema/example.schema.type.ts",
