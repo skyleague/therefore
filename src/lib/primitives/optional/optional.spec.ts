@@ -6,7 +6,7 @@ test('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`
         {
           "description": {
-            "optional": true,
+            "optional": "implicit",
           },
           "type": "string",
           "uuid": "0002-000",
@@ -19,7 +19,7 @@ test('string expanded', () => {
     expect($optional($string())).toMatchInlineSnapshot(`
         {
           "description": {
-            "optional": true,
+            "optional": "implicit",
           },
           "type": "string",
           "uuid": "0002-000",

@@ -1,16 +1,19 @@
 import type { CstNode, CstSubNode } from '../../cst/cst'
 
-import { evaluate } from '@skyleague/axioms'
+import { evaluate, omitUndefined } from '@skyleague/axioms'
 import { v4 as uuid } from 'uuid'
 
-export function $optional(literal: CstSubNode): CstNode<string, unknown, unknown, unknown[]> {
+export function $optional(
+    literal: CstSubNode,
+    value: 'explicit' | 'implicit' = 'implicit'
+): CstNode<string, unknown, unknown, unknown[]> {
     const subNode = evaluate(literal)
     return {
         ...subNode,
         uuid: uuid(),
-        description: {
+        description: omitUndefined({
             ...subNode.description,
-            optional: true,
-        },
+            optional: value,
+        }),
     }
 }

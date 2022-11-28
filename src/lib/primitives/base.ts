@@ -55,12 +55,12 @@ export interface MetaDescription<T = unknown> {
      *
      * @example
      *
-     *      $string({optional: true})
+     *      $string({optional: 'explicit'})
      *
      * @see {@link $optional} for a helper function.
      */
 
-    optional?: boolean
+    optional?: 'explicit' | 'implicit' | true
 
     /**
      * Mark the property as nullable (either defined or null, but present).

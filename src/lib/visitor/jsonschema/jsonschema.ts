@@ -100,7 +100,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
         const required: string[] = []
         for (const child of children) {
             properties[child.name] = walkCst(child, jsonSchemaVisitor, context)
-            if (!child.description.optional) {
+            if (child.description.optional === undefined || child.description.optional === 'explicit') {
                 required.push(child.name)
             }
         }

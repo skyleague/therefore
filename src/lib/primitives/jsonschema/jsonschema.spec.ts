@@ -44,7 +44,7 @@ describe('person', () => {
                   "description": {
                     "description": "The person's first name.",
                     "name": "firstName",
-                    "optional": true,
+                    "optional": "implicit",
                   },
                   "name": "firstName",
                   "type": "string",
@@ -61,7 +61,7 @@ describe('person', () => {
                   "description": {
                     "description": "The person's last name.",
                     "name": "lastName",
-                    "optional": true,
+                    "optional": "implicit",
                   },
                   "name": "lastName",
                   "type": "string",
@@ -78,7 +78,7 @@ describe('person', () => {
                   "description": {
                     "description": "Age in years which must be equal to or greater than zero.",
                     "name": "age",
-                    "optional": true,
+                    "optional": "implicit",
                   },
                   "name": "age",
                   "type": "integer",

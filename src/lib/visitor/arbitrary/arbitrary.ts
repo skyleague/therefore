@@ -106,7 +106,7 @@ function transform(
     if (description.nullable === true) {
         arbitrary = nullable(arbitrary)
     }
-    if (description.optional === true) {
+    if (description.optional !== undefined) {
         arbitrary = optional(arbitrary, { symbol: undefined })
     }
     return arbitrary

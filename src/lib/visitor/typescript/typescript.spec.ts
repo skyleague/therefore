@@ -28,16 +28,20 @@ import {
     $unknown,
 } from '../../primitives'
 
-import { alphaNumericString, forAll } from '@skyleague/axioms'
+import { alphaNumericString, forAll, omitUndefined } from '@skyleague/axioms'
 
 describe('optional', () => {
-    test('false', () => {
+    test('undefined', () => {
         expect(optional({})).toMatchInlineSnapshot(`""`)
-        expect(optional({ optional: false })).toMatchInlineSnapshot(`""`)
+        expect(optional(omitUndefined({ optional: undefined }))).toMatchInlineSnapshot(`""`)
     })
 
-    test('true', () => {
-        expect(optional({ optional: true })).toMatchInlineSnapshot(`"?"`)
+    test('explicit', () => {
+        expect(optional({ optional: 'explicit' })).toMatchInlineSnapshot(`"?"`)
+    })
+
+    test('implicit', () => {
+        expect(optional({ optional: 'implicit' })).toMatchInlineSnapshot(`"?"`)
     })
 })
 
