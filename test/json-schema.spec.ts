@@ -1,11 +1,11 @@
 import { SalesPerson } from '../examples/json-schema/example.type'
-import { toArbitrary } from '../src'
+import { arbitrary } from '../src'
 import { compileOutputFiles } from '../src/commands/generate/generate'
 
 import { forAll } from '@skyleague/axioms'
 
 test('intersection', async () => {
-    forAll(await toArbitrary(SalesPerson), (x) => SalesPerson.is(x))
+    forAll(await arbitrary(SalesPerson), (x) => SalesPerson.is(x))
 })
 
 test('output generation', async () => {

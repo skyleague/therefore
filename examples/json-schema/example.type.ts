@@ -51,3 +51,8 @@ export const SalesPerson = {
         }
     },
 } as const
+
+export interface SelfReference {
+    foo?: string
+    bar?: SelfReference
+}

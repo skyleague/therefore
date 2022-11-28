@@ -7,7 +7,7 @@ import { $jsonschema } from '../../primitives/jsonschema'
 import type { AyncThereforeCst, ThereforeCst } from '../../primitives/types'
 import type { Schema } from '../../types'
 
-import type { Arbitrary } from '@skyleague/axioms'
+import type { Arbitrary, Dependent, Promisable } from '@skyleague/axioms'
 import {
     allOf,
     array,
@@ -112,9 +112,9 @@ function transform(
     return arbitrary
 }
 
-export function toArbitrary<T = unknown>(schema: ThereforeCst): Arbitrary<T>
-export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>>
-export function toArbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Arbitrary<T> | Promise<Arbitrary<T>> {
+export function arbitrary<T = unknown>(schema: ThereforeCst): Dependent<T>
+export function arbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Promisable<Dependent<T>>
+export function arbitrary<T = unknown>(schema: AyncThereforeCst | Schema<T>): Promisable<Dependent<T>> {
     if ('schema' in schema) {
         return Promise.resolve($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true })).then((s) =>
             walkCst(s, arbitraryVisitor, {

@@ -1,4 +1,4 @@
-import { toArbitrary } from './arbitrary'
+import { arbitrary } from './arbitrary'
 
 import { $array, $boolean, $integer, $null, $object } from '../../primitives'
 import { $number } from '../../primitives/number'
@@ -19,40 +19,40 @@ import {
 } from '@skyleague/axioms'
 
 test('string', () => {
-    forAll(toArbitrary($string()), isString)
+    forAll(arbitrary($string()), isString)
 })
 
 test('date', () => {
-    forAll(toArbitrary<string>($string({ format: 'date' })), (x) => toISO8601Date(new Date(x), { format: 'date' }) === x)
+    forAll(arbitrary<string>($string({ format: 'date' })), (x) => toISO8601Date(new Date(x), { format: 'date' }) === x)
 })
 
 test('date-time', () => {
-    forAll(toArbitrary<string>($string({ format: 'date-time' })), (x) => toISO8601Date(new Date(x)) === x)
+    forAll(arbitrary<string>($string({ format: 'date-time' })), (x) => toISO8601Date(new Date(x)) === x)
 })
 
 test('number', () => {
-    forAll(toArbitrary($number()), isNumber)
+    forAll(arbitrary($number()), isNumber)
 })
 
 test('integer', () => {
-    forAll(toArbitrary($integer()), isNumber)
-    forAll(toArbitrary($integer()), isInteger)
+    forAll(arbitrary($integer()), isNumber)
+    forAll(arbitrary($integer()), isInteger)
 })
 
 test('boolean', () => {
-    forAll(toArbitrary($boolean()), isBoolean)
+    forAll(arbitrary($boolean()), isBoolean)
 })
 
 test('null', () => {
-    forAll(toArbitrary($null()), (x) => x === null)
+    forAll(arbitrary($null()), (x) => x === null)
 })
 
 test('array', () => {
-    forAll(toArbitrary($array($unknown)), isArray)
+    forAll(arbitrary($array($unknown)), isArray)
 })
 
 test('object - with index', () => {
-    const arb = toArbitrary($object({}, { indexSignature: $string() }))
+    const arb = arbitrary($object({}, { indexSignature: $string() }))
     forAll(arb, isObject)
     expect(arb.value({ rng: xoroshiro128plus(42n) })).toMatchInlineSnapshot(`
         {
@@ -75,9 +75,9 @@ test('object - with index', () => {
 })
 
 test('optional - primitive', () => {
-    forAll(toArbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
+    forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })
 
 test('union with enum and supertype', () => {
-    forAll(toArbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
+    forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })

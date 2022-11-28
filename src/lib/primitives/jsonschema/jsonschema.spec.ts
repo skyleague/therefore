@@ -3,7 +3,7 @@ import { $jsonschema } from './jsonschema'
 import { awaitAll } from '../../../common/util'
 import type { JsonSchema } from '../../../json'
 import { walkCst } from '../../cst/visitor'
-import { toArbitrary } from '../../visitor'
+import { arbitrary } from '../../visitor'
 import { jsonSchemaContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript'
 import { typeDefinitionVisitor } from '../../visitor/typescript/typescript'
@@ -377,5 +377,5 @@ describe('petstore', () => {
 })
 
 test('primitives', async () => {
-    forAll(toArbitrary<string>(await $jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
+    forAll(arbitrary<string>(await $jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
 })

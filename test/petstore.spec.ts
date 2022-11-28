@@ -10,7 +10,7 @@ import {
     CreateUsersWithListInputRequest,
     LoginUserResponse,
 } from '../examples/petstore/petstore.type'
-import { toArbitrary } from '../src'
+import { arbitrary } from '../src'
 
 import { eitherToError, forAll } from '@skyleague/axioms'
 import nock from 'nock'
@@ -76,38 +76,38 @@ describe('updatePet', () => {
 
 describe('entities satisfy arbitrary', () => {
     test('Pet', async () => {
-        forAll(await toArbitrary(Pet), (x) => Pet.is(x))
+        forAll(await arbitrary(Pet), (x) => Pet.is(x))
     })
 
     test('FindPetsByStatusResponse', async () => {
-        forAll(await toArbitrary(FindPetsByStatusResponse), (x) => FindPetsByStatusResponse.is(x))
+        forAll(await arbitrary(FindPetsByStatusResponse), (x) => FindPetsByStatusResponse.is(x))
     })
 
     test('FindPetsByTagsResponse', async () => {
-        forAll(await toArbitrary(FindPetsByTagsResponse), (x) => FindPetsByTagsResponse.is(x))
+        forAll(await arbitrary(FindPetsByTagsResponse), (x) => FindPetsByTagsResponse.is(x))
     })
 
     test('ApiResponse', async () => {
-        forAll(await toArbitrary(ApiResponse), (x) => ApiResponse.is(x))
+        forAll(await arbitrary(ApiResponse), (x) => ApiResponse.is(x))
     })
 
     test('GetInventoryResponse', async () => {
-        forAll(await toArbitrary(GetInventoryResponse), (x) => GetInventoryResponse.is(x))
+        forAll(await arbitrary(GetInventoryResponse), (x) => GetInventoryResponse.is(x))
     })
 
     test('Order', async () => {
-        forAll(await toArbitrary(Order), (x) => Order.is(x))
+        forAll(await arbitrary(Order), (x) => Order.is(x))
     })
 
     test('User', async () => {
-        forAll(await toArbitrary(User), (x) => User.is(x))
+        forAll(await arbitrary(User), (x) => User.is(x))
     })
 
     test('CreateUsersWithListInputRequest', async () => {
-        forAll(await toArbitrary(CreateUsersWithListInputRequest), (x) => CreateUsersWithListInputRequest.is(x))
+        forAll(await arbitrary(CreateUsersWithListInputRequest), (x) => CreateUsersWithListInputRequest.is(x))
     })
 
     test('LoginUserResponse', async () => {
-        forAll(await toArbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
+        forAll(await arbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
     })
 })

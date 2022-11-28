@@ -1,5 +1,5 @@
 import { Project } from '../examples/nasa/astroids/nasa.type'
-import { toArbitrary } from '../src'
+import { arbitrary } from '../src'
 import { compileOutputFiles } from '../src/commands/generate/generate'
 
 import { forAll } from '@skyleague/axioms'
@@ -15,5 +15,5 @@ test('output generation', async () => {
 })
 
 test('arbitrary', async () => {
-    forAll(await toArbitrary(Project), (p) => Project.is(p))
+    forAll(await arbitrary(Project), (p) => Project.is(p))
 })
