@@ -22,6 +22,9 @@ export const AdultContentDetectionRequest = {
     get schema() {
         return AdultContentDetectionRequest.validate.schema
     },
+    get errors() {
+        return AdultContentDetectionRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is AdultContentDetectionRequest => AdultContentDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!AdultContentDetectionRequest.validate(o)) {
@@ -45,6 +48,9 @@ export const CommercialDetectionRequest = {
     validate: require('./schemas/commercial-detection-request.schema.js') as ValidateFunction<CommercialDetectionRequest>,
     get schema() {
         return CommercialDetectionRequest.validate.schema
+    },
+    get errors() {
+        return CommercialDetectionRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is CommercialDetectionRequest => CommercialDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -74,6 +80,9 @@ export const DocumentSimilarityRequest = {
     get schema() {
         return DocumentSimilarityRequest.validate.schema
     },
+    get errors() {
+        return DocumentSimilarityRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is DocumentSimilarityRequest => DocumentSimilarityRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!DocumentSimilarityRequest.validate(o)) {
@@ -98,6 +107,9 @@ export const EducationalDetectionRequest = {
     get schema() {
         return EducationalDetectionRequest.validate.schema
     },
+    get errors() {
+        return EducationalDetectionRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is EducationalDetectionRequest => EducationalDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!EducationalDetectionRequest.validate(o)) {
@@ -121,6 +133,9 @@ export const GenderDetectionRequest = {
     validate: require('./schemas/gender-detection-request.schema.js') as ValidateFunction<GenderDetectionRequest>,
     get schema() {
         return GenderDetectionRequest.validate.schema
+    },
+    get errors() {
+        return GenderDetectionRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is GenderDetectionRequest => GenderDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -150,6 +165,9 @@ export const KeywordExtractionRequest = {
     get schema() {
         return KeywordExtractionRequest.validate.schema
     },
+    get errors() {
+        return KeywordExtractionRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is KeywordExtractionRequest => KeywordExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!KeywordExtractionRequest.validate(o)) {
@@ -173,6 +191,9 @@ export const LanguageDetectionRequest = {
     validate: require('./schemas/language-detection-request.schema.js') as ValidateFunction<LanguageDetectionRequest>,
     get schema() {
         return LanguageDetectionRequest.validate.schema
+    },
+    get errors() {
+        return LanguageDetectionRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is LanguageDetectionRequest => LanguageDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -198,6 +219,9 @@ export const ReadabilityAssessmentRequest = {
     get schema() {
         return ReadabilityAssessmentRequest.validate.schema
     },
+    get errors() {
+        return ReadabilityAssessmentRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is ReadabilityAssessmentRequest => ReadabilityAssessmentRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!ReadabilityAssessmentRequest.validate(o)) {
@@ -221,6 +245,9 @@ export const SentimentAnalysisRequest = {
     validate: require('./schemas/sentiment-analysis-request.schema.js') as ValidateFunction<SentimentAnalysisRequest>,
     get schema() {
         return SentimentAnalysisRequest.validate.schema
+    },
+    get errors() {
+        return SentimentAnalysisRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is SentimentAnalysisRequest => SentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -246,6 +273,9 @@ export const SpamDetectionRequest = {
     get schema() {
         return SpamDetectionRequest.validate.schema
     },
+    get errors() {
+        return SpamDetectionRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is SpamDetectionRequest => SpamDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpamDetectionRequest.validate(o)) {
@@ -269,6 +299,9 @@ export const SubjectivityAnalysisRequest = {
     validate: require('./schemas/subjectivity-analysis-request.schema.js') as ValidateFunction<SubjectivityAnalysisRequest>,
     get schema() {
         return SubjectivityAnalysisRequest.validate.schema
+    },
+    get errors() {
+        return SubjectivityAnalysisRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is SubjectivityAnalysisRequest => SubjectivityAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -294,6 +327,9 @@ export const TextExtractionRequest = {
     get schema() {
         return TextExtractionRequest.validate.schema
     },
+    get errors() {
+        return TextExtractionRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is TextExtractionRequest => TextExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TextExtractionRequest.validate(o)) {
@@ -317,6 +353,9 @@ export const TopicClassificationRequest = {
     validate: require('./schemas/topic-classification-request.schema.js') as ValidateFunction<TopicClassificationRequest>,
     get schema() {
         return TopicClassificationRequest.validate.schema
+    },
+    get errors() {
+        return TopicClassificationRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is TopicClassificationRequest => TopicClassificationRequest.validate(o) === true,
     assert: (o: unknown) => {
@@ -342,6 +381,9 @@ export const TwitterSentimentAnalysisRequest = {
         require('./schemas/twitter-sentiment-analysis-request.schema.js') as ValidateFunction<TwitterSentimentAnalysisRequest>,
     get schema() {
         return TwitterSentimentAnalysisRequest.validate.schema
+    },
+    get errors() {
+        return TwitterSentimentAnalysisRequest.validate.errors ?? undefined
     },
     is: (o: unknown): o is TwitterSentimentAnalysisRequest => TwitterSentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {

@@ -25,6 +25,9 @@ export const Comic = {
     get schema() {
         return Comic.validate.schema
     },
+    get errors() {
+        return Comic.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Comic => Comic.validate(o) === true,
     assert: (o: unknown) => {
         if (!Comic.validate(o)) {

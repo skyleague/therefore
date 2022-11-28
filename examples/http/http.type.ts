@@ -15,6 +15,9 @@ export const Headers = {
     get schema() {
         return Headers.validate.schema
     },
+    get errors() {
+        return Headers.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Headers => Headers.validate(o) === true,
     assert: (o: unknown) => {
         if (!Headers.validate(o)) {
@@ -31,6 +34,9 @@ export const Query = {
     validate: require('./schemas/query.schema.js') as ValidateFunction<Query>,
     get schema() {
         return Query.validate.schema
+    },
+    get errors() {
+        return Query.validate.errors ?? undefined
     },
     is: (o: unknown): o is Query => Query.validate(o) === true,
     assert: (o: unknown) => {

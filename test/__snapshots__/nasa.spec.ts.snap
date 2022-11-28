@@ -341,6 +341,7 @@ export interface {{000128-000:symbolName}} {
 export const {{000128-000:symbolName}} = {
     validate: require('./schemas/project.schema.js') as ValidateFunction<{{000128-000:symbolName}}>,
     get schema() { return {{000128-000:symbolName}}.validate.schema},
+    get errors() { return {{000128-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{000128-000:symbolName}} => {{000128-000:symbolName}}.validate(o) === true,
 } as const
 
@@ -352,6 +353,7 @@ export interface {{000133-000:symbolName}} {
 export const {{000133-000:symbolName}} = {
     validate: require('./schemas/get-api-by-response200.schema.js') as ValidateFunction<{{000133-000:symbolName}}>,
     get schema() { return {{000133-000:symbolName}}.validate.schema},
+    get errors() { return {{000133-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{000133-000:symbolName}} => {{000133-000:symbolName}}.validate(o) === true,
 } as const
 
@@ -1038,6 +1040,7 @@ export type {{000136-000:symbolName}} = (unknown)[]
 export const {{000136-000:symbolName}} = {
     validate: require('./schemas/get-apod-response.schema.js') as ValidateFunction<{{000136-000:symbolName}}>,
     get schema() { return {{000136-000:symbolName}}.validate.schema},
+    get errors() { return {{000136-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{000136-000:symbolName}} => {{000136-000:symbolName}}.validate(o) === true,
 } as const
 

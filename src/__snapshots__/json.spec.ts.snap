@@ -44,6 +44,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 export const {{00010-000:symbolName}} = {
     validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"loopRequired":5,"loopEnum":5,"code":{"optimize":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
     schema: jsonSchema,
+    get errors() { return {{00010-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00010-000:symbolName}} => {{00010-000:symbolName}}.validate(o) === true,
 } as const
 
@@ -52,6 +53,7 @@ export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 export const {{00012-000:symbolName}} = {
     validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"loopRequired":5,"loopEnum":5,"code":{"optimize":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
     schema: jsonAdvSchema,
+    get errors() { return {{00012-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00012-000:symbolName}} => {{00012-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00012-000:symbolName}}.validate(o)) {
@@ -219,6 +221,7 @@ export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 export const {{0005-000:symbolName}} = {
     validate: new AjvValidator({"strict":true,"strictTypes":true,"useDefaults":true,"removeAdditional":false,"strictSchema":false,"loopRequired":5,"loopEnum":5,"code":{"optimize":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
     schema: simpleSchema,
+    get errors() { return {{0005-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0005-000:symbolName}}.validate(o)) {

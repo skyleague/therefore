@@ -23,6 +23,9 @@ export const Pet = {
     get schema() {
         return Pet.validate.schema
     },
+    get errors() {
+        return Pet.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Pet => Pet.validate(o) === true,
     assert: (o: unknown) => {
         if (!Pet.validate(o)) {
@@ -38,6 +41,9 @@ export const FindPetsByStatusResponse = {
     get schema() {
         return FindPetsByStatusResponse.validate.schema
     },
+    get errors() {
+        return FindPetsByStatusResponse.validate.errors ?? undefined
+    },
     is: (o: unknown): o is FindPetsByStatusResponse => FindPetsByStatusResponse.validate(o) === true,
 } as const
 
@@ -47,6 +53,9 @@ export const FindPetsByTagsResponse = {
     validate: require('./schemas/find-pets-by-tags-response.schema.js') as ValidateFunction<FindPetsByTagsResponse>,
     get schema() {
         return FindPetsByTagsResponse.validate.schema
+    },
+    get errors() {
+        return FindPetsByTagsResponse.validate.errors ?? undefined
     },
     is: (o: unknown): o is FindPetsByTagsResponse => FindPetsByTagsResponse.validate(o) === true,
 } as const
@@ -62,6 +71,9 @@ export const ApiResponse = {
     get schema() {
         return ApiResponse.validate.schema
     },
+    get errors() {
+        return ApiResponse.validate.errors ?? undefined
+    },
     is: (o: unknown): o is ApiResponse => ApiResponse.validate(o) === true,
 } as const
 
@@ -73,6 +85,9 @@ export const GetInventoryResponse = {
     validate: require('./schemas/get-inventory-response.schema.js') as ValidateFunction<GetInventoryResponse>,
     get schema() {
         return GetInventoryResponse.validate.schema
+    },
+    get errors() {
+        return GetInventoryResponse.validate.errors ?? undefined
     },
     is: (o: unknown): o is GetInventoryResponse => GetInventoryResponse.validate(o) === true,
 } as const
@@ -93,6 +108,9 @@ export const Order = {
     validate: require('./schemas/order.schema.js') as ValidateFunction<Order>,
     get schema() {
         return Order.validate.schema
+    },
+    get errors() {
+        return Order.validate.errors ?? undefined
     },
     is: (o: unknown): o is Order => Order.validate(o) === true,
     assert: (o: unknown) => {
@@ -121,6 +139,9 @@ export const User = {
     get schema() {
         return User.validate.schema
     },
+    get errors() {
+        return User.validate.errors ?? undefined
+    },
     is: (o: unknown): o is User => User.validate(o) === true,
     assert: (o: unknown) => {
         if (!User.validate(o)) {
@@ -137,6 +158,9 @@ export const CreateUsersWithListInputRequest = {
     get schema() {
         return CreateUsersWithListInputRequest.validate.schema
     },
+    get errors() {
+        return CreateUsersWithListInputRequest.validate.errors ?? undefined
+    },
     is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!CreateUsersWithListInputRequest.validate(o)) {
@@ -151,6 +175,9 @@ export const LoginUserResponse = {
     validate: require('./schemas/login-user-response.schema.js') as ValidateFunction<LoginUserResponse>,
     get schema() {
         return LoginUserResponse.validate.schema
+    },
+    get errors() {
+        return LoginUserResponse.validate.errors ?? undefined
     },
     is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
 } as const

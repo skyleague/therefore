@@ -47,6 +47,7 @@ export interface {{0005-000:symbolName}} {
 export const {{0005-000:symbolName}} = {
     validate: require('./schemas/person.schema.js') as ValidateFunction<{{0005-000:symbolName}}>,
     get schema() { return {{0005-000:symbolName}}.validate.schema},
+    get errors() { return {{0005-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0005-000:symbolName}}.validate(o)) {
@@ -69,6 +70,7 @@ export type {{0009-000:symbolName}} = {
 export const {{0009-000:symbolName}} = {
     validate: require('./schemas/sales-person.schema.js') as ValidateFunction<{{0009-000:symbolName}}>,
     get schema() { return {{0009-000:symbolName}}.validate.schema},
+    get errors() { return {{0009-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0009-000:symbolName}} => {{0009-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0009-000:symbolName}}.validate(o)) {

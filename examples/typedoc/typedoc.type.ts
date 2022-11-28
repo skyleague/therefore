@@ -16,6 +16,9 @@ export const Theme = {
     get schema() {
         return Theme.validate.schema
     },
+    get errors() {
+        return Theme.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Theme => Theme.validate(o) === true,
     assert: (o: unknown) => {
         if (!Theme.validate(o)) {
@@ -184,6 +187,9 @@ export const Typedoc = {
     validate: require('./schemas/typedoc.schema.js') as ValidateFunction<Typedoc>,
     get schema() {
         return Typedoc.validate.schema
+    },
+    get errors() {
+        return Typedoc.validate.errors ?? undefined
     },
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
     assert: (o: unknown) => {

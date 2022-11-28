@@ -20,6 +20,9 @@ export const Person = {
     get schema() {
         return Person.validate.schema
     },
+    get errors() {
+        return Person.validate.errors ?? undefined
+    },
     is: (o: unknown): o is Person => Person.validate(o) === true,
     assert: (o: unknown) => {
         if (!Person.validate(o)) {
@@ -43,6 +46,9 @@ export const SalesPerson = {
     validate: require('./schemas/sales-person.schema.js') as ValidateFunction<SalesPerson>,
     get schema() {
         return SalesPerson.validate.schema
+    },
+    get errors() {
+        return SalesPerson.validate.errors ?? undefined
     },
     is: (o: unknown): o is SalesPerson => SalesPerson.validate(o) === true,
     assert: (o: unknown) => {
