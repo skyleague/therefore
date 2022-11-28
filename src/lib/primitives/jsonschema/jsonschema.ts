@@ -16,6 +16,7 @@ import type { SchemaMeta, SchemaOptions } from '../base'
 import { descriptionKeys } from '../base'
 import { $boolean } from '../boolean'
 import { $const } from '../const'
+import { $dict } from '../dict'
 import { $enum } from '../enum'
 import { $integer } from '../integer'
 import { $intersection } from '../intersection'
@@ -123,6 +124,9 @@ const schemaWalker: JsonSchemaWalker = {
                 (isBoolean(node.additionalProperties) && keysOf(node.additionalProperties).length === 0)) &&
             (node.patternProperties === undefined || keysOf(node.patternProperties).length === 0)
         ) {
+            if (node.type === 'object') {
+                return $dict($unknown(), { ...annotate(node, context) })
+            }
             return $unknown({ ...annotate(node, context), json: true })
         }
         const { properties, indexSignature, indexPatterns, additionalProperties } = indexProperties(node, context)
