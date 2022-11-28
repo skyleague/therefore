@@ -387,7 +387,7 @@ describe('toTypeDefinition', () => {
     test('object', () => {
         expect(walkCst($object({ foo: $string }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "foo": {
                   "type": "string",
@@ -407,7 +407,7 @@ describe('toTypeDefinition', () => {
             )
         ).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "bar": {
                   "type": [
@@ -437,7 +437,7 @@ describe('toTypeDefinition', () => {
             )
         ).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "properties": {
                 "bar": {
                   "description": "fooscription",
@@ -470,7 +470,7 @@ describe('toTypeDefinition', () => {
             )
         ).toMatchInlineSnapshot(`
             {
-              "additionalProperties": false,
+              "additionalProperties": true,
               "default": {
                 "bar": "foo",
                 "foo": "bar",
@@ -525,7 +525,7 @@ describe('toJsonSchema', () => {
               "compiled": false,
               "schema": {
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "additionalProperties": false,
+                "additionalProperties": true,
                 "default": {
                   "bar": "foo",
                   "foo": "bar",
