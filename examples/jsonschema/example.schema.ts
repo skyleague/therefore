@@ -28,3 +28,13 @@ export const selfReference = $jsonschema(
     },
     { validator: { enabled: true, assert: true } }
 )
+
+export const defaults = $jsonschema(
+    {
+        properties: {
+            str: { type: 'string', default: 'foobar' },
+            int: { type: 'integer', default: 42 },
+        },
+    },
+    { validator: { enabled: true, assert: true } }
+)

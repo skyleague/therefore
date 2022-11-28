@@ -21,7 +21,7 @@ export const Square = {
     is: (o: unknown): o is Square => Square.validate(o) === true,
     assert: (o: unknown) => {
         if (!Square.validate(o)) {
-            throw new AjvValidator.ValidationError(Square.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Square.errors ?? [])
         }
     },
 } as const
@@ -42,7 +42,7 @@ export const Rectangle = {
     is: (o: unknown): o is Rectangle => Rectangle.validate(o) === true,
     assert: (o: unknown) => {
         if (!Rectangle.validate(o)) {
-            throw new AjvValidator.ValidationError(Rectangle.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Rectangle.errors ?? [])
         }
     },
 } as const
@@ -62,7 +62,7 @@ export const Circle = {
     is: (o: unknown): o is Circle => Circle.validate(o) === true,
     assert: (o: unknown) => {
         if (!Circle.validate(o)) {
-            throw new AjvValidator.ValidationError(Circle.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Circle.errors ?? [])
         }
     },
 } as const
@@ -80,7 +80,7 @@ export const Shape = {
     is: (o: unknown): o is Shape => Shape.validate(o) === true,
     assert: (o: unknown) => {
         if (!Shape.validate(o)) {
-            throw new AjvValidator.ValidationError(Shape.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Shape.errors ?? [])
         }
     },
 } as const

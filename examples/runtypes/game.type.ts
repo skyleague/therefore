@@ -54,7 +54,7 @@ export const SpaceObject = {
     is: (o: unknown): o is SpaceObject => SpaceObject.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpaceObject.validate(o)) {
-            throw new AjvValidator.ValidationError(SpaceObject.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(SpaceObject.errors ?? [])
         }
     },
 } as const

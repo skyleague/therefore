@@ -8,36 +8,28 @@ export interface RefOptions {
     exportSymbol?: boolean
 }
 
-export type AsyncRefType = CstNode<'ref', RefOptions, unknown, [CstSubNode | Promise<CstSubNode>]>
 export type RefType = CstNode<'ref', RefOptions, unknown, [CstSubNode]>
 
 export function isCombinedDefinition(
-    x:
-        | CstSubNode
-        | [string, CstSubNode | Promise<CstSubNode>]
-        | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] | [string, Promise<CstSubNode>] })
-): x is SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] | [string, Promise<CstSubNode>] } {
+    x: CstSubNode | [string, CstSubNode] | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] })
+): x is SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] } {
     return (
         'reference' in x &&
         (isCstNode(x.reference) || isFunction(x.reference) || isTuple(2, x.reference) || 'then' in x.reference)
     )
 }
 
-export function $ref(reference: CstSubNode | [string, CstSubNode]): AsyncRefType
-export function $ref(reference: CstSubNode | [string, Promise<CstSubNode>]): AsyncRefType
-export function $ref(reference: SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] }): AsyncRefType
-export function $ref(
-    reference: SchemaOptions<RefOptions> & { reference: CstSubNode | [string, Promise<CstSubNode>] }
-): AsyncRefType
-export function $ref(reference: CstSubNode | [string, CstSubNode], options?: SchemaOptions<RefOptions>): AsyncRefType
+export function $ref(reference: CstSubNode | [string, CstSubNode]): RefType
+export function $ref(reference: SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] }): RefType
+export function $ref(reference: CstSubNode | [string, CstSubNode], options?: SchemaOptions<RefOptions>): RefType
 export function $ref(
     definition:
         | CstSubNode
-        | [string, CstSubNode | Promise<CstSubNode>]
-        | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] | [string, Promise<CstSubNode>] }),
+        | [string, CstSubNode]
+        | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] }),
     options: SchemaOptions<RefOptions> = {}
-): AsyncRefType {
-    let reference: CstSubNode | [string, CstSubNode | Promise<CstSubNode>]
+): RefType {
+    let reference: CstSubNode | [string, CstSubNode]
     if (isCombinedDefinition(definition)) {
         options = omit(definition, ['reference'])
         reference = definition.reference

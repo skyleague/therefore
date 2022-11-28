@@ -28,7 +28,7 @@ export const AdultContentDetectionRequest = {
     is: (o: unknown): o is AdultContentDetectionRequest => AdultContentDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!AdultContentDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(AdultContentDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(AdultContentDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -55,7 +55,7 @@ export const CommercialDetectionRequest = {
     is: (o: unknown): o is CommercialDetectionRequest => CommercialDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!CommercialDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(CommercialDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(CommercialDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -86,7 +86,7 @@ export const DocumentSimilarityRequest = {
     is: (o: unknown): o is DocumentSimilarityRequest => DocumentSimilarityRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!DocumentSimilarityRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(DocumentSimilarityRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(DocumentSimilarityRequest.errors ?? [])
         }
     },
 } as const
@@ -113,7 +113,7 @@ export const EducationalDetectionRequest = {
     is: (o: unknown): o is EducationalDetectionRequest => EducationalDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!EducationalDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(EducationalDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(EducationalDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -140,7 +140,7 @@ export const GenderDetectionRequest = {
     is: (o: unknown): o is GenderDetectionRequest => GenderDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!GenderDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(GenderDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(GenderDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -171,7 +171,7 @@ export const KeywordExtractionRequest = {
     is: (o: unknown): o is KeywordExtractionRequest => KeywordExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!KeywordExtractionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(KeywordExtractionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(KeywordExtractionRequest.errors ?? [])
         }
     },
 } as const
@@ -198,7 +198,7 @@ export const LanguageDetectionRequest = {
     is: (o: unknown): o is LanguageDetectionRequest => LanguageDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!LanguageDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(LanguageDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(LanguageDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -225,7 +225,7 @@ export const ReadabilityAssessmentRequest = {
     is: (o: unknown): o is ReadabilityAssessmentRequest => ReadabilityAssessmentRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!ReadabilityAssessmentRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(ReadabilityAssessmentRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(ReadabilityAssessmentRequest.errors ?? [])
         }
     },
 } as const
@@ -252,7 +252,7 @@ export const SentimentAnalysisRequest = {
     is: (o: unknown): o is SentimentAnalysisRequest => SentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SentimentAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SentimentAnalysisRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(SentimentAnalysisRequest.errors ?? [])
         }
     },
 } as const
@@ -279,7 +279,7 @@ export const SpamDetectionRequest = {
     is: (o: unknown): o is SpamDetectionRequest => SpamDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpamDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SpamDetectionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(SpamDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -306,7 +306,7 @@ export const SubjectivityAnalysisRequest = {
     is: (o: unknown): o is SubjectivityAnalysisRequest => SubjectivityAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SubjectivityAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SubjectivityAnalysisRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(SubjectivityAnalysisRequest.errors ?? [])
         }
     },
 } as const
@@ -333,7 +333,7 @@ export const TextExtractionRequest = {
     is: (o: unknown): o is TextExtractionRequest => TextExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TextExtractionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TextExtractionRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(TextExtractionRequest.errors ?? [])
         }
     },
 } as const
@@ -360,7 +360,7 @@ export const TopicClassificationRequest = {
     is: (o: unknown): o is TopicClassificationRequest => TopicClassificationRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TopicClassificationRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TopicClassificationRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(TopicClassificationRequest.errors ?? [])
         }
     },
 } as const
@@ -388,7 +388,7 @@ export const TwitterSentimentAnalysisRequest = {
     is: (o: unknown): o is TwitterSentimentAnalysisRequest => TwitterSentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TwitterSentimentAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TwitterSentimentAnalysisRequest.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(TwitterSentimentAnalysisRequest.errors ?? [])
         }
     },
 } as const

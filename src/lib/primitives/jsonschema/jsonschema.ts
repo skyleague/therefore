@@ -9,7 +9,7 @@ import type {
     JsonSchema7TypeName,
     JsonStringInstance,
 } from '../../../json'
-import type { CstNode, CstSubNode } from '../../cst/cst'
+import type { CstNode } from '../../cst/cst'
 import { prepass } from '../../visitor/prepass'
 import { $array } from '../array'
 import type { SchemaMeta, SchemaOptions } from '../base'
@@ -23,28 +23,17 @@ import { $number } from '../number'
 import type { ObjectType } from '../object'
 import { $object } from '../object'
 import { $optional } from '../optional'
+import type { RefType } from '../ref'
 import { $ref } from '../ref'
-import type { AsyncRefType } from '../ref/ref'
-import { $string } from '../string'
 import type { StringOptions } from '../string'
+import { $string } from '../string'
 import { $tuple } from '../tuple'
-import type { AyncThereforeCst, ThereforeCst } from '../types'
+import type { ThereforeCst } from '../types'
 import { $union } from '../union'
 import { $unknown } from '../unknown'
 
 import type { Json, UndefinedFields } from '@skyleague/axioms'
-import {
-    asyncCollect,
-    asyncMap,
-    evaluate,
-    entriesOf,
-    keysOf,
-    isArray,
-    omitUndefined,
-    isBoolean,
-    pick,
-    omit,
-} from '@skyleague/axioms'
+import { entriesOf, evaluate, isArray, isBoolean, keysOf, memoize, omit, omitUndefined, pick } from '@skyleague/axioms'
 
 function annotate<T = unknown>(doc: JsonAnnotations, context: JsonSchemaContext): SchemaMeta<T> {
     return omitUndefined({
@@ -74,7 +63,7 @@ export function retrievePropertiesFromPattern(indexPattern: string) {
     return { pattern: indexPattern }
 }
 
-export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
+export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
     let indexSignature: CstNode | undefined = undefined
     let indexPatterns: Record<string, CstNode> | undefined = undefined
     let additionalProperties: boolean | undefined = undefined
@@ -83,7 +72,7 @@ export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & 
         if (isBoolean(node.additionalProperties)) {
             additionalProperties = node.additionalProperties ? true : undefined
         } else {
-            indexSignature = await walkJsonschema({
+            indexSignature = walkJsonschema({
                 node: node.additionalProperties,
                 visitor: schemaWalker,
                 childProperty: undefined,
@@ -99,7 +88,7 @@ export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & 
             const property = retrievePropertiesFromPattern(pattern)
             if ('pattern' in property) {
                 indexPatterns ??= {}
-                indexPatterns[pattern] = await walkJsonschema({
+                indexPatterns[pattern] = walkJsonschema({
                     node: value,
                     visitor: schemaWalker,
                     childProperty: undefined,
@@ -123,13 +112,10 @@ export async function indexProperties(node: JsonAnnotations & JsonAnyInstance & 
 
 type JsonSchemaWalker = Record<
     JsonSchema7TypeName | 'const' | 'enum',
-    (
-        node: JsonSchema & { type?: JsonSchema['type'] | 'const' | 'enum' },
-        context: JsonSchemaContext
-    ) => Promise<ThereforeCst> | ThereforeCst
+    (node: JsonSchema & { type?: JsonSchema['type'] | 'const' | 'enum' }, context: JsonSchemaContext) => ThereforeCst
 >
 const schemaWalker: JsonSchemaWalker = {
-    object: async (node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) => {
+    object: (node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) => {
         if (
             (node.properties === undefined || keysOf(node.properties).length === 0) &&
             (node.additionalProperties === false ||
@@ -139,24 +125,22 @@ const schemaWalker: JsonSchemaWalker = {
         ) {
             return $unknown({ ...annotate(node, context), json: true })
         }
-        const { properties, indexSignature, indexPatterns, additionalProperties } = await indexProperties(node, context)
+        const { properties, indexSignature, indexPatterns, additionalProperties } = indexProperties(node, context)
         const mergedProperties = { ...properties, ...node.properties }
-        const subSchemas = await asyncCollect(
-            asyncMap(
-                entriesOf(mergedProperties),
-                async ([name, v]) =>
-                    [
-                        name,
-                        await walkJsonschema({
-                            node: v,
-                            visitor: schemaWalker,
-                            childProperty: undefined,
-                            context,
-                            name: name.toString(),
-                        }),
-                    ] as const
-            )
+        const subSchemas = entriesOf(mergedProperties).map(
+            ([name, v]) =>
+                [
+                    name,
+                    walkJsonschema({
+                        node: v,
+                        visitor: schemaWalker,
+                        childProperty: undefined,
+                        context,
+                        name: name.toString(),
+                    }),
+                ] as const
         )
+
         return $object({
             properties: Object.fromEntries(
                 subSchemas.map(([name, schema]) => {
@@ -172,8 +156,8 @@ const schemaWalker: JsonSchemaWalker = {
             ...annotate(node, context),
         })
     },
-    array: async (node: JsonAnnotations & JsonAnyInstance & JsonArrayInstance, context: JsonSchemaContext) =>
-        $array(await walkJsonschema({ node, visitor: schemaWalker, childProperty: 'items', context }), {
+    array: (node: JsonAnnotations & JsonAnyInstance & JsonArrayInstance, context: JsonSchemaContext) =>
+        $array(walkJsonschema({ node, visitor: schemaWalker, childProperty: 'items', context }), {
             ...annotate(node, context),
             minItems: node.minItems,
             maxItems: node.maxItems,
@@ -215,16 +199,16 @@ const schemaWalker: JsonSchemaWalker = {
 
 interface JsonSchemaContext {
     strict: boolean
-    metaSchemas: Record<string, Promise<JsonSchema>>
-    references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    metaSchemas: Record<string, JsonSchema>
+    references: Map<string, [name: string, value: () => CstNode]>
     root: JsonSchema
-    cache: Map<string, Promise<AyncThereforeCst>>
+    cache: Map<string, () => ThereforeCst>
     exportAllSymbols: boolean
     name?: string | undefined
     allowIntersectionTypes?: boolean
 }
 
-async function walkJsonschema({
+function walkJsonschema({
     node,
     visitor,
     childProperty,
@@ -236,12 +220,12 @@ async function walkJsonschema({
     name?: string | undefined
     childProperty?: keyof Pick<JsonSchema, 'items'> | undefined
     context?: SchemaOptions<UndefinedFields<JsonSchemaContext>>
-}): Promise<AyncThereforeCst> {
+}): ThereforeCst {
     const {
         metaSchemas = {},
-        references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>(),
+        references = new Map<string, [name: string, value: () => CstNode]>(),
         root = node,
-        cache = new Map<string, Promise<AyncThereforeCst>>(),
+        cache = new Map<string, () => ThereforeCst>(),
         exportAllSymbols = false,
         strict = true,
         allowIntersectionTypes = false,
@@ -257,12 +241,13 @@ async function walkJsonschema({
         strict,
         ...omit(pick(rest, descriptionKeys), ['name']),
     }
+
     const child = childProperty !== undefined ? node[childProperty] ?? { type: 'object' } : node
 
     if (isArray(child)) {
         // tuple json schema definition
         return $tuple(
-            await asyncCollect(asyncMap(child, (c) => walkJsonschema({ node: c, visitor, childProperty: undefined, context }))),
+            child.map((c) => walkJsonschema({ node: c, visitor, childProperty: undefined, context })),
             annotate(node, context)
         )
     }
@@ -276,7 +261,7 @@ async function walkJsonschema({
     if (childRef !== undefined) {
         //solve reference
         if (!references.has(childRef)) {
-            const ref = await jsonPointer({ schema: root, ptr: child, metaSchemas })
+            const ref = jsonPointer({ schema: root, ptr: child, metaSchemas })
             if (ref === undefined) {
                 throw new Error('invalid json ptr')
             }
@@ -285,14 +270,7 @@ async function walkJsonschema({
 
             references.set(childRef, [
                 refName,
-                async () => {
-                    if (cache.has(childRef)) {
-                        return cache.get(childRef) as Promise<CstNode>
-                    }
-                    const sub = walkJsonschema({ node: ref, visitor, name: refName, childProperty: undefined, context })
-                    cache.set(childRef, sub)
-                    return sub
-                },
+                memoize(() => walkJsonschema({ node: ref, visitor, name: refName, childProperty: undefined, context })),
             ])
         }
 
@@ -301,21 +279,19 @@ async function walkJsonschema({
             ...context,
             ...annotate(node, context),
             exportSymbol: exportAllSymbols,
-            reference: [name ?? refName, reference()],
+            reference: [name ?? refName, reference],
         })
     }
 
     if (child.anyOf !== undefined) {
         return $union(
-            await asyncCollect(
-                asyncMap(child.anyOf, (c) =>
-                    walkJsonschema({
-                        node: omitUndefined({ ...c }),
-                        visitor,
-                        childProperty: undefined,
-                        context,
-                    })
-                )
+            child.anyOf.map((c) =>
+                walkJsonschema({
+                    node: omitUndefined({ ...c }),
+                    visitor,
+                    childProperty: undefined,
+                    context,
+                })
             ),
             annotate(node, context)
         )
@@ -323,15 +299,13 @@ async function walkJsonschema({
 
     if (child.oneOf !== undefined) {
         return $union(
-            await asyncCollect(
-                asyncMap(child.oneOf, (c) =>
-                    walkJsonschema({
-                        node: omitUndefined({ ...c }),
-                        visitor,
-                        childProperty: undefined,
-                        context,
-                    })
-                )
+            child.oneOf.map((c) =>
+                walkJsonschema({
+                    node: omitUndefined({ ...c }),
+                    visitor,
+                    childProperty: undefined,
+                    context,
+                })
             ),
             annotate(node, context)
         )
@@ -341,16 +315,14 @@ async function walkJsonschema({
     if (validAllOf.length > 0) {
         if (allowIntersectionTypes) {
             return $intersection(
-                (await asyncCollect(
-                    asyncMap(child.allOf!, (c) =>
-                        walkJsonschema({
-                            node: omitUndefined({ ...c }),
-                            visitor,
-                            childProperty: undefined,
-                            context,
-                        })
-                    )
-                )) as (AsyncRefType | ObjectType)[],
+                validAllOf?.map((c) =>
+                    walkJsonschema({
+                        node: omitUndefined({ ...c }),
+                        visitor,
+                        childProperty: undefined,
+                        context,
+                    })
+                ) as (ObjectType | RefType)[],
                 annotate(node, context)
             )
         } else {
@@ -360,7 +332,7 @@ async function walkJsonschema({
 
     if (isArray(child.type)) {
         return $union(
-            await asyncCollect(asyncMap(child.type, async (t) => visitor[t ?? 'object']({ ...child, type: t }, context))),
+            child.type.map((t) => visitor[t ?? 'object']({ ...child, type: t }, context)),
             context
         )
     }
@@ -373,8 +345,8 @@ async function walkJsonschema({
  */
 export interface JsonSchemaOptions {
     strict?: boolean
-    metaSchemas?: Record<string, Promise<JsonSchema>>
-    references?: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    metaSchemas?: Record<string, JsonSchema>
+    references?: Map<string, [name: string, value: () => CstNode]>
     reference?: string
     exportAllSymbols?: boolean
     root?: JsonSchema
@@ -388,32 +360,41 @@ export interface JsonSchemaOptions {
  *
  * @category $jsonschema
  */
-export async function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): Promise<ThereforeCst> {
+export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): ThereforeCst {
     const {
         root,
         name,
         reference,
-        references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>(),
+        references = new Map<string, [name: string, value: () => CstNode]>(),
         dereferenceRoot = true,
     } = options
 
     if (reference !== undefined && references.has(reference)) {
-        return evaluate(references.get(reference)?.[1]) as Promise<ThereforeCst>
+        return evaluate(references.get(reference)?.[1]) as ThereforeCst
     }
 
-    const self = walkJsonschema({
-        name,
-        node: schema,
-        visitor: schemaWalker,
-        childProperty: undefined,
-        context: { ...options, references, root: root ?? schema },
-    })
-    references.set('#', [reference!, async () => self])
+    references.set('#', [
+        reference!,
+        memoize(() =>
+            walkJsonschema({
+                name,
+                node: schema,
+                visitor: schemaWalker,
+                childProperty: undefined,
+                context: { ...options, references, root: root ?? schema },
+            })
+        ),
+    ])
 
-    let value = await self
+    let value = references.get('#')![1]()
+
     if (dereferenceRoot && value.type === 'ref') {
         value = evaluate(value.children[0]) as ThereforeCst
     }
+    value.description = omitUndefined({
+        ...omit(options, ['root']),
+        ...value.description,
+    })
 
-    return prepass(value)
+    return prepass(value as ThereforeCst)
 }

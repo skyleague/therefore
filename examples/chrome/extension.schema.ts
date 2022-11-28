@@ -441,7 +441,7 @@ export const extension = $validator(
                                 description: 'Events sent to update the client on the progress of speech synthesis.',
                                 minItems: 1,
                                 uniqueItems: true,
-                                optional: true,
+                                optional: 'implicit',
                             }),
                         }),
                         {

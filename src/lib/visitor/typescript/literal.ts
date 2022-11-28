@@ -47,5 +47,5 @@ export function toLiteral(obj: unknown): string {
         symbol: unsupported,
         function: unsupported,
     }
-    return walker[typeof obj](obj)
+    return walker[typeof obj](obj).replaceAll('\n', '\\n').replaceAll('\r', '\\r')
 }

@@ -8,6 +8,9 @@ import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import { IncomingHttpHeaders } from 'http'
 
+/**
+ * openapi
+ */
 export class Edges {
     public client: Got
 
@@ -65,6 +68,9 @@ export class Edges {
     }
 }
 
+/**
+ * swagger
+ */
 export class SwaggerEdges {
     public client: Got
 

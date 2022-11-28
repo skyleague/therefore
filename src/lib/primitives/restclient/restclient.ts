@@ -17,25 +17,16 @@ import type {
 
 import { jsonPointer } from '../../../common/json/json'
 import type { JsonSchema } from '../../../json'
-import type { CstSubNode } from '../../cst/cst'
+import type { CstNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
+import { annotate } from '../../visitor/jsonschema/jsonschema'
 import { toJSDoc } from '../../visitor/typescript/jsdoc'
 import { objectProperty } from '../../visitor/typescript/literal'
 import { createWriter } from '../../writer'
 import { $jsonschema } from '../jsonschema'
 import type { CustomType, ThereforeCst } from '../types'
 
-import {
-    asyncCollect,
-    asyncMap,
-    entriesOf,
-    fromEntries,
-    hasPropertiesDefined,
-    isDefined,
-    keysOf,
-    omitUndefined,
-    valuesOf,
-} from '@skyleague/axioms'
+import { entriesOf, fromEntries, hasPropertiesDefined, isDefined, keysOf, omitUndefined, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import inflection from 'inflection'
 import * as pointer from 'jsonpointer'
@@ -95,7 +86,7 @@ const jsonMime = /(application|\*)\/(.*json|\*)/
 const yamlMime = /(application|\*)\/(.*yaml|\*)/
 const formUrlEncodedMime = /^application\/x-www-form-urlencoded$/
 const binaryMime = /application\/.*octet-stream/
-export async function getRequestBody({
+export function getRequestBody({
     request,
     openapi,
     method,
@@ -105,7 +96,7 @@ export async function getRequestBody({
     request: RequestBody | undefined
     openapi: OpenapiV3
     method: string
-    references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    references: Map<string, [name: string, value: () => CstNode]>
     strict: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
@@ -114,7 +105,7 @@ export async function getRequestBody({
     ]
     if (jsonContent !== undefined) {
         const schema = jsonContent.schema ?? {}
-        const therefore = await $jsonschema(schema as JsonSchema, {
+        const therefore = $jsonschema(schema as JsonSchema, {
             name: `${method}Request`,
             root: openapi as JsonSchema,
             references,
@@ -144,7 +135,7 @@ export async function getRequestBody({
     const formContent = entriesOf(request?.content ?? {}).find(([mime]) => formUrlEncodedMime.test(mime))?.[1]
     if (formContent !== undefined) {
         const schema = formContent.schema ?? {}
-        const therefore = await $jsonschema(schema as JsonSchema, {
+        const therefore = $jsonschema(schema as JsonSchema, {
             name: `${method}Request`,
             root: openapi as JsonSchema,
             references,
@@ -171,7 +162,7 @@ const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
 export const isStringIs = '{is: (x: unknown): x is string => true}'
 export const isUnknownIs = '{is: (x: unknown): x is unknown => true}'
 
-export async function getResponseBodies({
+export function getResponseBodies({
     responses,
     openapi,
     method,
@@ -182,7 +173,7 @@ export async function getResponseBodies({
     responses: Responses | undefined
     openapi: OpenapiV3
     method: string
-    references: Map<string, [name: string, value: () => Promise<CstSubNode>]>
+    references: Map<string, [name: string, value: () => CstNode]>
     useEither: boolean
     strict: boolean
 }) {
@@ -204,9 +195,9 @@ export async function getResponseBodies({
         )
     ][] = []
     const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2') || s === 'default').length
-    for await (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
+    for (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
         const reference = responseRef as Reference | Response
-        const response = (await jsonPointer({ schema: openapi, ptr: responseRef ?? {} })) as Response
+        const response = jsonPointer({ schema: openapi, ptr: responseRef ?? {} }) as Response
         const isOnlySuccess = (statusCode.startsWith('2') || statusCode === 'default') && successCodesCount <= 1
         const [jsonMimeType, jsonContent] = entriesOf(response.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
             undefined,
@@ -215,7 +206,7 @@ export async function getResponseBodies({
         if (jsonContent !== undefined) {
             const schema = jsonContent?.schema ?? {}
 
-            const therefore = await $jsonschema(schema as JsonSchema, {
+            const therefore = $jsonschema(schema as JsonSchema, {
                 name: `${method}Response${isOnlySuccess ? '' : capitalize(statusCode)}`,
                 root: openapi as JsonSchema,
                 references,
@@ -390,44 +381,40 @@ const toSecurityHook: {
     oauth2: (_s: OAuth2SecurityScheme) => undefined,
 }
 
-export async function getSecurity(
-    securityRequirements: Record<string, Reference | SecurityScheme> | undefined,
-    openapi: OpenapiV3
-) {
-    const securities = await asyncCollect(
-        asyncMap(entriesOf(securityRequirements ?? []), async ([name, securityRef]) => {
-            const security = (await jsonPointer({ schema: openapi, ptr: securityRef ?? {} })) as unknown as MappableSecurityScheme
-            const type = security?.type ?? ('http' as const)
-            const convert = toSecurityDeclaration[type]
+export function getSecurity(securityRequirements: Record<string, Reference | SecurityScheme> | undefined, openapi: OpenapiV3) {
+    const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
+        const security = jsonPointer({ schema: openapi, ptr: securityRef ?? {} }) as unknown as MappableSecurityScheme
+        const type = security?.type ?? ('http' as const)
+        const convert = toSecurityDeclaration[type]
 
-            const camelName = camelCase(name)
-            const clientRef = camelCase(`build_${camelName}_client`)
-            const clientWriter = createWriter()
-            const hook = toSecurityHook[type](security as never, camelName)
-            clientWriter.writeLine(`protected ${clientRef}(client: Got)`).block(() => {
-                if (hook !== undefined && hook.decl.length > 0) {
-                    clientWriter
-                        .writeLine('return client.extend({')
-                        .writeLine('hooks: {')
-                        .writeLine('beforeRequest: [')
-                        .writeLine(hook.decl)
-                        .writeLine(`],},})`)
-                } else {
-                    clientWriter.writeLine('return client')
-                }
-            })
-
-            return {
-                type: name,
-                headers: hook?.headers,
-                required: false,
-                clientRef,
-                name: camelName,
-                declaration: convert(security as never),
-                clientFunc: clientWriter.toString(),
+        const camelName = camelCase(name)
+        const clientRef = camelCase(`build_${camelName}_client`)
+        const clientWriter = createWriter()
+        const hook = toSecurityHook[type](security as never, camelName)
+        clientWriter.writeLine(`protected ${clientRef}(client: Got)`).block(() => {
+            if (hook !== undefined && hook.decl.length > 0) {
+                clientWriter
+                    .writeLine('return client.extend({')
+                    .writeLine('hooks: {')
+                    .writeLine('beforeRequest: [')
+                    .writeLine(hook.decl)
+                    .writeLine(`],},})`)
+            } else {
+                clientWriter.writeLine('return client')
             }
         })
-    )
+
+        return {
+            type: name,
+            headers: hook?.headers,
+            required: false,
+            clientRef,
+            name: camelName,
+            declaration: convert(security as never),
+            clientFunc: clientWriter.toString(),
+        }
+    })
+
     const activatedAuth = securities.filter(hasPropertiesDefined(['declaration']))
     const hasAuth = activatedAuth.length > 0
 
@@ -456,16 +443,16 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
     const writer = createWriter()
 
     const { useEither = true, explicitContentNegotiation = false, strict = true } = options
-    const references = new Map<string, [name: string, value: () => Promise<CstSubNode>]>()
+    const references = new Map<string, [name: string, value: () => CstNode]>()
 
     const children: ThereforeCst[] = []
     const seenChildren = new WeakSet<ThereforeCst>()
 
     let generateAwaitResponse = false
     let generateValidateRequestBody = false
-    await writer.blockAsync(async () => {
+    writer.block(() => {
         const { prefixUrl, defaultValue } = getPrefixUrlConfiguration(openapi.servers)
-        const { authDeclaration, securities, hasAuth } = await getSecurity(openapi.components?.securitySchemes, openapi)
+        const { authDeclaration, securities, hasAuth } = getSecurity(openapi.components?.securitySchemes, openapi)
 
         writer.writeLine('public client: Got').newLine()
         if (hasAuth) {
@@ -535,8 +522,8 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     })
                 )) {
                     const method = methodName(path, httpMethod, operation, options)
-                    const request = await getRequestBody({
-                        request: (await jsonPointer({ schema: openapi, ptr: operation.requestBody })) as RequestBody | undefined,
+                    const request = getRequestBody({
+                        request: jsonPointer({ schema: openapi, ptr: operation.requestBody }) as RequestBody | undefined,
                         openapi,
                         method,
                         references,
@@ -548,15 +535,9 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         generateValidateRequestBody = true
                         children.push(request.schema)
                     }
-                    const parameters: Parameter[] = (
-                        await asyncCollect(
-                            asyncMap(
-                                [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])] ?? [],
-                                async (parameter) =>
-                                    (await jsonPointer({ schema: openapi, ptr: parameter })) as Parameter | undefined
-                            )
-                        )
-                    ).filter(isDefined)
+                    const parameters: Parameter[] = ([...(operation.parameters ?? []), ...(pathItem.parameters ?? [])] ?? [])
+                        .map((parameter) => jsonPointer({ schema: openapi, ptr: parameter }) as Parameter | undefined)
+                        .filter(isDefined)
 
                     let clientDecl = 'this.client'
                     const authMethods: string[] = []
@@ -582,7 +563,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     const queryParameters = getQueryParameters(parameters, openapi)
                     const headerParameters = getHeaderParameters(parameters, usedSecurityHeaders, openapi)
 
-                    const responses = await getResponseBodies({
+                    const responses = getResponseBodies({
                         responses: operation.responses,
                         openapi,
                         method,
@@ -880,6 +861,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
     return cstNode(
         'custom',
         {
+            ...annotate(definition.info),
             typescript: {
                 imports: [
                     `import type { CancelableRequest, Got, Options, Response } from 'got'`,

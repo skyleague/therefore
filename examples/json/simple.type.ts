@@ -19,7 +19,7 @@ export const Simple = {
     is: (o: unknown): o is Simple => Simple.validate(o) === true,
     assert: (o: unknown) => {
         if (!Simple.validate(o)) {
-            throw new AjvValidator.ValidationError(Simple.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Simple.errors ?? [])
         }
     },
 } as const

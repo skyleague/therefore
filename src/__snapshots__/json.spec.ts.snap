@@ -57,7 +57,7 @@ export const {{00012-000:symbolName}} = {
     is: (o: unknown): o is {{00012-000:symbolName}} => {{00012-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{00012-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{00012-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{00012-000:symbolName}}.errors ?? [])
         }
     },
 } as const
@@ -225,7 +225,7 @@ export const {{0005-000:symbolName}} = {
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{0005-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{0005-000:symbolName}}.validate.errors ?? [])
+            throw new AjvValidator.ValidationError({{0005-000:symbolName}}.errors ?? [])
         }
     },
 } as const

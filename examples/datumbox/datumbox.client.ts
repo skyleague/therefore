@@ -24,6 +24,11 @@ import {
     TwitterSentimentAnalysisRequest,
 } from './datumbox.type'
 
+/**
+ * api.datumbox.com
+ *
+ * Datumbox offers a Machine Learning platform composed of 14 classifiers and Natural Language processing functions. Functions include sentiment analysis, topic classification, readability assessment, language detection, and much more.
+ */
 export class PetStore {
     public client: Got
 

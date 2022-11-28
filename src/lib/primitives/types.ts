@@ -8,7 +8,6 @@ import type { NullType } from './null'
 import type { NumberType } from './number'
 import type { ObjectType } from './object'
 import type { RefType } from './ref'
-import type { AsyncRefType } from './ref/ref'
 import type { StringType } from './string'
 import type { TupleType } from './tuple'
 import type { UnionType } from './union'
@@ -48,9 +47,7 @@ export type ThereforeCst =
     | UnionType
     | UnknownType
 
-export type AyncThereforeCst = AsyncRefType | Exclude<ThereforeCst, { type: 'ref' }>
-
-export type ThereforeSchema = AyncThereforeCst
+export type ThereforeSchema = ThereforeCst
 
 export function isThereforeExport(x: ThereforeCst | unknown): x is ThereforeCst {
     return isObject(x) && 'type' in x && 'uuid' in x && 'value' in x && 'description' in x

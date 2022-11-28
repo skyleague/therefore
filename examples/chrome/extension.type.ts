@@ -420,7 +420,7 @@ export const Extension = {
     is: (o: unknown): o is Extension => Extension.validate(o) === true,
     assert: (o: unknown) => {
         if (!Extension.validate(o)) {
-            throw new AjvValidator.ValidationError(Extension.validate.errors ?? [])
+            throw new AjvValidator.ValidationError(Extension.errors ?? [])
         }
     },
 } as const

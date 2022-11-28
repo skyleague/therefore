@@ -9,6 +9,11 @@ import type { ValidateFunction, ErrorObject } from 'ajv'
 import { IncomingHttpHeaders } from 'http'
 import { GetApiByResponse200, Project } from './nasa.type'
 
+/**
+ * TechPort
+ *
+ * TechPort RESTful API
+ */
 export class Astroids {
     public client: Got
 

@@ -52,7 +52,7 @@ export async function loadSymbol({
     appendSourceSymbolName?: boolean
     rootPath?: string
 }) {
-    const simplified = await prepass(symbol)
+    const simplified = prepass(symbol)
     let targetDir = '.'
     if (simplified.type === 'custom') {
         if (simplified.value.fileSuffix !== undefined) {
