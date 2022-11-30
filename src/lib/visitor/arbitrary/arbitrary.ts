@@ -109,7 +109,7 @@ function transform({ description }: CstNode<string, unknown, unknown, unknown[]>
     return arb
 }
 
-export function arbitrary<T = unknown>(schema: Schema<T> | ThereforeCst): Dependent<T> {
+export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | ThereforeCst): Dependent<T> {
     if ('schema' in schema) {
         // as the therefore schemas are very strict by default, we can allow intersection types here
         return walkCst($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true }), arbitraryVisitor, {
