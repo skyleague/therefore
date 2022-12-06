@@ -12,8 +12,8 @@ export interface JsonHyperSchema {
     // https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9
     $comment?: string
     // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-9
-    definitions?: Record<string, JsonSchema>
-    $defs?: Record<string, JsonSchema>
+    definitions?: Record<string, JsonSchema | undefined>
+    $defs?: Record<string, JsonSchema | undefined>
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.1
@@ -80,11 +80,11 @@ export interface JsonObjectInstance {
     maxProperties?: number
     /** @deprecated */
     minProperties?: number
-    required?: ReadonlyArray<string>
+    required?: readonly string[]
     properties?: Record<string, JsonSchema>
     patternProperties?: Record<string, JsonSchema>
     additionalProperties?: JsonSchema | boolean
-    dependencies?: Record<string, JsonSchema | ReadonlyArray<string>>
+    dependencies?: Record<string, JsonSchema | readonly string[]>
     /** @deprecated */
     propertyNames?: JsonSchema
 
@@ -99,9 +99,9 @@ export interface JsonObjectInstance {
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.7
 export interface JsonBooleanLogic {
-    allOf?: ReadonlyArray<JsonSchema>
-    anyOf?: ReadonlyArray<JsonSchema>
-    oneOf?: ReadonlyArray<JsonSchema>
+    allOf?: readonly JsonSchema[]
+    anyOf?: readonly JsonSchema[]
+    oneOf?: readonly JsonSchema[]
     /** @deprecated */
     not?: JsonSchema
 }
@@ -121,7 +121,7 @@ export interface JsonAnnotations {
 }
 
 export interface JsonDefs {
-    $defs?: Record<string, JsonSchema>
+    $defs?: Record<string, JsonSchema | undefined>
 }
 
 export type JsonSchema = JsonAnnotations &

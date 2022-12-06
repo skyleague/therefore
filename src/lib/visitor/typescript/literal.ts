@@ -24,7 +24,7 @@ export function toLiteral(obj: unknown): string {
         throw new Error('not supported')
     }
     const walker = {
-        object: (n: Record<string, unknown> | unknown[]): string => {
+        object: (n: Record<string, unknown> | unknown[] | null): string => {
             if (Array.isArray(n)) {
                 return `[${n.map((v) => walker[typeof v](v)).join(', ')}]`
             } else if (n === null) {

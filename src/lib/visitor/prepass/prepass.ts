@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type { CstNode } from '../../cst/cst'
 import { isCstNode } from '../../cst/cst'
 import type { CstVisitor } from '../../cst/visitor'
@@ -8,7 +9,7 @@ import { entriesOf, evaluate } from '@skyleague/axioms'
 
 export function prepass(obj: ThereforeCst & { prepass?: true }): ThereforeCst & { prepass?: true } {
     const seen = new WeakSet()
-    const prepassVisitor: CstVisitor<CstNode, unknown, ThereforeCst> = {
+    const prepassVisitor: CstVisitor<CstNode> = {
         object: (node, ctx) => {
             if (seen.has(node)) {
                 return node

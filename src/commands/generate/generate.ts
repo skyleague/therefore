@@ -12,7 +12,7 @@ import { isThereforeExport } from '../../lib/primitives/types'
 import { prepass, toJsonSchema } from '../../lib/visitor'
 import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript'
 
-import { entriesOf, enumerate, groupBy, range, second } from '@skyleague/axioms'
+import { entriesOf, enumerate, groupBy, isDefined, range, second } from '@skyleague/axioms'
 import decamelize from 'decamelize'
 
 import fs from 'fs'
@@ -96,12 +96,14 @@ export async function loadSymbol({
     const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
 
     file.symbols.push(
-        ...Object.values(definition.locals ?? {}).map((local) => ({
-            uuid: local.uuid,
-            symbolName: local.symbolName,
-            definition: local,
-            typeOnly: true,
-        }))
+        ...Object.values(definition.locals ?? {})
+            .filter(isDefined)
+            .map((local) => ({
+                uuid: local.uuid,
+                symbolName: local.symbolName,
+                definition: local,
+                typeOnly: true,
+            }))
     )
 
     file.symbols.push({
@@ -110,7 +112,7 @@ export async function loadSymbol({
         definition: definition,
         schemaFile,
         compiledFile: compile ? compiledFile : undefined,
-        typeOnly: simplified.description.validator?.enabled !== true ?? false,
+        typeOnly: simplified.description.validator?.enabled !== true,
     })
 
     if (definition.isExported && simplified.description.validator?.enabled) {

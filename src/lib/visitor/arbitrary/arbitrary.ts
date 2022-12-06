@@ -59,8 +59,13 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     unknown: ({ value: image }) => (image.json ? json() : unknown()),
     enum: ({ children }) => oneOf(...(isNamedArray(children) ? children.map(([, c]) => c) : children).map((c) => constant(c))),
     union: ({ children }, context) => oneOf(...children.map((c) => walkCst(c, arbitraryVisitor, context))),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    intersection: ({ children }, context) => allOf(...(children.map((c) => walkCst(c, arbitraryVisitor, context)) as any)),
+
+    intersection: ({ children }, context) =>
+        allOf(
+            ...(children.map((c) => walkCst(c, arbitraryVisitor, context)) as unknown as Arbitrary<
+                Record<PropertyKey, unknown>
+            >[])
+        ),
     object: ({ children, value: { indexSignature } }, context) =>
         indexSignature !== undefined
             ? chainArbitrary(array(string()), (dictKeys) =>
@@ -99,7 +104,7 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     },
 }
 
-function transform({ description }: CstNode<string, unknown, unknown, unknown[]>, arb: Arbitrary<unknown>): Arbitrary<unknown> {
+function transform({ description }: CstNode, arb: Arbitrary<unknown>): Arbitrary<unknown> {
     if (description.nullable === true) {
         arb = nullable(arb)
     }

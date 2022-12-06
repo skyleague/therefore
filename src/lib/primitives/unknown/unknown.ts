@@ -17,6 +17,6 @@ export type UnknownType = CstNode<'unknown', UnknownOptions>
  *
  * @category $unknown
  */
-export function $unknown(options: SchemaOptions<UnknownOptions, unknown> = {}): CstNode<'unknown', UnknownOptions> {
+export function $unknown(options: SchemaOptions<UnknownOptions> = {}): CstNode<'unknown', UnknownOptions> {
     return cstNode('unknown', options)
 }

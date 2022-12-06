@@ -37,7 +37,7 @@ export async function expandGlobs({
                 if (eitherStat.right.isFile()) {
                     return fastGlob.escapePath(normalizePath(pattern))
                 } else if (eitherStat.right.isDirectory()) {
-                    return `${fastGlob.escapePath(normalizePath(path.relative(cwd, absolutePath) ?? '.'))}/**/*${extension}`
+                    return `${fastGlob.escapePath(normalizePath(path.relative(cwd, absolutePath)))}/**/*${extension}`
                 }
 
                 return Nothing

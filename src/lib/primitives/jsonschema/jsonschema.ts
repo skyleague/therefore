@@ -52,7 +52,7 @@ function annotate<T = unknown>(doc: JsonAnnotations, context: JsonSchemaContext)
 export function retrievePropertiesFromPattern(indexPattern: string) {
     const strPattern = indexPattern.replaceAll('\\', '')
     // check if simple regex
-    const [, literal] = strPattern.match(/^\^?\(?([/a-zA-Z0-9/\-_|$@#]+?)\)?\$?$/) ?? []
+    const [, literal] = strPattern.match(/^\^?\(?([/a-zA-Z0-9/\-_|$@#]+?)\)?\$?$/) ?? [undefined, undefined]
     if (literal !== undefined && literal.length > 0) {
         const split = literal.split('|')
         const hasStartToken = strPattern.startsWith('^')
@@ -80,7 +80,7 @@ export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonOb
                 context,
             })
         }
-    } else if (context.strict === false) {
+    } else if (!context.strict) {
         additionalProperties = true
     }
 
@@ -256,10 +256,10 @@ function walkJsonschema({
         )
     }
     if (child.enum !== undefined) {
-        return visitor['enum'](child, context)
+        return visitor.enum(child, context)
     }
     if (child.const !== undefined) {
-        return visitor['const'](child, context)
+        return visitor.const(child, context)
     }
     const childRef = child.$ref
     if (childRef !== undefined) {
@@ -319,7 +319,7 @@ function walkJsonschema({
     if (validAllOf.length > 0) {
         if (allowIntersectionTypes) {
             return $intersection(
-                validAllOf?.map((c) =>
+                validAllOf.map((c) =>
                     walkJsonschema({
                         node: omitUndefined({ ...c }),
                         visitor,
@@ -336,7 +336,7 @@ function walkJsonschema({
 
     if (isArray(child.type)) {
         return $union(
-            child.type.map((t) => visitor[t ?? 'object']({ ...child, type: t }, context)),
+            child.type.map((t) => visitor[t]({ ...child, type: t }, context)),
             context
         )
     }

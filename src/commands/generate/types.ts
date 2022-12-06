@@ -23,7 +23,7 @@ export interface TypescriptDefinition {
     declaration: string
     schema: CstSubNode
     isExported: boolean
-    locals?: Record<string, TypescriptDefinition>
+    locals?: Record<string, TypescriptDefinition | undefined>
 }
 
 export type JsonSchemaValidator =
