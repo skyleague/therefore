@@ -1,4 +1,4 @@
-import type { CstNode, CstSubNode } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -10,8 +10,8 @@ export interface ArrayOptions {
     uniqueItems?: boolean
 }
 
-export type ArrayType = CstNode<'array', ArrayOptions, unknown, [CstNode]>
+export type ArrayType = ThereforeNode<'array', ArrayOptions, unknown, [ThereforeNode]>
 
-export function $array(items: CstSubNode, options: SchemaOptions<ArrayOptions> = {}): ArrayType {
+export function $array(items: ThereforeExpr, options: SchemaOptions<ArrayOptions> = {}): ArrayType {
     return cstNode('array', options, [evaluate(items)])
 }

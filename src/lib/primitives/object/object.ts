@@ -1,19 +1,19 @@
-import type { CstNode, CstSubNode } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
 import type { Dict, RequireKeys } from '@skyleague/axioms'
 import { valuesOf, evaluate, omit, omitUndefined, all, entriesOf, isObject } from '@skyleague/axioms'
 
-export type ObjectPropertiesArg = Record<string, CstSubNode>
+export type ObjectPropertiesArg = Record<string, ThereforeExpr>
 
 export interface ObjectOptions {
     /** @deprecated */
     minProperties?: number
     /** @deprecated */
     maxProperties?: number
-    indexSignature?: CstNode | undefined
-    indexPatterns?: Record<string, CstNode>
+    indexSignature?: ThereforeNode | undefined
+    indexPatterns?: Record<string, ThereforeNode>
     additionalProperties?: boolean
     defaults?: {
         additionalProperties?: boolean
@@ -21,10 +21,10 @@ export interface ObjectOptions {
 }
 
 export type LazyObjectOptions = Omit<ObjectOptions, 'indexSignature'> & {
-    indexSignature?: CstSubNode
+    indexSignature?: ThereforeExpr
 }
 
-export type ObjectType = CstNode<'object', ObjectOptions, unknown, RequireKeys<CstNode, 'name'>[]>
+export type ObjectType = ThereforeNode<'object', ObjectOptions, unknown, RequireKeys<ThereforeNode, 'name'>[]>
 
 export function isCombinedDefinition(
     x?: Dict | (SchemaOptions<LazyObjectOptions> & { properties: ObjectPropertiesArg })

@@ -9,7 +9,7 @@ import type {
     JsonSchema7TypeName,
     JsonStringInstance,
 } from '../../../json'
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { prepass } from '../../visitor/prepass'
 import { $array } from '../array'
 import type { SchemaMeta, SchemaOptions } from '../base'
@@ -65,8 +65,8 @@ export function retrievePropertiesFromPattern(indexPattern: string) {
 }
 
 export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
-    let indexSignature: CstNode | undefined = undefined
-    let indexPatterns: Record<string, CstNode> | undefined = undefined
+    let indexSignature: ThereforeNode | undefined = undefined
+    let indexPatterns: Record<string, ThereforeNode> | undefined = undefined
     let additionalProperties: boolean | undefined = undefined
     const properties: Record<string, JsonSchema> = {}
     if (node.additionalProperties !== undefined) {
@@ -204,7 +204,7 @@ const schemaWalker: JsonSchemaWalker = {
 interface JsonSchemaContext {
     strict: boolean
     metaSchemas: Record<string, JsonSchema>
-    references: Map<string, [name: string, value: () => CstNode]>
+    references: Map<string, [name: string, value: () => ThereforeNode]>
     root: JsonSchema
     cache: Map<string, () => ThereforeCst>
     exportAllSymbols: boolean
@@ -227,7 +227,7 @@ function walkJsonschema({
 }): ThereforeCst {
     const {
         metaSchemas = {},
-        references = new Map<string, [name: string, value: () => CstNode]>(),
+        references = new Map<string, [name: string, value: () => ThereforeNode]>(),
         root = node,
         cache = new Map<string, () => ThereforeCst>(),
         exportAllSymbols = false,
@@ -350,7 +350,7 @@ function walkJsonschema({
 export interface JsonSchemaOptions {
     strict?: boolean
     metaSchemas?: Record<string, JsonSchema>
-    references?: Map<string, [name: string, value: () => CstNode]>
+    references?: Map<string, [name: string, value: () => ThereforeNode]>
     reference?: string
     exportAllSymbols?: boolean
     root?: JsonSchema
@@ -369,7 +369,7 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
         root,
         name,
         reference,
-        references = new Map<string, [name: string, value: () => CstNode]>(),
+        references = new Map<string, [name: string, value: () => ThereforeNode]>(),
         dereferenceRoot = true,
     } = options
 

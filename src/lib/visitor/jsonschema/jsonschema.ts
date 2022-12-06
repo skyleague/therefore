@@ -1,9 +1,9 @@
 import type { JsonSchemaValidator } from '../../../commands/generate/types'
 import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json'
 import { defaultAjvConfig } from '../../ajv/defaults'
-import type { CstNode } from '../../cst/cst'
-import type { CstVisitor } from '../../cst/visitor'
-import { walkCst } from '../../cst/visitor'
+import type { ThereforeNode } from '../../cst/cst'
+import type { ThereforeVisitor } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import { isNamedArray } from '../../guard'
 import type { MetaDescription, SchemaMeta } from '../../primitives/base'
 import type { ThereforeCst } from '../../primitives/types'
@@ -17,9 +17,9 @@ export interface JsonSchemaWalkerContext {
     defaults: {
         additionalProperties: boolean
     }
-    entry?: CstNode | undefined
+    entry?: ThereforeNode | undefined
     definitions: NonNullable<JsonSchema['definitions']>
-    transform: (node: CstNode, schema: RelaxedPartial<JsonSchema>) => JsonSchema
+    transform: (node: ThereforeNode, schema: RelaxedPartial<JsonSchema>) => JsonSchema
 }
 
 export function toType(type: JsonSchema['type'], definition: MetaDescription): JsonSchema['type'] {
@@ -41,7 +41,7 @@ export function annotate(doc: SchemaMeta): JsonAnnotations {
     })
 }
 
-export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchemaWalkerContext> = {
+export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, JsonSchemaWalkerContext> = {
     string: ({ value: image }) => ({
         type: 'string',
         ...image,
@@ -76,13 +76,13 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
     },
     union: ({ children }, context) => {
         return {
-            anyOf: children.map((u) => walkCst(u, jsonSchemaVisitor, context)),
+            anyOf: children.map((u) => walkTherefore(u, jsonSchemaVisitor, context)),
         }
     },
     intersection: ({ children }, context) => {
         return {
             allOf: children.map((u) =>
-                walkCst(
+                walkTherefore(
                     {
                         ...u,
                         value: {
@@ -101,7 +101,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
         const properties: NonNullable<JsonSchema['properties']> = {}
         const required: string[] = []
         for (const child of children) {
-            properties[child.name] = walkCst(child, jsonSchemaVisitor, context)
+            properties[child.name] = walkTherefore(child, jsonSchemaVisitor, context)
             if (child.description.optional === undefined || child.description.optional === 'explicit') {
                 required.push(child.name)
             }
@@ -113,14 +113,14 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
             additionalProperties: value.additionalProperties
                 ? true
                 : value.indexSignature !== undefined
-                ? walkCst(value.indexSignature, jsonSchemaVisitor, context)
+                ? walkTherefore(value.indexSignature, jsonSchemaVisitor, context)
                 : value.additionalProperties ?? context.defaults.additionalProperties,
             patternProperties:
                 value.indexPatterns !== undefined
                     ? (Object.fromEntries(
                           Object.entries(value.indexPatterns).map(([pattern, values]) => [
                               pattern,
-                              walkCst(values, jsonSchemaVisitor, context),
+                              walkTherefore(values, jsonSchemaVisitor, context),
                           ])
                       ) as JsonSchema['patternProperties'])
                     : undefined,
@@ -130,14 +130,14 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
         const [items] = node.children
         return {
             type: 'array',
-            items: walkCst(items, jsonSchemaVisitor, context),
+            items: walkTherefore(items, jsonSchemaVisitor, context),
             ...node.value,
         }
     },
     tuple: ({ children }, context) => {
         return {
             type: 'array',
-            items: children.map((c) => walkCst(c, jsonSchemaVisitor, context)),
+            items: children.map((c) => walkTherefore(c, jsonSchemaVisitor, context)),
             additionalItems: false,
             minItems: children.length,
         }
@@ -146,7 +146,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
         const [items] = children
         return {
             type: 'object',
-            additionalProperties: walkCst(items, jsonSchemaVisitor, context),
+            additionalProperties: walkTherefore(items, jsonSchemaVisitor, context),
         }
     },
     ref: ({ children: unevaluatedReference, description }, context) => {
@@ -163,7 +163,7 @@ export const jsonSchemaVisitor: CstVisitor<RelaxedPartial<JsonSchema>, JsonSchem
 
         if (definitions[`{{${uuid}:uniqueSymbolName}}`] === undefined) {
             definitions[`{{${uuid}:uniqueSymbolName}}`] = {} // mark spot as taken (prevents recursion)
-            const node: JsonSchema = walkCst(reference, jsonSchemaVisitor, context)
+            const node: JsonSchema = walkTherefore(reference, jsonSchemaVisitor, context)
             node.title = `{{${uuid}:uniqueSymbolName}}`
             definitions[`{{${uuid}:uniqueSymbolName}}`] = node
         }
@@ -206,7 +206,7 @@ export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaVali
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
         title: `{{${obj.uuid}:uniqueSymbolName}}`,
-        ...walkCst(obj, jsonSchemaVisitor, context),
+        ...walkTherefore(obj, jsonSchemaVisitor, context),
     }
 
     if (Object.keys(context.definitions).length > 0) {

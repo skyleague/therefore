@@ -1,4 +1,4 @@
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -7,7 +7,7 @@ import type { SchemaOptions } from '../base'
  */
 export interface BooleanOptions {}
 
-export type BooleanType = CstNode<'boolean', BooleanOptions>
+export type BooleanType = ThereforeNode<'boolean', BooleanOptions>
 
 /**
  *

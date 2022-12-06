@@ -5,10 +5,10 @@ import type { RequireKeys } from '@skyleague/axioms'
 import { omit, omitUndefined, pick, isObject } from '@skyleague/axioms'
 import { v4 as uuid } from 'uuid'
 
-export type CstSubNode = CstNode | (() => CstNode)
+export type ThereforeExpr = ThereforeNode | (() => ThereforeNode)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface CstNode<D extends string = string, I = unknown, T = unknown, C extends readonly any[] = unknown[]> {
+export interface ThereforeNode<D extends string = string, I = unknown, T = unknown, C extends readonly any[] = unknown[]> {
     name?: string
     uuid: string
     type: D
@@ -17,19 +17,19 @@ export interface CstNode<D extends string = string, I = unknown, T = unknown, C 
     children: C
 }
 
-export function cstNode<D extends TypeDiscriminator, O, T>(type: D, options: SchemaOptions<O, T>): CstNode<D, O, T, never>
+export function cstNode<D extends TypeDiscriminator, O, T>(type: D, options: SchemaOptions<O, T>): ThereforeNode<D, O, T, never>
 export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly unknown[]>(
     type: D,
     options: SchemaOptions<O, T>,
     children?: C,
     name?: string
-): CstNode<D, O, T, C>
+): ThereforeNode<D, O, T, C>
 export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly unknown[]>(
     type: D,
     options: SchemaOptions<O, T>,
     children?: C,
     name?: string
-): CstNode<D, O, T, C> {
+): ThereforeNode<D, O, T, C> {
     return omitUndefined({
         uuid: uuid(),
         type,
@@ -40,13 +40,13 @@ export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly un
     })
 }
 
-export function isNamedCstNodeArray<T extends CstNode>(
+export function isNamedCstNodeArray<T extends ThereforeNode>(
     x: Omit<T, 'name'>[] | RequireKeys<T, 'name'>[]
 ): x is RequireKeys<T, 'name'>[] {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return x.length > 0 && 'name' in x[0] && x[0] !== undefined
 }
 
-export function isCstNode(x: unknown): x is CstNode {
+export function isThereforeNode(x: unknown): x is ThereforeNode {
     return isObject(x) && 'type' in x && 'uuid' in x && 'value' in x && 'description' in x
 }

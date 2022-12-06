@@ -13,7 +13,7 @@ import type { TupleType } from './tuple'
 import type { UnionType } from './union'
 import type { UnknownType } from './unknown'
 
-import type { CstNode } from '../cst/cst'
+import type { ThereforeNode } from '../cst/cst'
 
 import { isObject } from '@skyleague/axioms'
 
@@ -28,7 +28,7 @@ export interface CustomTypeOptions {
     filePath?: string
 }
 
-export type CustomType = CstNode<'custom', CustomTypeOptions, unknown, ThereforeCst[]>
+export type CustomType = ThereforeNode<'custom', CustomTypeOptions, unknown, ThereforeCst[]>
 
 export type ThereforeCst =
     | ArrayType

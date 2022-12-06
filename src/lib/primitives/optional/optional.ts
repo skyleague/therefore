@@ -1,9 +1,9 @@
-import type { CstNode, CstSubNode } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
 
 import { evaluate, omitUndefined } from '@skyleague/axioms'
 import { v4 as uuid } from 'uuid'
 
-export function $optional(literal: CstSubNode, value: 'explicit' | 'implicit' = 'implicit'): CstNode {
+export function $optional(literal: ThereforeExpr, value: 'explicit' | 'implicit' = 'implicit'): ThereforeNode {
     const subNode = evaluate(literal)
     return {
         ...subNode,

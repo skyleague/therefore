@@ -1,5 +1,5 @@
 import type { JsonStringInstance } from '../../../json'
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -13,7 +13,7 @@ export interface StringOptions {
     format?: JsonStringInstance['format'] & ('date-time' | 'date' | 'hostname')
 }
 
-export type StringType = CstNode<'string', StringOptions>
+export type StringType = ThereforeNode<'string', StringOptions>
 
 /**
  *

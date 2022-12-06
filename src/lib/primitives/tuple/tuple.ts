@@ -1,4 +1,4 @@
-import type { CstNode, CstSubNode } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -7,9 +7,17 @@ import { evaluate, entriesOf, isArray } from '@skyleague/axioms'
 
 export interface TupleOptions {}
 
-export type TupleType = CstNode<'tuple', TupleOptions, unknown, Omit<CstNode, 'name'>[] | RequireKeys<CstNode, 'name'>[]>
+export type TupleType = ThereforeNode<
+    'tuple',
+    TupleOptions,
+    unknown,
+    Omit<ThereforeNode, 'name'>[] | RequireKeys<ThereforeNode, 'name'>[]
+>
 
-export function $tuple(items: CstSubNode[] | Record<string, CstSubNode>, options: SchemaOptions<TupleOptions> = {}): TupleType {
+export function $tuple(
+    items: Record<string, ThereforeExpr> | ThereforeExpr[],
+    options: SchemaOptions<TupleOptions> = {}
+): TupleType {
     return cstNode(
         'tuple',
         options,

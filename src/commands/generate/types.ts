@@ -1,5 +1,5 @@
 import type { JsonSchema } from '../../json'
-import type { CstSubNode } from '../../lib/cst/cst'
+import type { ThereforeExpr } from '../../lib/cst/cst'
 import type { RefType } from '../../lib/primitives'
 
 import type { ValidateFunction } from 'ajv'
@@ -21,7 +21,7 @@ export interface TypescriptDefinition {
     referenceName: string
     uniqueSymbolName: string
     declaration: string
-    schema: CstSubNode
+    schema: ThereforeExpr
     isExported: boolean
     locals?: Record<string, TypescriptDefinition | undefined>
 }

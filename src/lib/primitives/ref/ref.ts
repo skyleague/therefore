@@ -1,5 +1,5 @@
-import type { CstNode, CstSubNode } from '../../cst/cst'
-import { isCstNode, cstNode } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
+import { isThereforeNode, cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
 import { omit, isArray, isFunction, isTuple } from '@skyleague/axioms'
@@ -8,28 +8,31 @@ export interface RefOptions {
     exportSymbol?: boolean
 }
 
-export type RefType = CstNode<'ref', RefOptions, unknown, [CstSubNode]>
+export type RefType = ThereforeNode<'ref', RefOptions, unknown, [ThereforeExpr]>
 
 export function isCombinedDefinition(
-    x: CstSubNode | [string, CstSubNode] | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] })
-): x is SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] } {
+    x:
+        | ThereforeExpr
+        | [string, ThereforeExpr]
+        | (SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] })
+): x is SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] } {
     return (
         'reference' in x &&
-        (isCstNode(x.reference) || isFunction(x.reference) || isTuple(2, x.reference) || 'then' in x.reference)
+        (isThereforeNode(x.reference) || isFunction(x.reference) || isTuple(2, x.reference) || 'then' in x.reference)
     )
 }
 
-export function $ref(reference: CstSubNode | [string, CstSubNode]): RefType
-export function $ref(reference: SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] }): RefType
-export function $ref(reference: CstSubNode | [string, CstSubNode], options?: SchemaOptions<RefOptions>): RefType
+export function $ref(reference: ThereforeExpr | [string, ThereforeExpr]): RefType
+export function $ref(reference: SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] }): RefType
+export function $ref(reference: ThereforeExpr | [string, ThereforeExpr], options?: SchemaOptions<RefOptions>): RefType
 export function $ref(
     definition:
-        | CstSubNode
-        | [string, CstSubNode]
-        | (SchemaOptions<RefOptions> & { reference: CstSubNode | [string, CstSubNode] }),
+        | ThereforeExpr
+        | [string, ThereforeExpr]
+        | (SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] }),
     options: SchemaOptions<RefOptions> = {}
 ): RefType {
-    let reference: CstSubNode | [string, CstSubNode]
+    let reference: ThereforeExpr | [string, ThereforeExpr]
     if (isCombinedDefinition(definition)) {
         options = omit(definition, ['reference'])
         reference = definition.reference

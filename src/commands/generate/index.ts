@@ -42,7 +42,7 @@ export async function handler(argv: ReturnType<typeof builder>['argv']): Promise
 
     await generate({
         globs: files.map((f) => f.toString()),
-        ignore: ignorePatterns.map((i) => i.toString()),
+        ignore: ignorePatterns.map((p) => p.toString()),
         extension: ext,
         outputFileRename: (path: string) => path.replace(getExtension(path)!, outExt),
         compile,
