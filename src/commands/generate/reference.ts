@@ -1,7 +1,7 @@
 import type { FileDefinition, TypescriptDefinition, TypescriptReference } from './types'
 
 import type { ThereforeCst } from '../../lib/primitives/types'
-import { toTypescriptDefinition } from '../../lib/visitor'
+import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript'
 
 import { evaluate, sha256 } from '@skyleague/axioms'
 

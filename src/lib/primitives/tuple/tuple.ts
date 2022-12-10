@@ -14,6 +14,21 @@ export type TupleType = ThereforeNode<
     Omit<ThereforeNode, 'name'>[] | RequireKeys<ThereforeNode, 'name'>[]
 >
 
+/**
+ * Create a new `TupleType` instance with the given options.
+ *
+ * ### Example
+ * ```ts
+ * $tuple([$integer, $string])
+ *
+ * $tuple({foo: $integer, bar: $string})
+ * ```
+ *
+ * @param items - The items in the tuple.
+ * @param options - Additional options to pass to the tuple.
+ *
+ * @group Primitives
+ */
 export function $tuple(
     items: Record<string, ThereforeExpr> | ThereforeExpr[],
     options: SchemaOptions<TupleOptions> = {}

@@ -2,25 +2,23 @@ import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
-/**
- * @category $boolean
- */
 export interface BooleanOptions {}
 
 export type BooleanType = ThereforeNode<'boolean', BooleanOptions>
 
 /**
+ * Create a new `BooleanType` instance with the given options.
  *
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $boolean
  *
- * @example
- *      $object({
- *          isUser: $boolean(),
- *          flagged: $boolean
- *      })
+ * $boolean()
+ * ```
  *
- * @category $boolean
- * @public
+ * @param options - Additional options to pass to the boolean.
+ *
+ * @group Primitives
  */
 export function $boolean(options: SchemaOptions<BooleanOptions, boolean> = {}): BooleanType {
     return cstNode('boolean', options)

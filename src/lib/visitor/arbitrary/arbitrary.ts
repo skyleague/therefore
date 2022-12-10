@@ -116,6 +116,19 @@ function transform({ description }: ThereforeNode, arb: Arbitrary<unknown>): Arb
     return arb
 }
 
+/**
+ * Create an arbitrary from the compiled Therefore schema.
+ *
+ * ### Example
+ * ```ts
+ * random(arbitrary(HelloWorld))
+ * // => "hello world"
+ * ```
+ *
+ * @param schema - The schema to generate an arbitrary for.
+ *
+ * @group Arbitrary
+ */
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | ThereforeCst): Dependent<T> {
     if ('schema' in schema) {
         // as the therefore schemas are very strict by default, we can allow intersection types here

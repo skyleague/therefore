@@ -10,7 +10,7 @@ import type {
     JsonStringInstance,
 } from '../../../json'
 import type { ThereforeNode } from '../../cst/cst'
-import { prepass } from '../../visitor/prepass'
+import { prepass } from '../../visitor/prepass/prepass'
 import { $array } from '../array'
 import type { SchemaMeta, SchemaOptions } from '../base'
 import { descriptionKeys } from '../base'
@@ -348,6 +348,12 @@ function walkJsonschema({
  * @category JsonSchema
  */
 export interface JsonSchemaOptions {
+    /**
+     * Toggles whether additional properties should be allowed by default on objects. (is used when
+     * no additionalProperties is set on the schema)
+     *
+     * @defaultValue false
+     */
     strict?: boolean
     metaSchemas?: Record<string, JsonSchema>
     references?: Map<string, [name: string, value: () => ThereforeNode]>
@@ -355,14 +361,26 @@ export interface JsonSchemaOptions {
     exportAllSymbols?: boolean
     root?: JsonSchema
     dereferenceRoot?: boolean
+    /**
+     * If true, intersection types are being calculated from the `allOf` clause.
+     *
+     * @defaultValue false
+     */
     allowIntersectionTypes?: boolean
 }
 
 /**
+ * Create a new `ThereforeCst` instance with the given options.
  *
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $jsonschema({type: 'object', properties: {foo: {type: "string"}}})
+ * ```
  *
- * @category $jsonschema
+ * @param schema - The JSON Draft 7 schema.
+ * @param options - Additional options to pass to the tuple.
+ *
+ * @group Schema
  */
 export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): ThereforeCst {
     const {

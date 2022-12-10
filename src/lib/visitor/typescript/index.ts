@@ -1,1 +1,0 @@
-export { toTypescriptDefinition } from './typescript'

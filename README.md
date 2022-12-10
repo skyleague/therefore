@@ -1,4 +1,4 @@
-# ∴ Therefore _(@skyleague/therefore)_
+# ∴ Therefore _[@skyleague/therefore](https://skyleague.github.io/therefore/)_
 
 <p>
   <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/skyleague/therefore">
@@ -13,38 +13,26 @@
 > Such is the advantage of a well-constructed language that its simplified notation often becomes the source of profound theories.
 >
 > -   Pierre-Simon de Laplace
+
 Therefore empowers you to generate JSON Schemas and typescript types.
 
 It is hard to keep JSON Schemas and types aligned, _especially_ in a world of growing api complexity. Therefore, we want to simplify the most frustrating problems associated with JSON validation and typing.
 
 Therefore is:
 
-- *clean schema definition* that reads similar to typescript interfaces
-- *handwritten types* look very similar to the generated schemas
-- *easily (re)generate schemas* with a simple CLI command
-- *no runtime dependencies*; Therefore is designed such that it only has to be a _development_ package
-- *strict by default*; less api-surface, less confusion, happier code
+-   _clean schema definition_ that reads similar to typescript interfaces
+-   _handwritten types_ look very similar to the generated schemas
+-   _easily (re)generate schemas_ with a simple CLI command
+-   _no runtime dependencies_; Therefore is designed such that it only has to be a _development_ package
+-   _strict by default_; less api-surface, less confusion, happier code
 
-## Table of Contents
+## [Documentation](https://skyleague.github.io/therefore/)
 
-<!-- toc -->
-
-- [Security](#security)
-- [Background](#background)
-- [Install](#install)
-- [Usage](#usage)
-  * [Examples](#examples)
-  * [CLI](#cli)
-- [API](#api)
-- [Alternative projects](#alternative-projects)
-- [When not to use Therefore?](#when-not-to-use-therefore)
-- [License](#license)
-
-<!-- tocstop -->
+The documentation can be found [here](https://skyleague.github.io/therefore/).
 
 ## Security
 
-Therefore internally uses [`Ajv`](https://github.com/ajv-validator/ajv) for its validation. That means that the security considerations of using Therefore become a superset of those of [`Ajv`](https://github.com/ajv-validator/ajv#security-considerations). By default Therefore tries to implement the strictest interface and validation given a schema. By default, schemas will not allow additional properties to be defined.
+Therefore internally uses [`Ajv`](https://github.com/ajv-validator/ajv) for its validation. That means that the security considerations of using Therefore become a superset of those of [`Ajv`](https://github.com/ajv-validator/ajv#security-considerations). By default Therefore tries to implement the strictest interface and validation given a schema.
 
 ## Background
 
@@ -81,7 +69,7 @@ Let's get started with a simple JSON Schema taken as an example:
 import { $number, $object, $string, $validator } from '@skyleague/therefore'
 
 export const person = $validator(
-        $object({
+    $object({
         firstName: $string({
             description: "The person's first name.",
         }),
@@ -203,24 +191,24 @@ Options:
 
 In no particular order, the following libraries try to solve similar problems (albeit very different):
 
-- [`Zod`](https://github.com/colinhacks/zod)
-- [`Runtypes`](https://github.com/pelotom/runtypes); similar interface, but completely runtime defined.
-- [`TypeBox`](https://github.com/sinclairzx81/typebox)
-- [`io-ts`](https://github.com/gcanti/io-ts)
-- [`joi`](https://github.com/sideway/joi)
-- [`json-schema-to-typescript`](https://github.com/bcherny/json-schema-to-typescript)
-- [`typescript-json-schema`](https://github.com/YousefED/typescript-json-schema)
-- The list goes on....
+-   [`Zod`](https://github.com/colinhacks/zod)
+-   [`Runtypes`](https://github.com/pelotom/runtypes); similar interface, but completely runtime defined.
+-   [`TypeBox`](https://github.com/sinclairzx81/typebox)
+-   [`io-ts`](https://github.com/gcanti/io-ts)
+-   [`joi`](https://github.com/sideway/joi)
+-   [`json-schema-to-typescript`](https://github.com/bcherny/json-schema-to-typescript)
+-   [`typescript-json-schema`](https://github.com/YousefED/typescript-json-schema)
+-   The list goes on....
 
 PR's are very welcome if you think your project is missing here.
 
 ## When not to use Therefore?
 
-- By default, we create as strict a JSON Schema/type as possible. We are aware that this doesn't suit everyone's needs.
-  - additional properties will result in validation errors **without** extra work
-  - indexable types are always explicitly nullable, i.e. `Record<string, string | undefined>` instead of `Record<string, string>`
-- We only support JSON Schema validation through Ajv. If you do not want to/can't use Ajv, Therefore probably isn't for you.
-- Therefore is an insanely opinionated implementation of runtime validation of types; It will not fit everyone's needs.
+-   By default, we create as strict a JSON Schema/type as possible. We are aware that this doesn't suit everyone's needs.
+    -   additional properties will result in validation errors **without** extra work
+    -   indexable types are always explicitly nullable, i.e. `Record<string, string | undefined>` instead of `Record<string, string>`
+-   We only support JSON Schema validation through Ajv. If you do not want to/can't use Ajv, Therefore probably isn't for you.
+-   Therefore is an insanely opinionated implementation of runtime validation of types; It will not fit everyone's needs.
 
 This open source library package is part of the SkyLeague modern application delivery stack.
 
@@ -238,7 +226,6 @@ If you using this SDK without Enterprise Support, please note this (partial) MIT
 
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND
 
-Copyright (c) 2022, SkyLeague Technologies B.V..
-'SkyLeague' and the astronaut logo are trademarks of SkyLeague Technologies, registered at Chamber of Commerce in The Netherlands under number 86650564.
+Copyright (c) 2022, SkyLeague Technologies B.V.. 'SkyLeague' and the astronaut logo are trademarks of SkyLeague Technologies, registered at Chamber of Commerce in The Netherlands under number 86650564.
 
 All product names, logos, brands, trademarks and registered trademarks are property of their respective owners. All company, product and service names used in this website are for identification purposes only. Use of these names, trademarks and brands does not imply endorsement.

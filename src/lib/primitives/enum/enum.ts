@@ -10,23 +10,20 @@ export interface EnumOptions {}
 export type EnumType = ThereforeNode<'enum', EnumOptions, unknown, [name: number, value: unknown][] | unknown[]>
 
 /**
- * Declares an enum type. This is either a list of values, or a dictionary
+ * Declares an `EnumType`. This is either a list of values, or a dictionary
  * where the key is the name of value.
  *
- * @param values - the values that are allowed on this property
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $enum([1, 3])
  *
- * @example
- *      $enum([1, 2, 3])
+ * $enum(["foobar"])
+ * ```
  *
- * @example
- *      $enum({
- *          one: 1,
- *          two: 2,
- *          three: 3
- *      })
+ * @param values - The values that are allowed on this property.
+ * @param options - Additional options to pass to the enum.
  *
- * @category $enum
+ * @group Primitives
  */
 export function $enum<T extends Json>(values: Record<string, T> | T[], options: SchemaOptions<EnumOptions> = {}): EnumType {
     return cstNode('enum', options, isArray(values) ? values : entriesOf(values).map(([name, value]) => [name, value]))
