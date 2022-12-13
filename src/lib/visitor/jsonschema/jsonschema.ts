@@ -10,6 +10,7 @@ import type { ThereforeCst } from '../../primitives/types'
 
 import type { RelaxedPartial } from '@skyleague/axioms'
 import { evaluate, omit, isArray, omitUndefined } from '@skyleague/axioms'
+import type { Options as AjvOptions } from 'ajv'
 import Ajv from 'ajv'
 import standaloneCode from 'ajv/dist/standalone'
 
@@ -17,6 +18,7 @@ export interface JsonSchemaWalkerContext {
     defaults: {
         additionalProperties: boolean
     }
+    ajvOptions: AjvOptions
     entry?: ThereforeNode | undefined
     definitions: NonNullable<JsonSchema['definitions']>
     transform: (node: ThereforeNode, schema: RelaxedPartial<JsonSchema>) => JsonSchema
@@ -102,7 +104,8 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
         const required: string[] = []
         for (const child of children) {
             properties[child.name] = walkTherefore(child, jsonSchemaVisitor, context)
-            if (child.description.optional === undefined || child.description.optional === 'explicit') {
+            const defaultIsInferred = child.description.default !== undefined && context.ajvOptions.useDefaults === true
+            if (!defaultIsInferred && (child.description.optional === undefined || child.description.optional === 'explicit')) {
                 required.push(child.name)
             }
         }
@@ -187,6 +190,14 @@ export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
             additionalProperties: true,
             ...(obj !== undefined && 'defaults' in obj.value ? obj.value.defaults : {}),
         },
+        ajvOptions: {
+            ...defaultAjvConfig,
+            ...obj?.description.ajvOptions,
+            code: {
+                ...defaultAjvConfig.code,
+                source: true,
+            },
+        },
         definitions: {},
         entry: obj,
         transform: (node, schema): JsonSchema => {
@@ -213,14 +224,7 @@ export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaVali
         definition.$defs = context.definitions
     }
     if (compile) {
-        const ajv = new Ajv({
-            ...defaultAjvConfig,
-            ...obj.description.ajvOptions,
-            code: {
-                ...defaultAjvConfig.code,
-                source: true,
-            },
-        })
+        const ajv = new Ajv(context.ajvOptions)
         const validator = ajv.compile(definition)
         return {
             schema: definition,

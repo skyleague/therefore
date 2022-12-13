@@ -790,11 +790,6 @@ type {{00024-000:symbolName}} = (string)[]
           "$ref": "#/$defs/{{00018-000:uniqueSymbolName}}"
         }
       },
-      "required": [
-        "persistent",
-        "page",
-        "scripts"
-      ],
       "additionalProperties": true
     },
     "chrome_url_overrides": {
@@ -817,11 +812,6 @@ type {{00024-000:symbolName}} = (string)[]
           "$ref": "#/$defs/{{00016-000:uniqueSymbolName}}"
         }
       },
-      "required": [
-        "bookmarks",
-        "history",
-        "newtab"
-      ],
       "additionalProperties": true
     },
     "commands": {
@@ -907,11 +897,8 @@ type {{00024-000:symbolName}} = (string)[]
           "exclude_matches",
           "css",
           "js",
-          "run_at",
-          "all_frames",
           "include_globs",
-          "exclude_globs",
-          "match_about_blank"
+          "exclude_globs"
         ],
         "additionalProperties": true
       },
@@ -951,8 +938,7 @@ type {{00024-000:symbolName}} = (string)[]
       },
       "required": [
         "ids",
-        "matches",
-        "accepts_tls_channel_id"
+        "matches"
       ],
       "additionalProperties": true
     },
@@ -1181,9 +1167,6 @@ type {{00024-000:symbolName}} = (string)[]
               "default": true
             }
           },
-          "required": [
-            "npapi"
-          ],
           "additionalProperties": true
         }
       },
@@ -1211,8 +1194,7 @@ type {{00024-000:symbolName}} = (string)[]
         }
       },
       "required": [
-        "pages",
-        "content_security_policy"
+        "pages"
       ],
       "additionalProperties": true
     },
@@ -1318,7 +1300,6 @@ type {{00024-000:symbolName}} = (string)[]
     "manifest_version",
     "name",
     "version",
-    "default_locale",
     "description",
     "icons",
     "browser_action",
@@ -1332,7 +1313,6 @@ type {{00024-000:symbolName}} = (string)[]
     "externally_connectable",
     "file_browser_handlers",
     "homepage_url",
-    "incognito",
     "input_components",
     "key",
     "minimum_chrome_version",
@@ -1341,7 +1321,6 @@ type {{00024-000:symbolName}} = (string)[]
     "offline_enabled",
     "omnibox",
     "optional_permissions",
-    "options_page",
     "options_ui",
     "permissions",
     "requirements",
