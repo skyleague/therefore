@@ -2,20 +2,28 @@ import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
-/**
- * @category $unknown
- */
 export interface UnknownOptions {
+    /**
+     * Restrict the unknown values to json values
+     */
     json: boolean
 }
 
 export type UnknownType = ThereforeNode<'unknown', UnknownOptions>
 
 /**
+ * Create a new `RefType` instance with the given options.
  *
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $unknown
  *
- * @category $unknown
+ * $unknown()
+ * ```
+ *
+ * @param options - Additional options to pass to the number.
+ *
+ * @group Primitives
  */
 export function $unknown(options: SchemaOptions<UnknownOptions> = {}): ThereforeNode<'unknown', UnknownOptions> {
     return cstNode('unknown', options)

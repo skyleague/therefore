@@ -2,9 +2,6 @@ import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
-/**
- * @category $integer
- */
 export interface IntegerOptions {
     /**
      * The resulting property will only be valid when the value divided by this parameter
@@ -44,10 +41,20 @@ export interface IntegerOptions {
 export type IntegerType = ThereforeNode<'integer', IntegerOptions>
 
 /**
+ * Create a new `IntegerType` instance with the given options.
  *
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $integer
  *
- * @category $integer
+ * $integer()
+ *
+ * $integer({maximum: 3.15})
+ * ```
+ *
+ * @param options - Additional options to pass to the integer.
+ *
+ * @group Primitives
  */
 export function $integer(options: SchemaOptions<IntegerOptions, number> = {}): IntegerType {
     return cstNode('integer', options)

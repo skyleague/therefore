@@ -47,6 +47,14 @@ export function isNamedCstNodeArray<T extends ThereforeNode>(
     return x.length > 0 && 'name' in x[0] && x[0] !== undefined
 }
 
+/**
+ * Checks whether the given object is a valid therefore schema node.
+ *
+ * @param x - The node to check.
+ * @returns Checks if `x` is a ThereforeNode.
+ *
+ * @group Guards
+ */
 export function isThereforeNode(x: unknown): x is ThereforeNode {
     return isObject(x) && 'type' in x && 'uuid' in x && 'value' in x && 'description' in x
 }

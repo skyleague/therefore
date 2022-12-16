@@ -36,6 +36,22 @@ export function isCombinedDefinition(
     )
 }
 
+/**
+ * Create a new `ObjectType` instance with the given options.
+ *
+ * ### Example
+ * ```ts
+ * $object({
+ *   foo: $string
+ *   bar: $integer
+ * })
+ * ```
+ *
+ * @param properties - Key value pairs that define the object.
+ * @param options - Additional options to pass to the number.
+ *
+ * @group Primitives
+ */
 export function $object(properties: SchemaOptions<LazyObjectOptions> & { properties: ObjectPropertiesArg }): ObjectType
 export function $object(properties: ObjectPropertiesArg, options?: SchemaOptions<LazyObjectOptions>): ObjectType
 export function $object(

@@ -1,4 +1,4 @@
-import type { SimplifyOnce, UndefinedFields } from '@skyleague/axioms'
+import type { UndefinedFields } from '@skyleague/axioms'
 import type { Options } from 'ajv'
 
 export type TypeDiscriminator =
@@ -119,11 +119,23 @@ export interface ThereforeMeta {
      * The ajv options to validate this object with
      */
     ajvOptions?: Options
-
-    validator?: {
-        enabled: boolean
-        assert: boolean
-    }
+    /**
+     * Controls how the validator should be generated.
+     *
+     * @defaultValue - {enabled: false; assert: false}.
+     */
+    validator?:
+        | {
+              /**
+               * Generates a validator block for the type.
+               */
+              enabled: true
+              /**
+               * Generates an assert function.
+               */
+              assert: boolean
+          }
+        | { enabled: false; assert: false }
 }
 export type SchemaMeta<T = unknown> = MetaDescription<T> & ThereforeMeta
-export type SchemaOptions<O, T = unknown> = UndefinedFields<SimplifyOnce<MetaDescription<T> & O> & ThereforeMeta>
+export type SchemaOptions<O, T = unknown> = UndefinedFields<MetaDescription<T> & O & ThereforeMeta>

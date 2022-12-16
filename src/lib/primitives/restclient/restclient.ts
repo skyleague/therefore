@@ -115,8 +115,7 @@ export function getRequestBody({
             strict,
         })
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
-            therefore.description.validator ??= { enabled: true, assert: true }
-            therefore.description.validator.assert = true
+            therefore.description.validator = { enabled: true, assert: true }
             return {
                 schema: therefore,
                 mimeType: jsonMimeType,
@@ -144,8 +143,7 @@ export function getRequestBody({
             exportAllSymbols: true,
             strict,
         })
-        therefore.description.validator ??= { enabled: true, assert: true }
-        therefore.description.validator.assert = true
+        therefore.description.validator = { enabled: true, assert: true }
         return { schema: therefore, name: 'body', type: 'form', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
     }
 
@@ -426,13 +424,51 @@ export function getSecurity(securityRequirements: Record<string, Reference | Sec
 }
 
 export interface RestclientOptions {
+    /**
+     * Toggles whether the given operationId should be preferred over the generated value.
+     *
+     * @defaultValue true
+     */
     preferOperationId?: boolean
+    /**
+     * @defaultValue false
+     */
     strict?: boolean
+    /**
+     * Toggles whether an Either interface is generated or exceptions are used.
+     *
+     * @defaultValue true
+     */
     useEither?: boolean
+    /**
+     * Toggles whether the content type header should always be part of the request.
+     *
+     * @defaultValue false
+     */
     explicitContentNegotiation?: boolean
+    /**
+     * Allows for a transformation of the standardized openapi schema (swagger gets automatically converted to
+     * openapiv3).
+     */
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
 }
 
+/**
+ * Create a new `CustomType` instance with the given options.
+ *
+ * ### Example
+ * ```ts
+ * export const petStore = got
+    .get('https://petstore3.swagger.io/api/v3/openapi.json')
+    .json<OpenapiV3>()
+    .then((data) => $restclient(data, { strict: false }))
+ * ```
+ *
+ * @param schema - The JSON Draft 7 schema.
+ * @param options - Additional options to pass to the tuple.
+ *
+ * @group Schema
+ */
 export async function $restclient(definition: OpenapiV3, options: Partial<RestclientOptions> = {}): Promise<CustomType> {
     const converted: { openapi: OpenapiV3 } = await converter.convertObj(definition, {
         path: true,
@@ -442,7 +478,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
-    const { useEither = true, explicitContentNegotiation = false, strict = true } = options
+    const { useEither = true, explicitContentNegotiation = false, strict = false } = options
     const references = new Map<string, [name: string, value: () => ThereforeNode]>()
 
     const children: ThereforeCst[] = []

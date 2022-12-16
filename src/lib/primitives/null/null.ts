@@ -3,17 +3,25 @@ import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
 /**
- * @category $null
+ * @category Primitives
  */
 export interface NullOptions {}
 
 export type NullType = ThereforeNode<'null', NullOptions>
 
 /**
+ * Create a new `NullType` instance with the given options.
  *
- * @param options - additional options to pass to the property
+ * ### Example
+ * ```ts
+ * $null
  *
- * @category $null
+ * $null()
+ * ```
+ *
+ * @param options - Additional options to pass to the null.
+ *
+ * @group Primitives
  */
 export function $null(options: SchemaOptions<NullOptions, boolean> = {}): NullType {
     return cstNode('null', options)

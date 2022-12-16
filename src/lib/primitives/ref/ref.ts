@@ -22,6 +22,22 @@ export function isCombinedDefinition(
     )
 }
 
+/**
+ * Create a new `RefType` instance with the given options.
+ *
+ * ### Example
+ * ```ts
+ * const foo = $number()
+ * $ref(foo)
+ *
+ * $ref(["foobar", foo])
+ * ```
+ *
+ * @param reference - The schema to reference.
+ * @param options - Additional options to pass to the number.
+ *
+ * @group Primitives
+ */
 export function $ref(reference: ThereforeExpr | [string, ThereforeExpr]): RefType
 export function $ref(reference: SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] }): RefType
 export function $ref(reference: ThereforeExpr | [string, ThereforeExpr], options?: SchemaOptions<RefOptions>): RefType
