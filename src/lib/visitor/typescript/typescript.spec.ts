@@ -8,7 +8,7 @@ import {
     getIndexSignatureType,
 } from './typescript'
 
-import { walkCst } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import {
     $array,
     $boolean,
@@ -57,52 +57,52 @@ describe('readonly', () => {
 
 describe('typescriptVisitor', () => {
     test('string', () => {
-        expect(walkCst($string(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"string"`)
+        expect(walkTherefore($string(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"string"`)
     })
 
     test('number', () => {
-        expect(walkCst($number(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
+        expect(walkTherefore($number(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
     })
 
     test('integer', () => {
-        expect(walkCst($integer(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
+        expect(walkTherefore($integer(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
     })
 
     test('boolean', () => {
-        expect(walkCst($boolean(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"boolean"`)
+        expect(walkTherefore($boolean(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"boolean"`)
     })
 
     test('null', () => {
-        expect(walkCst($null(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"null"`)
+        expect(walkTherefore($null(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"null"`)
     })
 
     test('unknown', () => {
-        expect(walkCst($unknown(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"unknown"`)
+        expect(walkTherefore($unknown(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"unknown"`)
     })
 
     test('enum', () => {
         expect(
-            walkCst($enum(['foo', 'bar', { foo: 'bar' }]), typescriptVisitor, {} as TypescriptWalkerContext)
+            walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"'foo' | 'bar' | { foo: 'bar' }"`)
     })
 
     test('array', () => {
         expect(
-            walkCst($array($string), typescriptVisitor, {
+            walkTherefore($array($string), typescriptVisitor, {
                 locals: {},
                 references: [],
                 symbolName: '',
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"(string)[]"`)
         expect(
-            walkCst($array($enum(['foo', 'bar', { foo: 'bar' }])), typescriptVisitor, {
+            walkTherefore($array($enum(['foo', 'bar', { foo: 'bar' }])), typescriptVisitor, {
                 locals: {},
                 references: [],
                 symbolName: '',
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"('foo' | 'bar' | { foo: 'bar' })[]"`)
         expect(
-            walkCst($array($union([$string, $integer])), typescriptVisitor, {
+            walkTherefore($array($union([$string, $integer])), typescriptVisitor, {
                 locals: {},
                 references: [],
                 symbolName: '',
@@ -112,13 +112,13 @@ describe('typescriptVisitor', () => {
 
     test('tuple', () => {
         expect(
-            walkCst($tuple([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
+            walkTherefore($tuple([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"[string, string, number]"`)
     })
 
     test('named tuple', () => {
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     foo: $string,
                     boo: $integer,
@@ -128,7 +128,7 @@ describe('typescriptVisitor', () => {
             )
         ).toMatchInlineSnapshot(`"[foo: string, boo: number]"`)
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     x: $number,
                     y: $number,
@@ -141,7 +141,7 @@ describe('typescriptVisitor', () => {
     })
 
     test('dict', () => {
-        expect(walkCst($dict($string), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
+        expect(walkTherefore($dict($string), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
             "{
                 [k: string]: ( string ) | undefined
             }"
@@ -151,7 +151,7 @@ describe('typescriptVisitor', () => {
     test('ref', () => {
         const foo = $dict($string)
         expect(
-            walkCst($ref(foo), typescriptVisitor, {
+            walkTherefore($ref(foo), typescriptVisitor, {
                 references: [],
                 locals: {},
                 symbolName: '',
@@ -159,7 +159,7 @@ describe('typescriptVisitor', () => {
         ).toMatchInlineSnapshot(`"{{0002-000:referenceName}}"`)
         // test the stable uuid referencing
         expect(
-            walkCst($union([$ref(foo), $dict($ref(foo))]), typescriptVisitor, {
+            walkTherefore($union([$ref(foo), $dict($ref(foo))]), typescriptVisitor, {
                 references: [],
                 locals: {},
                 symbolName: '',
@@ -172,21 +172,23 @@ describe('typescriptVisitor', () => {
     })
 
     test('union', () => {
-        expect(walkCst($union([$string]), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"string"`)
+        expect(walkTherefore($union([$string]), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(
+            `"string"`
+        )
         expect(
-            walkCst($union([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
+            walkTherefore($union([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"string | string | number"`)
     })
 
     test('intersection', () => {
-        expect(walkCst($intersection([$object({ foo: $string })]), typescriptVisitor, {} as TypescriptWalkerContext))
+        expect(walkTherefore($intersection([$object({ foo: $string })]), typescriptVisitor, {} as TypescriptWalkerContext))
             .toMatchInlineSnapshot(`
             "{
                 foo: string
             }"
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $intersection([$object({ foo: $string }), $object({ bar: $string })]),
                 typescriptVisitor,
                 {} as TypescriptWalkerContext
@@ -201,13 +203,13 @@ describe('typescriptVisitor', () => {
     })
 
     test('object', () => {
-        expect(walkCst($object({ foo: $string }), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
+        expect(walkTherefore($object({ foo: $string }), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
             "{
                 foo: string
             }"
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
                 typescriptVisitor,
                 {} as TypescriptWalkerContext
@@ -220,7 +222,7 @@ describe('typescriptVisitor', () => {
             }"
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
                 typescriptVisitor,
                 {} as TypescriptWalkerContext
@@ -235,7 +237,7 @@ describe('typescriptVisitor', () => {
             }"
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object({ foo: $string, bar: $string({ description: 'fooscription', readonly: true }) }),
                 typescriptVisitor,
                 {} as TypescriptWalkerContext
@@ -257,7 +259,7 @@ describe('typescriptVisitor', () => {
 describe('toTypeDefinition', () => {
     test('string', () => {
         expect(
-            walkCst($string(), typeDefinitionVisitor, {
+            walkTherefore($string(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -273,7 +275,7 @@ describe('toTypeDefinition', () => {
 
     test('number', () => {
         expect(
-            walkCst($number(), typeDefinitionVisitor, {
+            walkTherefore($number(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -289,7 +291,7 @@ describe('toTypeDefinition', () => {
 
     test('integer', () => {
         expect(
-            walkCst($integer(), typeDefinitionVisitor, {
+            walkTherefore($integer(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -305,7 +307,7 @@ describe('toTypeDefinition', () => {
 
     test('boolean', () => {
         expect(
-            walkCst($boolean(), typeDefinitionVisitor, {
+            walkTherefore($boolean(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -321,7 +323,7 @@ describe('toTypeDefinition', () => {
 
     test('null', () => {
         expect(
-            walkCst($null(), typeDefinitionVisitor, {
+            walkTherefore($null(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -337,7 +339,7 @@ describe('toTypeDefinition', () => {
 
     test('unknown', () => {
         expect(
-            walkCst($unknown(), typeDefinitionVisitor, {
+            walkTherefore($unknown(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -353,7 +355,7 @@ describe('toTypeDefinition', () => {
 
     test('enum', () => {
         expect(
-            walkCst($enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
+            walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -366,7 +368,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($enum({ foo: 'bar', bar: 1, baz: true }), typeDefinitionVisitor, {
+            walkTherefore($enum({ foo: 'bar', bar: 1, baz: true }), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -384,7 +386,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($enum({ foo: 'bar', bar: [1, 2, 3] }), typeDefinitionVisitor, {
+            walkTherefore($enum({ foo: 'bar', bar: [1, 2, 3] }), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -405,7 +407,7 @@ describe('toTypeDefinition', () => {
 
     test('array', () => {
         expect(
-            walkCst($array($string), typeDefinitionVisitor, {
+            walkTherefore($array($string), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -418,7 +420,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($array($enum(['foo', 'bar', { foo: 'bar' }])), typeDefinitionVisitor, {
+            walkTherefore($array($enum(['foo', 'bar', { foo: 'bar' }])), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -432,7 +434,7 @@ describe('toTypeDefinition', () => {
         `)
         const locals = {}
         expect(
-            walkCst($array($union([$string, $integer])), typeDefinitionVisitor, {
+            walkTherefore($array($union([$string, $integer])), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals,
@@ -449,7 +451,7 @@ describe('toTypeDefinition', () => {
 
     test('tuple', () => {
         expect(
-            walkCst($tuple([$string, $string, $integer]), typeDefinitionVisitor, {
+            walkTherefore($tuple([$string, $string, $integer]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -465,7 +467,7 @@ describe('toTypeDefinition', () => {
 
     test('named tuple', () => {
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     foo: $string,
                     boo: $integer,
@@ -482,7 +484,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     x: $number,
                     y: $number,
@@ -503,7 +505,7 @@ describe('toTypeDefinition', () => {
 
     test('dict', () => {
         expect(
-            walkCst($dict($string), typeDefinitionVisitor, {
+            walkTherefore($dict($string), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -524,7 +526,7 @@ describe('toTypeDefinition', () => {
     test('ref', () => {
         const foo = $dict($string)
         expect(
-            walkCst($ref(foo), typeDefinitionVisitor, {
+            walkTherefore($ref(foo), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -540,7 +542,7 @@ describe('toTypeDefinition', () => {
         `)
         // test the stable uuid referencing
         expect(
-            walkCst($union([$ref(foo), $dict($ref(foo))]), typeDefinitionVisitor, {
+            walkTherefore($union([$ref(foo), $dict($ref(foo))]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -560,7 +562,7 @@ describe('toTypeDefinition', () => {
 
     test('union', () => {
         expect(
-            walkCst($union([$string]), typeDefinitionVisitor, {
+            walkTherefore($union([$string]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -575,7 +577,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($union([$string, $string, $integer]), typeDefinitionVisitor, {
+            walkTherefore($union([$string, $string, $integer]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -593,7 +595,7 @@ describe('toTypeDefinition', () => {
 
     test('intersection', () => {
         expect(
-            walkCst($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
+            walkTherefore($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -610,7 +612,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
+            walkTherefore($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -630,7 +632,7 @@ describe('toTypeDefinition', () => {
 
     test('object', () => {
         expect(
-            walkCst($object({ foo: $string }), typeDefinitionVisitor, {
+            walkTherefore($object({ foo: $string }), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -647,7 +649,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }), typeDefinitionVisitor, {
+            walkTherefore($object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -666,7 +668,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst($object({ foo: $string, bar: $string({ description: 'fooscription' }) }), typeDefinitionVisitor, {
+            walkTherefore($object({ foo: $string, bar: $string({ description: 'fooscription' }) }), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -687,7 +689,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object(
                     {
                         foo: $string,
@@ -725,7 +727,7 @@ describe('toTypeDefinition', () => {
     })
 
     expect(
-        walkCst($object({ foo: $string }, { indexSignature: $number }), typeDefinitionVisitor, {
+        walkTherefore($object({ foo: $string }, { indexSignature: $number }), typeDefinitionVisitor, {
             references: [],
             symbolName: 'Foo',
             locals: {},

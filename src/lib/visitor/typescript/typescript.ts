@@ -5,8 +5,8 @@ import type { TypescriptDefinition } from '../../../commands/generate/types'
 import { renderTemplate } from '../../../common/template'
 import { defaultAjvConfig } from '../../ajv/defaults'
 import { isNamedCstNodeArray } from '../../cst/cst'
-import type { CstVisitor } from '../../cst/visitor'
-import { walkCst } from '../../cst/visitor'
+import type { ThereforeVisitor } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import { isNamedArray } from '../../guard'
 import type { DictType, ObjectType, RefType, UnionType } from '../../primitives'
 import { $ref } from '../../primitives'
@@ -93,7 +93,7 @@ interface TypeDefinition {
     declaration: string
     referenceName: string
 }
-export const typeDefinitionVisitor: CstVisitor<TypeDefinition, TypescriptWalkerContext> = {
+export const typeDefinitionVisitor: ThereforeVisitor<TypeDefinition, TypescriptWalkerContext> = {
     object: (obj, context) => toDeclaration(obj, context),
     dict: (obj, context) => toDeclaration(obj, context),
     union: (obj, context) => toDeclaration(obj, context),
@@ -136,7 +136,7 @@ export const typeDefinitionVisitor: CstVisitor<TypeDefinition, TypescriptWalkerC
         return {
             declaration: `${toJSDoc({ key: symbolName, meta: obj.description }) ?? ''}${exportSymbol ?? ''}type {{${
                 obj.uuid
-            }:symbolName}} = ${walkCst(obj, typescriptVisitor, context)}\n`,
+            }:symbolName}} = ${walkTherefore(obj, typescriptVisitor, context)}\n`,
             referenceName: `{{${obj.uuid}:symbolName}}`,
         }
     },
@@ -163,20 +163,20 @@ export function getIndexSignatureType(indexPattern: string) {
     return { type: 'string' }
 }
 
-export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
+export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext> = {
     integer: () => 'number',
     unknown: () => 'unknown',
     enum: ({ children }) => children.map((v) => toLiteral(v)).join(' | '),
     union: ({ children }, context) =>
-        children.map((v) => walkCst<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' | '),
+        children.map((v) => walkTherefore<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' | '),
     intersection: ({ children }, context) =>
-        children.map((v) => walkCst<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' & '),
+        children.map((v) => walkTherefore<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' & '),
     object: ({ children, value }, context) => {
         const writer = createWriter()
         writer.block(() => {
             for (const property of children) {
                 const { name, description } = property
-                const child = walkCst(property, typescriptVisitor, { ...context, property: name })
+                const child = walkTherefore(property, typescriptVisitor, { ...context, property: name })
                 const jsdoc = toJSDoc({ key: name, meta: description })
                 const nestedChild = description.nullable ? `(${child} | null)` : child
                 writer.writeLine(
@@ -190,7 +190,7 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
             const commonIndex = `[k: string]`
             if (indexSignature !== undefined) {
                 // writer.writeLine(`[k: string]: ${walkCst(indexSignature, typescriptVisitor, context)}`)
-                indices.push([commonIndex, walkCst(indexSignature, typescriptVisitor, context)])
+                indices.push([commonIndex, walkTherefore(indexSignature, typescriptVisitor, context)])
             }
             const indexPatterns = value.indexPatterns
             if (indexPatterns !== undefined) {
@@ -198,10 +198,10 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
                     // writer.writeLine(`[k: ${getIndexSignatureType(pattern)}]: ${walkCst(node, typescriptVisitor, context)}`)
                     const mappedType = getIndexSignatureType(pattern)
                     if ('type' in mappedType) {
-                        indices.push([`[k: ${mappedType.type}]`, walkCst(node, typescriptVisitor, context)])
+                        indices.push([`[k: ${mappedType.type}]`, walkTherefore(node, typescriptVisitor, context)])
                     } else {
                         for (const name of mappedType.names) {
-                            indices.push([`${name}`, walkCst(node, typescriptVisitor, context)])
+                            indices.push([`${name}`, walkTherefore(node, typescriptVisitor, context)])
                         }
                     }
                 }
@@ -258,14 +258,14 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
                 })
                 locals[local.uuid] = local
             }
-            localReference = walkCst(
+            localReference = walkTherefore(
                 $ref(context.property !== undefined ? [context.property, items] : items),
                 typescriptVisitor,
                 context
             )
         }
 
-        const itemsTs = localReference ?? walkCst<string, TypescriptWalkerContext>(items, typescriptVisitor, context)
+        const itemsTs = localReference ?? walkTherefore<string, TypescriptWalkerContext>(items, typescriptVisitor, context)
         const { minItems, maxItems } = obj.value
         if (minItems !== undefined && minItems > 0 && maxItems === undefined) {
             return `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`
@@ -280,17 +280,17 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
         // for named tuples
         if (isNamedCstNodeArray(children)) {
             return `[${children
-                .map((c) => [c, walkCst(c, typescriptVisitor, context)] as const)
+                .map((c) => [c, walkTherefore(c, typescriptVisitor, context)] as const)
                 .map(([child, ts]) => `${child.name}${optional(child.description)}: ${ts}`)
                 .join(', ')}]`
         }
-        return `[${children.map((c) => walkCst(c, typescriptVisitor, context)).join(', ')}]`
+        return `[${children.map((c) => walkTherefore(c, typescriptVisitor, context)).join(', ')}]`
     },
     dict: ({ children }, context) => {
         const [items] = children
         const writer = createWriter()
         writer.inlineBlock(() => {
-            writer.writeLine(`[k: string]: ( ${walkCst(items, typescriptVisitor, context)} ) | undefined`)
+            writer.writeLine(`[k: string]: ( ${walkTherefore(items, typescriptVisitor, context)} ) | undefined`)
         })
 
         return writer.toString()
@@ -357,7 +357,7 @@ export function toTypescriptDefinition({
         sourceSymbol,
         property: undefined,
     }
-    const declaration = walkCst(schema, typeDefinitionVisitor, context)
+    const declaration = walkTherefore(schema, typeDefinitionVisitor, context)
 
     let subtrees: TypescriptSubtree[] = []
     let imports: string[] = []
@@ -368,7 +368,7 @@ export function toTypescriptDefinition({
         }))
         // make the references transitive
         for (const child of schema.children) {
-            walkCst($ref(child), typescriptVisitor, context)
+            walkTherefore($ref(child), typescriptVisitor, context)
         }
     } else if (schema.description.validator?.enabled === true) {
         imports.push(`import type { ValidateFunction } from 'ajv'`)
@@ -422,7 +422,7 @@ export function toDeclaration(
     const { declType = '', operator = '' } = decltype(obj)
     const declaration = `${toJSDoc({ key: symbolName, meta: obj.description }) ?? ''}${exportString}${declType} {{${
         obj.uuid
-    }:symbolName}} ${operator}${walkCst(obj, typescriptVisitor, context)}\n`
+    }:symbolName}} ${operator}${walkTherefore(obj, typescriptVisitor, context)}\n`
     return {
         declaration,
         referenceName: `{{${obj.uuid}:symbolName}}`,

@@ -1,6 +1,6 @@
 import { annotate, jsonSchemaContext, jsonSchemaVisitor, toJsonSchema, toType } from './jsonschema'
 
-import { walkCst } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import {
     $array,
     $boolean,
@@ -96,7 +96,7 @@ describe('annotate', () => {
 
 describe('toTypeDefinition', () => {
     test('string', () => {
-        expect(walkCst($string(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($string(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "string",
             }
@@ -104,7 +104,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('number', () => {
-        expect(walkCst($number(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($number(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "number",
             }
@@ -112,7 +112,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('integer', () => {
-        expect(walkCst($integer(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($integer(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "integer",
             }
@@ -120,7 +120,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('boolean', () => {
-        expect(walkCst($boolean(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($boolean(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "boolean",
             }
@@ -128,7 +128,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('null', () => {
-        expect(walkCst($null(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($null(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "null",
             }
@@ -136,11 +136,12 @@ describe('toTypeDefinition', () => {
     })
 
     test('unknown', () => {
-        expect(walkCst($unknown(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`{}`)
+        expect(walkTherefore($unknown(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`{}`)
     })
 
     test('enum', () => {
-        expect(walkCst($enum(['foo', 'bar', { foo: 'bar' }]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "enum": [
                 "foo",
@@ -151,7 +152,8 @@ describe('toTypeDefinition', () => {
               ],
             }
         `)
-        expect(walkCst($enum({ foo: 'bar', bar: 1, baz: true }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($enum({ foo: 'bar', bar: 1, baz: true }), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "enum": [
                 "bar",
@@ -160,7 +162,8 @@ describe('toTypeDefinition', () => {
               ],
             }
         `)
-        expect(walkCst($enum({ foo: 'bar', bar: [1, 2, 3] }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($enum({ foo: 'bar', bar: [1, 2, 3] }), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "enum": [
                 "bar",
@@ -172,7 +175,7 @@ describe('toTypeDefinition', () => {
               ],
             }
         `)
-        expect(walkCst($enum(['foobar']), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($enum(['foobar']), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "const": "foobar",
             }
@@ -180,7 +183,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('array', () => {
-        expect(walkCst($array($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($array($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "items": {
                 "type": "string",
@@ -188,7 +191,7 @@ describe('toTypeDefinition', () => {
               "type": "array",
             }
         `)
-        expect(walkCst($array($enum(['foo', 'bar', { foo: 'bar' }])), jsonSchemaVisitor, jsonSchemaContext()))
+        expect(walkTherefore($array($enum(['foo', 'bar', { foo: 'bar' }])), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
             {
               "items": {
@@ -203,7 +206,7 @@ describe('toTypeDefinition', () => {
               "type": "array",
             }
         `)
-        expect(walkCst($array($union([$string, $integer])), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($array($union([$string, $integer])), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "items": {
                 "anyOf": [
@@ -221,7 +224,8 @@ describe('toTypeDefinition', () => {
     })
 
     test('tuple', () => {
-        expect(walkCst($tuple([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($tuple([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "additionalItems": false,
               "items": [
@@ -243,7 +247,7 @@ describe('toTypeDefinition', () => {
 
     test('named tuple', () => {
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     foo: $string,
                     boo: $integer,
@@ -268,7 +272,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $tuple({
                     x: $number,
                     y: $number,
@@ -299,7 +303,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('dict', () => {
-        expect(walkCst($dict($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($dict($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "additionalProperties": {
                 "type": "string",
@@ -311,13 +315,14 @@ describe('toTypeDefinition', () => {
 
     test('ref', () => {
         const foo = $dict($string)
-        expect(walkCst($ref(foo), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($ref(foo), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
             }
         `)
         // test the stable uuid referencing
-        expect(walkCst($union([$ref(foo), $dict($ref(foo))]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($union([$ref(foo), $dict($ref(foo))]), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "anyOf": [
                 {
@@ -332,7 +337,7 @@ describe('toTypeDefinition', () => {
               ],
             }
         `)
-        expect(walkCst($union([$ref(foo), $dict($nullable($ref(foo)))]), jsonSchemaVisitor, jsonSchemaContext()))
+        expect(walkTherefore($union([$ref(foo), $dict($nullable($ref(foo)))]), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
             {
               "anyOf": [
@@ -358,7 +363,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('union', () => {
-        expect(walkCst($union([$string]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($union([$string]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "anyOf": [
                 {
@@ -367,7 +372,8 @@ describe('toTypeDefinition', () => {
               ],
             }
         `)
-        expect(walkCst($union([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($union([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext()))
+            .toMatchInlineSnapshot(`
             {
               "anyOf": [
                 {
@@ -385,7 +391,7 @@ describe('toTypeDefinition', () => {
     })
 
     test('object', () => {
-        expect(walkCst($object({ foo: $string }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
+        expect(walkTherefore($object({ foo: $string }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
               "properties": {
@@ -400,7 +406,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
                 jsonSchemaVisitor,
                 jsonSchemaContext()
@@ -430,7 +436,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
                 jsonSchemaVisitor,
                 jsonSchemaContext()
@@ -455,7 +461,7 @@ describe('toTypeDefinition', () => {
             }
         `)
         expect(
-            walkCst(
+            walkTherefore(
                 $object(
                     {
                         foo: $string,

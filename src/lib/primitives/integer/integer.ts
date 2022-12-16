@@ -1,4 +1,4 @@
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -41,7 +41,7 @@ export interface IntegerOptions {
     minimum?: number
 }
 
-export type IntegerType = CstNode<'integer', IntegerOptions>
+export type IntegerType = ThereforeNode<'integer', IntegerOptions>
 
 /**
  *

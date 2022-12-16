@@ -17,7 +17,7 @@ import type {
 
 import { jsonPointer } from '../../../common/json/json'
 import type { JsonSchema } from '../../../json'
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import { annotate } from '../../visitor/jsonschema/jsonschema'
 import { toJSDoc } from '../../visitor/typescript/jsdoc'
@@ -98,7 +98,7 @@ export function getRequestBody({
     request: RequestBody | undefined
     openapi: OpenapiV3
     method: string
-    references: Map<string, [name: string, value: () => CstNode]>
+    references: Map<string, [name: string, value: () => ThereforeNode]>
     strict: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
@@ -175,7 +175,7 @@ export function getResponseBodies({
     responses: Responses | undefined
     openapi: OpenapiV3
     method: string
-    references: Map<string, [name: string, value: () => CstNode]>
+    references: Map<string, [name: string, value: () => ThereforeNode]>
     useEither: boolean
     strict: boolean
 }) {
@@ -443,7 +443,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
     const writer = createWriter()
 
     const { useEither = true, explicitContentNegotiation = false, strict = true } = options
-    const references = new Map<string, [name: string, value: () => CstNode]>()
+    const references = new Map<string, [name: string, value: () => ThereforeNode]>()
 
     const children: ThereforeCst[] = []
     const seenChildren = new WeakSet<ThereforeCst>()

@@ -1,7 +1,7 @@
 import type { JsonSchema } from '../../../json'
-import type { CstNode } from '../../cst/cst'
-import type { CstVisitor } from '../../cst/visitor'
-import { walkCst } from '../../cst/visitor'
+import type { ThereforeNode } from '../../cst/cst'
+import type { ThereforeVisitor } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import { isNamedArray } from '../../guard'
 import { $jsonschema } from '../../primitives/jsonschema'
 import type { ThereforeCst } from '../../primitives/types'
@@ -34,10 +34,10 @@ import {
 } from '@skyleague/axioms'
 
 export interface ArbitraryContext {
-    transform: (node: CstNode, arbitrary: Arbitrary<unknown>) => Arbitrary<unknown>
+    transform: (node: ThereforeNode, arbitrary: Arbitrary<unknown>) => Arbitrary<unknown>
 }
 
-export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> = {
+export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryContext> = {
     string: ({ value: image }) => {
         if (image.format === 'date') {
             return date()
@@ -58,11 +58,11 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     null: () => constant(null),
     unknown: ({ value: image }) => (image.json ? json() : unknown()),
     enum: ({ children }) => oneOf(...(isNamedArray(children) ? children.map(([, c]) => c) : children).map((c) => constant(c))),
-    union: ({ children }, context) => oneOf(...children.map((c) => walkCst(c, arbitraryVisitor, context))),
+    union: ({ children }, context) => oneOf(...children.map((c) => walkTherefore(c, arbitraryVisitor, context))),
 
     intersection: ({ children }, context) =>
         allOf(
-            ...(children.map((c) => walkCst(c, arbitraryVisitor, context)) as unknown as Arbitrary<
+            ...(children.map((c) => walkTherefore(c, arbitraryVisitor, context)) as unknown as Arbitrary<
                 Record<PropertyKey, unknown>
             >[])
         ),
@@ -71,15 +71,15 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
             ? chainArbitrary(array(string()), (dictKeys) =>
                   object(
                       Object.fromEntries([
-                          ...dictKeys.map((k) => [k, walkCst(indexSignature, arbitraryVisitor, context)]),
-                          ...children.map((c) => [c.name, walkCst(c, arbitraryVisitor, context)] as const),
+                          ...dictKeys.map((k) => [k, walkTherefore(indexSignature, arbitraryVisitor, context)]),
+                          ...children.map((c) => [c.name, walkTherefore(c, arbitraryVisitor, context)] as const),
                       ])
                   )
               )
-            : object(Object.fromEntries(children.map((c) => [c.name, walkCst(c, arbitraryVisitor, context)] as const))),
+            : object(Object.fromEntries(children.map((c) => [c.name, walkTherefore(c, arbitraryVisitor, context)] as const))),
     array: ({ children, value: image }, context) => {
         const [items] = children
-        const child = walkCst(items, arbitraryVisitor, context)
+        const child = walkTherefore(items, arbitraryVisitor, context)
         return array(child, {
             minLength: image.minItems,
             maxLength: image.maxItems,
@@ -88,23 +88,25 @@ export const arbitraryVisitor: CstVisitor<Arbitrary<unknown>, ArbitraryContext> 
     },
     tuple: ({ children }, context) =>
         tuple(
-            ...(isNamedArray(children) ? children.map(([, c]) => c) : children).map((c) => walkCst(c, arbitraryVisitor, context))
+            ...(isNamedArray(children) ? children.map(([, c]) => c) : children).map((c) =>
+                walkTherefore(c, arbitraryVisitor, context)
+            )
         ),
     dict: ({ children }, context) => {
         const [items] = children
-        const child = walkCst(items, arbitraryVisitor, context)
+        const child = walkTherefore(items, arbitraryVisitor, context)
         return dict([string(), child])
     },
     ref: ({ children }, context) => {
         const [reference] = children
-        return walkCst(evaluate(reference), arbitraryVisitor, context)
+        return walkTherefore(evaluate(reference), arbitraryVisitor, context)
     },
     default: () => {
         throw new Error('should not be called')
     },
 }
 
-function transform({ description }: CstNode, arb: Arbitrary<unknown>): Arbitrary<unknown> {
+function transform({ description }: ThereforeNode, arb: Arbitrary<unknown>): Arbitrary<unknown> {
     if (description.nullable === true) {
         arb = nullable(arb)
     }
@@ -117,11 +119,11 @@ function transform({ description }: CstNode, arb: Arbitrary<unknown>): Arbitrary
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | ThereforeCst): Dependent<T> {
     if ('schema' in schema) {
         // as the therefore schemas are very strict by default, we can allow intersection types here
-        return walkCst($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true }), arbitraryVisitor, {
+        return walkTherefore($jsonschema(schema.schema as JsonSchema, { allowIntersectionTypes: true }), arbitraryVisitor, {
             transform,
         })
     }
-    return walkCst(schema, arbitraryVisitor, {
+    return walkTherefore(schema, arbitraryVisitor, {
         transform,
     })
 }

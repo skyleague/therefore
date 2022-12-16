@@ -1,7 +1,7 @@
 import { $jsonschema } from './jsonschema'
 
 import type { JsonSchema } from '../../../json'
-import { walkCst } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor'
 import { arbitrary } from '../../visitor'
 import { jsonSchemaContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript'
@@ -101,7 +101,7 @@ describe('person', () => {
     })
 
     test('jsonschema', () => {
-        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -131,7 +131,7 @@ describe('person', () => {
 
     test('typescript', () => {
         expect(
-            walkCst(therefore(), typeDefinitionVisitor, {
+            walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -232,7 +232,7 @@ describe('coordinates', () => {
     })
 
     test('jsonschema', () => {
-        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -263,7 +263,7 @@ describe('coordinates', () => {
 
     test('typescript', () => {
         expect(
-            walkCst(therefore(), typeDefinitionVisitor, {
+            walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -492,7 +492,7 @@ describe('array', () => {
     })
 
     test('jsonschema', () => {
-        const json = walkCst(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -520,7 +520,7 @@ describe('array', () => {
 
     test('typescript', () => {
         expect(
-            walkCst(therefore(), typeDefinitionVisitor, {
+            walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},
@@ -562,13 +562,13 @@ describe('petstore', () => {
     })
 
     test('jsonschema', async () => {
-        const json = walkCst(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        const json = walkTherefore(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchSnapshot()
     })
 
     test('typescript', async () => {
         expect(
-            walkCst(await therefore(), typeDefinitionVisitor, {
+            walkTherefore(await therefore(), typeDefinitionVisitor, {
                 references: [],
                 symbolName: 'Foo',
                 locals: {},

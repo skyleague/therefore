@@ -1,4 +1,4 @@
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -7,7 +7,7 @@ import { isArray, entriesOf } from '@skyleague/axioms'
 
 export interface EnumOptions {}
 
-export type EnumType = CstNode<'enum', EnumOptions, unknown, [name: number, value: unknown][] | unknown[]>
+export type EnumType = ThereforeNode<'enum', EnumOptions, unknown, [name: number, value: unknown][] | unknown[]>
 
 /**
  * Declares an enum type. This is either a list of values, or a dictionary

@@ -1,4 +1,4 @@
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 import type { ObjectType } from '../object/object'
@@ -8,7 +8,7 @@ import { evaluate } from '@skyleague/axioms'
 
 export interface IntersectionOptions {}
 
-export type IntersectionType = CstNode<'intersection', IntersectionOptions, unknown, (ObjectType | RefType)[]>
+export type IntersectionType = ThereforeNode<'intersection', IntersectionOptions, unknown, (ObjectType | RefType)[]>
 
 export function $intersection(
     intersection: (ObjectType | RefType)[],

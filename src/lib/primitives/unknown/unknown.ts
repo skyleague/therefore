@@ -1,4 +1,4 @@
-import type { CstNode } from '../../cst/cst'
+import type { ThereforeNode } from '../../cst/cst'
 import { cstNode } from '../../cst/cst'
 import type { SchemaOptions } from '../base'
 
@@ -9,7 +9,7 @@ export interface UnknownOptions {
     json: boolean
 }
 
-export type UnknownType = CstNode<'unknown', UnknownOptions>
+export type UnknownType = ThereforeNode<'unknown', UnknownOptions>
 
 /**
  *
@@ -17,6 +17,6 @@ export type UnknownType = CstNode<'unknown', UnknownOptions>
  *
  * @category $unknown
  */
-export function $unknown(options: SchemaOptions<UnknownOptions> = {}): CstNode<'unknown', UnknownOptions> {
+export function $unknown(options: SchemaOptions<UnknownOptions> = {}): ThereforeNode<'unknown', UnknownOptions> {
     return cstNode('unknown', options)
 }

@@ -6,7 +6,7 @@ import type { FileDefinition, OutputFile, ReferenceData, ThereforeOutputType } f
 
 import { getExtension, replaceExtension } from '../../common/template/path'
 import { renderTemplate } from '../../common/template/template'
-import type { CstNode } from '../../lib/cst/cst'
+import type { ThereforeNode } from '../../lib/cst/cst'
 import type { ThereforeCst } from '../../lib/primitives/types'
 import { isThereforeExport } from '../../lib/primitives/types'
 import { prepass, toJsonSchema } from '../../lib/visitor'
@@ -18,11 +18,11 @@ import decamelize from 'decamelize'
 import fs from 'fs'
 import path from 'path'
 
-function requireModule(module: string): Record<string, CstNode | unknown> {
+function requireModule(module: string): Record<string, ThereforeNode | unknown> {
     const relative = path.relative(__dirname, module).replace(/\\/g, '/').replace('.ts', '')
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(relative.startsWith('.') ? relative : `./${relative}`) as Record<string, CstNode | unknown>
+    return require(relative.startsWith('.') ? relative : `./${relative}`) as Record<string, ThereforeNode | unknown>
 }
 
 export async function loadSymbol({
@@ -175,7 +175,7 @@ export async function scanModule({
     basePath: string
     compile: boolean
     definitions: Record<string, FileDefinition>
-    require?: (module: string) => Record<string, CstNode | unknown>
+    require?: (module: string) => Record<string, ThereforeNode | unknown>
     outputFileRename: (path: string) => string
 }) {
     const module = await Promise.resolve(require(entry))
