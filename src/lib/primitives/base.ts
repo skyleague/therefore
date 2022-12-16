@@ -112,7 +112,7 @@ export const descriptionKeys: readonly (keyof SchemaOptions<unknown>)[] = [
     'validator',
 ] as const
 
-export type ThereforeMeta = {
+export interface ThereforeMeta {
     name?: string
 
     /**

@@ -16,7 +16,7 @@ export function jsonPointer<T extends {}>({
               $ref: string
           }
         | undefined
-    metaSchemas?: Record<string, JsonSchema>
+    metaSchemas?: Record<string, JsonSchema | undefined>
 }): JsonSchema | undefined {
     if (ptr !== undefined && '$ref' in ptr) {
         if (ptr.$ref.startsWith('#')) {
@@ -24,7 +24,7 @@ export function jsonPointer<T extends {}>({
         } else if (ptr.$ref.includes('#') && ptr.$ref.startsWith('http')) {
             const [url, reference] = ptr.$ref.split('#')
             metaSchemas ??= {}
-            const metaSchema = metaSchemas?.[url]
+            const metaSchema = metaSchemas[url]
 
             if (metaSchema !== undefined) {
                 return pointer.get(metaSchema, reference) as JsonSchema | undefined
@@ -36,7 +36,7 @@ export function jsonPointer<T extends {}>({
 
             metaSchemas[url] = json()
 
-            return pointer.get(metaSchemas[url], reference) as JsonSchema | undefined
+            return pointer.get(metaSchemas[url]!, reference) as JsonSchema | undefined
         }
         throw new Error('unsupported reference type')
     }

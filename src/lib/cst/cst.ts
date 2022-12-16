@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid'
 
 export type CstSubNode = CstNode | (() => CstNode)
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface CstNode<D extends string = string, I = unknown, T = unknown, C extends readonly any[] = unknown[]> {
     name?: string
     uuid: string
@@ -42,6 +43,7 @@ export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly un
 export function isNamedCstNodeArray<T extends CstNode>(
     x: Omit<T, 'name'>[] | RequireKeys<T, 'name'>[]
 ): x is RequireKeys<T, 'name'>[] {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return x.length > 0 && 'name' in x[0] && x[0] !== undefined
 }
 

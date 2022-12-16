@@ -71,7 +71,7 @@ export function writeThereforeSchema({
             )
             writer.writeLine(`get errors() { return {{${uuid}:symbolName}}.validate.errors ?? undefined },`)
             writer.writeLine(`is: (o: unknown): o is {{${uuid}:symbolName}} => {{${uuid}:symbolName}}.validate(o) === true,`)
-            if (description.validator?.enabled === true && description.validator.assert === true) {
+            if (description.validator?.enabled === true && description.validator.assert) {
                 writer
                     // the full assertion syntax is not yet supported on properties
                     // https://github.com/microsoft/TypeScript/issues/34523
@@ -145,7 +145,7 @@ export const typeDefinitionVisitor: CstVisitor<TypeDefinition, TypescriptWalkerC
 export function getIndexSignatureType(indexPattern: string) {
     const strPattern = indexPattern.replaceAll('\\', '')
     // check if simple regex
-    const [, literal] = strPattern.match(/^\^?\(?([/a-zA-Z0-9/\-_|$@#]+?)\)?\$?$/) ?? []
+    const [, literal] = strPattern.match(/^\^?\(?([/a-zA-Z0-9/\-_|$@#]+?)\)?\$?$/) ?? [undefined, undefined]
 
     if (literal !== undefined && literal.length > 0) {
         const split = literal.split('|')
@@ -233,8 +233,8 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
     array: (obj, context) => {
         // @todo a bit more heuristic here
         const isSmall = (t: ThereforeCst) =>
-            (t.type !== 'object' || (t.type === 'object' && t.children.length < 3)) &&
-            (t.type !== 'union' || (t.type === 'union' && t.children.length < 4)) &&
+            (t.type !== 'object' || t.children.length < 3) &&
+            (t.type !== 'union' || t.children.length < 4) &&
             ((t.type === 'enum' && t.children.length < 4) || t.type !== 'enum')
 
         let localReference: string | undefined = undefined
@@ -319,7 +319,7 @@ export const typescriptVisitor: CstVisitor<string, TypescriptWalkerContext> = {
     default: (obj, _context): string => obj.type,
 }
 
-export type TypescriptSubtree = {
+export interface TypescriptSubtree {
     node: ThereforeCst
     fileSuffix?: string
     filePath?: string
@@ -372,7 +372,7 @@ export function toTypescriptDefinition({
         }
     } else if (schema.description.validator?.enabled === true) {
         imports.push(`import type { ValidateFunction } from 'ajv'`)
-        if (schema.description.validator?.enabled === true && schema.description.validator.assert === true) {
+        if (schema.description.validator.assert) {
             imports.push(`import AjvValidator from 'ajv'`)
         }
     }

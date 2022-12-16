@@ -28,7 +28,7 @@ import type { CustomType, ThereforeCst } from '../types'
 
 import { entriesOf, fromEntries, hasPropertiesDefined, isDefined, keysOf, omitUndefined, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
-import inflection from 'inflection'
+import { singularize } from 'inflection'
 import * as pointer from 'jsonpointer'
 import converter from 'swagger2openapi'
 
@@ -56,22 +56,24 @@ export function methodName(
     if (preferOperationId && operation.operationId !== undefined) {
         return camelCase(operation.operationId)
     }
-    const [, relevantPath, action] = path.match(/^(.*?)(?::(.*))?$/) ?? []
+    const [, relevantPath, action] = path.match(/^(.*?)(?::(.*))?$/) ?? [undefined, undefined, undefined]
     const hasAction = action !== undefined
 
     const pathParts = relevantPath
-        .replaceAll(':', '/')
+        ?.replaceAll(':', '/')
         .replaceAll('}{', '}/{')
         .split('/')
         .filter((p) => p.length > 0)
         .map((p, i, xs) => ({ name: p, isLast: i === xs.length - 1, isFirst: i === 0 }))
-    const staticParts = pathParts
-        .filter((p) => !p.name.includes('{'))
-        .map((p) => (!p.isLast || methodIsMutation(method) ? inflection.singularize(p.name) : p.name))
-    const dynamicParts = pathParts
-        .filter((p) => p.name?.includes('{'))
-        .filter((x) => x.isLast || x.isFirst)
-        .map((p) => p.name.match(/^{(.*)}$/)?.[1])
+    const staticParts =
+        pathParts
+            ?.filter((p) => !p.name.includes('{'))
+            .map((p) => (!p.isLast || methodIsMutation(method) ? singularize(p.name) : p.name)) ?? []
+    const dynamicParts =
+        pathParts
+            ?.filter((p) => p.name.includes('{'))
+            .filter((x) => x.isLast || x.isFirst)
+            .map((p) => p.name.match(/^{(.*)}$/)?.[1]) ?? []
 
     return camelCase(
         [
@@ -204,7 +206,7 @@ export function getResponseBodies({
             undefined,
         ]
         if (jsonContent !== undefined) {
-            const schema = jsonContent?.schema ?? {}
+            const schema = jsonContent.schema ?? {}
 
             const therefore = $jsonschema(schema as JsonSchema, {
                 name: `${method}Response${isOnlySuccess ? '' : capitalize(statusCode)}`,
@@ -248,7 +250,7 @@ export function getResponseBodies({
 
 export function getPathParameters(parameters: Parameter[], _openapi: OpenapiV3) {
     const pathParameters = parameters
-        ?.filter((p) => p.in === 'path')
+        .filter((p) => p.in === 'path')
         .map((p) => {
             // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
             return {
@@ -262,32 +264,30 @@ export function getPathParameters(parameters: Parameter[], _openapi: OpenapiV3) 
 }
 
 export function getQueryParameters(parameters: Parameter[], _openapi: OpenapiV3) {
-    const queryParameters =
-        parameters
-            ?.filter((p) => p.in === 'query')
-            .map((p) => {
-                // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
-                return {
-                    name: p.name,
-                    required: p.required,
-                    type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
-                }
-            }) ?? []
+    const queryParameters = parameters
+        .filter((p) => p.in === 'query')
+        .map((p) => {
+            // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
+            return {
+                name: p.name,
+                required: p.required,
+                type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+            }
+        })
     return queryParameters
 }
 
 export function getHeaderParameters(parameters: Parameter[], usedSecurityHeaders: string[], _openapi: OpenapiV3) {
-    const headerParameters =
-        parameters
-            ?.filter((p) => p.in === 'header')
-            .map((p) => {
-                // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
-                return {
-                    name: p.name,
-                    required: p.required && !usedSecurityHeaders.includes(p.name),
-                    type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
-                }
-            }) ?? []
+    const headerParameters = parameters
+        .filter((p) => p.in === 'header')
+        .map((p) => {
+            // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
+            return {
+                name: p.name,
+                required: p.required && !usedSecurityHeaders.includes(p.name),
+                type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+            }
+        })
     return headerParameters
 }
 
@@ -298,11 +298,11 @@ export function getPrefixUrlConfiguration(servers?: Server[]) {
         if (server.variables !== undefined) {
             let templateUrl = `\`${server.url.replaceAll('{', '${')}\``
             let defaultUrl = server.url
-            let allDefault = false
+            let allDefault = true
             for (const [name, values] of entriesOf(server.variables)) {
                 const variations = new Set(['string', values.default, ...(values.enum ?? [])])
                 templateUrl = templateUrl.replace(name, [...variations].join(' | '))
-                allDefault = allDefault && values.default !== undefined
+                allDefault = allDefault && values.default.length > 0
                 defaultUrl = defaultUrl.replace(`{${name}}`, values.default)
             }
             args.push(templateUrl)
@@ -383,8 +383,8 @@ const toSecurityHook: {
 
 export function getSecurity(securityRequirements: Record<string, Reference | SecurityScheme> | undefined, openapi: OpenapiV3) {
     const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
-        const security = jsonPointer({ schema: openapi, ptr: securityRef ?? {} }) as unknown as MappableSecurityScheme
-        const type = security?.type ?? ('http' as const)
+        const security = jsonPointer({ schema: openapi, ptr: securityRef }) as unknown as MappableSecurityScheme
+        const type = security.type
         const convert = toSecurityDeclaration[type]
 
         const camelName = camelCase(name)
@@ -535,7 +535,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         generateValidateRequestBody = true
                         children.push(request.schema)
                     }
-                    const parameters: Parameter[] = ([...(operation.parameters ?? []), ...(pathItem.parameters ?? [])] ?? [])
+                    const parameters: Parameter[] = [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
                         .map((parameter) => jsonPointer({ schema: openapi, ptr: parameter }) as Parameter | undefined)
                         .filter(isDefined)
 
@@ -578,20 +578,19 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
 
                     const urlPath = parameterizedPath.startsWith('/') ? parameterizedPath.slice(1) : parameterizedPath
 
-                    const pathArguments = (pathParameters?.map((p) => `${p.name}: ${p.type}`) ?? []).join(', ')
-                    const queryArguments = (
-                        queryParameters?.map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`) ?? []
-                    ).join(', ')
-                    const queryOptionalStr = queryParameters?.every((q) => q.required === true) ? '' : '?'
-                    const headerArguments = (
-                        headerParameters?.map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`) ??
-                        []
-                    ).join(', ')
+                    const pathArguments = pathParameters.map((p) => `${p.name}: ${p.type}`).join(', ')
+                    const queryArguments = queryParameters
+                        .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
+                        .join(', ')
+                    const queryOptionalStr = queryParameters.every((q) => q.required === true) ? '' : '?'
+                    const headerArguments = headerParameters
+                        .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
+                        .join(', ')
 
                     const hasRequiredBody = request?.declaration !== undefined
                     const hasRequiredPathArgument = pathArguments.length > 0
-                    const hasRequiredQueryArguments = queryParameters?.some((q) => q.required === true)
-                    const hasRequiredHeaderArguments = headerParameters?.some((q) => q.required === true)
+                    const hasRequiredQueryArguments = queryParameters.some((q) => q.required === true)
+                    const hasRequiredHeaderArguments = headerParameters.some((q) => q.required === true)
 
                     const hasRequiredArguments =
                         hasRequiredBody || hasRequiredPathArgument || hasRequiredQueryArguments || hasRequiredHeaderArguments
@@ -606,7 +605,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         ...(headerArguments.length > 0
                             ? [['headers', `headers${headerOptionalStr}: { ${headerArguments} }`]]
                             : []),
-                        ...(operation.security?.length !== undefined && operation.security?.length > 0
+                        ...(operation.security?.length !== undefined && operation.security.length > 0
                             ? [[`auth = [${authMethods.join(', ')}]`, `auth?: string[][] | string[]`]]
                             : []),
                     ]
@@ -624,6 +623,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         writer.write(jsdoc)
                     }
 
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                     const hasResponse = 'right' in responses && responses.right !== undefined
                     let responseType: 'json' | 'text' | undefined
                     generateAwaitResponse ||= hasResponse
@@ -732,7 +732,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                     .write(', ')
                                     .inlineBlock(() => {
                                         for (const [statusCode, { schema: responseSchema, isUnknown }] of entriesOf(
-                                            responses.right ?? {}
+                                            responses.right
                                         )) {
                                             if (responseSchema !== undefined && isUnknown !== true) {
                                                 if (!seenChildren.has(responseSchema as ThereforeCst)) {

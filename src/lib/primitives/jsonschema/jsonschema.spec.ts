@@ -549,7 +549,7 @@ describe('petstore', () => {
     const therefore = async () => {
         const schema = await openapi()
         const entries = Object.fromEntries(
-            entriesOf((schema?.['components'] as any)?.['schemas'] ?? {}).map(([name, v]) => [
+            entriesOf((schema.components as any)?.schemas ?? {}).map(([name, v]) => [
                 name,
                 $jsonschema(v as JsonSchema, { root: schema as JsonSchema }),
             ])

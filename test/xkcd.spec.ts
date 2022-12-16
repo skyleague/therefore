@@ -9,7 +9,6 @@ describe('xkcd', () => {
         void comic
         expect(result).toMatchInlineSnapshot(
             {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 headers: expect.any(Object),
             },
             `

@@ -185,7 +185,7 @@ export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
     return {
         defaults: {
             additionalProperties: true,
-            ...(obj !== undefined && 'defaults' in obj.value ? obj?.value.defaults ?? {} : {}),
+            ...(obj !== undefined && 'defaults' in obj.value ? obj.value.defaults : {}),
         },
         definitions: {},
         entry: obj,

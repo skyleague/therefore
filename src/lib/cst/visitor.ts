@@ -19,7 +19,7 @@ export function walkCst<
     R = U,
     Cst extends CstNode = ThereforeCst
 >(obj: Cst, visitor: CstVisitor<U, C, Cst>, context: C = {} as C): R {
-    const method = visitor?.[obj.type as Cst['type']] ?? visitor.default
+    const method = visitor[obj.type as Cst['type']] ?? visitor.default
     const result = method(obj as never, context)
     return context.transform?.(obj, result) ?? (result as unknown as R)
 }
