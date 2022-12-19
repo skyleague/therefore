@@ -359,16 +359,16 @@ export function toTypescriptDefinition({
     }
     const declaration = walkTherefore(schema, typeDefinitionVisitor, context)
 
-    let subtrees: TypescriptSubtree[] = []
+    let allSubtrees: TypescriptSubtree[] = []
     let imports: string[] = []
     if (schema.type === 'custom') {
         imports = schema.value.typescript?.imports ?? []
-        subtrees = schema.children.map((c) => ({
+        allSubtrees = schema.children.map((c) => ({
             node: c,
         }))
         // make the references transitive
         for (const child of schema.children) {
-            walkTherefore($ref(child), typescriptVisitor, context)
+            walkTherefore($ref(child, { validator: child.description.validator }), typescriptVisitor, context)
         }
     } else if (schema.description.validator?.enabled === true) {
         imports.push(`import type { ValidateFunction } from 'ajv'`)
@@ -376,6 +376,23 @@ export function toTypescriptDefinition({
             imports.push(`import AjvValidator from 'ajv'`)
         }
     }
+
+    const groupedTrees = groupBy(allSubtrees, (node) => node.node.uuid)
+
+    const subtrees = valuesOf(groupedTrees).map((xs) => {
+        let prev = xs[0]
+        for (const x of xs.slice(1)) {
+            if (x.node.description.validator?.enabled) {
+                const { assert = false } = prev.node.description.validator ?? {}
+                prev.node.description.validator = {
+                    enabled: true,
+                    assert: assert || x.node.description.validator.enabled,
+                }
+            }
+            prev = x
+        }
+        return xs[0]
+    })
 
     return {
         definition: {

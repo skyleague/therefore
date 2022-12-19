@@ -250,11 +250,10 @@ export function getPathParameters(parameters: Parameter[], _openapi: OpenapiV3) 
     const pathParameters = parameters
         .filter((p) => p.in === 'path')
         .map((p) => {
-            // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
             return {
                 id: p.name,
                 name: camelCase(p.name),
-                type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+                type: 'string',
             }
         })
 
@@ -265,11 +264,10 @@ export function getQueryParameters(parameters: Parameter[], _openapi: OpenapiV3)
     const queryParameters = parameters
         .filter((p) => p.in === 'query')
         .map((p) => {
-            // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
             return {
                 name: p.name,
                 required: p.required,
-                type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+                type: 'string',
             }
         })
     return queryParameters
@@ -279,11 +277,10 @@ export function getHeaderParameters(parameters: Parameter[], usedSecurityHeaders
     const headerParameters = parameters
         .filter((p) => p.in === 'header')
         .map((p) => {
-            // const parameterSchema = jsonPointer(openapi, p.schema ?? {})
             return {
                 name: p.name,
                 required: p.required && !usedSecurityHeaders.includes(p.name),
-                type: 'string', ///(isArray(parameterSchema.type) ? 'string' : parameterSchema.type) ?? 'string',
+                type: 'string',
             }
         })
     return headerParameters
@@ -569,7 +566,9 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     if (request?.schema !== undefined) {
                         requestValidationStr = `this.validateRequestBody({{${request.schema.uuid}:symbolName}}, ${request.name})`
                         generateValidateRequestBody = true
-                        children.push(request.schema)
+                        if (!seenChildren.has(request.schema)) {
+                            children.push(request.schema)
+                        }
                     }
                     const parameters: Parameter[] = [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
                         .map((parameter) => jsonPointer({ schema: openapi, ptr: parameter }) as Parameter | undefined)
