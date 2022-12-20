@@ -378,8 +378,8 @@ const toSecurityHook: {
 
 export function getSecurity(securityRequirements: Record<string, Reference | SecurityScheme> | undefined, openapi: OpenapiV3) {
     const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
-        const security = jsonPointer({ schema: openapi, ptr: securityRef }) as unknown as MappableSecurityScheme
-        const type = security.type
+        const security = jsonPointer({ schema: openapi, ptr: securityRef }) as unknown as Partial<MappableSecurityScheme>
+        const { type = 'http' } = security
         const convert = toSecurityDeclaration[type]
 
         const camelName = camelCase(name)
