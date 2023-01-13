@@ -6,9 +6,9 @@ import { version } from '../../../package.json'
 import { writeThereforeSchema } from '../../lib/visitor/typescript/typescript'
 import { createWriter } from '../../lib/writer'
 
-import { evaluate, hasPropertiesDefined, unique } from '@skyleague/axioms'
-
 import path from 'path'
+
+import { evaluate, hasPropertiesDefined, unique } from '@skyleague/axioms'
 
 export function renderTypescriptSchema(definition: FileDefinition) {
     const writer = createWriter()

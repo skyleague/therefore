@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^2.2.0",
-    "docusaurus-plugin-typedoc-api": "^2.4.1"
+    "docusaurus-plugin-typedoc-api": "^2.5.1"
   },
   "browserslist": {
     "production": [">0.5%", "not dead", "not op_mini all"],

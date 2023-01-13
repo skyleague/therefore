@@ -4,7 +4,12 @@ import { formatFile, maybeLoadPrettier } from './prettier'
 import { resolveTypescriptSchema } from './resolver'
 import type { FileDefinition, OutputFile, ReferenceData, ThereforeOutputType } from './types'
 
+import fs from 'fs'
+
 import { getExtension, replaceExtension } from '../../common/template/path'
+
+import path from 'path'
+
 import { renderTemplate } from '../../common/template/template'
 import type { ThereforeNode } from '../../lib/cst/cst'
 import type { ThereforeCst } from '../../lib/primitives/types'
@@ -15,9 +20,6 @@ import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript'
 
 import { entriesOf, enumerate, groupBy, isDefined, range, second } from '@skyleague/axioms'
 import decamelize from 'decamelize'
-
-import fs from 'fs'
-import path from 'path'
 
 function requireModule(module: string): Record<string, ThereforeNode | unknown> {
     const relative = path.relative(__dirname, module).replace(/\\/g, '/').replace('.ts', '')

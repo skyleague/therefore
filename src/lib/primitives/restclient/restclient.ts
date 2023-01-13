@@ -542,7 +542,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             let pathItem = item as PathItem
             if (path.startsWith('/')) {
                 pathItem = (pathItem.$ref !== undefined ? pointer.get(pathItem, pathItem.$ref) : pathItem) as PathItem
-                for (const [httpMethod, operation] of entriesOf(
+                for (const [httpMethod, operation] of Object.entries(
                     omitUndefined({
                         get: pathItem.get,
                         put: pathItem.put,

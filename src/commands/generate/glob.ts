@@ -1,9 +1,10 @@
 import { awaitAll } from '../../common/util'
 
 import { normalizePath, fstat, isJust, isRight, Nothing } from '@skyleague/axioms'
-import fastGlob from 'fast-glob'
 
 import path from 'path'
+
+import fastGlob from 'fast-glob'
 
 // should give the same glob behaviour as Prettier
 // https://github.com/prettier/prettier/blob/main/src/cli/expand-patterns.js

@@ -37,7 +37,7 @@ export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly un
         description: pick(options, descriptionKeys) as MetaDescription<T>,
         children,
         name: name ?? options.name,
-    })
+    }) as unknown as ThereforeNode<D, O, T, C>
 }
 
 export function isNamedCstNodeArray<T extends ThereforeNode>(

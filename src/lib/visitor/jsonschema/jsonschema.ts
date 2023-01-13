@@ -127,7 +127,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
                           ])
                       ) as JsonSchema['patternProperties'])
                     : undefined,
-        })
+        }) as JsonSchema
     },
     array: (node, context) => {
         const [items] = node.children

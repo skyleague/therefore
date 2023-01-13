@@ -3,9 +3,9 @@ import type { FileDefinition, TypescriptDefinition, TypescriptReference } from '
 import type { ThereforeCst } from '../../lib/primitives/types'
 import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript'
 
-import { evaluate, sha256 } from '@skyleague/axioms'
-
 import path from 'path'
+
+import { evaluate, sha256 } from '@skyleague/axioms'
 
 interface ExpandedReference {
     srcPath: string
