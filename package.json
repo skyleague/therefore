@@ -31,7 +31,7 @@
   },
   "files": ["bin", ".main.js", ".main.js.map", "index.d.ts", "src/**/*.d.ts", "package.json"],
   "scripts": {
-    "build": "npx ts-node esbuild.config.ts",
+    "build": "npx ts-node build.config.ts",
     "build:clean": "npx tsc --build --clean && rm .main.js && rm .main.js.map",
     "build:docs": "(cd docs; npm install; npm run build)",
     "check:cost": "npx cost-of-modules --no-install --include-dev",
@@ -48,12 +48,12 @@
     "test": "npx jest"
   },
   "dependencies": {
-    "@skyleague/axioms": "^1.10.1",
+    "@skyleague/axioms": "^1.13.0",
     "camelcase": "^6.3.0",
     "code-block-writer": "^11.0.3",
     "decamelize": "^5.0.0",
     "fast-glob": "^3.2.12",
-    "inflection": "^2.0.0",
+    "inflection": "^2.0.1",
     "js-yaml": "^4.1.0",
     "jsonpointer": "^5.0.1",
     "make-synchronous": "^0.1.1",
@@ -64,9 +64,9 @@
     "yargs": "^17.6.2"
   },
   "peerDependencies": {
-    "ajv": "^8.11.2",
+    "ajv": "^8.12.0",
     "got": "^11.8.5",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.2",
     "ts-node": "^10.9.1"
   },
   "peerDependenciesMeta": {
@@ -75,14 +75,14 @@
     }
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^1.11.2",
+    "@skyleague/node-standards": "^1.12.3",
     "@types/js-yaml": "^4.0.5",
     "@types/source-map-support": "^0.5.6",
     "@types/uuid": "^8.3.4",
-    "@types/yargs": "^17.0.17",
-    "ajv": "^8.11.2",
+    "@types/yargs": "^17.0.19",
+    "ajv": "^8.12.0",
     "got": "^11.8.5",
-    "nock": "^13.2.9",
+    "nock": "^13.3.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   }
