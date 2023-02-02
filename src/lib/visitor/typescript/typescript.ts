@@ -325,6 +325,10 @@ export interface TypescriptSubtree {
     filePath?: string
 }
 
+export function sanitizeTypescriptTypeName(symbol: string): string {
+    return symbol.replace(/[^a-zA-Z0-9]/g, ' ')
+}
+
 export function toTypescriptDefinition({
     sourceSymbol,
     symbolName,
@@ -344,7 +348,7 @@ export function toTypescriptDefinition({
     locals ??= {}
     const references: TypescriptDefinition['references'] = []
 
-    const readableSymbolName = camelCase((symbolName ?? sourceSymbol).replaceAll(':', ''), {
+    const readableSymbolName = camelCase(sanitizeTypescriptTypeName(symbolName ?? sourceSymbol), {
         pascalCase: true,
         preserveConsecutiveUppercase: true,
     })
