@@ -137,7 +137,11 @@ const schemaWalker: JsonSchemaWalker = {
                 [
                     name,
                     walkJsonschema({
-                        node: v,
+                        node: omitUndefined({
+                            ...v,
+                            nullable:
+                                v.nullable ?? (context.optionalNullable && !node.required?.includes(name)) ? true : undefined,
+                        }),
                         visitor: schemaWalker,
                         childProperty: undefined,
                         context,
@@ -211,6 +215,7 @@ interface JsonSchemaContext {
     exportAllSymbols: boolean
     name?: string | undefined
     allowIntersectionTypes?: boolean
+    optionalNullable: boolean
 }
 
 function walkJsonschema({
@@ -234,6 +239,7 @@ function walkJsonschema({
         exportAllSymbols = false,
         strict = true,
         allowIntersectionTypes = false,
+        optionalNullable = false,
         ...rest
     } = maybeContext
     const context = {
@@ -244,6 +250,7 @@ function walkJsonschema({
         name,
         exportAllSymbols,
         strict,
+        optionalNullable,
         ...omit(pick(rest, descriptionKeys), ['name']),
     }
 
@@ -336,10 +343,8 @@ function walkJsonschema({
     }
 
     if (isArray(child.type)) {
-        const types: JsonSchema7TypeName[] = [
-            ...child.type,
-            ...((child.nullable ? ['null'] : []) satisfies JsonSchema7TypeName[]),
-        ]
+        const isNullable = child.nullable || (optionalNullable && !node.required?.includes(childProperty as string))
+        const types: JsonSchema7TypeName[] = [...child.type, ...((isNullable ? ['null'] : []) satisfies JsonSchema7TypeName[])]
         return $union(
             types.map((t) => visitor[t]({ ...child, type: t }, context)),
             context
@@ -372,6 +377,10 @@ export interface JsonSchemaOptions {
      * @defaultValue false
      */
     allowIntersectionTypes?: boolean
+    /**
+     * If true, all non-required fields will also be allowed to be `null`
+     */
+    optionalNullable?: boolean
 }
 
 /**

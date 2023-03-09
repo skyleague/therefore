@@ -225,6 +225,7 @@ exports[`petstore definition 1`] = `
                 "exportAllSymbols": false,
                 "exportSymbol": false,
                 "metaSchemas": {},
+                "optionalNullable": false,
                 "references": Map {
                   "#" => [
                     undefined,
@@ -1874,6 +1875,7 @@ Some useful links:
             "exportAllSymbols": false,
             "exportSymbol": false,
             "metaSchemas": {},
+            "optionalNullable": false,
             "references": Map {
               "#" => [
                 undefined,
@@ -3208,6 +3210,7 @@ Some useful links:
                 "exportAllSymbols": false,
                 "exportSymbol": false,
                 "metaSchemas": {},
+                "optionalNullable": false,
                 "references": Map {
                   "#" => [
                     undefined,
