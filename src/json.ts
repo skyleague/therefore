@@ -118,6 +118,8 @@ export interface JsonAnnotations {
     /** @deprecated */
     writeonly?: boolean
     examples?: unknown[]
+    /** @experimental */
+    nullable?: boolean
 }
 
 export interface JsonDefs {

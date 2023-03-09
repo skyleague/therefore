@@ -580,3 +580,278 @@ describe('petstore', () => {
 test('primitives', () => {
     forAll(arbitrary<string>($jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
 })
+
+describe('object with nullable property', () => {
+    const schema: JsonSchema = {
+        description: 'An object with nullable properties',
+        type: 'object',
+        properties: {
+            fruits: {
+                type: 'array',
+                nullable: true,
+                items: {
+                    type: 'string',
+                },
+            },
+            vegetables: {
+                type: 'array',
+                items: { type: 'string' },
+            },
+            store: {
+                type: ['string', 'number'],
+                nullable: true,
+            },
+        },
+        additionalProperties: false,
+    }
+    const therefore = () => $jsonschema(schema)
+
+    test('definition', () => {
+        expect(therefore()).toMatchInlineSnapshot(`
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "description": {},
+                      "type": "string",
+                      "uuid": "0001-000",
+                      "value": {
+                        "format": undefined,
+                        "maxLength": undefined,
+                        "minLength": undefined,
+                        "pattern": undefined,
+                      },
+                    },
+                  ],
+                  "description": {
+                    "name": "fruits",
+                    "nullable": true,
+                    "optional": "implicit",
+                  },
+                  "name": "fruits",
+                  "type": "array",
+                  "uuid": "0009-000",
+                  "value": {
+                    "maxItems": undefined,
+                    "minItems": undefined,
+                    "uniqueItems": undefined,
+                  },
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "description": {},
+                      "type": "string",
+                      "uuid": "0003-000",
+                      "value": {
+                        "format": undefined,
+                        "maxLength": undefined,
+                        "minLength": undefined,
+                        "pattern": undefined,
+                      },
+                    },
+                  ],
+                  "description": {
+                    "name": "vegetables",
+                    "optional": "implicit",
+                  },
+                  "name": "vegetables",
+                  "type": "array",
+                  "uuid": "00010-000",
+                  "value": {
+                    "maxItems": undefined,
+                    "minItems": undefined,
+                    "uniqueItems": undefined,
+                  },
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "description": {
+                        "name": "store",
+                        "nullable": true,
+                      },
+                      "name": "store",
+                      "type": "string",
+                      "uuid": "0005-000",
+                      "value": {
+                        "format": undefined,
+                        "maxLength": undefined,
+                        "minLength": undefined,
+                        "pattern": undefined,
+                      },
+                    },
+                    {
+                      "children": [],
+                      "description": {
+                        "name": "store",
+                        "nullable": true,
+                      },
+                      "name": "store",
+                      "type": "number",
+                      "uuid": "0006-000",
+                      "value": {
+                        "maximum": undefined,
+                        "minimum": undefined,
+                        "multipleOf": undefined,
+                      },
+                    },
+                    {
+                      "children": [
+                        null,
+                      ],
+                      "description": {
+                        "name": "store",
+                        "nullable": true,
+                      },
+                      "name": "store",
+                      "type": "enum",
+                      "uuid": "0007-000",
+                      "value": {},
+                    },
+                  ],
+                  "description": {
+                    "name": "store",
+                    "optional": "implicit",
+                  },
+                  "name": "store",
+                  "type": "union",
+                  "uuid": "00011-000",
+                  "value": {
+                    "cache": Map {},
+                    "exportAllSymbols": false,
+                    "metaSchemas": {},
+                    "references": Map {
+                      "#" => [
+                        undefined,
+                        [Function],
+                      ],
+                    },
+                    "root": {
+                      "additionalProperties": false,
+                      "description": "An object with nullable properties",
+                      "properties": {
+                        "fruits": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "nullable": true,
+                          "type": "array",
+                        },
+                        "store": {
+                          "nullable": true,
+                          "type": [
+                            "string",
+                            "number",
+                          ],
+                        },
+                        "vegetables": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "type": "object",
+                    },
+                    "strict": true,
+                  },
+                },
+              ],
+              "description": {
+                "description": "An object with nullable properties",
+              },
+              "prepass": true,
+              "type": "object",
+              "uuid": "00012-000",
+              "value": {},
+            }
+        `)
+    })
+
+    test('jsonschema', () => {
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        expect(json).toMatchInlineSnapshot(`
+            {
+              "additionalProperties": true,
+              "description": "An object with nullable properties",
+              "properties": {
+                "fruits": {
+                  "items": {
+                    "type": "string",
+                  },
+                  "nullable": true,
+                  "title": "fruits",
+                  "type": [
+                    "array",
+                    "null",
+                  ],
+                },
+                "store": {
+                  "anyOf": [
+                    {
+                      "nullable": true,
+                      "title": "store",
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    {
+                      "nullable": true,
+                      "title": "store",
+                      "type": [
+                        "number",
+                        "null",
+                      ],
+                    },
+                    {
+                      "const": null,
+                      "nullable": true,
+                      "title": "store",
+                    },
+                  ],
+                  "title": "store",
+                },
+                "vegetables": {
+                  "items": {
+                    "type": "string",
+                  },
+                  "title": "vegetables",
+                  "type": "array",
+                },
+              },
+              "type": "object",
+            }
+        `)
+    })
+
+    test('typescript', () => {
+        expect(
+            walkTherefore(therefore(), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+            {
+              "declaration": "/**
+             * An object with nullable properties
+             */
+            interface {{00012-000:symbolName}} {
+                fruits?: ((string)[] | null)
+                vegetables?: (string)[]
+                store?: string | number | null
+            }
+            ",
+              "referenceName": "{{00012-000:symbolName}}",
+              "render": [Function],
+              "sourceSymbol": undefined,
+            }
+        `)
+    })
+})

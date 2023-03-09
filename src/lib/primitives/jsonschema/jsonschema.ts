@@ -46,6 +46,7 @@ function annotate<T = unknown>(doc: JsonAnnotations, context: JsonSchemaContext)
         // writeonly?: boolean
         examples: doc.examples as T[],
         deprecated: doc.deprecated,
+        nullable: doc.nullable,
     })
 }
 
@@ -335,8 +336,12 @@ function walkJsonschema({
     }
 
     if (isArray(child.type)) {
+        const types: JsonSchema7TypeName[] = [
+            ...child.type,
+            ...((child.nullable ? ['null'] : []) satisfies JsonSchema7TypeName[]),
+        ]
         return $union(
-            child.type.map((t) => visitor[t]({ ...child, type: t }, context)),
+            types.map((t) => visitor[t]({ ...child, type: t }, context)),
             context
         )
     }

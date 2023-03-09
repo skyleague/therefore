@@ -1,5 +1,5 @@
 import type { JsonSchemaValidator } from '../../../commands/generate/types'
-import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json'
+import type { JsonAnnotations, JsonSchema } from '../../../json'
 import { defaultAjvConfig } from '../../ajv/defaults'
 import type { ThereforeNode } from '../../cst/cst'
 import type { ThereforeVisitor } from '../../cst/visitor'
@@ -9,7 +9,7 @@ import type { MetaDescription, SchemaMeta } from '../../primitives/base'
 import type { ThereforeCst } from '../../primitives/types'
 
 import type { RelaxedPartial } from '@skyleague/axioms'
-import { evaluate, omit, isArray, omitUndefined } from '@skyleague/axioms'
+import { asArray, evaluate, omit, omitUndefined } from '@skyleague/axioms'
 import type { Options as AjvOptions } from 'ajv'
 import Ajv from 'ajv'
 import standaloneCode from 'ajv/dist/standalone'
@@ -28,7 +28,7 @@ export function toType(type: JsonSchema['type'], definition: MetaDescription): J
     if (type === undefined) {
         return undefined
     }
-    return definition.nullable ? ((isArray(type) ? [...type, 'null'] : [type, 'null']) as JsonSchema7TypeName[]) : type
+    return definition.nullable ? [...asArray(type), 'null'] : type
 }
 
 export function annotate(doc: SchemaMeta): JsonAnnotations {
@@ -40,6 +40,7 @@ export function annotate(doc: SchemaMeta): JsonAnnotations {
         // writeonly?: boolean
         examples: doc.examples,
         deprecated: doc.deprecated,
+        nullable: doc.nullable,
     })
 }
 

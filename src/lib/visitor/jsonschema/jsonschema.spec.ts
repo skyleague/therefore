@@ -346,6 +346,7 @@ describe('toTypeDefinition', () => {
                 },
                 {
                   "additionalProperties": {
+                    "nullable": true,
                     "oneOf": [
                       {
                         "type": "null",
@@ -416,6 +417,7 @@ describe('toTypeDefinition', () => {
               "additionalProperties": true,
               "properties": {
                 "bar": {
+                  "nullable": true,
                   "type": [
                     "integer",
                     "null",
@@ -578,6 +580,7 @@ describe('toJsonSchema', () => {
                   },
                   {
                     "additionalProperties": {
+                      "nullable": true,
                       "oneOf": [
                         {
                           "type": "null",
