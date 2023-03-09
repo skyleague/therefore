@@ -412,6 +412,7 @@ describe('array', () => {
                         "exportAllSymbols": false,
                         "exportSymbol": false,
                         "metaSchemas": {},
+                        "optionalNullable": false,
                         "references": Map {
                           "#" => [
                             undefined,
@@ -725,6 +726,7 @@ describe('object with nullable property', () => {
                     "cache": Map {},
                     "exportAllSymbols": false,
                     "metaSchemas": {},
+                    "optionalNullable": false,
                     "references": Map {
                       "#" => [
                         undefined,
@@ -849,6 +851,233 @@ describe('object with nullable property', () => {
             }
             ",
               "referenceName": "{{00012-000:symbolName}}",
+              "render": [Function],
+              "sourceSymbol": undefined,
+            }
+        `)
+    })
+})
+
+describe('make optional properties nullable', () => {
+    const schema: JsonSchema = {
+        description: 'An object with optional properties',
+        type: 'object',
+        properties: {
+            foo: { type: 'string' },
+            bar: { type: 'number' },
+            foobar: { type: ['boolean', 'number'] },
+        },
+        required: ['bar'],
+        additionalProperties: false,
+    }
+    const therefore = () => $jsonschema(schema, { optionalNullable: true })
+
+    test('definition', () => {
+        expect(therefore()).toMatchInlineSnapshot(`
+            {
+              "children": [
+                {
+                  "children": [],
+                  "description": {
+                    "name": "foo",
+                    "nullable": true,
+                    "optional": "implicit",
+                  },
+                  "name": "foo",
+                  "type": "string",
+                  "uuid": "0007-000",
+                  "value": {
+                    "format": undefined,
+                    "maxLength": undefined,
+                    "minLength": undefined,
+                    "pattern": undefined,
+                  },
+                },
+                {
+                  "children": [],
+                  "description": {
+                    "name": "bar",
+                  },
+                  "name": "bar",
+                  "type": "number",
+                  "uuid": "0002-000",
+                  "value": {
+                    "maximum": undefined,
+                    "minimum": undefined,
+                    "multipleOf": undefined,
+                  },
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "description": {
+                        "name": "foobar",
+                        "nullable": true,
+                      },
+                      "name": "foobar",
+                      "type": "boolean",
+                      "uuid": "0003-000",
+                      "value": {},
+                    },
+                    {
+                      "children": [],
+                      "description": {
+                        "name": "foobar",
+                        "nullable": true,
+                      },
+                      "name": "foobar",
+                      "type": "number",
+                      "uuid": "0004-000",
+                      "value": {
+                        "maximum": undefined,
+                        "minimum": undefined,
+                        "multipleOf": undefined,
+                      },
+                    },
+                    {
+                      "children": [
+                        null,
+                      ],
+                      "description": {
+                        "name": "foobar",
+                        "nullable": true,
+                      },
+                      "name": "foobar",
+                      "type": "enum",
+                      "uuid": "0005-000",
+                      "value": {},
+                    },
+                  ],
+                  "description": {
+                    "name": "foobar",
+                    "optional": "implicit",
+                  },
+                  "name": "foobar",
+                  "type": "union",
+                  "uuid": "0008-000",
+                  "value": {
+                    "cache": Map {},
+                    "exportAllSymbols": false,
+                    "metaSchemas": {},
+                    "optionalNullable": true,
+                    "references": Map {
+                      "#" => [
+                        undefined,
+                        [Function],
+                      ],
+                    },
+                    "root": {
+                      "additionalProperties": false,
+                      "description": "An object with optional properties",
+                      "properties": {
+                        "bar": {
+                          "type": "number",
+                        },
+                        "foo": {
+                          "type": "string",
+                        },
+                        "foobar": {
+                          "type": [
+                            "boolean",
+                            "number",
+                          ],
+                        },
+                      },
+                      "required": [
+                        "bar",
+                      ],
+                      "type": "object",
+                    },
+                    "strict": true,
+                  },
+                },
+              ],
+              "description": {
+                "description": "An object with optional properties",
+                "optionalNullable": true,
+              },
+              "prepass": true,
+              "type": "object",
+              "uuid": "0009-000",
+              "value": {},
+            }
+        `)
+    })
+
+    test('jsonschema', () => {
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        expect(json).toMatchInlineSnapshot(`
+            {
+              "additionalProperties": true,
+              "description": "An object with optional properties",
+              "properties": {
+                "bar": {
+                  "title": "bar",
+                  "type": "number",
+                },
+                "foo": {
+                  "nullable": true,
+                  "title": "foo",
+                  "type": [
+                    "string",
+                    "null",
+                  ],
+                },
+                "foobar": {
+                  "anyOf": [
+                    {
+                      "nullable": true,
+                      "title": "foobar",
+                      "type": [
+                        "boolean",
+                        "null",
+                      ],
+                    },
+                    {
+                      "nullable": true,
+                      "title": "foobar",
+                      "type": [
+                        "number",
+                        "null",
+                      ],
+                    },
+                    {
+                      "const": null,
+                      "nullable": true,
+                      "title": "foobar",
+                    },
+                  ],
+                  "title": "foobar",
+                },
+              },
+              "required": [
+                "bar",
+              ],
+              "type": "object",
+            }
+        `)
+    })
+
+    test('typescript', () => {
+        expect(
+            walkTherefore(therefore(), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+            {
+              "declaration": "/**
+             * An object with optional properties
+             */
+            interface {{0009-000:symbolName}} {
+                foo?: (string | null)
+                bar: number
+                foobar?: boolean | number | null
+            }
+            ",
+              "referenceName": "{{0009-000:symbolName}}",
               "render": [Function],
               "sourceSymbol": undefined,
             }

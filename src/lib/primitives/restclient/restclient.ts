@@ -94,12 +94,14 @@ export function getRequestBody({
     method,
     references,
     strict,
+    optionalNullable,
 }: {
     request: RequestBody | undefined
     openapi: OpenapiV3
     method: string
     references: Map<string, [name: string, value: () => ThereforeNode]>
     strict: boolean
+    optionalNullable: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
         undefined,
@@ -113,6 +115,7 @@ export function getRequestBody({
             references,
             exportAllSymbols: true,
             strict,
+            optionalNullable,
         })
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
             therefore.description.validator = { enabled: true, assert: true }
@@ -142,6 +145,7 @@ export function getRequestBody({
             references,
             exportAllSymbols: true,
             strict,
+            optionalNullable,
         })
         therefore.description.validator = { enabled: true, assert: true }
         return { schema: therefore, name: 'body', type: 'form', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
@@ -169,6 +173,7 @@ export function getResponseBodies({
     references,
     useEither,
     strict,
+    optionalNullable,
 }: {
     responses: Responses | undefined
     openapi: OpenapiV3
@@ -176,6 +181,7 @@ export function getResponseBodies({
     references: Map<string, [name: string, value: () => ThereforeNode]>
     useEither: boolean
     strict: boolean
+    optionalNullable: boolean
 }) {
     const result: [
         string,
@@ -213,6 +219,7 @@ export function getResponseBodies({
                 reference: '$ref' in reference ? reference.$ref : undefined,
                 exportAllSymbols: true,
                 strict,
+                optionalNullable,
             })
             therefore.description.validator ??= { enabled: true, assert: false }
             therefore.description.validator.assert ||= !useEither
@@ -432,6 +439,12 @@ export interface RestclientOptions {
      */
     strict?: boolean
     /**
+     * Toggles whether optional fields will be allowed to be null. Some Rest APIs implicitly return null on optional fields.
+     *
+     * @defaultValue false
+     */
+    optionalNullable?: boolean
+    /**
      * Toggles whether an Either interface is generated or exceptions are used.
      *
      * @defaultValue true
@@ -475,7 +488,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
-    const { useEither = true, explicitContentNegotiation = false, strict = false } = options
+    const { useEither = true, explicitContentNegotiation = false, strict = false, optionalNullable = false } = options
     const references = new Map<string, [name: string, value: () => ThereforeNode]>()
 
     const children: ThereforeCst[] = []
@@ -561,6 +574,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         method,
                         references,
                         strict,
+                        optionalNullable,
                     })
                     let requestValidationStr = ''
                     if (request?.schema !== undefined) {
@@ -605,6 +619,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         references,
                         useEither,
                         strict,
+                        optionalNullable,
                     })
 
                     const parameterizedPath = pathParameters
