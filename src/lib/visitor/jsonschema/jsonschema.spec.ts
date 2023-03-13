@@ -39,7 +39,7 @@ describe('toType', () => {
 
 describe('annotate', () => {
     test('title', () => {
-        expect(annotate({ title: 'foo title' })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { title: 'foo title' })).toMatchInlineSnapshot(`
             {
               "title": "foo title",
             }
@@ -47,7 +47,7 @@ describe('annotate', () => {
     })
 
     test('description', () => {
-        expect(annotate({ description: 'foo description' })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { description: 'foo description' })).toMatchInlineSnapshot(`
             {
               "description": "foo description",
             }
@@ -55,12 +55,12 @@ describe('annotate', () => {
     })
 
     test('default', () => {
-        expect(annotate({ default: 'default string' })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { default: 'default string' })).toMatchInlineSnapshot(`
             {
               "default": "default string",
             }
         `)
-        expect(annotate({ default: { foo: 'default string' } })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { default: { foo: 'default string' } })).toMatchInlineSnapshot(`
             {
               "default": {
                 "foo": "default string",
@@ -70,12 +70,12 @@ describe('annotate', () => {
     })
 
     test('readonly', () => {
-        expect(annotate({ readonly: true })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { readonly: true })).toMatchInlineSnapshot(`
             {
               "readonly": true,
             }
         `)
-        expect(annotate({ readonly: false })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { readonly: false })).toMatchInlineSnapshot(`
             {
               "readonly": false,
             }
@@ -83,7 +83,7 @@ describe('annotate', () => {
     })
 
     test('examples', () => {
-        expect(annotate({ examples: ['foo', 'bar'] })).toMatchInlineSnapshot(`
+        expect(annotate(undefined, { examples: ['foo', 'bar'] })).toMatchInlineSnapshot(`
             {
               "examples": [
                 "foo",

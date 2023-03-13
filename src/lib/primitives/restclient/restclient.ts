@@ -911,7 +911,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
     return cstNode(
         'custom',
         {
-            ...annotate(definition.info),
+            ...annotate(undefined, definition.info),
             typescript: {
                 imports: [
                     `import type { CancelableRequest, Got, Options, Response } from 'got'`,

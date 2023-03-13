@@ -1,5 +1,5 @@
 import type { JsonSchemaValidator } from '../../../commands/generate/types'
-import type { JsonAnnotations, JsonSchema } from '../../../json'
+import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json'
 import { defaultAjvConfig } from '../../ajv/defaults'
 import type { ThereforeNode } from '../../cst/cst'
 import type { ThereforeVisitor } from '../../cst/visitor'
@@ -31,7 +31,7 @@ export function toType(type: JsonSchema['type'], definition: MetaDescription): J
     return definition.nullable ? [...asArray(type), 'null'] : type
 }
 
-export function annotate(doc: SchemaMeta): JsonAnnotations {
+export function annotate(schemaType: JsonSchema7TypeName | JsonSchema7TypeName[] | undefined, doc: SchemaMeta): JsonAnnotations {
     return omitUndefined({
         title: doc.title ?? doc.name,
         description: doc.description,
@@ -40,7 +40,7 @@ export function annotate(doc: SchemaMeta): JsonAnnotations {
         // writeonly?: boolean
         examples: doc.examples,
         deprecated: doc.deprecated,
-        nullable: doc.nullable,
+        nullable: schemaType !== undefined ? doc.nullable : undefined,
     })
 }
 
@@ -202,9 +202,10 @@ export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
         definitions: {},
         entry: obj,
         transform: (node, schema): JsonSchema => {
+            const schemaType = toType(schema.type, node.description)
             return omitUndefined({
-                type: toType(schema.type, node.description),
-                ...annotate(node.description),
+                type: schemaType,
+                ...annotate(schemaType, node.description),
                 ...omit(schema, ['type']),
             })
         },
