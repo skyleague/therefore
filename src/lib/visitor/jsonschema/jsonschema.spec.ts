@@ -346,7 +346,6 @@ describe('toTypeDefinition', () => {
                 },
                 {
                   "additionalProperties": {
-                    "nullable": true,
                     "oneOf": [
                       {
                         "type": "null",
@@ -580,7 +579,6 @@ describe('toJsonSchema', () => {
                   },
                   {
                     "additionalProperties": {
-                      "nullable": true,
                       "oneOf": [
                         {
                           "type": "null",

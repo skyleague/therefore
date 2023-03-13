@@ -813,7 +813,6 @@ describe('object with nullable property', () => {
                     },
                     {
                       "const": null,
-                      "nullable": true,
                       "title": "store",
                     },
                   ],
@@ -1044,7 +1043,6 @@ describe('make optional properties nullable', () => {
                     },
                     {
                       "const": null,
-                      "nullable": true,
                       "title": "foobar",
                     },
                   ],
