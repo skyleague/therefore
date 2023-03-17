@@ -289,7 +289,6 @@ function walkJsonschema({
         const [refName, reference] = references.get(childRef)!
         return $ref({
             ...context,
-            ...annotate(node, context),
             exportSymbol: exportAllSymbols,
             reference: [name ?? refName, reference],
         })
