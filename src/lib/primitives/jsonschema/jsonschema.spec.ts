@@ -1082,3 +1082,205 @@ describe('make optional properties nullable', () => {
         `)
     })
 })
+
+describe('nullable array', () => {
+    const schema: JsonSchema = {
+        description: 'An object with a nullable array that has a ref',
+        type: 'object',
+        properties: {
+            foo: {
+                type: 'array',
+                items: { $ref: '#/$defs/Foo' },
+                examples: [{ bar: 'wut' }],
+            },
+        },
+        $defs: {
+            Foo: {
+                type: 'object',
+                properties: {
+                    bar: {
+                        type: 'string',
+                    },
+                },
+            },
+        },
+    }
+    const therefore = () => $jsonschema(schema, { optionalNullable: true })
+
+    test('definition', () => {
+        expect(therefore()).toMatchInlineSnapshot(`
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [],
+                              "description": {
+                                "name": "bar",
+                                "nullable": true,
+                                "optional": "implicit",
+                              },
+                              "name": "bar",
+                              "type": "string",
+                              "uuid": "0006-000",
+                              "value": {
+                                "format": undefined,
+                                "maxLength": undefined,
+                                "minLength": undefined,
+                                "pattern": undefined,
+                              },
+                            },
+                          ],
+                          "description": {
+                            "name": "Foo",
+                          },
+                          "name": "Foo",
+                          "type": "object",
+                          "uuid": "0007-000",
+                          "value": {},
+                        },
+                      ],
+                      "description": {
+                        "name": undefined,
+                      },
+                      "name": "Foo",
+                      "type": "ref",
+                      "uuid": "0001-000",
+                      "value": {
+                        "cache": Map {},
+                        "exportAllSymbols": false,
+                        "exportSymbol": false,
+                        "metaSchemas": {},
+                        "optionalNullable": true,
+                        "references": Map {
+                          "#" => [
+                            undefined,
+                            [Function],
+                          ],
+                          "#/$defs/Foo" => [
+                            "Foo",
+                            [Function],
+                          ],
+                        },
+                        "root": {
+                          "$defs": {
+                            "Foo": {
+                              "properties": {
+                                "bar": {
+                                  "type": "string",
+                                },
+                              },
+                              "type": "object",
+                            },
+                          },
+                          "description": "An object with a nullable array that has a ref",
+                          "properties": {
+                            "foo": {
+                              "examples": [
+                                {
+                                  "bar": "wut",
+                                },
+                              ],
+                              "items": {
+                                "$ref": "#/$defs/Foo",
+                              },
+                              "type": "array",
+                            },
+                          },
+                          "type": "object",
+                        },
+                        "strict": true,
+                      },
+                    },
+                  ],
+                  "description": {
+                    "examples": [
+                      {
+                        "bar": "wut",
+                      },
+                    ],
+                    "name": "foo",
+                    "nullable": true,
+                    "optional": "implicit",
+                  },
+                  "name": "foo",
+                  "type": "array",
+                  "uuid": "0003-000",
+                  "value": {
+                    "maxItems": undefined,
+                    "minItems": undefined,
+                    "uniqueItems": undefined,
+                  },
+                },
+              ],
+              "description": {
+                "description": "An object with a nullable array that has a ref",
+                "optionalNullable": true,
+              },
+              "prepass": true,
+              "type": "object",
+              "uuid": "0004-000",
+              "value": {},
+            }
+        `)
+    })
+
+    test('jsonschema', () => {
+        const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
+        expect(json).toMatchInlineSnapshot(`
+            {
+              "additionalProperties": true,
+              "description": "An object with a nullable array that has a ref",
+              "properties": {
+                "foo": {
+                  "examples": [
+                    {
+                      "bar": "wut",
+                    },
+                  ],
+                  "items": {
+                    "$ref": "#/$defs/{{0007-000:uniqueSymbolName}}",
+                  },
+                  "nullable": true,
+                  "title": "foo",
+                  "type": [
+                    "array",
+                    "null",
+                  ],
+                },
+              },
+              "type": "object",
+            }
+        `)
+    })
+
+    test('typescript', () => {
+        expect(
+            walkTherefore(therefore(), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+            {
+              "declaration": "/**
+             * An object with a nullable array that has a ref
+             */
+            interface {{0004-000:symbolName}} {
+                /**
+                 * @example foo = { bar: 'wut' }
+                 */
+                foo?: (({{0007-000:referenceName}})[] | null)
+            }
+            ",
+              "referenceName": "{{0004-000:symbolName}}",
+              "render": [Function],
+              "sourceSymbol": undefined,
+            }
+        `)
+    })
+})
