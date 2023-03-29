@@ -1,6 +1,6 @@
-import { Theme, Typedoc } from '../examples/typedoc/typedoc.type'
-import { arbitrary } from '../src'
-import { compileOutputFiles } from '../src/commands/generate/generate'
+import { Theme, Typedoc } from '../examples/typedoc/typedoc.type.js'
+import { compileOutputFiles } from '../src/commands/generate/generate.js'
+import { arbitrary } from '../src/index.js'
 
 import { forAll } from '@skyleague/axioms'
 

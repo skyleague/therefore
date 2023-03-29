@@ -1,1 +1,1 @@
-export { $boolean, BooleanOptions, BooleanType } from './boolean'
+export { $boolean, type BooleanOptions, type BooleanType } from './boolean.js'

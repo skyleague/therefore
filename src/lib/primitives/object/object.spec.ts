@@ -1,7 +1,7 @@
-import { $object } from './object'
+import { $object } from './object.js'
 
-import { $array, $boolean } from '..'
-import { $string } from '../string'
+import { $array, $boolean } from '../index.js'
+import { $string } from '../string/index.js'
 
 test('function', () => {
     expect($object).toMatchInlineSnapshot(`[Function]`)

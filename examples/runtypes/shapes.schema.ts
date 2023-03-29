@@ -1,4 +1,4 @@
-import { $number, $object, $ref, $union, $validator } from '../../src'
+import { $number, $object, $ref, $union, $validator } from '../../src/index.js'
 
 export const square = $validator(
     $object({

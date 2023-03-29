@@ -1,5 +1,5 @@
-import { $array, $boolean, $dict, $null, $number, $ref, $string, $union, $validator } from '../../src'
-import type { ThereforeSchema } from '../../src/lib/primitives/types'
+import { $array, $boolean, $dict, $null, $number, $ref, $string, $union, $validator } from '../../src/index.js'
+import type { ThereforeSchema } from '../../src/lib/primitives/types.js'
 
 export const json: ThereforeSchema = $validator(
     $union([$string, $null, $boolean, $number, $dict($ref(() => json)), $array($ref(() => json))]),

@@ -1,6 +1,6 @@
-import { toLiteral } from './literal'
+import { toLiteral } from './literal.js'
 
-import type { MetaDescription } from '../../primitives/base'
+import type { MetaDescription } from '../../primitives/base.js'
 
 function escapeComment(x: string) {
     return x.replaceAll(/\*\//g, '* /')

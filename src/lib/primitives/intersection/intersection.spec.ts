@@ -1,6 +1,6 @@
-import { $intersection } from './intersection'
+import { $intersection } from './intersection.js'
 
-import { $object, $ref, $string } from '..'
+import { $object, $ref, $string } from '../index.js'
 
 test('function', () => {
     expect($intersection).toMatchInlineSnapshot(`[Function]`)
@@ -173,11 +173,13 @@ test('reference intersection', () => {
                       "description": {},
                       "name": "bar",
                       "type": "string",
+                      "uuid": "0001-000",
                       "value": {},
                     },
                   ],
                   "description": {},
                   "type": "object",
+                  "uuid": "0002-000",
                   "value": {},
                 },
               ],

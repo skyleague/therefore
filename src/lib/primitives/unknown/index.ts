@@ -1,1 +1,1 @@
-export { UnknownOptions, UnknownType, $unknown } from './unknown'
+export { type UnknownOptions, type UnknownType, $unknown } from './unknown.js'

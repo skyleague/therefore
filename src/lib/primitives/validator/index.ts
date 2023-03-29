@@ -1,1 +1,1 @@
-export { $validator } from './validator'
+export { $validator } from './validator.js'

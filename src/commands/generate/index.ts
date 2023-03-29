@@ -1,6 +1,6 @@
-import { generate } from './generate'
+import { generate } from './generate.js'
 
-import { getExtension } from '../../common/template/path'
+import { getExtension } from '../../common/template/path.js'
 
 import type { Argv } from 'yargs'
 

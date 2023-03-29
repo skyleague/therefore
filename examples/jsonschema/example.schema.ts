@@ -1,4 +1,4 @@
-import { $integer, $intersection, $jsonschema, $number, $object, $string, $validator } from '../../src'
+import { $integer, $intersection, $jsonschema, $number, $object, $string, $validator } from '../../src/index.js'
 
 export const person = $validator(
     $object({

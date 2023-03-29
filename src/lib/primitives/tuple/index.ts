@@ -1,1 +1,1 @@
-export { TupleOptions, TupleType, $tuple } from './tuple'
+export { type TupleOptions, type TupleType, $tuple } from './tuple.js'

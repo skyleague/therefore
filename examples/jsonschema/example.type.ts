@@ -6,6 +6,33 @@
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
+export interface Defaults {
+    /**
+     * @default 'foobar'
+     */
+    str?: string
+    /**
+     * @default 42
+     */
+    int?: number
+}
+
+export const Defaults = {
+    validate: (await import('./schemas/defaults.schema.js')).validate10 as unknown as ValidateFunction<Defaults>,
+    get schema() {
+        return Defaults.validate.schema
+    },
+    get errors() {
+        return Defaults.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Defaults => Defaults.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Defaults.validate(o)) {
+            throw new AjvValidator.ValidationError(Defaults.errors ?? [])
+        }
+    },
+} as const
+
 export interface Person {
     /**
      * The person's first name.
@@ -16,7 +43,7 @@ export interface Person {
 }
 
 export const Person = {
-    validate: require('./schemas/person.schema.js') as ValidateFunction<Person>,
+    validate: (await import('./schemas/person.schema.js')).validate10 as unknown as ValidateFunction<Person>,
     get schema() {
         return Person.validate.schema
     },
@@ -43,7 +70,7 @@ export type SalesPerson = {
 }
 
 export const SalesPerson = {
-    validate: require('./schemas/sales-person.schema.js') as ValidateFunction<SalesPerson>,
+    validate: (await import('./schemas/sales-person.schema.js')).validate10 as unknown as ValidateFunction<SalesPerson>,
     get schema() {
         return SalesPerson.validate.schema
     },
@@ -64,7 +91,7 @@ export interface SelfReference {
 }
 
 export const SelfReference = {
-    validate: require('./schemas/self-reference.schema.js') as ValidateFunction<SelfReference>,
+    validate: (await import('./schemas/self-reference.schema.js')).validate10 as unknown as ValidateFunction<SelfReference>,
     get schema() {
         return SelfReference.validate.schema
     },
@@ -75,33 +102,6 @@ export const SelfReference = {
     assert: (o: unknown) => {
         if (!SelfReference.validate(o)) {
             throw new AjvValidator.ValidationError(SelfReference.errors ?? [])
-        }
-    },
-} as const
-
-export interface Defaults {
-    /**
-     * @default 'foobar'
-     */
-    str?: string
-    /**
-     * @default 42
-     */
-    int?: number
-}
-
-export const Defaults = {
-    validate: require('./schemas/defaults.schema.js') as ValidateFunction<Defaults>,
-    get schema() {
-        return Defaults.validate.schema
-    },
-    get errors() {
-        return Defaults.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Defaults => Defaults.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Defaults.validate(o)) {
-            throw new AjvValidator.ValidationError(Defaults.errors ?? [])
         }
     },
 } as const

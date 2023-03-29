@@ -8,7 +8,7 @@ import type { ValidateFunction } from 'ajv'
 export type GetApodResponse = unknown[]
 
 export const GetApodResponse = {
-    validate: require('./schemas/get-apod-response.schema.js') as ValidateFunction<GetApodResponse>,
+    validate: (await import('./schemas/get-apod-response.schema.js')).validate10 as unknown as ValidateFunction<GetApodResponse>,
     get schema() {
         return GetApodResponse.validate.schema
     },

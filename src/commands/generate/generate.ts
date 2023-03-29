@@ -1,31 +1,31 @@
-import { generatedAjv, generatedBy } from './constants'
-import { expandGlobs } from './glob'
-import { formatFile, maybeLoadPrettier } from './prettier'
-import { resolveTypescriptSchema } from './resolver'
-import type { FileDefinition, OutputFile, ReferenceData, ThereforeOutputType } from './types'
+import { generatedAjv, generatedBy } from './constants.js'
+import { expandGlobs } from './glob.js'
+import { formatFile, maybeLoadPrettier } from './prettier.js'
+import { resolveTypescriptSchema } from './resolver.js'
+import type { FileDefinition, OutputFile, ReferenceData, ThereforeOutputType } from './types.js'
 
-import fs from 'fs'
-
-import { getExtension, replaceExtension } from '../../common/template/path'
-
-import path from 'path'
-
-import { renderTemplate } from '../../common/template/template'
-import type { ThereforeNode } from '../../lib/cst/cst'
-import type { ThereforeCst } from '../../lib/primitives/types'
-import { isThereforeExport } from '../../lib/primitives/types'
-import { toJsonSchema } from '../../lib/visitor/jsonschema/jsonschema'
-import { prepass } from '../../lib/visitor/prepass/prepass'
-import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript'
+import { getExtension, replaceExtension } from '../../common/template/path.js'
+import { renderTemplate } from '../../common/template/template.js'
+import type { ThereforeNode } from '../../lib/cst/cst.js'
+import type { ThereforeCst } from '../../lib/primitives/types.js'
+import { isThereforeExport } from '../../lib/primitives/types.js'
+import { toJsonSchema } from '../../lib/visitor/jsonschema/jsonschema.js'
+import { prepass } from '../../lib/visitor/prepass/prepass.js'
+import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript.js'
 
 import { entriesOf, enumerate, groupBy, isDefined, range, second } from '@skyleague/axioms'
 import decamelize from 'decamelize'
 
-function requireModule(module: string): Record<string, ThereforeNode | unknown> {
-    const relative = path.relative(__dirname, module).replace(/\\/g, '/').replace('.ts', '')
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require(relative.startsWith('.') ? relative : `./${relative}`) as Record<string, ThereforeNode | unknown>
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+async function requireModule(module: string): Promise<Record<string, ThereforeNode | unknown>> {
+    const relative = path.relative(__dirname, module).replace(/\\/g, '/').replace(/\.ts$/, '.js')
+
+    const mod = (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
+    return (mod.default ?? mod) as Record<string, ThereforeNode | unknown>
 }
 
 export async function loadSymbol({
@@ -83,7 +83,7 @@ export async function loadSymbol({
         dependencies: {},
     }
 
-    const file = definitions[targetPath]
+    const file = definitions[targetPath]!
     // check if symbol is not seen yet
     if (file.symbols.find((s) => s.uuid === simplified.uuid)) {
         return
@@ -95,7 +95,7 @@ export async function loadSymbol({
     const schemaFile = `./schemas/${schemaName}.schema.json`
     const compiledFile = `./schemas/${schemaName}.schema.js`
 
-    const jsonschema = toJsonSchema(simplified, compile)
+    const jsonschema = await toJsonSchema(simplified, compile)
     const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
 
     file.symbols.push(
@@ -126,7 +126,7 @@ export async function loadSymbol({
                 fs.rmSync(targetFolder, { force: true, recursive: true })
             }
         }
-        if (jsonschema.compiled === true) {
+        if (jsonschema.compiled) {
             file.attachedFiles.push({
                 targetPath: path.join(targetBaseDir, compiledFile),
                 content: `/**\n * ${generatedAjv} \n * eslint-disable\n */\n${jsonschema.code}`,
@@ -178,10 +178,10 @@ export async function scanModule({
     basePath: string
     compile: boolean
     definitions: Record<string, FileDefinition>
-    require?: (module: string) => Record<string, ThereforeNode | unknown>
+    require?: (module: string) => Promise<Record<string, ThereforeNode | unknown>>
     outputFileRename: (path: string) => string
 }) {
-    const module = await Promise.resolve(require(entry))
+    const module = await require(entry)
 
     for (const [sourceSymbol, symbolPromise] of Object.entries(module)) {
         const symbol = await symbolPromise
@@ -305,8 +305,8 @@ export async function generate({
     for (const duplicateGroup of duplicates.map((d) => second(d))) {
         for (const [i, [key]] of enumerate(duplicateGroup)) {
             // data[key].referenceName = `${data[key].referenceName}${i}`
-            data[key].symbolName = `${data[key].symbolName}${i}`
-            data[key].uniqueSymbolName = `${data[key].uniqueSymbolName}${i}`
+            data[key]!.symbolName = `${data[key]!.symbolName}${i}`
+            data[key]!.uniqueSymbolName = `${data[key]!.uniqueSymbolName}${i}`
         }
     }
 

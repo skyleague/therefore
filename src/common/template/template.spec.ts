@@ -1,4 +1,4 @@
-import { renderTemplate } from '.'
+import { renderTemplate } from './index.js'
 
 test('identity for normal strings', () => {
     expect(renderTemplate('foo')).toMatchInlineSnapshot(`"foo"`)

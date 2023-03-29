@@ -1,1 +1,1 @@
-export { arbitrary } from './arbitrary'
+export { arbitrary } from './arbitrary.js'

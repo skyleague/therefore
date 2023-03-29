@@ -1,1 +1,1 @@
-export { $restclient } from './restclient'
+export { $restclient } from './restclient.js'

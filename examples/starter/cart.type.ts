@@ -5,7 +5,7 @@
 /* eslint-disable */
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
-import { CartItem } from './item.type'
+import { CartItem } from './item.type.js'
 
 export interface Cart {
     id: string
@@ -15,7 +15,7 @@ export interface Cart {
 }
 
 export const Cart = {
-    validate: require('./schemas/cart.schema.js') as ValidateFunction<Cart>,
+    validate: (await import('./schemas/cart.schema.js')).validate10 as unknown as ValidateFunction<Cart>,
     get schema() {
         return Cart.validate.schema
     },

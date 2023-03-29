@@ -1,6 +1,6 @@
-import { $tuple } from './tuple'
+import { $tuple } from './tuple.js'
 
-import { $string } from '..'
+import { $string } from '../index.js'
 
 test('function', () => {
     expect($tuple).toMatchInlineSnapshot(`[Function]`)

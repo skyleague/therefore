@@ -1,4 +1,4 @@
-import { $number } from '.'
+import { $number } from './index.js'
 
 test('function', () => {
     expect($number).toMatchInlineSnapshot(`[Function]`)

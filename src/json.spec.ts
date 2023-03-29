@@ -1,4 +1,4 @@
-import { compileOutputFiles } from './commands/generate/generate'
+import { compileOutputFiles } from './commands/generate/generate.js'
 
 test('json', async () => {
     expect(

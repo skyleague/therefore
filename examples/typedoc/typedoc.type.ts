@@ -12,7 +12,7 @@ import type { ValidateFunction } from 'ajv'
 export type Theme = 'default' | 'minimal' | string
 
 export const Theme = {
-    validate: require('./schemas/theme.schema.js') as ValidateFunction<Theme>,
+    validate: (await import('./schemas/theme.schema.js')).validate10 as unknown as ValidateFunction<Theme>,
     get schema() {
         return Theme.validate.schema
     },
@@ -184,7 +184,7 @@ export interface Typedoc {
 }
 
 export const Typedoc = {
-    validate: require('./schemas/typedoc.schema.js') as ValidateFunction<Typedoc>,
+    validate: (await import('./schemas/typedoc.schema.js')).validate10 as unknown as ValidateFunction<Typedoc>,
     get schema() {
         return Typedoc.validate.schema
     },

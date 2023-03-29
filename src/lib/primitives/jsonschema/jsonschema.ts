@@ -1,4 +1,4 @@
-import { jsonPointer } from '../../../common/json/json'
+import { jsonPointer } from '../../../common/json/json.js'
 import type {
     JsonAnnotations,
     JsonAnyInstance,
@@ -8,30 +8,30 @@ import type {
     JsonSchema,
     JsonSchema7TypeName,
     JsonStringInstance,
-} from '../../../json'
-import type { ThereforeNode } from '../../cst/cst'
-import { prepass } from '../../visitor/prepass/prepass'
-import { $array } from '../array'
-import type { SchemaMeta, SchemaOptions } from '../base'
-import { descriptionKeys } from '../base'
-import { $boolean } from '../boolean'
-import { $const } from '../const'
-import { $dict } from '../dict'
-import { $enum } from '../enum'
-import { $integer } from '../integer'
-import { $intersection } from '../intersection'
-import { $number } from '../number'
-import type { ObjectType } from '../object'
-import { $object } from '../object'
-import { $optional } from '../optional'
-import type { RefType } from '../ref'
-import { $ref } from '../ref'
-import type { StringOptions } from '../string'
-import { $string } from '../string'
-import { $tuple } from '../tuple'
-import type { ThereforeCst } from '../types'
-import { $union } from '../union'
-import { $unknown } from '../unknown'
+} from '../../../json.js'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { prepass } from '../../visitor/prepass/prepass.js'
+import { $array } from '../array/index.js'
+import type { SchemaMeta, SchemaOptions } from '../base.js'
+import { descriptionKeys } from '../base.js'
+import { $boolean } from '../boolean/index.js'
+import { $const } from '../const/index.js'
+import { $dict } from '../dict/index.js'
+import { $enum } from '../enum/index.js'
+import { $integer } from '../integer/index.js'
+import { $intersection } from '../intersection/index.js'
+import { $number } from '../number/index.js'
+import type { ObjectType } from '../object/index.js'
+import { $object } from '../object/index.js'
+import { $optional } from '../optional/index.js'
+import type { RefType } from '../ref/index.js'
+import { $ref } from '../ref/index.js'
+import type { StringOptions } from '../string/index.js'
+import { $string } from '../string/index.js'
+import { $tuple } from '../tuple/index.js'
+import type { ThereforeCst } from '../types.js'
+import { $union } from '../union/index.js'
+import { $unknown } from '../unknown/index.js'
 
 import type { Json, UndefinedFields } from '@skyleague/axioms'
 import { entriesOf, evaluate, isArray, isBoolean, keysOf, memoize, omit, omitUndefined, pick } from '@skyleague/axioms'
@@ -278,7 +278,7 @@ function walkJsonschema({
                 throw new Error('invalid json ptr')
             }
             const split = childRef.split('/')
-            const refName = split[split.length - 1]
+            const refName = split[split.length - 1]!
 
             references.set(childRef, [
                 refName,

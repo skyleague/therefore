@@ -1,6 +1,6 @@
-import { cartItem } from './item.schema'
+import { cartItem } from './item.schema.js'
 
-import { $object, $string, $ref, $array, $validator } from '../../src'
+import { $object, $string, $ref, $array, $validator } from '../../src/index.js'
 
 export const cart = $validator(
     $object({
