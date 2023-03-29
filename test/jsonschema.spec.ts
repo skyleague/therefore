@@ -1,6 +1,6 @@
-import { Defaults, SalesPerson } from '../examples/jsonschema/example.type'
-import { arbitrary } from '../src'
-import { compileOutputFiles } from '../src/commands/generate/generate'
+import { Defaults, SalesPerson } from '../examples/jsonschema/example.type.js'
+import { compileOutputFiles } from '../src/commands/generate/generate.js'
+import { arbitrary } from '../src/index.js'
 
 import { forAll } from '@skyleague/axioms'
 

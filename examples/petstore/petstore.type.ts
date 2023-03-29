@@ -19,7 +19,7 @@ export interface Pet {
 }
 
 export const Pet = {
-    validate: require('./schemas/pet.schema.js') as ValidateFunction<Pet>,
+    validate: (await import('./schemas/pet.schema.js')).validate10 as unknown as ValidateFunction<Pet>,
     get schema() {
         return Pet.validate.schema
     },
@@ -37,7 +37,8 @@ export const Pet = {
 export type FindPetsByStatusResponse = Pet[]
 
 export const FindPetsByStatusResponse = {
-    validate: require('./schemas/find-pets-by-status-response.schema.js') as ValidateFunction<FindPetsByStatusResponse>,
+    validate: (await import('./schemas/find-pets-by-status-response.schema.js'))
+        .validate10 as unknown as ValidateFunction<FindPetsByStatusResponse>,
     get schema() {
         return FindPetsByStatusResponse.validate.schema
     },
@@ -50,7 +51,8 @@ export const FindPetsByStatusResponse = {
 export type FindPetsByTagsResponse = Pet[]
 
 export const FindPetsByTagsResponse = {
-    validate: require('./schemas/find-pets-by-tags-response.schema.js') as ValidateFunction<FindPetsByTagsResponse>,
+    validate: (await import('./schemas/find-pets-by-tags-response.schema.js'))
+        .validate10 as unknown as ValidateFunction<FindPetsByTagsResponse>,
     get schema() {
         return FindPetsByTagsResponse.validate.schema
     },
@@ -67,7 +69,7 @@ export interface ApiResponse {
 }
 
 export const ApiResponse = {
-    validate: require('./schemas/api-response.schema.js') as ValidateFunction<ApiResponse>,
+    validate: (await import('./schemas/api-response.schema.js')).validate10 as unknown as ValidateFunction<ApiResponse>,
     get schema() {
         return ApiResponse.validate.schema
     },
@@ -82,7 +84,8 @@ export interface GetInventoryResponse {
 }
 
 export const GetInventoryResponse = {
-    validate: require('./schemas/get-inventory-response.schema.js') as ValidateFunction<GetInventoryResponse>,
+    validate: (await import('./schemas/get-inventory-response.schema.js'))
+        .validate10 as unknown as ValidateFunction<GetInventoryResponse>,
     get schema() {
         return GetInventoryResponse.validate.schema
     },
@@ -105,7 +108,7 @@ export interface Order {
 }
 
 export const Order = {
-    validate: require('./schemas/order.schema.js') as ValidateFunction<Order>,
+    validate: (await import('./schemas/order.schema.js')).validate10 as unknown as ValidateFunction<Order>,
     get schema() {
         return Order.validate.schema
     },
@@ -135,7 +138,7 @@ export interface User {
 }
 
 export const User = {
-    validate: require('./schemas/user.schema.js') as ValidateFunction<User>,
+    validate: (await import('./schemas/user.schema.js')).validate10 as unknown as ValidateFunction<User>,
     get schema() {
         return User.validate.schema
     },
@@ -153,8 +156,8 @@ export const User = {
 export type CreateUsersWithListInputRequest = User[]
 
 export const CreateUsersWithListInputRequest = {
-    validate:
-        require('./schemas/create-users-with-list-input-request.schema.js') as ValidateFunction<CreateUsersWithListInputRequest>,
+    validate: (await import('./schemas/create-users-with-list-input-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<CreateUsersWithListInputRequest>,
     get schema() {
         return CreateUsersWithListInputRequest.validate.schema
     },
@@ -172,7 +175,8 @@ export const CreateUsersWithListInputRequest = {
 export type LoginUserResponse = string
 
 export const LoginUserResponse = {
-    validate: require('./schemas/login-user-response.schema.js') as ValidateFunction<LoginUserResponse>,
+    validate: (await import('./schemas/login-user-response.schema.js'))
+        .validate10 as unknown as ValidateFunction<LoginUserResponse>,
     get schema() {
         return LoginUserResponse.validate.schema
     },

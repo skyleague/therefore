@@ -6,7 +6,7 @@
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
-import { IncomingHttpHeaders } from 'http'
+import type { IncomingHttpHeaders } from 'http'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
@@ -17,7 +17,7 @@ import {
     Order,
     Pet,
     User,
-} from './petstore.type'
+} from './petstore.type.js'
 
 /**
  * Swagger Petstore - OpenAPI 3.0
@@ -77,9 +77,9 @@ export class PetStore {
             }),
             {
                 200: Pet,
-                400: { is: (x: unknown): x is unknown => true },
-                404: { is: (x: unknown): x is unknown => true },
-                405: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -97,7 +97,7 @@ export class PetStore {
             }),
             {
                 200: Pet,
-                405: { is: (x: unknown): x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -118,7 +118,7 @@ export class PetStore {
             }),
             {
                 200: FindPetsByStatusResponse,
-                400: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -139,7 +139,7 @@ export class PetStore {
             }),
             {
                 200: FindPetsByTagsResponse,
-                400: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -162,8 +162,8 @@ export class PetStore {
             }),
             {
                 200: Pet,
-                400: { is: (x: unknown): x is unknown => true },
-                404: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -185,7 +185,7 @@ export class PetStore {
                 searchParams: query ?? {},
             }),
             {
-                405: { is: (x: unknown): x is string => true },
+                405: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -207,7 +207,7 @@ export class PetStore {
                 headers: headers ?? {},
             }),
             {
-                400: { is: (x: unknown): x is string => true },
+                400: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -269,7 +269,7 @@ export class PetStore {
             }),
             {
                 200: Order,
-                405: { is: (x: unknown): x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -286,8 +286,8 @@ export class PetStore {
             }),
             {
                 200: Order,
-                400: { is: (x: unknown): x is unknown => true },
-                404: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -299,8 +299,8 @@ export class PetStore {
      */
     public async deleteOrder({ path }: { path: { orderId: string } }) {
         return this.awaitResponse(this.client.delete(`store/order/${path.orderId}`, {}), {
-            400: { is: (x: unknown): x is string => true },
-            404: { is: (x: unknown): x is string => true },
+            400: { is: (_x: unknown): _x is string => true },
+            404: { is: (_x: unknown): _x is string => true },
         })
     }
 
@@ -351,7 +351,7 @@ export class PetStore {
             }),
             {
                 200: LoginUserResponse,
-                400: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -361,7 +361,7 @@ export class PetStore {
      */
     public async logoutUser() {
         return this.awaitResponse(this.client.get(`user/logout`, {}), {
-            default: { is: (x: unknown): x is string => true },
+            default: { is: (_x: unknown): _x is string => true },
         })
     }
 
@@ -375,8 +375,8 @@ export class PetStore {
             }),
             {
                 200: User,
-                400: { is: (x: unknown): x is unknown => true },
-                404: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -394,7 +394,7 @@ export class PetStore {
                 json: body,
             }),
             {
-                default: { is: (x: unknown): x is string => true },
+                default: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -406,8 +406,8 @@ export class PetStore {
      */
     public async deleteUser({ path }: { path: { username: string } }) {
         return this.awaitResponse(this.client.delete(`user/${path.username}`, {}), {
-            400: { is: (x: unknown): x is string => true },
-            404: { is: (x: unknown): x is string => true },
+            400: { is: (_x: unknown): _x is string => true },
+            404: { is: (_x: unknown): _x is string => true },
         })
     }
 

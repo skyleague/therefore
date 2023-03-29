@@ -1,10 +1,10 @@
-import type { TypescriptWalkerContext } from './typescript'
-import { toDeclaration } from './typescript'
+import type { TypescriptWalkerContext } from './typescript.js'
+import { toDeclaration } from './typescript.js'
 
-import { $object, $string, $union, $unknown } from '../../primitives'
+import { $object, $string, $union, $unknown } from '../../primitives/index.js'
 
 import { forAll, string, tuple, alpha } from '@skyleague/axioms'
-import * as ts from 'typescript'
+import ts from 'typescript'
 
 test('object declaration', () => {
     forAll(tuple(string(), alpha({ minLength: 1 })), ([key, name]) => {

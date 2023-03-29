@@ -1,6 +1,6 @@
-import { $array } from '.'
+import { $array } from './index.js'
 
-import { $boolean, $string } from '..'
+import { $boolean, $string } from '../index.js'
 
 test('simple', () => {
     expect($array($boolean())).toMatchInlineSnapshot(`

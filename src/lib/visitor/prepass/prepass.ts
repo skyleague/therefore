@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import type { ThereforeNode } from '../../cst/cst'
-import { isThereforeNode } from '../../cst/cst'
-import type { ThereforeVisitor } from '../../cst/visitor'
-import { walkTherefore } from '../../cst/visitor'
-import type { ThereforeCst, ThereforeSchema } from '../../primitives/types'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { isThereforeNode } from '../../cst/cst.js'
+import type { ThereforeVisitor } from '../../cst/visitor.js'
+import { walkTherefore } from '../../cst/visitor.js'
+import type { ThereforeCst, ThereforeSchema } from '../../primitives/types.js'
 
 import { entriesOf, evaluate } from '@skyleague/axioms'
 

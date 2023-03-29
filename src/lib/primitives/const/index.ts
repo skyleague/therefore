@@ -1,1 +1,1 @@
-export { $const } from './const'
+export { $const } from './const.js'

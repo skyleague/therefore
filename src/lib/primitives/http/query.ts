@@ -1,9 +1,9 @@
-import type { ThereforeNode } from '../../cst/cst'
-import { isThereforeNode } from '../../cst/cst'
-import type { SchemaOptions } from '../base'
-import type { LazyObjectOptions, ObjectPropertiesArg } from '../object/object'
-import { $object } from '../object/object'
-import { $validator } from '../validator/validator'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { isThereforeNode } from '../../cst/cst.js'
+import type { SchemaOptions } from '../base.js'
+import type { LazyObjectOptions, ObjectPropertiesArg } from '../object/object.js'
+import { $object } from '../object/object.js'
+import { $validator } from '../validator/validator.js'
 
 /**
  * Create a new query parameters instance with the given options.

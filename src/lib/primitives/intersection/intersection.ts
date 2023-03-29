@@ -1,8 +1,8 @@
-import type { ThereforeNode } from '../../cst/cst'
-import { cstNode } from '../../cst/cst'
-import type { SchemaOptions } from '../base'
-import type { ObjectType } from '../object/object'
-import type { RefType } from '../ref/ref'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { cstNode } from '../../cst/cst.js'
+import type { SchemaOptions } from '../base.js'
+import type { ObjectType } from '../object/object.js'
+import type { RefType } from '../ref/ref.js'
 
 import { evaluate } from '@skyleague/axioms'
 

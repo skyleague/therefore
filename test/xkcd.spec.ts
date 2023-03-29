@@ -1,5 +1,5 @@
-import { XKCD } from '../examples/xkcd/xkcd.client'
-import type { Comic } from '../examples/xkcd/xkcd.type'
+import { XKCD } from '../examples/xkcd/xkcd.client.js'
+import type { Comic } from '../examples/xkcd/xkcd.type.js'
 
 describe('xkcd', () => {
     const client = new XKCD()

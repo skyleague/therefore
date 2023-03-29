@@ -1,5 +1,5 @@
-import { $jsonschema } from '..'
-import type { JsonSchema } from '../../../json'
+import type { JsonSchema } from '../../../json.js'
+import { $jsonschema } from '../index.js'
 
 import got from 'got'
 

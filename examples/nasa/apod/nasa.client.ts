@@ -6,8 +6,8 @@
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
-import { IncomingHttpHeaders } from 'http'
-import { GetApodResponse } from './nasa.type'
+import type { IncomingHttpHeaders } from 'http'
+import { GetApodResponse } from './nasa.type.js'
 
 /**
  * APOD
@@ -59,7 +59,7 @@ export class Apod {
             }),
             {
                 200: GetApodResponse,
-                400: { is: (x: unknown): x is unknown => true },
+                400: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }

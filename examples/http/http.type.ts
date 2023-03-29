@@ -11,7 +11,7 @@ export interface Headers {
 }
 
 export const Headers = {
-    validate: require('./schemas/headers.schema.js') as ValidateFunction<Headers>,
+    validate: (await import('./schemas/headers.schema.js')).validate10 as unknown as ValidateFunction<Headers>,
     get schema() {
         return Headers.validate.schema
     },
@@ -31,7 +31,7 @@ export interface Query {
 }
 
 export const Query = {
-    validate: require('./schemas/query.schema.js') as ValidateFunction<Query>,
+    validate: (await import('./schemas/query.schema.js')).validate10 as unknown as ValidateFunction<Query>,
     get schema() {
         return Query.validate.schema
     },

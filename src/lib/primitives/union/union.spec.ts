@@ -1,6 +1,6 @@
-import { $union } from '.'
+import { $union } from './index.js'
 
-import { $string } from '..'
+import { $string } from '../index.js'
 
 test('function', () => {
     expect($union).toMatchInlineSnapshot(`[Function]`)

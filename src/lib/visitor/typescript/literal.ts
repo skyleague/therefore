@@ -1,7 +1,7 @@
 import { isAlphaNumeric, isDigits } from '@skyleague/axioms'
 
 export function objectProperty(x: string) {
-    if (x.includes('.') || x.includes('-')) {
+    if (x.includes('.') || x.includes('-') || x.includes(' ')) {
         return `[${stringLiteral(x, { allowBacktick: true })}]`
     }
     return x
@@ -32,7 +32,7 @@ export function toLiteral(obj: unknown): string {
             } else {
                 return `{ ${Object.entries(n)
                     .map(([k, v]) =>
-                        isAlphaNumeric(k) && k.length > 0 && !isDigits(k[0])
+                        isAlphaNumeric(k) && k.length > 0 && !isDigits(k[0]!)
                             ? `${k}: ${walker[typeof v](v)}`
                             : `${stringLiteral(k)}: ${walker[typeof v](v)}`
                     )

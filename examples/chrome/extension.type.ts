@@ -410,7 +410,7 @@ export interface Extension {
 }
 
 export const Extension = {
-    validate: require('./schemas/extension.schema.js') as ValidateFunction<Extension>,
+    validate: (await import('./schemas/extension.schema.js')).validate10 as unknown as ValidateFunction<Extension>,
     get schema() {
         return Extension.validate.schema
     },

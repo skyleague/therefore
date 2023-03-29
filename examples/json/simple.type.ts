@@ -9,7 +9,7 @@ import type { ValidateFunction } from 'ajv'
 export type Simple = number | Simple[]
 
 export const Simple = {
-    validate: require('./schemas/simple.schema.js') as ValidateFunction<Simple>,
+    validate: (await import('./schemas/simple.schema.js')).validate10 as unknown as ValidateFunction<Simple>,
     get schema() {
         return Simple.validate.schema
     },

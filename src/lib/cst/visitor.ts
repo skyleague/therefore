@@ -1,6 +1,6 @@
-import type { ThereforeNode } from './cst'
+import type { ThereforeNode } from './cst.js'
 
-import type { ThereforeCst, ThereforeSchema } from '../primitives/types'
+import type { ThereforeCst, ThereforeSchema } from '../primitives/types.js'
 
 export type ThereforeVisitor<R, C = unknown, Cst extends ThereforeNode = ThereforeSchema> = {
     default: (node: Cst, context: C) => R

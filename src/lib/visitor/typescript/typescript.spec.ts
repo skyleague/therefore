@@ -1,4 +1,4 @@
-import type { TypescriptWalkerContext } from './typescript'
+import type { TypescriptWalkerContext } from './typescript.js'
 import {
     typeDefinitionVisitor,
     toTypescriptDefinition,
@@ -6,9 +6,9 @@ import {
     readonly,
     optional,
     getIndexSignatureType,
-} from './typescript'
+} from './typescript.js'
 
-import { walkTherefore } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor.js'
 import {
     $array,
     $boolean,
@@ -26,7 +26,7 @@ import {
     $tuple,
     $union,
     $unknown,
-} from '../../primitives'
+} from '../../primitives/index.js'
 
 import { alphaNumeric, forAll, omitUndefined } from '@skyleague/axioms'
 
@@ -734,12 +734,12 @@ describe('toTypeDefinition', () => {
         } as unknown as TypescriptWalkerContext)
     ).toMatchInlineSnapshot(`
         {
-          "declaration": "interface {{undefined:symbolName}} {
+          "declaration": "interface {{0003-000:symbolName}} {
             foo: string
             [k: string]: number
         }
         ",
-          "referenceName": "{{undefined:symbolName}}",
+          "referenceName": "{{0003-000:symbolName}}",
           "render": [Function],
           "sourceSymbol": undefined,
         }

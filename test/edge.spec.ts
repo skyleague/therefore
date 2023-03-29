@@ -1,4 +1,4 @@
-import { Edges } from '../examples/edges/edges.client'
+import { Edges } from '../examples/edges/edges.client.js'
 
 import { eitherToError } from '@skyleague/axioms'
 import nock from 'nock'

@@ -1,1 +1,1 @@
-export { UnionOptions, UnionType, $union } from './union'
+export { type UnionOptions, type UnionType, $union } from './union.js'

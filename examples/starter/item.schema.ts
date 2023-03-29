@@ -1,4 +1,4 @@
-import { $object, $string, $ref, $number, $enum, $optional, $validator } from '../../src'
+import { $object, $string, $ref, $number, $enum, $optional, $validator } from '../../src/index.js'
 
 export const size = $enum(['XS', 'S', 'M', 'L', 'XL'])
 

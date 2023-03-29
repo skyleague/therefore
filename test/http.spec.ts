@@ -1,4 +1,4 @@
-import { Headers, Query } from '../examples/http/http.type'
+import { Headers, Query } from '../examples/http/http.type.js'
 
 import { dict, forAll, integer, isNumber, string, tuple, unknown } from '@skyleague/axioms'
 

@@ -1,5 +1,5 @@
-import type { OpenapiV3 } from '../../src'
-import { $restclient } from '../../src'
+import type { OpenapiV3 } from '../../src/index.js'
+import { $restclient } from '../../src/index.js'
 
 import got from 'got'
 import yaml from 'js-yaml'
@@ -14,7 +14,7 @@ export const banking = got
         return $restclient(content, {
             transformOpenapi: (api) => {
                 api.paths = {
-                    '/file-payment-consents/{ConsentId}/file': api.paths['/file-payment-consents/{ConsentId}/file'],
+                    '/file-payment-consents/{ConsentId}/file': api.paths['/file-payment-consents/{ConsentId}/file']!,
                 }
                 return api
             },

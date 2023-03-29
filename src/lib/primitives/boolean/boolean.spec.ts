@@ -1,4 +1,4 @@
-import { $boolean } from '.'
+import { $boolean } from './index.js'
 
 test('function', () => {
     expect($boolean).toMatchInlineSnapshot(`[Function]`)

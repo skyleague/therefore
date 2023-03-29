@@ -6,8 +6,8 @@
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
-import { IncomingHttpHeaders } from 'http'
-import { GetApiByResponse200, Project } from './nasa.type'
+import type { IncomingHttpHeaders } from 'http'
+import { GetApiByResponse200, Project } from './nasa.type.js'
 
 /**
  * TechPort
@@ -32,7 +32,7 @@ export class Astroids {
      */
     public async getApi() {
         return this.awaitResponse(this.client.get(`api`, {}), {
-            200: { is: (x: unknown): x is string => true },
+            200: { is: (_x: unknown): _x is string => true },
         })
     }
 

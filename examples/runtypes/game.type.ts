@@ -12,6 +12,17 @@ export interface Asteroid {
     mass: number
 }
 
+export interface CrewMember {
+    name: string
+    age: number
+    rank: Rank
+    home: Planet
+}
+
+export interface Fleet {
+    [k: string]: Ship | undefined
+}
+
 export interface Planet {
     type: 'planet'
     location: Vector
@@ -22,13 +33,6 @@ export interface Planet {
 
 export type Rank = 'captain' | 'first mate' | 'officer' | 'ensign'
 
-export interface CrewMember {
-    name: string
-    age: number
-    rank: Rank
-    home: Planet
-}
-
 export interface Ship {
     type: 'ship'
     location: Vector
@@ -37,14 +41,10 @@ export interface Ship {
     crew: CrewMember[]
 }
 
-export interface Fleet {
-    [k: string]: Ship | undefined
-}
-
 export type SpaceObject = Asteroid | Planet | Ship
 
 export const SpaceObject = {
-    validate: require('./schemas/space-object.schema.js') as ValidateFunction<SpaceObject>,
+    validate: (await import('./schemas/space-object.schema.js')).validate10 as unknown as ValidateFunction<SpaceObject>,
     get schema() {
         return SpaceObject.validate.schema
     },

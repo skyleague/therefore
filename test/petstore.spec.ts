@@ -1,4 +1,4 @@
-import { PetStore } from '../examples/petstore/petstore.client'
+import { PetStore } from '../examples/petstore/petstore.client.js'
 import {
     Pet,
     FindPetsByStatusResponse,
@@ -9,8 +9,8 @@ import {
     User,
     CreateUsersWithListInputRequest,
     LoginUserResponse,
-} from '../examples/petstore/petstore.type'
-import { arbitrary } from '../src'
+} from '../examples/petstore/petstore.type.js'
+import { arbitrary } from '../src/index.js'
 
 import { eitherToError, forAll } from '@skyleague/axioms'
 import nock from 'nock'

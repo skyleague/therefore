@@ -14,7 +14,7 @@ export interface Defaults {
 }
 
 export const Defaults = {
-    validate: require('./schemas/defaults.schema.js') as ValidateFunction<Defaults>,
+    validate: (await import('./schemas/defaults.schema.js')).validate10 as unknown as ValidateFunction<Defaults>,
     get schema() {
         return Defaults.validate.schema
     },

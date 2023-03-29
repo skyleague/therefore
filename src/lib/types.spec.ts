@@ -1,6 +1,6 @@
-import type { InferSchemaType, Schema } from './types'
+import type { InferSchemaType, Schema } from './types.js'
 
-import { Comic } from '../../examples/xkcd/xkcd.type'
+import { Comic } from '../../examples/xkcd/xkcd.type.js'
 
 test('Schema o InferSchemaType === identity', () => {
     type Foo = number | string

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { arbitrary } from './arbitrary'
+import { arbitrary } from './arbitrary.js'
 
-import { $array, $boolean, $integer, $null, $object } from '../../primitives'
-import { $number } from '../../primitives/number'
-import { $optional } from '../../primitives/optional'
-import { $string } from '../../primitives/string'
-import { $unknown } from '../../primitives/unknown'
+import { $array, $boolean, $integer, $null, $object } from '../../primitives/index.js'
+import { $number } from '../../primitives/number/index.js'
+import { $optional } from '../../primitives/optional/index.js'
+import { $string } from '../../primitives/string/index.js'
+import { $unknown } from '../../primitives/unknown/index.js'
 
 import {
     forAll,

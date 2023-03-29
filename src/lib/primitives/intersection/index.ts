@@ -1,1 +1,1 @@
-export { IntersectionOptions, IntersectionType, $intersection } from './intersection'
+export { type IntersectionOptions, type IntersectionType, $intersection } from './intersection.js'

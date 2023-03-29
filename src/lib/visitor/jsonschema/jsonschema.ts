@@ -1,18 +1,22 @@
-import type { JsonSchemaValidator } from '../../../commands/generate/types'
-import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json'
-import { defaultAjvConfig } from '../../ajv/defaults'
-import type { ThereforeNode } from '../../cst/cst'
-import type { ThereforeVisitor } from '../../cst/visitor'
-import { walkTherefore } from '../../cst/visitor'
-import { isNamedArray } from '../../guard'
-import type { MetaDescription, SchemaMeta } from '../../primitives/base'
-import type { ThereforeCst } from '../../primitives/types'
+import type { JsonSchemaValidator } from '../../../commands/generate/types.js'
+import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json.js'
+import { defaultAjvConfig } from '../../ajv/defaults.js'
+import type { ThereforeNode } from '../../cst/cst.js'
+import type { ThereforeVisitor } from '../../cst/visitor.js'
+import { walkTherefore } from '../../cst/visitor.js'
+import { isNamedArray } from '../../guard.js'
+import type { MetaDescription, SchemaMeta } from '../../primitives/base.js'
+import type { ThereforeCst } from '../../primitives/types.js'
 
 import type { RelaxedPartial } from '@skyleague/axioms'
 import { asArray, evaluate, omit, omitUndefined } from '@skyleague/axioms'
 import type { Options as AjvOptions } from 'ajv'
-import Ajv from 'ajv'
-import standaloneCode from 'ajv/dist/standalone'
+import _Ajv from 'ajv'
+import _standaloneCode from 'ajv/dist/standalone/index.js'
+import { transform } from 'esbuild'
+
+const Ajv = _Ajv.default ?? _Ajv
+const standaloneCode = _standaloneCode.default ?? _standaloneCode
 
 export interface JsonSchemaWalkerContext {
     defaults: {
@@ -212,9 +216,9 @@ export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
     }
 }
 
-export function toJsonSchema(obj: ThereforeCst, compile: true): Extract<JsonSchemaValidator, { compiled: true }>
-export function toJsonSchema(obj: ThereforeCst, compile?: boolean): JsonSchemaValidator
-export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaValidator {
+export async function toJsonSchema(obj: ThereforeCst, compile: true): Promise<Extract<JsonSchemaValidator, { compiled: true }>>
+export async function toJsonSchema(obj: ThereforeCst, compile?: boolean): Promise<JsonSchemaValidator>
+export async function toJsonSchema(obj: ThereforeCst, compile = false): Promise<JsonSchemaValidator> {
     const context = jsonSchemaContext(obj)
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
@@ -228,12 +232,29 @@ export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaVali
     if (compile) {
         const ajv = new Ajv(context.ajvOptions)
         const validator = ajv.compile(definition)
+        let code = standaloneCode(ajv, validator)
+        code = code.replace('module.exports = validate10;module.exports.default = validate10', 'export {validate10}')
+        code = `${code};validate10.schema=schema11;`
+        if (code.includes('require(')) {
+            code = `import {createRequire} from 'module';const require = createRequire(import.meta.url);${code}`
+        }
+        code = (
+            await transform(code, {
+                platform: 'node',
+                target: 'esnext',
+                format: 'esm',
+                minify: true,
+            })
+        ).code
+
         return {
             schema: definition,
-            code: `${standaloneCode(ajv, validator)};validate10.schema=schema11;`,
+            code,
             validator,
             compiled: true,
         }
     }
     return { schema: definition, compiled: false }
 }
+
+export { toJsonSchema as toSchema }
