@@ -1,4 +1,4 @@
-import type { SpaceObject } from './game.type'
+import type { SpaceObject } from './game.type.js'
 
 function isHabitable(obj: SpaceObject): boolean {
     switch (obj.type) {

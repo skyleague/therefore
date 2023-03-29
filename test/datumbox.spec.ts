@@ -1,5 +1,5 @@
-import {} from '../examples/datumbox/datumbox.type'
-import { compileOutputFiles } from '../src/commands/generate/generate'
+import {} from '../examples/datumbox/datumbox.type.js'
+import { compileOutputFiles } from '../src/commands/generate/generate.js'
 
 test('output generation', async () => {
     expect(

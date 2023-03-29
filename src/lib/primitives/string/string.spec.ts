@@ -1,4 +1,4 @@
-import { $string } from '.'
+import { $string } from './index.js'
 
 test('function', () => {
     expect($string).toMatchInlineSnapshot(`[Function]`)

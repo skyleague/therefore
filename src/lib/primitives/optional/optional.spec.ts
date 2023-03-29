@@ -1,6 +1,6 @@
-import { $optional } from '.'
+import { $optional } from './index.js'
 
-import { $string } from '..'
+import { $string } from '../index.js'
 
 test('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`

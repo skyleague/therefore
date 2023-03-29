@@ -1,6 +1,6 @@
-import { $nullable } from '.'
+import { $nullable } from './index.js'
 
-import { $string } from '..'
+import { $string } from '../index.js'
 
 test('string', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`

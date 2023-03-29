@@ -1,14 +1,16 @@
-import { generatedBy } from './constants'
-import { requireReference } from './reference'
-import type { FileDefinition, OutputFile, ReferenceData, TypescriptDefinition } from './types'
+import { generatedBy } from './constants.js'
+import { requireReference } from './reference.js'
+import type { FileDefinition, OutputFile, ReferenceData, TypescriptDefinition } from './types.js'
 
-import { version } from '../../../package.json'
-import { writeThereforeSchema } from '../../lib/visitor/typescript/typescript'
-import { createWriter } from '../../lib/writer'
+import packageJson from '../../../package.json' assert { type: 'json' }
+import { writeThereforeSchema } from '../../lib/visitor/typescript/typescript.js'
+import { createWriter } from '../../lib/writer.js'
+
+import { evaluate, hasPropertiesDefined, unique } from '@skyleague/axioms'
 
 import path from 'path'
 
-import { evaluate, hasPropertiesDefined, unique } from '@skyleague/axioms'
+const { version } = packageJson
 
 export function renderTypescriptSchema(definition: FileDefinition) {
     const writer = createWriter()
@@ -23,7 +25,7 @@ export function renderTypescriptSchema(definition: FileDefinition) {
     for (const importFile of definition.symbols
         .filter(hasPropertiesDefined(['schemaFile']))
         .filter((i) => !i.typeOnly && i.compiledFile === undefined)
-        .map((i) => `import ${i.symbolName}Schema from '${i.schemaFile}'`)
+        .map((i) => `import ${i.symbolName}Schema from '${i.schemaFile}.js'`)
         .sort()) {
         writer.writeLine(importFile)
     }
@@ -40,7 +42,7 @@ export function renderTypescriptSchema(definition: FileDefinition) {
         .filter(({ targetPath }) => targetPath !== definition.targetPath)
         .map(({ targetPath: f, deps }) => {
             const otherPath = path.relative(path.dirname(definition.targetPath), f).replace('.ts', '').replace(/\\/g, '/')
-            return `import ${deps} from '${otherPath.startsWith('.') ? otherPath : `./${otherPath}`}'`
+            return `import ${deps} from '${otherPath.startsWith('.') ? otherPath : `./${otherPath}`}.js'`
         })
         .sort()) {
         writer.writeLine(importFile)
@@ -78,7 +80,7 @@ export function resolveTypescriptSchema({
     outputFiles: OutputFile[]
     localReferences: Record<string, ReferenceData>
 }) {
-    const definition = definitions[targetPath]
+    const definition = definitions[targetPath]!
     const locals: NonNullable<TypescriptDefinition['locals']> = {}
     const required = definition.symbols
         .flatMap((i) =>

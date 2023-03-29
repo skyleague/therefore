@@ -1,7 +1,7 @@
-import type { JsonStringInstance } from '../../../json'
-import type { ThereforeNode } from '../../cst/cst'
-import { cstNode } from '../../cst/cst'
-import type { SchemaOptions } from '../base'
+import type { JsonStringInstance } from '../../../json.js'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { cstNode } from '../../cst/cst.js'
+import type { SchemaOptions } from '../base.js'
 
 export interface StringOptions {
     /**

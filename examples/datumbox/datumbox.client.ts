@@ -6,7 +6,7 @@
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
-import { IncomingHttpHeaders } from 'http'
+import type { IncomingHttpHeaders } from 'http'
 import {
     AdultContentDetectionRequest,
     CommercialDetectionRequest,
@@ -22,7 +22,7 @@ import {
     TextExtractionRequest,
     TopicClassificationRequest,
     TwitterSentimentAnalysisRequest,
-} from './datumbox.type'
+} from './datumbox.type.js'
 
 /**
  * api.datumbox.com
@@ -55,7 +55,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -73,7 +73,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -91,7 +91,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -109,7 +109,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -127,7 +127,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -145,7 +145,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -163,7 +163,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -181,7 +181,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -199,7 +199,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -217,7 +217,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -235,7 +235,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -253,7 +253,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -271,7 +271,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -289,7 +289,7 @@ export class PetStore {
                 form: body,
             }),
             {
-                200: { is: (x: unknown): x is string => true },
+                200: { is: (_x: unknown): _x is string => true },
             }
         )
     }

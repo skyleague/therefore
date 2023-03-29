@@ -1,1 +1,1 @@
-export { $array, ArrayOptions, ArrayType } from './array'
+export { $array, type ArrayOptions, type ArrayType } from './array.js'

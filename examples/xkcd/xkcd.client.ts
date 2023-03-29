@@ -5,7 +5,7 @@
 /* eslint-disable */
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
-import { Comic } from './xkcd.type'
+import { Comic } from './xkcd.type.js'
 
 /**
  * XKCD

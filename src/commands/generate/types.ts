@@ -1,6 +1,6 @@
-import type { JsonSchema } from '../../json'
-import type { ThereforeExpr } from '../../lib/cst/cst'
-import type { RefType } from '../../lib/primitives'
+import type { JsonSchema } from '../../json.js'
+import type { ThereforeExpr } from '../../lib/cst/cst.js'
+import type { RefType } from '../../lib/primitives/index.js'
 
 import type { ValidateFunction } from 'ajv'
 

@@ -1,4 +1,4 @@
-import { compileOutputFiles } from '../src/commands/generate/generate'
+import { compileOutputFiles } from '../src/commands/generate/generate.js'
 
 describe('schema', () => {
     test('typedoc', async () => {

@@ -1,6 +1,6 @@
-import { $dict } from './dict'
+import { $dict } from './dict.js'
 
-import { $string } from '../string'
+import { $string } from '../string/index.js'
 
 test('function', () => {
     expect($dict).toMatchInlineSnapshot(`[Function]`)

@@ -21,7 +21,7 @@ export interface Comic {
 }
 
 export const Comic = {
-    validate: require('./schemas/comic.schema.js') as ValidateFunction<Comic>,
+    validate: (await import('./schemas/comic.schema.js')).validate10 as unknown as ValidateFunction<Comic>,
     get schema() {
         return Comic.validate.schema
     },

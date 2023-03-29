@@ -1,23 +1,21 @@
-import { build } from 'esbuild'
+import glob from 'fast-glob'
 
-import { execSync } from 'child_process'
-import path from 'path'
+import { execFileSync } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
-const { jsonLoaderPlugin, nodeExternalsPlugin } = require('@skyleague/node-standards/esbuild.plugins')
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function main() {
-    execSync('npx tsc -p tsconfig.dist.json --emitDeclarationOnly')
+    execFileSync(`rm`, ['-rf', 'dist'], { stdio: 'inherit', cwd: __dirname })
+    execFileSync('npx', ['tsc', '-p', 'tsconfig.dist.json'], { stdio: 'inherit', cwd: __dirname })
 
-    await build({
-        bundle: true,
-        sourcemap: true,
-        platform: 'node',
-        outfile: path.join(__dirname, '.main.js'),
-        entryPoints: [path.join(__dirname, 'index.ts')],
-        treeShaking: true,
-        plugins: [jsonLoaderPlugin, nodeExternalsPlugin],
-    })
+    const srcDir = path.join(__dirname, 'src')
+    await Promise.all(
+        [...new Set((await glob(path.join(srcDir, '**/*.schema.js'))).map((x) => path.dirname(x)))].map((d) =>
+            fs.promises.cp(d, path.join(__dirname, 'dist', path.relative(srcDir, d)), { recursive: true })
+        )
+    )
 }
 main().catch((err) => {
     console.error(err)

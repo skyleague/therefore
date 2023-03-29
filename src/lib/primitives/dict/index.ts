@@ -1,1 +1,1 @@
-export { DictOptions, $dict, DictType } from './dict'
+export { type DictOptions, $dict, type DictType } from './dict.js'

@@ -1,9 +1,9 @@
-import { $ref } from './ref'
+import { $ref } from './ref.js'
 
-import { $array } from '../array'
-import { $dict } from '../dict'
-import { $string } from '../string'
-import { $union } from '../union'
+import { $array } from '../array/index.js'
+import { $dict } from '../dict/index.js'
+import { $string } from '../string/index.js'
+import { $union } from '../union/index.js'
 
 const foo = $dict($string)
 test('function', () => {
@@ -19,11 +19,13 @@ test('expand', () => {
                 {
                   "description": {},
                   "type": "string",
+                  "uuid": "0001-000",
                   "value": {},
                 },
               ],
               "description": {},
               "type": "dict",
+              "uuid": "0002-000",
               "value": {},
             },
           ],

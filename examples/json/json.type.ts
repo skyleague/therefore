@@ -17,7 +17,7 @@ export type Json =
     | Json[]
 
 export const Json = {
-    validate: require('./schemas/json.schema.js') as ValidateFunction<Json>,
+    validate: (await import('./schemas/json.schema.js')).validate10 as unknown as ValidateFunction<Json>,
     get schema() {
         return Json.validate.schema
     },
@@ -30,7 +30,7 @@ export const Json = {
 export type JsonAdv = JsonLocal
 
 export const JsonAdv = {
-    validate: require('./schemas/json-adv.schema.js') as ValidateFunction<JsonAdv>,
+    validate: (await import('./schemas/json-adv.schema.js')).validate10 as unknown as ValidateFunction<JsonAdv>,
     get schema() {
         return JsonAdv.validate.schema
     },

@@ -133,7 +133,7 @@ export interface Project {
 }
 
 export const Project = {
-    validate: require('./schemas/project.schema.js') as ValidateFunction<Project>,
+    validate: (await import('./schemas/project.schema.js')).validate10 as unknown as ValidateFunction<Project>,
     get schema() {
         return Project.validate.schema
     },
@@ -149,7 +149,8 @@ export interface GetApiByResponse200 {
 }
 
 export const GetApiByResponse200 = {
-    validate: require('./schemas/get-api-by-response200.schema.js') as ValidateFunction<GetApiByResponse200>,
+    validate: (await import('./schemas/get-api-by-response200.schema.js'))
+        .validate10 as unknown as ValidateFunction<GetApiByResponse200>,
     get schema() {
         return GetApiByResponse200.validate.schema
     },

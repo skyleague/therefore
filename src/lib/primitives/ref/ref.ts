@@ -1,6 +1,6 @@
-import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
-import { isThereforeNode, cstNode } from '../../cst/cst'
-import type { SchemaOptions } from '../base'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst.js'
+import { isThereforeNode, cstNode } from '../../cst/cst.js'
+import type { SchemaOptions } from '../base.js'
 
 import { omit, isArray, isFunction, isTuple } from '@skyleague/axioms'
 
