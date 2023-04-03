@@ -1,6 +1,6 @@
-import type { ThereforeNode } from '../../cst/cst'
-import { cstNode } from '../../cst/cst'
-import type { SchemaOptions } from '../base'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { cstNode } from '../../cst/cst.js'
+import type { SchemaOptions } from '../base.js'
 
 /**
  * @category Primitives

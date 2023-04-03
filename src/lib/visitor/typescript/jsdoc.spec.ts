@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { toJSDoc } from './jsdoc'
+import { toJSDoc } from './jsdoc.js'
 
 import { array, boolean, forAll, json, object, string, tuple } from '@skyleague/axioms'
 

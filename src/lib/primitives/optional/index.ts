@@ -1,1 +1,1 @@
-export { $optional } from './optional'
+export { $optional } from './optional.js'

@@ -1,1 +1,1 @@
-export { NullOptions, $null, NullType } from './null'
+export { type NullOptions, $null, type NullType } from './null.js'

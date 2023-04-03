@@ -18,7 +18,8 @@ export interface AdultContentDetectionRequest {
 }
 
 export const AdultContentDetectionRequest = {
-    validate: require('./schemas/adult-content-detection-request.schema.js') as ValidateFunction<AdultContentDetectionRequest>,
+    validate: (await import('./schemas/adult-content-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<AdultContentDetectionRequest>,
     get schema() {
         return AdultContentDetectionRequest.validate.schema
     },
@@ -45,7 +46,8 @@ export interface CommercialDetectionRequest {
 }
 
 export const CommercialDetectionRequest = {
-    validate: require('./schemas/commercial-detection-request.schema.js') as ValidateFunction<CommercialDetectionRequest>,
+    validate: (await import('./schemas/commercial-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<CommercialDetectionRequest>,
     get schema() {
         return CommercialDetectionRequest.validate.schema
     },
@@ -76,7 +78,8 @@ export interface DocumentSimilarityRequest {
 }
 
 export const DocumentSimilarityRequest = {
-    validate: require('./schemas/document-similarity-request.schema.js') as ValidateFunction<DocumentSimilarityRequest>,
+    validate: (await import('./schemas/document-similarity-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<DocumentSimilarityRequest>,
     get schema() {
         return DocumentSimilarityRequest.validate.schema
     },
@@ -103,7 +106,8 @@ export interface EducationalDetectionRequest {
 }
 
 export const EducationalDetectionRequest = {
-    validate: require('./schemas/educational-detection-request.schema.js') as ValidateFunction<EducationalDetectionRequest>,
+    validate: (await import('./schemas/educational-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<EducationalDetectionRequest>,
     get schema() {
         return EducationalDetectionRequest.validate.schema
     },
@@ -130,7 +134,8 @@ export interface GenderDetectionRequest {
 }
 
 export const GenderDetectionRequest = {
-    validate: require('./schemas/gender-detection-request.schema.js') as ValidateFunction<GenderDetectionRequest>,
+    validate: (await import('./schemas/gender-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<GenderDetectionRequest>,
     get schema() {
         return GenderDetectionRequest.validate.schema
     },
@@ -161,7 +166,8 @@ export interface KeywordExtractionRequest {
 }
 
 export const KeywordExtractionRequest = {
-    validate: require('./schemas/keyword-extraction-request.schema.js') as ValidateFunction<KeywordExtractionRequest>,
+    validate: (await import('./schemas/keyword-extraction-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<KeywordExtractionRequest>,
     get schema() {
         return KeywordExtractionRequest.validate.schema
     },
@@ -188,7 +194,8 @@ export interface LanguageDetectionRequest {
 }
 
 export const LanguageDetectionRequest = {
-    validate: require('./schemas/language-detection-request.schema.js') as ValidateFunction<LanguageDetectionRequest>,
+    validate: (await import('./schemas/language-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<LanguageDetectionRequest>,
     get schema() {
         return LanguageDetectionRequest.validate.schema
     },
@@ -215,7 +222,8 @@ export interface ReadabilityAssessmentRequest {
 }
 
 export const ReadabilityAssessmentRequest = {
-    validate: require('./schemas/readability-assessment-request.schema.js') as ValidateFunction<ReadabilityAssessmentRequest>,
+    validate: (await import('./schemas/readability-assessment-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<ReadabilityAssessmentRequest>,
     get schema() {
         return ReadabilityAssessmentRequest.validate.schema
     },
@@ -242,7 +250,8 @@ export interface SentimentAnalysisRequest {
 }
 
 export const SentimentAnalysisRequest = {
-    validate: require('./schemas/sentiment-analysis-request.schema.js') as ValidateFunction<SentimentAnalysisRequest>,
+    validate: (await import('./schemas/sentiment-analysis-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<SentimentAnalysisRequest>,
     get schema() {
         return SentimentAnalysisRequest.validate.schema
     },
@@ -269,7 +278,8 @@ export interface SpamDetectionRequest {
 }
 
 export const SpamDetectionRequest = {
-    validate: require('./schemas/spam-detection-request.schema.js') as ValidateFunction<SpamDetectionRequest>,
+    validate: (await import('./schemas/spam-detection-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<SpamDetectionRequest>,
     get schema() {
         return SpamDetectionRequest.validate.schema
     },
@@ -296,7 +306,8 @@ export interface SubjectivityAnalysisRequest {
 }
 
 export const SubjectivityAnalysisRequest = {
-    validate: require('./schemas/subjectivity-analysis-request.schema.js') as ValidateFunction<SubjectivityAnalysisRequest>,
+    validate: (await import('./schemas/subjectivity-analysis-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<SubjectivityAnalysisRequest>,
     get schema() {
         return SubjectivityAnalysisRequest.validate.schema
     },
@@ -323,7 +334,8 @@ export interface TextExtractionRequest {
 }
 
 export const TextExtractionRequest = {
-    validate: require('./schemas/text-extraction-request.schema.js') as ValidateFunction<TextExtractionRequest>,
+    validate: (await import('./schemas/text-extraction-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<TextExtractionRequest>,
     get schema() {
         return TextExtractionRequest.validate.schema
     },
@@ -350,7 +362,8 @@ export interface TopicClassificationRequest {
 }
 
 export const TopicClassificationRequest = {
-    validate: require('./schemas/topic-classification-request.schema.js') as ValidateFunction<TopicClassificationRequest>,
+    validate: (await import('./schemas/topic-classification-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<TopicClassificationRequest>,
     get schema() {
         return TopicClassificationRequest.validate.schema
     },
@@ -377,8 +390,8 @@ export interface TwitterSentimentAnalysisRequest {
 }
 
 export const TwitterSentimentAnalysisRequest = {
-    validate:
-        require('./schemas/twitter-sentiment-analysis-request.schema.js') as ValidateFunction<TwitterSentimentAnalysisRequest>,
+    validate: (await import('./schemas/twitter-sentiment-analysis-request.schema.js'))
+        .validate10 as unknown as ValidateFunction<TwitterSentimentAnalysisRequest>,
     get schema() {
         return TwitterSentimentAnalysisRequest.validate.schema
     },

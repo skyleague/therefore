@@ -11,7 +11,7 @@ export interface File {
 }
 
 export const File = {
-    validate: require('./schemas/file.schema.js') as ValidateFunction<File>,
+    validate: (await import('./schemas/file.schema.js')).validate10 as unknown as ValidateFunction<File>,
     get schema() {
         return File.validate.schema
     },
@@ -46,7 +46,8 @@ export interface OBErrorResponse1 {
 }
 
 export const OBErrorResponse1 = {
-    validate: require('./schemas/ob-error-response1.schema.js') as ValidateFunction<OBErrorResponse1>,
+    validate: (await import('./schemas/ob-error-response1.schema.js'))
+        .validate10 as unknown as ValidateFunction<OBErrorResponse1>,
     get schema() {
         return OBErrorResponse1.validate.schema
     },

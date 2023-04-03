@@ -1,5 +1,5 @@
-import type { MetaDescription, SchemaMeta, SchemaOptions, TypeDiscriminator } from '../primitives/base'
-import { descriptionKeys } from '../primitives/base'
+import type { MetaDescription, SchemaMeta, SchemaOptions, TypeDiscriminator } from '../primitives/base.js'
+import { descriptionKeys } from '../primitives/base.js'
 
 import type { RequireKeys } from '@skyleague/axioms'
 import { omit, omitUndefined, pick, isObject } from '@skyleague/axioms'
@@ -43,8 +43,7 @@ export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly un
 export function isNamedCstNodeArray<T extends ThereforeNode>(
     x: Omit<T, 'name'>[] | RequireKeys<T, 'name'>[]
 ): x is RequireKeys<T, 'name'>[] {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    return x.length > 0 && 'name' in x[0] && x[0] !== undefined
+    return x.length > 0 && x[0] !== undefined && 'name' in x[0]
 }
 
 /**

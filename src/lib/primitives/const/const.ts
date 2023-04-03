@@ -1,6 +1,6 @@
-import type { SchemaOptions } from '../base'
-import type { EnumOptions, EnumType } from '../enum'
-import { $enum } from '../enum'
+import type { SchemaOptions } from '../base.js'
+import type { EnumOptions, EnumType } from '../enum/index.js'
+import { $enum } from '../enum/index.js'
 
 import type { Json } from '@skyleague/axioms'
 

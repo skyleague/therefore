@@ -1,4 +1,4 @@
-import { objectProperty, toLiteral } from './literal'
+import { objectProperty, toLiteral } from './literal.js'
 
 import { forAll, json, equal, string, tuple } from '@skyleague/axioms'
 

@@ -13,18 +13,18 @@ import type {
     SecurityScheme,
     Server,
     Response,
-} from './openapi.type'
+} from './openapi.type.js'
 
-import { jsonPointer } from '../../../common/json/json'
-import type { JsonSchema } from '../../../json'
-import type { ThereforeNode } from '../../cst/cst'
-import { cstNode } from '../../cst/cst'
-import { annotate } from '../../visitor/jsonschema/jsonschema'
-import { toJSDoc } from '../../visitor/typescript/jsdoc'
-import { objectProperty } from '../../visitor/typescript/literal'
-import { createWriter } from '../../writer'
-import { $jsonschema } from '../jsonschema'
-import type { CustomType, ThereforeCst } from '../types'
+import { jsonPointer } from '../../../common/json/json.js'
+import type { JsonSchema } from '../../../json.js'
+import type { ThereforeNode } from '../../cst/cst.js'
+import { cstNode } from '../../cst/cst.js'
+import { annotate } from '../../visitor/jsonschema/jsonschema.js'
+import { toJSDoc } from '../../visitor/typescript/jsdoc.js'
+import { objectProperty } from '../../visitor/typescript/literal.js'
+import { createWriter } from '../../writer.js'
+import { $jsonschema } from '../jsonschema/index.js'
+import type { CustomType, ThereforeCst } from '../types.js'
 
 import { entriesOf, fromEntries, hasPropertiesDefined, isDefined, keysOf, omitUndefined, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
@@ -161,10 +161,10 @@ export function getRequestBody({
     return undefined
 }
 
-const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
+const capitalize = (s: string) => s && s[0]!.toUpperCase() + s.slice(1)
 
-export const isStringIs = '{is: (x: unknown): x is string => true}'
-export const isUnknownIs = '{is: (x: unknown): x is unknown => true}'
+export const isStringIs = '{is: (_x: unknown): _x is string => true}'
+export const isUnknownIs = '{is: (_x: unknown): _x is unknown => true}'
 
 export function getResponseBodies({
     responses,
@@ -769,7 +769,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                             ]
                                             if (found.length === 1) {
                                                 responseType = found[0] as typeof responseType
-                                                writer.write(`responseType: '${found[0]}',`)
+                                                writer.write(`responseType: '${found[0]!}',`)
                                             }
                                         }
                                     })
@@ -917,7 +917,10 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     `import type { CancelableRequest, Got, Options, Response } from 'got'`,
                     `import got from 'got'`,
                     ...(generateAwaitResponse && useEither
-                        ? [`import type { ValidateFunction, ErrorObject } from 'ajv'`, `import {IncomingHttpHeaders} from 'http'`]
+                        ? [
+                              `import type { ValidateFunction, ErrorObject } from 'ajv'`,
+                              `import type {IncomingHttpHeaders} from 'http'`,
+                          ]
                         : []),
                 ],
                 declaration: writer.toString(),

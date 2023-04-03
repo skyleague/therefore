@@ -1,1 +1,1 @@
-export { renderTemplate } from './template'
+export { renderTemplate } from './template.js'

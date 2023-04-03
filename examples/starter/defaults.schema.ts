@@ -1,4 +1,4 @@
-import { $boolean, $object, $validator } from '../../src'
+import { $boolean, $object, $validator } from '../../src/index.js'
 
 export const defaults = $validator(
     $object({

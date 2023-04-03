@@ -6,8 +6,6 @@
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
-export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL'
-
 export interface CartItem {
     id: string
     name: string
@@ -16,7 +14,7 @@ export interface CartItem {
 }
 
 export const CartItem = {
-    validate: require('./schemas/cart-item.schema.js') as ValidateFunction<CartItem>,
+    validate: (await import('./schemas/cart-item.schema.js')).validate10 as unknown as ValidateFunction<CartItem>,
     get schema() {
         return CartItem.validate.schema
     },
@@ -30,3 +28,5 @@ export const CartItem = {
         }
     },
 } as const
+
+export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL'

@@ -1,5 +1,5 @@
-import type { Shape } from './shapes.type'
-import { Rectangle, Square } from './shapes.type'
+import type { Shape } from './shapes.type.js'
+import { Rectangle, Square } from './shapes.type.js'
 
 export function area(shape: Shape): number {
     if (Square.is(shape)) {

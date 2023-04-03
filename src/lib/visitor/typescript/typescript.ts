@@ -1,18 +1,18 @@
-import { toJSDoc } from './jsdoc'
-import { stringLiteral, toLiteral } from './literal'
+import { toJSDoc } from './jsdoc.js'
+import { stringLiteral, toLiteral } from './literal.js'
 
-import type { TypescriptDefinition } from '../../../commands/generate/types'
-import { renderTemplate } from '../../../common/template'
-import { defaultAjvConfig } from '../../ajv/defaults'
-import { isNamedCstNodeArray } from '../../cst/cst'
-import type { ThereforeVisitor } from '../../cst/visitor'
-import { walkTherefore } from '../../cst/visitor'
-import { isNamedArray } from '../../guard'
-import type { DictType, ObjectType, RefType, UnionType } from '../../primitives'
-import { $ref } from '../../primitives'
-import type { MetaDescription, ThereforeMeta } from '../../primitives/base'
-import type { CustomType, ThereforeCst } from '../../primitives/types'
-import { createWriter } from '../../writer'
+import type { TypescriptDefinition } from '../../../commands/generate/types.js'
+import { renderTemplate } from '../../../common/template/index.js'
+import { defaultAjvConfig } from '../../ajv/defaults.js'
+import { isNamedCstNodeArray } from '../../cst/cst.js'
+import type { ThereforeVisitor } from '../../cst/visitor.js'
+import { walkTherefore } from '../../cst/visitor.js'
+import { isNamedArray } from '../../guard.js'
+import type { MetaDescription, ThereforeMeta } from '../../primitives/base.js'
+import type { DictType, ObjectType, RefType, UnionType } from '../../primitives/index.js'
+import { $ref } from '../../primitives/index.js'
+import type { CustomType, ThereforeCst } from '../../primitives/types.js'
+import { createWriter } from '../../writer.js'
 
 import { entriesOf, evaluate, groupBy, isAlphaNumeric, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
@@ -59,7 +59,7 @@ export function writeThereforeSchema({
         .inlineBlock(() => {
             writer.writeLine(
                 isCompiled
-                    ? `validate: require('${validatorFile}') as ValidateFunction<{{${uuid}:symbolName}}>,`
+                    ? `validate: (await import('${validatorFile}')).validate10 as unknown as ValidateFunction<{{${uuid}:symbolName}}>,`
                     : `validate: new AjvValidator(${JSON.stringify({
                           ...defaultAjvConfig,
                           ...description.ajvOptions,
@@ -384,7 +384,7 @@ export function toTypescriptDefinition({
     const groupedTrees = groupBy(allSubtrees, (node) => node.node.uuid)
 
     const subtrees = valuesOf(groupedTrees).map((xs) => {
-        let prev = xs[0]
+        let prev = xs[0]!
         for (const x of xs.slice(1)) {
             if (x.node.description.validator?.enabled) {
                 const { assert = false } = prev.node.description.validator ?? {}
@@ -395,7 +395,7 @@ export function toTypescriptDefinition({
             }
             prev = x
         }
-        return xs[0]
+        return xs[0]!
     })
 
     return {

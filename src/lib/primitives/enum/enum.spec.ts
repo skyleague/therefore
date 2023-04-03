@@ -1,4 +1,4 @@
-import { $enum } from '.'
+import { $enum } from './index.js'
 
 test('function', () => {
     expect($enum).toMatchInlineSnapshot(`[Function]`)

@@ -1,4 +1,4 @@
-import { $dict, $object, $string } from '../../src'
+import { $dict, $object, $string } from '../../src/index.js'
 
 export const command = $object({
     name: 'command',

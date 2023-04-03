@@ -1,6 +1,6 @@
-import { uri, icon } from './icon'
+import { uri, icon } from './icon.js'
 
-import { $string, $object, $ref, $union } from '../../src'
+import { $string, $object, $ref, $union } from '../../src/index.js'
 
 // const action = {
 //     type: 'object',

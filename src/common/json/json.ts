@@ -1,4 +1,4 @@
-import type { JsonSchema } from '../../json'
+import type { JsonSchema } from '../../json.js'
 
 import got from 'got'
 import pointer from 'jsonpointer'
@@ -22,7 +22,7 @@ export function jsonPointer<T extends {}>({
         if (ptr.$ref.startsWith('#')) {
             return pointer.get(schema, ptr.$ref.slice(1)) as JsonSchema | undefined
         } else if (ptr.$ref.includes('#') && ptr.$ref.startsWith('http')) {
-            const [url, reference] = ptr.$ref.split('#')
+            const [url, reference] = ptr.$ref.split('#') as [string, string]
             metaSchemas ??= {}
             const metaSchema = metaSchemas[url]
 

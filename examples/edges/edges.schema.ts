@@ -1,5 +1,5 @@
-import type { OpenapiV3 } from '../../src'
-import { $restclient } from '../../src'
+import type { OpenapiV3 } from '../../src/index.js'
+import { $restclient } from '../../src/index.js'
 
 export const openapi: OpenapiV3 = {
     openapi: '3.0.0',

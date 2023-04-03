@@ -1,6 +1,6 @@
-import { annotate, jsonSchemaContext, jsonSchemaVisitor, toJsonSchema, toType } from './jsonschema'
+import { annotate, jsonSchemaContext, jsonSchemaVisitor, toJsonSchema, toType } from './jsonschema.js'
 
-import { walkTherefore } from '../../cst/visitor'
+import { walkTherefore } from '../../cst/visitor.js'
 import {
     $array,
     $boolean,
@@ -17,7 +17,7 @@ import {
     $tuple,
     $union,
     $unknown,
-} from '../../primitives'
+} from '../../primitives/index.js'
 
 describe('toType', () => {
     test('nullable', () => {
@@ -502,8 +502,8 @@ describe('toTypeDefinition', () => {
 })
 
 describe('toJsonSchema', () => {
-    test('simple', () => {
-        expect(toJsonSchema($string())).toMatchInlineSnapshot(`
+    test('simple', async () => {
+        expect(await toJsonSchema($string())).toMatchInlineSnapshot(`
             {
               "compiled": false,
               "schema": {
@@ -515,9 +515,9 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    test('object', () => {
+    test('object', async () => {
         expect(
-            toJsonSchema(
+            await toJsonSchema(
                 $object(
                     {
                         foo: $string,
@@ -557,9 +557,9 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    test('ref', () => {
+    test('ref', async () => {
         const foo = $dict($string)
-        expect(toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
+        expect(await toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
             {
               "compiled": false,
               "schema": {
@@ -591,7 +591,7 @@ describe('toJsonSchema', () => {
                     "type": "object",
                   },
                 ],
-                "title": "{{0007-000:uniqueSymbolName}}",
+                "title": "{{0006-000:uniqueSymbolName}}",
               },
             }
         `)

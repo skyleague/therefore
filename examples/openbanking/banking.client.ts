@@ -6,8 +6,8 @@
 import got from 'got'
 import type { CancelableRequest, Got, Options, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
-import { IncomingHttpHeaders } from 'http'
-import { File, OBErrorResponse1 } from './banking.type'
+import type { IncomingHttpHeaders } from 'http'
+import { File, OBErrorResponse1 } from './banking.type.js'
 
 /**
  * Payment Initiation API
@@ -71,12 +71,12 @@ export class Banking {
             {
                 200: File,
                 400: OBErrorResponse1,
-                401: { is: (x: unknown): x is unknown => true },
+                401: { is: (_x: unknown): _x is unknown => true },
                 403: OBErrorResponse1,
-                404: { is: (x: unknown): x is unknown => true },
-                405: { is: (x: unknown): x is unknown => true },
-                406: { is: (x: unknown): x is unknown => true },
-                429: { is: (x: unknown): x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
+                406: { is: (_x: unknown): _x is unknown => true },
+                429: { is: (_x: unknown): _x is unknown => true },
                 500: OBErrorResponse1,
             }
         )
@@ -113,15 +113,15 @@ export class Banking {
                 responseType: 'json',
             }),
             {
-                200: { is: (x: unknown): x is unknown => true },
+                200: { is: (_x: unknown): _x is unknown => true },
                 400: OBErrorResponse1,
-                401: { is: (x: unknown): x is unknown => true },
+                401: { is: (_x: unknown): _x is unknown => true },
                 403: OBErrorResponse1,
-                404: { is: (x: unknown): x is unknown => true },
-                405: { is: (x: unknown): x is unknown => true },
-                406: { is: (x: unknown): x is unknown => true },
-                415: { is: (x: unknown): x is unknown => true },
-                429: { is: (x: unknown): x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
+                406: { is: (_x: unknown): _x is unknown => true },
+                415: { is: (_x: unknown): _x is unknown => true },
+                429: { is: (_x: unknown): _x is unknown => true },
                 500: OBErrorResponse1,
             }
         )

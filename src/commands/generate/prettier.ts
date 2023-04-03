@@ -1,7 +1,11 @@
-import type { ThereforeOutputType } from './types'
+import type { ThereforeOutputType } from './types.js'
 
 import type { Maybe } from '@skyleague/axioms'
 import { Nothing } from '@skyleague/axioms'
+
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
 
 export function maybeLoadPrettier() {
     // eslint-disable-next-line @typescript-eslint/consistent-type-imports

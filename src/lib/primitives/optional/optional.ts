@@ -1,4 +1,4 @@
-import type { ThereforeNode, ThereforeExpr } from '../../cst/cst'
+import type { ThereforeNode, ThereforeExpr } from '../../cst/cst.js'
 
 import { evaluate, omitUndefined } from '@skyleague/axioms'
 import { v4 as uuid } from 'uuid'

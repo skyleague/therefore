@@ -1,8 +1,8 @@
-import { action } from './action'
-import { command } from './command'
-import { icon, uri } from './icon'
+import { action } from './action.js'
+import { command } from './command.js'
+import { icon, uri } from './icon.js'
 
-import { $string, $ref, $array, $object, $enum, $boolean, $dict, $optional, $unknown, $validator } from '../../src'
+import { $string, $ref, $array, $object, $enum, $boolean, $dict, $optional, $unknown, $validator } from '../../src/index.js'
 
 // https://json.schemastore.org/chrome-manifest
 

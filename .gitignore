@@ -12,3 +12,5 @@ src/**/*.d.ts
 !.gitignore
 !.gitkeep
 !.eslintrc.*
+!.prettierignore
+!.eslintignore
