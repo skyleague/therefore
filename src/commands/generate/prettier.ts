@@ -1,7 +1,7 @@
 import type { ThereforeOutputType } from './types.js'
 
 import type { Maybe } from '@skyleague/axioms'
-import { Nothing } from '@skyleague/axioms'
+import { Nothing, isNothing } from '@skyleague/axioms'
 
 import { createRequire } from 'node:module'
 
@@ -25,7 +25,7 @@ export async function formatFile(
     file: string,
     type: ThereforeOutputType
 ): Promise<string> {
-    if (prettier === Nothing) {
+    if (isNothing(prettier)) {
         return input
     }
     const options = await prettier.resolveConfig(file)
