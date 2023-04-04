@@ -33,7 +33,7 @@ export async function expandGlobs({
             }
 
             const eitherStat = await fstat(absolutePath)
-            if (isRight(eitherStat) && eitherStat.right !== Nothing) {
+            if (isRight(eitherStat) && isJust(eitherStat.right)) {
                 if (eitherStat.right.isFile()) {
                     return fastGlob.escapePath(normalizePath(pattern))
                 } else if (eitherStat.right.isDirectory()) {
