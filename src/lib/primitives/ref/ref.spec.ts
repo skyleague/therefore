@@ -5,12 +5,14 @@ import { $dict } from '../dict/index.js'
 import { $string } from '../string/index.js'
 import { $union } from '../union/index.js'
 
+import { expect, it } from 'vitest'
+
 const foo = $dict($string)
-test('function', () => {
+it('function', () => {
     expect($ref).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($ref(foo)).toMatchInlineSnapshot(`
         {
           "children": [
@@ -37,7 +39,7 @@ test('expand', () => {
     `)
 })
 
-test('self reference', () => {
+it('self reference', () => {
     const json = $union([$string, $array($ref(() => json)), $ref(() => json)])
     expect(json).toMatchInlineSnapshot(`
         {
@@ -83,7 +85,7 @@ test('self reference', () => {
     `)
 })
 
-test('uuid reference', () => {
+it('uuid reference', () => {
     const value = $string()
     const json = $ref(value)
     expect(json).toMatchInlineSnapshot(`
@@ -104,7 +106,7 @@ test('uuid reference', () => {
     `)
 })
 
-test('description ', () => {
+it('description ', () => {
     const json = $union([$string, $array($ref({ description: 'foo array', reference: ['json', () => json] }))])
     expect(json).toMatchInlineSnapshot(`
         {

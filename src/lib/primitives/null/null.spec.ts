@@ -1,10 +1,12 @@
 import { $null } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($null).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('simple', () => {
+it('simple', () => {
     expect($null()).toMatchInlineSnapshot(`
         {
           "description": {},

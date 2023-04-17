@@ -1,10 +1,12 @@
 import { $string } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($string).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('minLength', () => {
+it('minLength', () => {
     expect(
         $string({
             minLength: 2,
@@ -21,7 +23,7 @@ test('minLength', () => {
     `)
 })
 
-test('maxLength', () => {
+it('maxLength', () => {
     expect(
         $string({
             maxLength: 2,
@@ -38,7 +40,7 @@ test('maxLength', () => {
     `)
 })
 
-test('pattern', () => {
+it('pattern', () => {
     expect(
         $string({
             pattern: /foo/,
@@ -55,7 +57,7 @@ test('pattern', () => {
     `)
 })
 
-test('format', () => {
+it('format', () => {
     expect(
         $string({
             format: 'date',
@@ -72,7 +74,7 @@ test('format', () => {
     `)
 })
 
-test('all', () => {
+it('all', () => {
     expect(
         $string({
             minLength: 2,

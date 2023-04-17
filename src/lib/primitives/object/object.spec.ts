@@ -3,11 +3,13 @@ import { $object } from './object.js'
 import { $array, $boolean } from '../index.js'
 import { $string } from '../string/index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($object).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($object({ foo: $string })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -45,7 +47,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($object({}, { examples: [{ foo: 'bar' }] })).toMatchInlineSnapshot(`
         {
           "children": [],
@@ -66,7 +68,7 @@ test('example', () => {
     $object({}, { examples: ['foo'] })
 })
 
-test('default', () => {
+it('default', () => {
     expect($object({}, { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
         {
           "children": [],
@@ -85,7 +87,7 @@ test('default', () => {
     $object({}, { default: 'foobar' })
 })
 
-test('complex', () => {
+it('complex', () => {
     expect(
         $object({
             description:

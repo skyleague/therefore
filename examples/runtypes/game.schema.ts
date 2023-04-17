@@ -1,4 +1,17 @@
-import { $number, $object, $union, $enum, $tuple, $ref, $boolean, $string, $array, $dict, $const, $validator } from '../../src/index.js'
+import {
+    $number,
+    $object,
+    $union,
+    $enum,
+    $tuple,
+    $ref,
+    $boolean,
+    $string,
+    $array,
+    $dict,
+    $const,
+    $validator,
+} from '../../src/index.js'
 
 const nonNegative = $number({
     minimum: 0,

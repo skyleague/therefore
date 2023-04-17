@@ -2,8 +2,9 @@
 import { toJSDoc } from './jsdoc.js'
 
 import { array, boolean, forAll, json, object, string, tuple } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 
-test('description', () => {
+it('description', () => {
     expect(toJSDoc({ key: 'foo', meta: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
@@ -12,7 +13,7 @@ test('description', () => {
         `)
 })
 
-test('summary', () => {
+it('summary', () => {
     expect(toJSDoc({ key: 'foo', meta: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
@@ -21,7 +22,7 @@ test('summary', () => {
         `)
 })
 
-test('examples', () => {
+it('examples', () => {
     expect(toJSDoc({ key: 'foo', meta: { examples: [] } })).toMatchInlineSnapshot(`undefined`)
     expect(
         toJSDoc({
@@ -39,7 +40,7 @@ test('examples', () => {
         `)
 })
 
-test('default', () => {
+it('default', () => {
     expect(toJSDoc({ key: 'foo', meta: { default: [] } })).toMatchInlineSnapshot(`
             "/**
              * @default []
@@ -54,7 +55,7 @@ test('default', () => {
         `)
 })
 
-test('combined', () => {
+it('combined', () => {
     expect(
         toJSDoc({
             key: 'foo',
@@ -79,7 +80,7 @@ test('combined', () => {
     `)
 })
 
-test('jsdoc is always valid javascript', () => {
+it('jsdoc is always valid javascript', () => {
     forAll(
         tuple(
             string(),

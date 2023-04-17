@@ -2,11 +2,13 @@ import { $union } from './index.js'
 
 import { $string } from '../index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($union).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($union([$string])).toMatchInlineSnapshot(`
         {
           "children": [
@@ -25,7 +27,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($union([$string], { examples: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -48,7 +50,7 @@ test('example', () => {
     `)
 })
 
-test('default', () => {
+it('default', () => {
     expect($union([$string], { default: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [

@@ -3,12 +3,13 @@ import { compileOutputFiles } from '../src/commands/generate/generate.js'
 import { arbitrary } from '../src/index.js'
 
 import { forAll } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 
-test('intersection', () => {
+it('intersection', () => {
     forAll(arbitrary(SalesPerson), (x) => SalesPerson.is(x))
 })
 
-test('output generation', async () => {
+it('output generation', async () => {
     expect(
         await compileOutputFiles(['examples/jsonschema/example.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
@@ -18,11 +19,11 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('defaults', () => {
+it('defaults', () => {
     forAll(arbitrary(Defaults), (x) => Defaults.is(x))
 })
 
-test('defaults empty object', () => {
+it('defaults empty object', () => {
     const defaults = {}
     const isValid = Defaults.is(defaults)
     expect(isValid).toBeTruthy()

@@ -2,11 +2,13 @@ import { $tuple } from './tuple.js'
 
 import { $string } from '../index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($tuple).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($tuple([$string])).toMatchInlineSnapshot(`
         {
           "children": [
@@ -25,7 +27,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($tuple([$string], { examples: [['bar']] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -53,7 +55,7 @@ test('example', () => {
     $tuple({}, { examples: ['foo'] })
 })
 
-test('default', () => {
+it('default', () => {
     expect($tuple([$string], { default: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [

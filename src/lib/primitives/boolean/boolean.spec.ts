@@ -1,10 +1,12 @@
 import { $boolean } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($boolean).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('example', () => {
+it('example', () => {
     expect($boolean({ examples: [true, false] })).toMatchInlineSnapshot(`
         {
           "description": {
@@ -23,7 +25,7 @@ test('example', () => {
     $boolean({ examples: ['foo'] })
 })
 
-test('default', () => {
+it('default', () => {
     expect($boolean({ default: true })).toMatchInlineSnapshot(`
         {
           "description": {

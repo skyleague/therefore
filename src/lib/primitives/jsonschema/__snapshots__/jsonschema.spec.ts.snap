@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`petstore definition 1`] = `
+exports[`petstore > definition 1`] = `
 {
   "children": [
     {
@@ -4563,7 +4563,7 @@ Some useful links:
 }
 `;
 
-exports[`petstore jsonschema 1`] = `
+exports[`petstore > jsonschema 1`] = `
 {
   "additionalProperties": true,
   "properties": {
@@ -4791,7 +4791,7 @@ exports[`petstore jsonschema 1`] = `
 }
 `;
 
-exports[`petstore typescript 1`] = `
+exports[`petstore > typescript 1`] = `
 {
   "declaration": "interface {{00097-000:symbolName}} {
     Order: {

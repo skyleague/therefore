@@ -11,6 +11,7 @@ import type { OpenapiV3 } from '../restclient/openapi.type.js'
 
 import { entriesOf, forAll } from '@skyleague/axioms'
 import got from 'got'
+import { expect, describe, it } from 'vitest'
 
 describe('person', () => {
     const schema: JsonSchema = {
@@ -34,7 +35,7 @@ describe('person', () => {
         additionalProperties: false,
     }
     const therefore = () => $jsonschema(schema)
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -100,7 +101,7 @@ describe('person', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -129,7 +130,7 @@ describe('person', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -186,7 +187,7 @@ describe('coordinates', () => {
         additionalProperties: false,
     }
     const therefore = () => $jsonschema(schema)
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -231,7 +232,7 @@ describe('coordinates', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -261,7 +262,7 @@ describe('coordinates', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -326,7 +327,7 @@ describe('array', () => {
     }
     const therefore = () => $jsonschema(schema)
 
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -492,7 +493,7 @@ describe('array', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -519,7 +520,7 @@ describe('array', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -558,16 +559,16 @@ describe('petstore', () => {
         return $object(entries)
     }
 
-    test('definition', async () => {
+    it('definition', async () => {
         expect(await therefore()).toMatchSnapshot()
     })
 
-    test('jsonschema', async () => {
+    it('jsonschema', async () => {
         const json = walkTherefore(await therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchSnapshot()
     })
 
-    test('typescript', async () => {
+    it('typescript', async () => {
         expect(
             walkTherefore(await therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -578,7 +579,7 @@ describe('petstore', () => {
     })
 })
 
-test('primitives', () => {
+it('primitives', () => {
     forAll(arbitrary<string>($jsonschema({ type: 'string', minLength: 1 })), (x) => x.length >= 1)
 })
 
@@ -607,7 +608,7 @@ describe('object with nullable property', () => {
     }
     const therefore = () => $jsonschema(schema)
 
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -775,7 +776,7 @@ describe('object with nullable property', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -831,7 +832,7 @@ describe('object with nullable property', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -871,7 +872,7 @@ describe('make optional properties nullable', () => {
     }
     const therefore = () => $jsonschema(schema, { optionalNullable: true })
 
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -1004,7 +1005,7 @@ describe('make optional properties nullable', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -1057,7 +1058,7 @@ describe('make optional properties nullable', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],
@@ -1107,7 +1108,7 @@ describe('nullable array', () => {
     }
     const therefore = () => $jsonschema(schema, { optionalNullable: true })
 
-    test('definition', () => {
+    it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
             {
               "children": [
@@ -1229,7 +1230,7 @@ describe('nullable array', () => {
         `)
     })
 
-    test('jsonschema', () => {
+    it('jsonschema', () => {
         const json = walkTherefore(therefore(), jsonSchemaVisitor, jsonSchemaContext())
         expect(json).toMatchInlineSnapshot(`
             {
@@ -1258,7 +1259,7 @@ describe('nullable array', () => {
         `)
     })
 
-    test('typescript', () => {
+    it('typescript', () => {
         expect(
             walkTherefore(therefore(), typeDefinitionVisitor, {
                 references: [],

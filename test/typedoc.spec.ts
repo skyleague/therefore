@@ -3,8 +3,9 @@ import { compileOutputFiles } from '../src/commands/generate/generate.js'
 import { arbitrary } from '../src/index.js'
 
 import { forAll } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 
-test('output generation', async () => {
+it('output generation', async () => {
     expect(
         await compileOutputFiles(['examples/typedoc/typedoc.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
@@ -14,10 +15,10 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('arbitrary typedoc', () => {
+it('arbitrary typedoc', () => {
     forAll(arbitrary(Typedoc), (p) => Typedoc.assert(p))
 })
 
-test('arbitrary theme', () => {
+it('arbitrary theme', () => {
     forAll(arbitrary(Theme), (t) => Theme.assert(t))
 })

@@ -2,11 +2,13 @@ import { $intersection } from './intersection.js'
 
 import { $object, $ref, $string } from '../index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($intersection).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($intersection([$object({ foo: $string })])).toMatchInlineSnapshot(`
         {
           "children": [
@@ -34,7 +36,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($intersection([$object({ foo: $string })], { examples: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -66,7 +68,7 @@ test('example', () => {
     `)
 })
 
-test('default', () => {
+it('default', () => {
     expect($intersection([$object({ foo: $string })], { default: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -98,7 +100,7 @@ test('default', () => {
     `)
 })
 
-test('object intersection', () => {
+it('object intersection', () => {
     expect($intersection([$object({ foo: $string }), $object({ bar: $string })], { examples: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -146,7 +148,7 @@ test('object intersection', () => {
 })
 
 const ref = $object({ bar: $string })
-test('reference intersection', () => {
+it('reference intersection', () => {
     expect($intersection([$object({ foo: $string }), $ref(ref)], { examples: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [
