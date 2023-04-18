@@ -2,7 +2,9 @@ import { $nullable } from './index.js'
 
 import { $string } from '../index.js'
 
-test('string', () => {
+import { expect, it } from 'vitest'
+
+it('string', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`
         {
           "description": {
@@ -15,7 +17,7 @@ test('string', () => {
     `)
 })
 
-test('string expanded', () => {
+it('string expanded', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`
         {
           "description": {

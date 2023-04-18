@@ -18,67 +18,68 @@ import {
     isObject,
     xoroshiro128plus,
 } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 
-test('string', () => {
+it('string', () => {
     forAll(arbitrary($string()), isString)
 })
 
-test('date', () => {
+it('date', () => {
     forAll(arbitrary<string>($string({ format: 'date' })), (x) => toISO8601Date(new Date(x), { format: 'date' }) === x)
 })
 
-test('date-time', () => {
+it('date-time', () => {
     forAll(arbitrary<string>($string({ format: 'date-time' })), (x) => toISO8601Date(new Date(x)) === x)
 })
 
-test('number', () => {
+it('number', () => {
     forAll(arbitrary($number()), isNumber)
 })
 
-test('integer', () => {
+it('integer', () => {
     forAll(arbitrary($integer()), isNumber)
     forAll(arbitrary($integer()), isInteger)
 })
 
-test('boolean', () => {
+it('boolean', () => {
     forAll(arbitrary($boolean()), isBoolean)
 })
 
-test('null', () => {
+it('null', () => {
     forAll(arbitrary($null()), (x) => x === null)
 })
 
-test('array', () => {
+it('array', () => {
     forAll(arbitrary($array($unknown)), isArray)
 })
 
-test('object - with index', () => {
+it('object - with index', () => {
     const arb = arbitrary($object({}, { indexSignature: $string() }))
     forAll(arb, isObject)
     expect(arb.value({ rng: xoroshiro128plus(42n) })).toMatchInlineSnapshot(`
-        {
-          "children": {
-            Symbol(Symbol.iterator): [Function],
-          },
-          "value": {
-            "")qvP3BgY": "k:7Fr@",
-            "#ol7": ",k'{/$G",
-            "(;\\mM": "/h",
-            "-Bx": "FNS\`u^-#",
-            ";4An)Z{": "9a4qi!Zl5",
-            "Hc/" EK%": "rrBE",
-            "T w{nBD": "4IsT&)",
-            "h4ym": "\` ",
-            "lBQs59@LE": "\\ojh",
-          },
-        }
+      {
+        "children": {
+          Symbol(Symbol.iterator): [Function],
+        },
+        "value": {
+          "\\")qvP3BgY": "k:7Fr@",
+          "#ol7": ",k'{/$G",
+          "(;\\\\mM": "/h",
+          "-Bx": "FNS\`u^-#",
+          ";4An)Z{": "9a4qi!Zl5",
+          "Hc/\\" EK%": "rrBE",
+          "T w{nBD": "4IsT&)",
+          "h4ym": "\` ",
+          "lBQs59@LE": "\\\\ojh",
+        },
+      }
     `)
 })
 
-test('optional - primitive', () => {
+it('optional - primitive', () => {
     forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })
 
-test('union with enum and supertype', () => {
+it('union with enum and supertype', () => {
     forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
 })

@@ -1,10 +1,12 @@
 import { $enum } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($enum).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('values', () => {
+it('values', () => {
     expect($enum([1, 2, 3, '4'])).toMatchInlineSnapshot(`
         {
           "children": [
@@ -21,7 +23,7 @@ test('values', () => {
     `)
 })
 
-test('named', () => {
+it('named', () => {
     expect(
         $enum({
             foo: 'bar',

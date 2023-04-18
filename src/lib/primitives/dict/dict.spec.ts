@@ -2,11 +2,13 @@ import { $dict } from './dict.js'
 
 import { $string } from '../string/index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($dict).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($dict($string)).toMatchInlineSnapshot(`
         {
           "children": [
@@ -25,7 +27,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($dict($string, { examples: [{ foo: 'bar' }] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -53,7 +55,7 @@ test('example', () => {
     $dict({}, { examples: ['foo'] })
 })
 
-test('default', () => {
+it('default', () => {
     expect($dict($string, { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
         {
           "children": [

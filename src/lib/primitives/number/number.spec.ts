@@ -1,10 +1,12 @@
 import { $number } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($number).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('multipleOf', () => {
+it('multipleOf', () => {
     expect(
         $number({
             multipleOf: 0.01,
@@ -21,7 +23,7 @@ test('multipleOf', () => {
     `)
 })
 
-test('maximum', () => {
+it('maximum', () => {
     expect(
         $number({
             maximum: 100,
@@ -38,7 +40,7 @@ test('maximum', () => {
     `)
 })
 
-test('minimum', () => {
+it('minimum', () => {
     expect(
         $number({
             minimum: 100,
@@ -55,7 +57,7 @@ test('minimum', () => {
     `)
 })
 
-test('combined', () => {
+it('combined', () => {
     expect(
         $number({
             multipleOf: 0.01,

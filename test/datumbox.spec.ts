@@ -1,7 +1,8 @@
-import {} from '../examples/datumbox/datumbox.type.js'
 import { compileOutputFiles } from '../src/commands/generate/generate.js'
 
-test('output generation', async () => {
+import { expect, it } from 'vitest'
+
+it('output generation', async () => {
     expect(
         await compileOutputFiles(['examples/datumbox/datumbox.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),

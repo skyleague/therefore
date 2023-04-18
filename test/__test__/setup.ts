@@ -1,8 +1,6 @@
-import { jest } from '@jest/globals'
+import { beforeEach, vi } from 'vitest'
 
-global.jest = jest as typeof global.jest
-
-jest.unstable_mockModule('uuid', () => ({ v4: mockUuid() }))
+vi.mock('uuid', () => ({ v4: mockUuid() }))
 
 export function mockUuid(): () => string {
     let value = 1

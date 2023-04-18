@@ -1,6 +1,6 @@
 # Runtypes example
-For a simple comparision with a more known (and used) library,
-we ported the example of [Runtypes](https://github.com/pelotom/runtypes/tree/master/examples/src).
+
+For a simple comparision with a more known (and used) library, we ported the example of [Runtypes](https://github.com/pelotom/runtypes/tree/master/examples/src).
 
 With this generate the output:
 

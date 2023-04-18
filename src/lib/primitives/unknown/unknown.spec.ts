@@ -1,10 +1,12 @@
 import { $unknown } from './index.js'
 
-test('function', () => {
+import { expect, it } from 'vitest'
+
+it('function', () => {
     expect($unknown).toMatchInlineSnapshot(`[Function]`)
 })
 
-test('simple', () => {
+it('simple', () => {
     expect($unknown()).toMatchInlineSnapshot(`
         {
           "description": {},

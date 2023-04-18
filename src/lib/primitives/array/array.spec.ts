@@ -2,7 +2,9 @@ import { $array } from './index.js'
 
 import { $boolean, $string } from '../index.js'
 
-test('simple', () => {
+import { expect, it } from 'vitest'
+
+it('simple', () => {
     expect($array($boolean())).toMatchInlineSnapshot(`
         {
           "children": [
@@ -21,7 +23,7 @@ test('simple', () => {
     `)
 })
 
-test('simple unexpanded', () => {
+it('simple unexpanded', () => {
     expect($array($boolean)).toMatchInlineSnapshot(`
         {
           "children": [
@@ -40,7 +42,7 @@ test('simple unexpanded', () => {
     `)
 })
 
-test('expand', () => {
+it('expand', () => {
     expect($array($string)).toMatchInlineSnapshot(`
         {
           "children": [
@@ -59,7 +61,7 @@ test('expand', () => {
     `)
 })
 
-test('example', () => {
+it('example', () => {
     expect($array($string, { examples: [['bar']] })).toMatchInlineSnapshot(`
         {
           "children": [
@@ -87,7 +89,7 @@ test('example', () => {
     $array({}, { examples: ['foo'] })
 })
 
-test('default', () => {
+it('default', () => {
     expect($array($string, { default: ['bar'] })).toMatchInlineSnapshot(`
         {
           "children": [

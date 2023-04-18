@@ -29,64 +29,65 @@ import {
 } from '../../primitives/index.js'
 
 import { alphaNumeric, forAll, omitUndefined } from '@skyleague/axioms'
+import { expect, describe, it } from 'vitest'
 
 describe('optional', () => {
-    test('undefined', () => {
+    it('undefined', () => {
         expect(optional({})).toMatchInlineSnapshot(`""`)
         expect(optional(omitUndefined({ optional: undefined }))).toMatchInlineSnapshot(`""`)
     })
 
-    test('explicit', () => {
+    it('explicit', () => {
         expect(optional({ optional: 'explicit' })).toMatchInlineSnapshot(`"?"`)
     })
 
-    test('implicit', () => {
+    it('implicit', () => {
         expect(optional({ optional: 'implicit' })).toMatchInlineSnapshot(`"?"`)
     })
 })
 
 describe('readonly', () => {
-    test('false', () => {
+    it('false', () => {
         expect(readonly({ readonly: false })).toMatchInlineSnapshot(`""`)
     })
 
-    test('true', () => {
+    it('true', () => {
         expect(readonly({ readonly: true })).toMatchInlineSnapshot(`"readonly "`)
     })
 })
 
 describe('typescriptVisitor', () => {
-    test('string', () => {
+    it('string', () => {
         expect(walkTherefore($string(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"string"`)
     })
 
-    test('number', () => {
+    it('number', () => {
         expect(walkTherefore($number(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
     })
 
-    test('integer', () => {
+    it('integer', () => {
         expect(walkTherefore($integer(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
     })
 
-    test('boolean', () => {
+    it('boolean', () => {
         expect(walkTherefore($boolean(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"boolean"`)
     })
 
-    test('null', () => {
+    it('null', () => {
         expect(walkTherefore($null(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"null"`)
     })
 
-    test('unknown', () => {
+    it('unknown', () => {
         expect(walkTherefore($unknown(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"unknown"`)
     })
 
-    test('enum', () => {
+    it('enum', () => {
         expect(
             walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"'foo' | 'bar' | { foo: 'bar' }"`)
     })
 
-    test('array', () => {
+    it('array', () => {
         expect(
             walkTherefore($array($string), typescriptVisitor, {
                 locals: {},
@@ -110,13 +111,13 @@ describe('typescriptVisitor', () => {
         ).toMatchInlineSnapshot(`"(string | number)[]"`)
     })
 
-    test('tuple', () => {
+    it('tuple', () => {
         expect(
             walkTherefore($tuple([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`"[string, string, number]"`)
     })
 
-    test('named tuple', () => {
+    it('named tuple', () => {
         expect(
             walkTherefore(
                 $tuple({
@@ -140,7 +141,7 @@ describe('typescriptVisitor', () => {
         ).toMatchInlineSnapshot(`"[x: number, y: number, z: number]"`)
     })
 
-    test('dict', () => {
+    it('dict', () => {
         expect(walkTherefore($dict($string), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
             "{
                 [k: string]: ( string ) | undefined
@@ -148,7 +149,7 @@ describe('typescriptVisitor', () => {
         `)
     })
 
-    test('ref', () => {
+    it('ref', () => {
         const foo = $dict($string)
         expect(
             walkTherefore($ref(foo), typescriptVisitor, {
@@ -171,7 +172,7 @@ describe('typescriptVisitor', () => {
         `)
     })
 
-    test('union', () => {
+    it('union', () => {
         expect(walkTherefore($union([$string]), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(
             `"string"`
         )
@@ -180,7 +181,7 @@ describe('typescriptVisitor', () => {
         ).toMatchInlineSnapshot(`"string | string | number"`)
     })
 
-    test('intersection', () => {
+    it('intersection', () => {
         expect(walkTherefore($intersection([$object({ foo: $string })]), typescriptVisitor, {} as TypescriptWalkerContext))
             .toMatchInlineSnapshot(`
             "{
@@ -202,7 +203,7 @@ describe('typescriptVisitor', () => {
         `)
     })
 
-    test('object', () => {
+    it('object', () => {
         expect(walkTherefore($object({ foo: $string }), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
             "{
                 foo: string
@@ -257,7 +258,7 @@ describe('typescriptVisitor', () => {
 })
 
 describe('toTypeDefinition', () => {
-    test('string', () => {
+    it('string', () => {
         expect(
             walkTherefore($string(), typeDefinitionVisitor, {
                 references: [],
@@ -273,7 +274,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('number', () => {
+    it('number', () => {
         expect(
             walkTherefore($number(), typeDefinitionVisitor, {
                 references: [],
@@ -289,7 +290,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('integer', () => {
+    it('integer', () => {
         expect(
             walkTherefore($integer(), typeDefinitionVisitor, {
                 references: [],
@@ -305,7 +306,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('boolean', () => {
+    it('boolean', () => {
         expect(
             walkTherefore($boolean(), typeDefinitionVisitor, {
                 references: [],
@@ -321,7 +322,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('null', () => {
+    it('null', () => {
         expect(
             walkTherefore($null(), typeDefinitionVisitor, {
                 references: [],
@@ -337,7 +338,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('unknown', () => {
+    it('unknown', () => {
         expect(
             walkTherefore($unknown(), typeDefinitionVisitor, {
                 references: [],
@@ -353,7 +354,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('enum', () => {
+    it('enum', () => {
         expect(
             walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
                 references: [],
@@ -405,7 +406,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('array', () => {
+    it('array', () => {
         expect(
             walkTherefore($array($string), typeDefinitionVisitor, {
                 references: [],
@@ -449,7 +450,7 @@ describe('toTypeDefinition', () => {
         expect(locals).toMatchInlineSnapshot(`{}`)
     })
 
-    test('tuple', () => {
+    it('tuple', () => {
         expect(
             walkTherefore($tuple([$string, $string, $integer]), typeDefinitionVisitor, {
                 references: [],
@@ -465,7 +466,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('named tuple', () => {
+    it('named tuple', () => {
         expect(
             walkTherefore(
                 $tuple({
@@ -503,7 +504,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('dict', () => {
+    it('dict', () => {
         expect(
             walkTherefore($dict($string), typeDefinitionVisitor, {
                 references: [],
@@ -523,7 +524,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('ref', () => {
+    it('ref', () => {
         const foo = $dict($string)
         expect(
             walkTherefore($ref(foo), typeDefinitionVisitor, {
@@ -560,7 +561,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('union', () => {
+    it('union', () => {
         expect(
             walkTherefore($union([$string]), typeDefinitionVisitor, {
                 references: [],
@@ -593,7 +594,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('intersection', () => {
+    it('intersection', () => {
         expect(
             walkTherefore($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
                 references: [],
@@ -630,7 +631,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('object', () => {
+    it('object', () => {
         expect(
             walkTherefore($object({ foo: $string }), typeDefinitionVisitor, {
                 references: [],
@@ -726,28 +727,30 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    expect(
-        walkTherefore($object({ foo: $string }, { indexSignature: $number }), typeDefinitionVisitor, {
-            references: [],
-            symbolName: 'Foo',
-            locals: {},
-        } as unknown as TypescriptWalkerContext)
-    ).toMatchInlineSnapshot(`
-        {
-          "declaration": "interface {{0003-000:symbolName}} {
-            foo: string
-            [k: string]: number
-        }
-        ",
-          "referenceName": "{{0003-000:symbolName}}",
-          "render": [Function],
-          "sourceSymbol": undefined,
-        }
-    `)
+    it('other', () => {
+        expect(
+            walkTherefore($object({ foo: $string }, { indexSignature: $number }), typeDefinitionVisitor, {
+                references: [],
+                symbolName: 'Foo',
+                locals: {},
+            } as unknown as TypescriptWalkerContext)
+        ).toMatchInlineSnapshot(`
+          {
+            "declaration": "interface {{0003-000:symbolName}} {
+              foo: string
+              [k: string]: number
+          }
+          ",
+            "referenceName": "{{0003-000:symbolName}}",
+            "render": [Function],
+            "sourceSymbol": undefined,
+          }
+        `)
+    })
 })
 
 describe('toTypescriptDefinition', () => {
-    // test('string', () => {
+    // it('string', () => {
     //     expect(toTypescriptDefinition('foo', $string()).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = string
@@ -757,7 +760,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('number', () => {
+    // it('number', () => {
     //     expect(toTypescriptDefinition('foo', $number())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = number
@@ -767,7 +770,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('integer', () => {
+    // it('integer', () => {
     //     expect(toTypescriptDefinition('foo', $integer())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = number
@@ -777,7 +780,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('boolean', () => {
+    // it('boolean', () => {
     //     expect(toTypescriptDefinition('foo', $boolean())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = boolean
@@ -787,7 +790,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('null', () => {
+    // it('null', () => {
     //     expect(toTypescriptDefinition('foo', $null())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = null
@@ -797,7 +800,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('unknown', () => {
+    // it('unknown', () => {
     //     expect(toTypescriptDefinition('foo', $unknown())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = unknown
@@ -807,7 +810,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('enum', () => {
+    // it('enum', () => {
     //     expect(
     //         toTypescriptDefinition('foo', $enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
     //             references: [],
@@ -855,7 +858,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    test('array', () => {
+    it('array', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($string) })).toMatchInlineSnapshot(`
             {
               "definition": {
@@ -917,7 +920,7 @@ describe('toTypescriptDefinition', () => {
         `)
     })
 
-    test('tuple', () => {
+    it('tuple', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $tuple([$string, $string, $integer]) }))
             .toMatchInlineSnapshot(`
             {
@@ -940,7 +943,7 @@ describe('toTypescriptDefinition', () => {
         `)
     })
 
-    test('named tuple', () => {
+    it('named tuple', () => {
         expect(
             toTypescriptDefinition({
                 sourceSymbol: 'foo',
@@ -998,7 +1001,7 @@ describe('toTypescriptDefinition', () => {
         `)
     })
 
-    test('dict', () => {
+    it('dict', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $dict($string) })).toMatchInlineSnapshot(`
             {
               "definition": {
@@ -1022,7 +1025,7 @@ describe('toTypescriptDefinition', () => {
         `)
     })
 
-    test('ref', () => {
+    it('ref', () => {
         const foo = $dict($string)
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ bar: $ref(foo) }) })).toMatchInlineSnapshot(`
             {
@@ -1111,7 +1114,7 @@ describe('toTypescriptDefinition', () => {
         // `)
     })
 
-    // test('union', () => {
+    // it('union', () => {
     //     expect(toTypescriptDefinition('foo', $union([$string]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
@@ -1142,7 +1145,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('intersection', () => {
+    // it('intersection', () => {
     //     expect(toTypescriptDefinition('foo', $intersection([$string]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
@@ -1173,7 +1176,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    // test('union & intersection', () => {
+    // it('union & intersection', () => {
     //     expect(toTypescriptDefinition('foo', $union([$string, $intersection([$string, $integer]), $integer])))
     //         .toMatchInlineSnapshot(`
     //         {
@@ -1191,7 +1194,7 @@ describe('toTypescriptDefinition', () => {
     //     `)
     // })
 
-    test('object', () => {
+    it('object', () => {
         expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ foo: $string }) })).toMatchInlineSnapshot(`
             {
               "definition": {
@@ -1301,13 +1304,13 @@ describe('toTypescriptDefinition', () => {
 })
 
 describe('getIndexSignatureType', () => {
-    test('simple literal', () => {
+    it('simple literal', () => {
         forAll(alphaNumeric({ minLength: 1 }), (a) =>
             expect(getIndexSignatureType(a)).toEqual({ type: `\`\${string}${a}\${string}\`` })
         )
     })
 
-    test('simple union', () => {
+    it('simple union', () => {
         expect(getIndexSignatureType('foo|bar')).toMatchInlineSnapshot(`
             {
               "type": "\`\${string}foo | bar\${string}\`",
@@ -1315,7 +1318,7 @@ describe('getIndexSignatureType', () => {
         `)
     })
 
-    test('simple union with start string', () => {
+    it('simple union with start string', () => {
         expect(getIndexSignatureType('^(foo|bar)')).toMatchInlineSnapshot(`
             {
               "type": "\`foo | bar\${string}\`",
@@ -1323,7 +1326,7 @@ describe('getIndexSignatureType', () => {
         `)
     })
 
-    test('complicated pattern', () => {
+    it('complicated pattern', () => {
         expect(getIndexSignatureType('^[1-5](?:\\d{2}|XX)$')).toMatchInlineSnapshot(`
             {
               "type": "string",
@@ -1331,7 +1334,7 @@ describe('getIndexSignatureType', () => {
         `)
     })
 
-    test('complicated pattern 2', () => {
+    it('complicated pattern 2', () => {
         expect(getIndexSignatureType('^\\/')).toMatchInlineSnapshot(`
             {
               "type": "\`/\${string}\`",
@@ -1339,7 +1342,7 @@ describe('getIndexSignatureType', () => {
         `)
     })
 
-    test('simple start pattern', () => {
+    it('simple start pattern', () => {
         expect(getIndexSignatureType('^x-')).toMatchInlineSnapshot(`
             {
               "type": "\`x-\${string}\`",

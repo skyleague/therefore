@@ -19,26 +19,28 @@ import {
     $unknown,
 } from '../../primitives/index.js'
 
+import { expect, describe, it } from 'vitest'
+
 describe('toType', () => {
-    test('nullable', () => {
+    it('nullable', () => {
         expect(toType('string', { nullable: true })).toEqual(['string', 'null'])
     })
 
-    test('first argument (json schema type) is leading', () => {
+    it('first argument (json schema type) is leading', () => {
         expect(toType('string', { nullable: true })).toEqual(['string', 'null'])
     })
 
-    test('not nullable', () => {
+    it('not nullable', () => {
         expect(toType('string', { nullable: false })).toEqual('string')
     })
 
-    test('default', () => {
+    it('default', () => {
         expect(toType('string', {})).toEqual('string')
     })
 })
 
 describe('annotate', () => {
-    test('title', () => {
+    it('title', () => {
         expect(annotate(undefined, { title: 'foo title' })).toMatchInlineSnapshot(`
             {
               "title": "foo title",
@@ -46,7 +48,7 @@ describe('annotate', () => {
         `)
     })
 
-    test('description', () => {
+    it('description', () => {
         expect(annotate(undefined, { description: 'foo description' })).toMatchInlineSnapshot(`
             {
               "description": "foo description",
@@ -54,7 +56,7 @@ describe('annotate', () => {
         `)
     })
 
-    test('default', () => {
+    it('default', () => {
         expect(annotate(undefined, { default: 'default string' })).toMatchInlineSnapshot(`
             {
               "default": "default string",
@@ -69,7 +71,7 @@ describe('annotate', () => {
         `)
     })
 
-    test('readonly', () => {
+    it('readonly', () => {
         expect(annotate(undefined, { readonly: true })).toMatchInlineSnapshot(`
             {
               "readonly": true,
@@ -82,7 +84,7 @@ describe('annotate', () => {
         `)
     })
 
-    test('examples', () => {
+    it('examples', () => {
         expect(annotate(undefined, { examples: ['foo', 'bar'] })).toMatchInlineSnapshot(`
             {
               "examples": [
@@ -95,7 +97,7 @@ describe('annotate', () => {
 })
 
 describe('toTypeDefinition', () => {
-    test('string', () => {
+    it('string', () => {
         expect(walkTherefore($string(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "string",
@@ -103,7 +105,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('number', () => {
+    it('number', () => {
         expect(walkTherefore($number(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "number",
@@ -111,7 +113,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('integer', () => {
+    it('integer', () => {
         expect(walkTherefore($integer(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "integer",
@@ -119,7 +121,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('boolean', () => {
+    it('boolean', () => {
         expect(walkTherefore($boolean(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "boolean",
@@ -127,7 +129,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('null', () => {
+    it('null', () => {
         expect(walkTherefore($null(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "type": "null",
@@ -135,11 +137,11 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('unknown', () => {
+    it('unknown', () => {
         expect(walkTherefore($unknown(), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`{}`)
     })
 
-    test('enum', () => {
+    it('enum', () => {
         expect(walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
             {
@@ -182,7 +184,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('array', () => {
+    it('array', () => {
         expect(walkTherefore($array($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "items": {
@@ -223,7 +225,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('tuple', () => {
+    it('tuple', () => {
         expect(walkTherefore($tuple([$string, $string, $integer]), jsonSchemaVisitor, jsonSchemaContext()))
             .toMatchInlineSnapshot(`
             {
@@ -245,7 +247,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('named tuple', () => {
+    it('named tuple', () => {
         expect(
             walkTherefore(
                 $tuple({
@@ -302,7 +304,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('dict', () => {
+    it('dict', () => {
         expect(walkTherefore($dict($string), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "additionalProperties": {
@@ -313,7 +315,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('ref', () => {
+    it('ref', () => {
         const foo = $dict($string)
         expect(walkTherefore($ref(foo), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
@@ -362,7 +364,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('union', () => {
+    it('union', () => {
         expect(walkTherefore($union([$string]), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "anyOf": [
@@ -390,7 +392,7 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    test('object', () => {
+    it('object', () => {
         expect(walkTherefore($object({ foo: $string }), jsonSchemaVisitor, jsonSchemaContext())).toMatchInlineSnapshot(`
             {
               "additionalProperties": true,
@@ -502,7 +504,7 @@ describe('toTypeDefinition', () => {
 })
 
 describe('toJsonSchema', () => {
-    test('simple', async () => {
+    it('simple', async () => {
         expect(await toJsonSchema($string())).toMatchInlineSnapshot(`
             {
               "compiled": false,
@@ -515,7 +517,7 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    test('object', async () => {
+    it('object', async () => {
         expect(
             await toJsonSchema(
                 $object(
@@ -557,43 +559,43 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    test('ref', async () => {
+    it('ref', async () => {
         const foo = $dict($string)
         expect(await toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
-            {
-              "compiled": false,
-              "schema": {
-                "$defs": {
-                  "{{0002-000:uniqueSymbolName}}": {
-                    "additionalProperties": {
-                      "type": "string",
-                    },
-                    "title": "{{0002-000:uniqueSymbolName}}",
-                    "type": "object",
+          {
+            "compiled": false,
+            "schema": {
+              "$defs": {
+                "{{0002-000:uniqueSymbolName}}": {
+                  "additionalProperties": {
+                    "type": "string",
                   },
+                  "title": "{{0002-000:uniqueSymbolName}}",
+                  "type": "object",
                 },
-                "$schema": "http://json-schema.org/draft-07/schema#",
-                "anyOf": [
-                  {
-                    "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
-                  },
-                  {
-                    "additionalProperties": {
-                      "oneOf": [
-                        {
-                          "type": "null",
-                        },
-                        {
-                          "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
-                        },
-                      ],
-                    },
-                    "type": "object",
-                  },
-                ],
-                "title": "{{0006-000:uniqueSymbolName}}",
               },
-            }
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
+                },
+                {
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "type": "null",
+                      },
+                      {
+                        "$ref": "#/$defs/{{0002-000:uniqueSymbolName}}",
+                      },
+                    ],
+                  },
+                  "type": "object",
+                },
+              ],
+              "title": "{{0007-000:uniqueSymbolName}}",
+            },
+          }
         `)
     })
 })

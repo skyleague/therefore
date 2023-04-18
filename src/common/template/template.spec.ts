@@ -1,14 +1,16 @@
 import { renderTemplate } from './index.js'
 
-test('identity for normal strings', () => {
+import { expect, it } from 'vitest'
+
+it('identity for normal strings', () => {
     expect(renderTemplate('foo')).toMatchInlineSnapshot(`"foo"`)
 })
 
-test('replace templates', () => {
+it('replace templates', () => {
     expect(renderTemplate('foo{{bar}}{{2}}', { bar: 'foo', 2: 'bar' })).toMatchInlineSnapshot(`"foofoobar"`)
 })
 
-test('leave weird nesting', () => {
+it('leave weird nesting', () => {
     expect(() => renderTemplate('foo{{bar{{bar}}}}', { bar: 'foo' })).toThrowErrorMatchingInlineSnapshot(
         `"Reference bar{{bar not found"`
     )

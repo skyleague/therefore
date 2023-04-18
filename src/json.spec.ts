@@ -1,6 +1,8 @@
 import { compileOutputFiles } from './commands/generate/generate.js'
 
-test('json', async () => {
+import { expect, it } from 'vitest'
+
+it('json', async () => {
     expect(
         await compileOutputFiles(['examples/json/json.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
@@ -10,7 +12,7 @@ test('json', async () => {
     ).toMatchSnapshot()
 })
 
-test('simple', async () => {
+it('simple', async () => {
     expect(
         await compileOutputFiles(['examples/json/simple.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),

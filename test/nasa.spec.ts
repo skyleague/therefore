@@ -3,8 +3,9 @@ import { compileOutputFiles } from '../src/commands/generate/generate.js'
 import { arbitrary } from '../src/index.js'
 
 import { forAll } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 
-test('output generation', async () => {
+it('output generation', async () => {
     expect(
         await compileOutputFiles(['examples/nasa/nasa.schema.ts'], {
             outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
@@ -14,6 +15,6 @@ test('output generation', async () => {
     ).toMatchSnapshot()
 })
 
-test('arbitrary', () => {
+it('arbitrary', () => {
     forAll(arbitrary(Project), (p) => Project.is(p))
 })
