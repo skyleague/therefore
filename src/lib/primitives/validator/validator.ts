@@ -10,6 +10,12 @@ export interface ValidatorOptions {
      * @defaultvalue true
      */
     assert: boolean
+    /**
+     * Whether the validator should be compiled.
+     *
+     * @defaultValue undefined
+     */
+    compile?: boolean
 }
 
 /**
@@ -29,7 +35,10 @@ export interface ValidatorOptions {
  *
  * @group Modifiers
  */
-export function $validator<Node extends ThereforeExpr>(node: Node, { assert = true }: Partial<ValidatorOptions> = {}): Node {
+export function $validator<Node extends ThereforeExpr>(
+    node: Node,
+    { assert = true, compile = undefined }: Partial<ValidatorOptions> = {}
+): Node {
     const evaluatedNode = evaluate(node)
     return {
         ...evaluatedNode,
@@ -38,6 +47,7 @@ export function $validator<Node extends ThereforeExpr>(node: Node, { assert = tr
             ...evaluatedNode.description,
             validator: {
                 enabled: true,
+                compile,
                 assert,
             },
         },

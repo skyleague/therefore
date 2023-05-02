@@ -134,8 +134,15 @@ export interface ThereforeMeta {
                * Generates an assert function.
                */
               assert: boolean
+
+              /**
+               * Whether the validator should be compiled.
+               *
+               * @defaultValue true
+               */
+              compile?: boolean
           }
-        | { enabled: false; assert: false }
+        | { enabled: false; assert: false; compile?: false }
 }
 export type SchemaMeta<T = unknown> = MetaDescription<T> & ThereforeMeta
 export type SchemaOptions<O, T = unknown> = UndefinedFields<MetaDescription<T> & O & ThereforeMeta>

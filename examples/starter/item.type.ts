@@ -3,6 +3,7 @@
  * Do not manually touch this
  */
 /* eslint-disable */
+import cartItemSchema from './schemas/cart-item.schema.json'
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
@@ -14,10 +15,17 @@ export interface CartItem {
 }
 
 export const CartItem = {
-    validate: (await import('./schemas/cart-item.schema.js')).validate10 as unknown as ValidateFunction<CartItem>,
-    get schema() {
-        return CartItem.validate.schema
-    },
+    validate: new AjvValidator.default({
+        strict: true,
+        strictTypes: true,
+        useDefaults: true,
+        removeAdditional: false,
+        strictSchema: false,
+        loopRequired: 5,
+        loopEnum: 5,
+        code: { optimize: true },
+    }).compile<CartItem>(cartItemSchema),
+    schema: cartItemSchema,
     get errors() {
         return CartItem.validate.errors ?? undefined
     },

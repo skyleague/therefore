@@ -8,5 +8,6 @@ export const cartItem = $validator(
         name: $string,
         price: $number,
         size: $optional($ref(size)),
-    })
+    }),
+    { compile: false }
 )

@@ -70,29 +70,29 @@ exports[`output generation 1`] = `
         "symbolName": "Example",
         "uniqueSymbolName": "{{000315-000:symbolName}}3178",
       },
-      "000329-000": {
-        "referenceName": "{{000329-000:symbolName}}",
+      "000330-000": {
+        "referenceName": "{{000330-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Encoding",
-        "uniqueSymbolName": "{{000329-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000330-000:symbolName}}3178",
       },
-      "000359-000": {
-        "referenceName": "{{000359-000:symbolName}}",
+      "000360-000": {
+        "referenceName": "{{000360-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Header",
-        "uniqueSymbolName": "{{000359-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000360-000:symbolName}}3178",
       },
-      "000367-000": {
-        "referenceName": "{{000367-000:symbolName}}",
+      "000368-000": {
+        "referenceName": "{{000368-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "RequestBody",
-        "uniqueSymbolName": "{{000367-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000368-000:symbolName}}3178",
       },
-      "000376-000": {
-        "referenceName": "{{000376-000:symbolName}}",
+      "000377-000": {
+        "referenceName": "{{000377-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Responses",
-        "uniqueSymbolName": "{{000376-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000377-000:symbolName}}3178",
       },
       "00038-000": {
         "referenceName": "{{00038-000:symbolName}}",
@@ -100,23 +100,23 @@ exports[`output generation 1`] = `
         "symbolName": "Contact",
         "uniqueSymbolName": "{{00038-000:symbolName}}3178",
       },
-      "000392-000": {
-        "referenceName": "{{000392-000:symbolName}}",
+      "000393-000": {
+        "referenceName": "{{000393-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Response",
-        "uniqueSymbolName": "{{000392-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000393-000:symbolName}}3178",
       },
-      "000407-000": {
-        "referenceName": "{{000407-000:symbolName}}",
+      "000408-000": {
+        "referenceName": "{{000408-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Link",
-        "uniqueSymbolName": "{{000407-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000408-000:symbolName}}3178",
       },
-      "000410-000": {
-        "referenceName": "{{000410-000:symbolName}}",
+      "000411-000": {
+        "referenceName": "{{000411-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Callback",
-        "uniqueSymbolName": "{{000410-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000411-000:symbolName}}3178",
       },
       "00043-000": {
         "referenceName": "{{00043-000:symbolName}}",
@@ -124,29 +124,29 @@ exports[`output generation 1`] = `
         "symbolName": "License",
         "uniqueSymbolName": "{{00043-000:symbolName}}3178",
       },
-      "000457-000": {
-        "referenceName": "{{000457-000:symbolName}}",
+      "000458-000": {
+        "referenceName": "{{000458-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "Components",
-        "uniqueSymbolName": "{{000457-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000458-000:symbolName}}3178",
       },
-      "000462-000": {
-        "referenceName": "{{000462-000:symbolName}}",
+      "000463-000": {
+        "referenceName": "{{000463-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "SecurityScheme",
-        "uniqueSymbolName": "{{000462-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000463-000:symbolName}}3178",
       },
-      "000469-000": {
-        "referenceName": "{{000469-000:symbolName}}",
+      "000470-000": {
+        "referenceName": "{{000470-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "APIKeySecurityScheme",
-        "uniqueSymbolName": "{{000469-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000470-000:symbolName}}3178",
       },
-      "000476-000": {
-        "referenceName": "{{000476-000:symbolName}}",
+      "000477-000": {
+        "referenceName": "{{000477-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "HTTPSecurityScheme",
-        "uniqueSymbolName": "{{000476-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000477-000:symbolName}}3178",
       },
       "00048-000": {
         "referenceName": "{{00048-000:symbolName}}",
@@ -154,47 +154,47 @@ exports[`output generation 1`] = `
         "symbolName": "ExternalDocumentation",
         "uniqueSymbolName": "{{00048-000:symbolName}}3178",
       },
-      "000482-000": {
-        "referenceName": "{{000482-000:symbolName}}",
+      "000483-000": {
+        "referenceName": "{{000483-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "OAuth2SecurityScheme",
-        "uniqueSymbolName": "{{000482-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000483-000:symbolName}}3178",
       },
-      "000492-000": {
-        "referenceName": "{{000492-000:symbolName}}",
+      "000493-000": {
+        "referenceName": "{{000493-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "OAuthFlows",
-        "uniqueSymbolName": "{{000492-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000493-000:symbolName}}3178",
       },
-      "000499-000": {
-        "referenceName": "{{000499-000:symbolName}}",
+      "000500-000": {
+        "referenceName": "{{000500-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "ImplicitOAuthFlow",
-        "uniqueSymbolName": "{{000499-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000500-000:symbolName}}3178",
       },
-      "000506-000": {
-        "referenceName": "{{000506-000:symbolName}}",
+      "000507-000": {
+        "referenceName": "{{000507-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "PasswordOAuthFlow",
-        "uniqueSymbolName": "{{000506-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000507-000:symbolName}}3178",
       },
-      "000513-000": {
-        "referenceName": "{{000513-000:symbolName}}",
+      "000514-000": {
+        "referenceName": "{{000514-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "ClientCredentialsFlow",
-        "uniqueSymbolName": "{{000513-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000514-000:symbolName}}3178",
       },
-      "000521-000": {
-        "referenceName": "{{000521-000:symbolName}}",
+      "000522-000": {
+        "referenceName": "{{000522-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "AuthorizationCodeOAuthFlow",
-        "uniqueSymbolName": "{{000521-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000522-000:symbolName}}3178",
       },
-      "000527-000": {
-        "referenceName": "{{000527-000:symbolName}}",
+      "000528-000": {
+        "referenceName": "{{000528-000:symbolName}}",
         "srcPath": "src/lib/primitives/restclient/openapi.schema.type.ts",
         "symbolName": "OpenIdConnectSecurityScheme",
-        "uniqueSymbolName": "{{000527-000:symbolName}}3178",
+        "uniqueSymbolName": "{{000528-000:symbolName}}3178",
       },
       "00056-000": {
         "referenceName": "{{00056-000:symbolName}}",
@@ -248,7 +248,7 @@ export interface {{00018-000:symbolName}} {
     security?: ({{00067-000:referenceName}})[]
     tags?: ({{00074-000:referenceName}})[]
     paths: {{00077-000:referenceName}}
-    components?: {{000457-000:referenceName}}
+    components?: {{000458-000:referenceName}}
     [k: \`x-\${string}\`]: unknown
 }
 
@@ -337,10 +337,10 @@ export interface {{000145-000:symbolName}} {
     externalDocs?: {{00048-000:referenceName}}
     operationId?: string
     parameters?: ({{000177-000:referenceName}} | {{000272-000:referenceName}})[]
-    requestBody?: {{000367-000:referenceName}} | {{000272-000:referenceName}}
-    responses: {{000376-000:referenceName}}
+    requestBody?: {{000368-000:referenceName}} | {{000272-000:referenceName}}
+    responses: {{000377-000:referenceName}}
     callbacks?: {
-        [k: string]: {{000410-000:referenceName}} | {{000272-000:referenceName}}
+        [k: string]: {{000411-000:referenceName}} | {{000272-000:referenceName}}
     }
     /**
      * @default false
@@ -491,7 +491,7 @@ export interface {{000305-000:symbolName}} {
         [k: string]: {{000315-000:referenceName}} | {{000272-000:referenceName}}
     }
     encoding?: {
-        [k: string]: {{000329-000:referenceName}}
+        [k: string]: {{000330-000:referenceName}}
     }
     [k: \`x-\${string}\`]: unknown
 }
@@ -504,10 +504,10 @@ export interface {{000315-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000329-000:symbolName}} {
+export interface {{000330-000:symbolName}} {
     contentType?: string
     headers?: {
-        [k: string]: {{000359-000:referenceName}} | {{000272-000:referenceName}}
+        [k: string]: {{000360-000:referenceName}} | {{000272-000:referenceName}}
     }
     style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject'
     explode?: boolean
@@ -515,9 +515,10 @@ export interface {{000329-000:symbolName}} {
      * @default false
      */
     allowReserved?: boolean
+    [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000359-000:symbolName}} {
+export interface {{000360-000:symbolName}} {
     description?: string
     /**
      * @default false
@@ -551,7 +552,7 @@ export interface {{000359-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000367-000:symbolName}} {
+export interface {{000368-000:symbolName}} {
     description?: string
     content: {
         [k: string]: {{000305-000:referenceName}}
@@ -563,27 +564,27 @@ export interface {{000367-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000376-000:symbolName}} {
-    default?: {{000392-000:referenceName}} | {{000272-000:referenceName}}
-    [k: string]: {{000392-000:referenceName}} | {{000272-000:referenceName}} | unknown
+export interface {{000377-000:symbolName}} {
+    default?: {{000393-000:referenceName}} | {{000272-000:referenceName}}
+    [k: string]: {{000393-000:referenceName}} | {{000272-000:referenceName}} | unknown
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000392-000:symbolName}} {
+export interface {{000393-000:symbolName}} {
     description: string
     headers?: {
-        [k: string]: {{000359-000:referenceName}} | {{000272-000:referenceName}}
+        [k: string]: {{000360-000:referenceName}} | {{000272-000:referenceName}}
     }
     content?: {
         [k: string]: {{000305-000:referenceName}}
     }
     links?: {
-        [k: string]: {{000407-000:referenceName}} | {{000272-000:referenceName}}
+        [k: string]: {{000408-000:referenceName}} | {{000272-000:referenceName}}
     }
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000407-000:symbolName}} {
+export interface {{000408-000:symbolName}} {
     operationId?: string
     operationRef?: string
     parameters?: {
@@ -595,17 +596,17 @@ export interface {{000407-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000410-000:symbolName}} {
+export interface {{000411-000:symbolName}} {
     [k: string]: {{000109-000:referenceName}} | unknown
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000457-000:symbolName}} {
+export interface {{000458-000:symbolName}} {
     schemas?: {
         [k: string]: {{000270-000:referenceName}} | {{000272-000:referenceName}}
     }
     responses?: {
-        [k: string]: {{000272-000:referenceName}} | {{000392-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000393-000:referenceName}}
     }
     parameters?: {
         [k: string]: {{000272-000:referenceName}} | {{000177-000:referenceName}}
@@ -614,26 +615,26 @@ export interface {{000457-000:symbolName}} {
         [k: string]: {{000272-000:referenceName}} | {{000315-000:referenceName}}
     }
     requestBodies?: {
-        [k: string]: {{000272-000:referenceName}} | {{000367-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000368-000:referenceName}}
     }
     headers?: {
-        [k: string]: {{000272-000:referenceName}} | {{000359-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000360-000:referenceName}}
     }
     securitySchemes?: {
-        [k: string]: {{000272-000:referenceName}} | {{000462-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000463-000:referenceName}}
     }
     links?: {
-        [k: string]: {{000272-000:referenceName}} | {{000407-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000408-000:referenceName}}
     }
     callbacks?: {
-        [k: string]: {{000272-000:referenceName}} | {{000410-000:referenceName}}
+        [k: string]: {{000272-000:referenceName}} | {{000411-000:referenceName}}
     }
     [k: \`x-\${string}\`]: unknown
 }
 
-export type {{000462-000:symbolName}} = {{000469-000:referenceName}} | {{000476-000:referenceName}} | {{000482-000:referenceName}} | {{000527-000:referenceName}}
+export type {{000463-000:symbolName}} = {{000470-000:referenceName}} | {{000477-000:referenceName}} | {{000483-000:referenceName}} | {{000528-000:referenceName}}
 
-export interface {{000469-000:symbolName}} {
+export interface {{000470-000:symbolName}} {
     type: 'apiKey'
     name: string
     in: 'header' | 'query' | 'cookie'
@@ -641,28 +642,28 @@ export interface {{000469-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export type {{000476-000:symbolName}} = {
+export type {{000477-000:symbolName}} = {
     scheme?: string
 } | {
     scheme?: unknown
 }
 
-export interface {{000482-000:symbolName}} {
+export interface {{000483-000:symbolName}} {
     type: 'oauth2'
-    flows: {{000492-000:referenceName}}
+    flows: {{000493-000:referenceName}}
     description?: string
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000492-000:symbolName}} {
-    implicit?: {{000499-000:referenceName}}
-    password?: {{000506-000:referenceName}}
-    clientCredentials?: {{000513-000:referenceName}}
-    authorizationCode?: {{000521-000:referenceName}}
+export interface {{000493-000:symbolName}} {
+    implicit?: {{000500-000:referenceName}}
+    password?: {{000507-000:referenceName}}
+    clientCredentials?: {{000514-000:referenceName}}
+    authorizationCode?: {{000522-000:referenceName}}
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000499-000:symbolName}} {
+export interface {{000500-000:symbolName}} {
     authorizationUrl: string
     refreshUrl?: string
     scopes: {
@@ -671,7 +672,7 @@ export interface {{000499-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000506-000:symbolName}} {
+export interface {{000507-000:symbolName}} {
     tokenUrl: string
     refreshUrl?: string
     scopes: {
@@ -680,7 +681,7 @@ export interface {{000506-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000513-000:symbolName}} {
+export interface {{000514-000:symbolName}} {
     tokenUrl: string
     refreshUrl?: string
     scopes: {
@@ -689,7 +690,7 @@ export interface {{000513-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000521-000:symbolName}} {
+export interface {{000522-000:symbolName}} {
     authorizationUrl: string
     tokenUrl: string
     refreshUrl?: string
@@ -699,7 +700,7 @@ export interface {{000521-000:symbolName}} {
     [k: \`x-\${string}\`]: unknown
 }
 
-export interface {{000527-000:symbolName}} {
+export interface {{000528-000:symbolName}} {
     type: 'openIdConnect'
     openIdConnectUrl: string
     description?: string

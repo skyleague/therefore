@@ -95,7 +95,9 @@ export async function loadSymbol({
     const schemaFile = `./schemas/${schemaName}.schema.json`
     const compiledFile = `./schemas/${schemaName}.schema.js`
 
-    const jsonschema = await toJsonSchema(simplified, compile)
+    const nodeIsCompiled = simplified.description.validator?.compile ?? compile
+
+    const jsonschema = await toJsonSchema(simplified, nodeIsCompiled)
     const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
 
     file.symbols.push(
@@ -114,7 +116,7 @@ export async function loadSymbol({
         symbolName,
         definition: definition,
         schemaFile,
-        compiledFile: compile ? compiledFile : undefined,
+        compiledFile: nodeIsCompiled ? compiledFile : undefined,
         typeOnly: simplified.description.validator?.enabled !== true,
     })
 
