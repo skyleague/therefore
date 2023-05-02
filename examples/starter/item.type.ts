@@ -3,7 +3,7 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import cartItemSchema from './schemas/cart-item.schema.json'
+import cartItemSchema from './schemas/cart-item.schema.json' assert { type: 'json' }
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 

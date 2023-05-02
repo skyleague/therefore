@@ -25,7 +25,7 @@ export function renderTypescriptSchema(definition: FileDefinition) {
     for (const importFile of definition.symbols
         .filter(hasPropertiesDefined(['schemaFile']))
         .filter((i) => !i.typeOnly && i.compiledFile === undefined)
-        .map((i) => `import ${i.symbolName}Schema from '${i.schemaFile}'`)
+        .map((i) => `import ${i.symbolName}Schema from '${i.schemaFile}' assert { type: "json" }`)
         .sort()) {
         writer.writeLine(importFile)
     }

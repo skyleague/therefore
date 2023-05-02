@@ -282,6 +282,7 @@ export interface Encoding {
      * @default false
      */
     allowReserved?: boolean
+    [k: `x-${string}`]: unknown
 }
 
 export interface Header {
