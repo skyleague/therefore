@@ -31,8 +31,8 @@ exports[`json 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import jsonAdvSchema from './schemas/json-adv.schema.json.js'
-import jsonSchema from './schemas/json.schema.json.js'
+import jsonAdvSchema from './schemas/json-adv.schema.json'
+import jsonSchema from './schemas/json.schema.json'
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
@@ -42,7 +42,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 } | ({{00010-000:referenceName}})[]
 
 export const {{00010-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
+    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
     schema: jsonSchema,
     get errors() { return {{00010-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00010-000:symbolName}} => {{00010-000:symbolName}}.validate(o) === true,
@@ -51,7 +51,7 @@ export const {{00010-000:symbolName}} = {
 export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 
 export const {{00012-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
+    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
     schema: jsonAdvSchema,
     get errors() { return {{00012-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00012-000:symbolName}} => {{00012-000:symbolName}}.validate(o) === true,
@@ -211,7 +211,7 @@ exports[`simple 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import simpleSchema from './schemas/simple.schema.json.js'
+import simpleSchema from './schemas/simple.schema.json'
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
@@ -219,7 +219,7 @@ import type { ValidateFunction } from 'ajv'
 export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 
 export const {{0005-000:symbolName}} = {
-    validate: new AjvValidator({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
+    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"removeAdditional\\":false,\\"strictSchema\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"optimize\\":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
     schema: simpleSchema,
     get errors() { return {{0005-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,

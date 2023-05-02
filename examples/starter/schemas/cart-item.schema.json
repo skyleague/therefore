@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CartItem",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "size": {
+      "$ref": "#/$defs/Size"
+    }
+  },
+  "required": ["id", "name", "price"],
+  "additionalProperties": true,
+  "$defs": {
+    "Size": {
+      "enum": ["XS", "S", "M", "L", "XL"],
+      "title": "Size"
+    }
+  }
+}

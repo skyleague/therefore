@@ -60,7 +60,7 @@ export function writeThereforeSchema({
             writer.writeLine(
                 isCompiled
                     ? `validate: (await import('${validatorFile}')).validate10 as unknown as ValidateFunction<{{${uuid}:symbolName}}>,`
-                    : `validate: new AjvValidator(${JSON.stringify({
+                    : `validate: new AjvValidator.default(${JSON.stringify({
                           ...defaultAjvConfig,
                           ...description.ajvOptions,
                       })}).compile<{{${uuid}:symbolName}}>(${schemaReference}),`
