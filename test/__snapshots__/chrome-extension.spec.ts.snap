@@ -121,7 +121,7 @@ exports[`schema > typedoc 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import extensionSchema from './schemas/extension.schema.json'
+import extensionSchema from './schemas/extension.schema.json' assert { type: \\"json\\" }
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 

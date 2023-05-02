@@ -31,8 +31,8 @@ exports[`json 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import jsonAdvSchema from './schemas/json-adv.schema.json'
-import jsonSchema from './schemas/json.schema.json'
+import jsonAdvSchema from './schemas/json-adv.schema.json' assert { type: \\"json\\" }
+import jsonSchema from './schemas/json.schema.json' assert { type: \\"json\\" }
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
@@ -211,7 +211,7 @@ exports[`simple 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import simpleSchema from './schemas/simple.schema.json'
+import simpleSchema from './schemas/simple.schema.json' assert { type: \\"json\\" }
 import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
 
