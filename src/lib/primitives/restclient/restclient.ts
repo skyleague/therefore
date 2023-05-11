@@ -227,6 +227,7 @@ export function getResponseBodies({
             })
             therefore.description.validator ??= { enabled: true, assert: false, compile }
             therefore.description.validator.assert ||= !useEither
+            therefore.description.validator.compile = compile
             result.push([statusCode, { schema: therefore, mimeType: jsonMimeType, type: 'json' }])
             continue
         }

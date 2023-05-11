@@ -387,10 +387,11 @@ export function toTypescriptDefinition({
         let prev = xs[0]!
         for (const x of xs.slice(1)) {
             if (x.node.description.validator?.enabled) {
-                const { assert = false } = prev.node.description.validator ?? {}
+                const { assert = false, compile = true } = prev.node.description.validator ?? {}
                 prev.node.description.validator = {
                     enabled: true,
                     assert: assert || x.node.description.validator.enabled,
+                    compile: (compile || x.node.description.validator.compile) ?? true,
                 }
             }
             prev = x
