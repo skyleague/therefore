@@ -95,6 +95,7 @@ export function getRequestBody({
     references,
     strict,
     optionalNullable,
+    compile,
 }: {
     request: RequestBody | undefined
     openapi: OpenapiV3
@@ -102,6 +103,7 @@ export function getRequestBody({
     references: Map<string, [name: string, value: () => ThereforeNode]>
     strict: boolean
     optionalNullable: boolean
+    compile: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
         undefined,
@@ -118,7 +120,7 @@ export function getRequestBody({
             optionalNullable,
         })
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
-            therefore.description.validator = { enabled: true, assert: true }
+            therefore.description.validator = { enabled: true, assert: true, compile }
             return {
                 schema: therefore,
                 mimeType: jsonMimeType,
@@ -147,7 +149,7 @@ export function getRequestBody({
             strict,
             optionalNullable,
         })
-        therefore.description.validator = { enabled: true, assert: true }
+        therefore.description.validator = { enabled: true, assert: true, compile }
         return { schema: therefore, name: 'body', type: 'form', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
     }
 
@@ -174,6 +176,7 @@ export function getResponseBodies({
     useEither,
     strict,
     optionalNullable,
+    compile,
 }: {
     responses: Responses | undefined
     openapi: OpenapiV3
@@ -182,6 +185,7 @@ export function getResponseBodies({
     useEither: boolean
     strict: boolean
     optionalNullable: boolean
+    compile: boolean
 }) {
     const result: [
         string,
@@ -221,7 +225,7 @@ export function getResponseBodies({
                 strict,
                 optionalNullable,
             })
-            therefore.description.validator ??= { enabled: true, assert: false }
+            therefore.description.validator ??= { enabled: true, assert: false, compile }
             therefore.description.validator.assert ||= !useEither
             result.push([statusCode, { schema: therefore, mimeType: jsonMimeType, type: 'json' }])
             continue
@@ -457,6 +461,12 @@ export interface RestclientOptions {
      */
     explicitContentNegotiation?: boolean
     /**
+     * Whether the validators should be compiled.
+     *
+     * @defaultValue undefined
+     */
+    compile?: boolean
+    /**
      * Allows for a transformation of the standardized openapi schema (swagger gets automatically converted to
      * openapiv3).
      */
@@ -488,7 +498,13 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
     const writer = createWriter()
 
-    const { useEither = true, explicitContentNegotiation = false, strict = false, optionalNullable = false } = options
+    const {
+        useEither = true,
+        explicitContentNegotiation = false,
+        strict = false,
+        optionalNullable = false,
+        compile = true,
+    } = options
     const references = new Map<string, [name: string, value: () => ThereforeNode]>()
 
     const children: ThereforeCst[] = []
@@ -575,6 +591,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         references,
                         strict,
                         optionalNullable,
+                        compile,
                     })
                     let requestValidationStr = ''
                     if (request?.schema !== undefined) {
@@ -620,6 +637,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         useEither,
                         strict,
                         optionalNullable,
+                        compile,
                     })
 
                     const parameterizedPath = pathParameters
