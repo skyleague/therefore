@@ -4,11 +4,13 @@ export const defaultAjvConfig: Options = {
     strict: true,
     strictTypes: true,
     useDefaults: true,
-    removeAdditional: false,
     strictSchema: false,
+    logger: false,
     loopRequired: 5,
     loopEnum: 5,
-    code: {
-        optimize: true,
-    },
+    // AJV defaults
+    // removeAdditional: false,
+    // code: {
+    //     optimize: true,
+    // },
 }
