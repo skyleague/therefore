@@ -526,7 +526,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             .write(': ')
             .inlineBlock(() => {
                 writer.writeLine(`prefixUrl${defaultValue !== undefined ? '?' : ''}: ${prefixUrl},`)
-                writer.writeLine('options?: Options,')
+                writer.writeLine('options?: Options | OptionsInit,')
                 if (hasAuth) {
                     writer.write('auth: ').inlineBlock(() => {
                         writer.writeLine(authDeclaration)
@@ -914,7 +914,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             ...annotate(undefined, definition.info),
             typescript: {
                 imports: [
-                    `import type { CancelableRequest, Got, Options, Response } from 'got'`,
+                    `import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'`,
                     `import got from 'got'`,
                     ...(generateAwaitResponse && useEither
                         ? [

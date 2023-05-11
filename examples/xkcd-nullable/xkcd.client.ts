@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import { Comic } from './xkcd.type.js'
 
 /**
@@ -20,7 +20,7 @@ export class XKCD {
         options,
     }: {
         prefixUrl?: string | 'http://xkcd.com/'
-        options?: Options
+        options?: Options | OptionsInit
     } = {}) {
         this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
     }

@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import type { IncomingHttpHeaders } from 'http'
 import { GetApodResponse } from './nasa.type.js'
@@ -31,7 +31,7 @@ export class Apod {
         defaultAuth,
     }: {
         prefixUrl: string | 'https://api.nasa.gov/planetary' | 'http://api.nasa.gov/planetary'
-        options?: Options
+        options?: Options | OptionsInit
         auth: {
             apiKey?: string | (() => Promise<string>)
         }

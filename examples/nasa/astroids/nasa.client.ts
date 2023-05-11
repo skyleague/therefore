@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import type { IncomingHttpHeaders } from 'http'
 import { GetApiByResponse200, Project } from './nasa.type.js'
@@ -22,7 +22,7 @@ export class Astroids {
         options,
     }: {
         prefixUrl: string | 'http://techport.nasa.gov/api' | 'https://techport.nasa.gov/api'
-        options?: Options
+        options?: Options | OptionsInit
     }) {
         this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
     }

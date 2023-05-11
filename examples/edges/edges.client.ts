@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import type { IncomingHttpHeaders } from 'http'
 
@@ -14,7 +14,7 @@ import type { IncomingHttpHeaders } from 'http'
 export class Edges {
     public client: Got
 
-    public constructor({ prefixUrl, options }: { prefixUrl: string; options?: Options }) {
+    public constructor({ prefixUrl, options }: { prefixUrl: string; options?: Options | OptionsInit }) {
         this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
     }
 
@@ -74,7 +74,7 @@ export class Edges {
 export class SwaggerEdges {
     public client: Got
 
-    public constructor({ prefixUrl, options }: { prefixUrl: string; options?: Options }) {
+    public constructor({ prefixUrl, options }: { prefixUrl: string; options?: Options | OptionsInit }) {
         this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
     }
 
