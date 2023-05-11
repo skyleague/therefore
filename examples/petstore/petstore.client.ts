@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import type { IncomingHttpHeaders } from 'http'
 import {
@@ -49,7 +49,7 @@ export class PetStore {
         defaultAuth,
     }: {
         prefixUrl: string | `${string}/api/v3`
-        options?: Options
+        options?: Options | OptionsInit
         auth: {
             petstoreAuth?: string | (() => Promise<string>)
             apiKey?: string | (() => Promise<string>)

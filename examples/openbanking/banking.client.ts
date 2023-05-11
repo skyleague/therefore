@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 import got from 'got'
-import type { CancelableRequest, Got, Options, Response } from 'got'
+import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { ValidateFunction, ErrorObject } from 'ajv'
 import type { IncomingHttpHeaders } from 'http'
 import { File, OBErrorResponse1 } from './banking.type.js'
@@ -32,7 +32,7 @@ export class Banking {
         defaultAuth,
     }: {
         prefixUrl?: string | 'https://openbanking.org.uk' | `${string}/open-banking/v3.1/pisp`
-        options?: Options
+        options?: Options | OptionsInit
         auth: {
             psuoAuth2Security?: string | (() => Promise<string>)
             tppoAuth2Security?: string | (() => Promise<string>)
