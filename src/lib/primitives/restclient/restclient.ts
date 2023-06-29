@@ -95,6 +95,7 @@ export function getRequestBody({
     references,
     strict,
     optionalNullable,
+    allowIntersectionTypes,
     compile,
 }: {
     request: RequestBody | undefined
@@ -103,6 +104,7 @@ export function getRequestBody({
     references: Map<string, [name: string, value: () => ThereforeNode]>
     strict: boolean
     optionalNullable: boolean
+    allowIntersectionTypes: boolean
     compile: boolean
 }) {
     const [jsonMimeType, jsonContent] = entriesOf(request?.content ?? {}).find(([mime]) => mime.match(jsonMime)) ?? [
@@ -118,6 +120,7 @@ export function getRequestBody({
             exportAllSymbols: true,
             strict,
             optionalNullable,
+            allowIntersectionTypes,
         })
         if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
             therefore.description.validator = { enabled: true, assert: true, compile }
@@ -148,6 +151,7 @@ export function getRequestBody({
             exportAllSymbols: true,
             strict,
             optionalNullable,
+            allowIntersectionTypes,
         })
         therefore.description.validator = { enabled: true, assert: true, compile }
         return { schema: therefore, name: 'body', type: 'form', declaration: `{{${therefore.uuid}:uniqueSymbolName}}` }
@@ -176,6 +180,7 @@ export function getResponseBodies({
     useEither,
     strict,
     optionalNullable,
+    allowIntersectionTypes,
     compile,
 }: {
     responses: Responses | undefined
@@ -185,6 +190,7 @@ export function getResponseBodies({
     useEither: boolean
     strict: boolean
     optionalNullable: boolean
+    allowIntersectionTypes: boolean
     compile: boolean
 }) {
     const result: [
@@ -224,6 +230,7 @@ export function getResponseBodies({
                 exportAllSymbols: true,
                 strict,
                 optionalNullable,
+                allowIntersectionTypes,
             })
             therefore.description.validator ??= { enabled: true, assert: false, compile }
             therefore.description.validator.assert ||= !useEither
@@ -450,6 +457,13 @@ export interface RestclientOptions {
      */
     optionalNullable?: boolean
     /**
+     * Toggle whether intersection types are allowed. In a lot of cases, intersection types aren't properly defined, and will break validation by jsonschema
+     * You can choose to allow them, but keep in mind to verify the behavior.
+     *
+     * @defaultValue false
+     */
+    allowIntersectionTypes?: boolean
+    /**
      * Toggles whether an Either interface is generated or exceptions are used.
      *
      * @defaultValue true
@@ -504,6 +518,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
         explicitContentNegotiation = false,
         strict = false,
         optionalNullable = false,
+        allowIntersectionTypes = false,
         compile = true,
     } = options
     const references = new Map<string, [name: string, value: () => ThereforeNode]>()
@@ -592,6 +607,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         references,
                         strict,
                         optionalNullable,
+                        allowIntersectionTypes,
                         compile,
                     })
                     let requestValidationStr = ''
@@ -638,6 +654,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                         useEither,
                         strict,
                         optionalNullable,
+                        allowIntersectionTypes,
                         compile,
                     })
 
