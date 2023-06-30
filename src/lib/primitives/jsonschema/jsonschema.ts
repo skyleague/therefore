@@ -250,6 +250,7 @@ function walkJsonschema({
         name,
         exportAllSymbols,
         strict,
+        allowIntersectionTypes,
         optionalNullable,
         ...omit(pick(rest, descriptionKeys), ['name']),
     }
