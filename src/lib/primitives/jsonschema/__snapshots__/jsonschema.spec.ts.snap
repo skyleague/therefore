@@ -221,6 +221,7 @@ exports[`petstore > definition 1`] = `
               "type": "ref",
               "uuid": "00016-000",
               "value": {
+                "allowIntersectionTypes": false,
                 "cache": Map {},
                 "exportAllSymbols": false,
                 "exportSymbol": false,
@@ -1871,6 +1872,7 @@ Some useful links:
           "type": "ref",
           "uuid": "00076-000",
           "value": {
+            "allowIntersectionTypes": false,
             "cache": Map {},
             "exportAllSymbols": false,
             "exportSymbol": false,
@@ -3206,6 +3208,7 @@ Some useful links:
               "type": "ref",
               "uuid": "00072-000",
               "value": {
+                "allowIntersectionTypes": false,
                 "cache": Map {},
                 "exportAllSymbols": false,
                 "exportSymbol": false,
