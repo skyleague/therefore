@@ -343,7 +343,7 @@ function walkJsonschema({
     }
 
     if (isArray(child.type)) {
-        const isNullable = child.nullable || (optionalNullable && !node.required?.includes(childProperty as string))
+        const isNullable = child.nullable === true || (optionalNullable && !node.required?.includes(childProperty as string))
         const types: JsonSchema7TypeName[] = [...child.type, ...((isNullable ? ['null'] : []) satisfies JsonSchema7TypeName[])]
         return $union(
             types.map((t) => visitor[t]({ ...child, type: t }, context)),

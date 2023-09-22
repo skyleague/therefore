@@ -17,7 +17,7 @@ export function walkTherefore<
     U,
     C extends { transform?: (node: ThereforeNode, obj: U) => R } = Record<string, unknown>,
     R = U,
-    Cst extends ThereforeNode = ThereforeCst
+    Cst extends ThereforeNode = ThereforeCst,
 >(obj: Cst, visitor: ThereforeVisitor<U, C, Cst>, context: C = {} as C): R {
     const method = visitor[obj.type as Cst['type']] ?? visitor.default
     const result = method(obj as never, context)

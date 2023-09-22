@@ -38,8 +38,12 @@ export function isCombinedDefinition(
  *
  * @group Primitives
  */
-export function $ref(reference: ThereforeExpr | [string, ThereforeExpr]): RefType
-export function $ref(reference: SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] }): RefType
+export function $ref(
+    reference:
+        | ThereforeExpr
+        | [string, ThereforeExpr]
+        | (SchemaOptions<RefOptions> & { reference: ThereforeExpr | [string, ThereforeExpr] })
+): RefType
 export function $ref(reference: ThereforeExpr | [string, ThereforeExpr], options?: SchemaOptions<RefOptions>): RefType
 export function $ref(
     definition:

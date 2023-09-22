@@ -208,7 +208,7 @@ export function getResponseBodies({
                   type: 'text'
                   isUnknown?: boolean
               }
-        )
+        ),
     ][] = []
     const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2') || s === 'default').length
     for (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
