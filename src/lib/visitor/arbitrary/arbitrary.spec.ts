@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { arbitrary } from './arbitrary.js'
 
 import { $array, $boolean, $integer, $null, $object } from '../../primitives/index.js'

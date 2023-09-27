@@ -47,7 +47,7 @@ export async function loadSymbol({
     symbol: ThereforeCst
     sourceSymbol: string
     compile: boolean
-    definitions: Record<string, FileDefinition>
+    definitions: Record<string, FileDefinition | undefined>
     entry: string
     fileSuffix?: string | undefined
     filePath?: string | undefined
