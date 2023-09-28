@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface Defaults {
     /**
@@ -14,7 +14,7 @@ export interface Defaults {
 }
 
 export const Defaults = {
-    validate: (await import('./schemas/defaults.schema.js')).validate10 as unknown as ValidateFunction<Defaults>,
+    validate: (await import('./schemas/defaults.schema.js')).validate as ValidateFunction<Defaults>,
     get schema() {
         return Defaults.validate.schema
     },
@@ -24,7 +24,7 @@ export const Defaults = {
     is: (o: unknown): o is Defaults => Defaults.validate(o) === true,
     assert: (o: unknown) => {
         if (!Defaults.validate(o)) {
-            throw new AjvValidator.ValidationError(Defaults.errors ?? [])
+            throw new ValidationError(Defaults.errors ?? [])
         }
     },
 } as const

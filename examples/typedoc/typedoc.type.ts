@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 /**
  * Specify the path to the theme that should be used.
@@ -12,7 +12,7 @@ import type { ValidateFunction } from 'ajv'
 export type Theme = 'default' | 'minimal' | string
 
 export const Theme = {
-    validate: (await import('./schemas/theme.schema.js')).validate10 as unknown as ValidateFunction<Theme>,
+    validate: (await import('./schemas/theme.schema.js')).validate as ValidateFunction<Theme>,
     get schema() {
         return Theme.validate.schema
     },
@@ -22,7 +22,7 @@ export const Theme = {
     is: (o: unknown): o is Theme => Theme.validate(o) === true,
     assert: (o: unknown) => {
         if (!Theme.validate(o)) {
-            throw new AjvValidator.ValidationError(Theme.errors ?? [])
+            throw new ValidationError(Theme.errors ?? [])
         }
     },
 } as const
@@ -184,7 +184,7 @@ export interface Typedoc {
 }
 
 export const Typedoc = {
-    validate: (await import('./schemas/typedoc.schema.js')).validate10 as unknown as ValidateFunction<Typedoc>,
+    validate: (await import('./schemas/typedoc.schema.js')).validate as ValidateFunction<Typedoc>,
     get schema() {
         return Typedoc.validate.schema
     },
@@ -194,7 +194,7 @@ export const Typedoc = {
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
     assert: (o: unknown) => {
         if (!Typedoc.validate(o)) {
-            throw new AjvValidator.ValidationError(Typedoc.errors ?? [])
+            throw new ValidationError(Typedoc.errors ?? [])
         }
     },
 } as const

@@ -42,13 +42,13 @@
     "test": "npx vitest run"
   },
   "dependencies": {
-    "@skyleague/axioms": "^2.4.1",
+    "@skyleague/axioms": "^2.4.2",
     "camelcase": "^8.0.0",
     "code-block-writer": "^12.0.0",
     "decamelize": "^6.0.0",
-    "esbuild": "^0.19.3",
+    "esbuild": "^0.19.4",
     "fast-glob": "^3.3.1",
-    "inflection": "^2.0.1",
+    "inflection": "^3.0.0",
     "js-yaml": "^4.1.0",
     "jsonpointer": "^5.0.1",
     "make-synchronous": "^1.0.0",
@@ -58,10 +58,10 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^3.9.0",
+    "@skyleague/node-standards": "^3.10.5",
     "@types/js-yaml": "^4.0.6",
     "@types/uuid": "^9.0.4",
-    "@types/yargs": "^17.0.24",
+    "@types/yargs": "^17.0.25",
     "ajv": "^8.12.0",
     "got": "^13.0.0",
     "nock": "^13.3.3",

@@ -3,15 +3,15 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface Headers {
     authorization: string
 }
 
 export const Headers = {
-    validate: (await import('./schemas/headers.schema.js')).validate10 as unknown as ValidateFunction<Headers>,
+    validate: (await import('./schemas/headers.schema.js')).validate as ValidateFunction<Headers>,
     get schema() {
         return Headers.validate.schema
     },
@@ -21,7 +21,7 @@ export const Headers = {
     is: (o: unknown): o is Headers => Headers.validate(o) === true,
     assert: (o: unknown) => {
         if (!Headers.validate(o)) {
-            throw new AjvValidator.ValidationError(Headers.errors ?? [])
+            throw new ValidationError(Headers.errors ?? [])
         }
     },
 } as const
@@ -31,7 +31,7 @@ export interface Query {
 }
 
 export const Query = {
-    validate: (await import('./schemas/query.schema.js')).validate10 as unknown as ValidateFunction<Query>,
+    validate: (await import('./schemas/query.schema.js')).validate as ValidateFunction<Query>,
     get schema() {
         return Query.validate.schema
     },
@@ -41,7 +41,7 @@ export const Query = {
     is: (o: unknown): o is Query => Query.validate(o) === true,
     assert: (o: unknown) => {
         if (!Query.validate(o)) {
-            throw new AjvValidator.ValidationError(Query.errors ?? [])
+            throw new ValidationError(Query.errors ?? [])
         }
     },
 } as const

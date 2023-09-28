@@ -3,13 +3,13 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export type Simple = number | Simple[]
 
 export const Simple = {
-    validate: (await import('./schemas/simple.schema.js')).validate10 as unknown as ValidateFunction<Simple>,
+    validate: (await import('./schemas/simple.schema.js')).validate as ValidateFunction<Simple>,
     get schema() {
         return Simple.validate.schema
     },
@@ -19,7 +19,7 @@ export const Simple = {
     is: (o: unknown): o is Simple => Simple.validate(o) === true,
     assert: (o: unknown) => {
         if (!Simple.validate(o)) {
-            throw new AjvValidator.ValidationError(Simple.errors ?? [])
+            throw new ValidationError(Simple.errors ?? [])
         }
     },
 } as const

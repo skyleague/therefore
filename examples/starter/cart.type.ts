@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 import { CartItem } from './item.type.js'
 
 export interface Cart {
@@ -15,7 +15,7 @@ export interface Cart {
 }
 
 export const Cart = {
-    validate: (await import('./schemas/cart.schema.js')).validate10 as unknown as ValidateFunction<Cart>,
+    validate: (await import('./schemas/cart.schema.js')).validate as ValidateFunction<Cart>,
     get schema() {
         return Cart.validate.schema
     },
@@ -25,7 +25,7 @@ export const Cart = {
     is: (o: unknown): o is Cart => Cart.validate(o) === true,
     assert: (o: unknown) => {
         if (!Cart.validate(o)) {
-            throw new AjvValidator.ValidationError(Cart.errors ?? [])
+            throw new ValidationError(Cart.errors ?? [])
         }
     },
 } as const

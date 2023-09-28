@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 interface ExtensionContentScriptsArray {
     /**
@@ -280,7 +280,7 @@ export interface Extension {
              * The MIME type for which the Native Client module will be registered as content handler.
              */
             mime_type: MimeType
-        }[]
+        }[],
     ]
     /**
      * Use the Chrome Identity API to authenticate users: the getAuthToken for users logged into their Google Account and the launchWebAuthFlow for users logged into a non-Google account.
@@ -410,7 +410,7 @@ export interface Extension {
 }
 
 export const Extension = {
-    validate: (await import('./schemas/extension.schema.js')).validate10 as unknown as ValidateFunction<Extension>,
+    validate: (await import('./schemas/extension.schema.js')).validate as ValidateFunction<Extension>,
     get schema() {
         return Extension.validate.schema
     },
@@ -420,7 +420,7 @@ export const Extension = {
     is: (o: unknown): o is Extension => Extension.validate(o) === true,
     assert: (o: unknown) => {
         if (!Extension.validate(o)) {
-            throw new AjvValidator.ValidationError(Extension.errors ?? [])
+            throw new ValidationError(Extension.errors ?? [])
         }
     },
 } as const
