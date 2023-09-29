@@ -233,11 +233,7 @@ export async function toJsonSchema(obj: ThereforeCst, compile = false): Promise<
         const ajv = new Ajv(context.ajvOptions)
         const validator = ajv.compile(definition)
         let code = standaloneCode(ajv, validator)
-        code = code.replace('module.exports = validate10;module.exports.default = validate10', 'export {validate10}')
-        code = `${code};validate10.schema=schema11;`
-        if (code.includes('require(')) {
-            code = `import {createRequire} from 'module';const require = createRequire(import.meta.url);${code}`
-        }
+        code = `${code};validate.schema=schema11;`
         code = (
             await transform(code, {
                 platform: 'node',

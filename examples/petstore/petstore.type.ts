@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface Pet {
     id?: number
@@ -19,7 +19,7 @@ export interface Pet {
 }
 
 export const Pet = {
-    validate: (await import('./schemas/pet.schema.js')).validate10 as unknown as ValidateFunction<Pet>,
+    validate: (await import('./schemas/pet.schema.js')).validate as ValidateFunction<Pet>,
     get schema() {
         return Pet.validate.schema
     },
@@ -29,7 +29,7 @@ export const Pet = {
     is: (o: unknown): o is Pet => Pet.validate(o) === true,
     assert: (o: unknown) => {
         if (!Pet.validate(o)) {
-            throw new AjvValidator.ValidationError(Pet.errors ?? [])
+            throw new ValidationError(Pet.errors ?? [])
         }
     },
 } as const
@@ -38,7 +38,7 @@ export type FindPetsByStatusResponse = Pet[]
 
 export const FindPetsByStatusResponse = {
     validate: (await import('./schemas/find-pets-by-status-response.schema.js'))
-        .validate10 as unknown as ValidateFunction<FindPetsByStatusResponse>,
+        .validate as ValidateFunction<FindPetsByStatusResponse>,
     get schema() {
         return FindPetsByStatusResponse.validate.schema
     },
@@ -52,7 +52,7 @@ export type FindPetsByTagsResponse = Pet[]
 
 export const FindPetsByTagsResponse = {
     validate: (await import('./schemas/find-pets-by-tags-response.schema.js'))
-        .validate10 as unknown as ValidateFunction<FindPetsByTagsResponse>,
+        .validate as ValidateFunction<FindPetsByTagsResponse>,
     get schema() {
         return FindPetsByTagsResponse.validate.schema
     },
@@ -69,7 +69,7 @@ export interface ApiResponse {
 }
 
 export const ApiResponse = {
-    validate: (await import('./schemas/api-response.schema.js')).validate10 as unknown as ValidateFunction<ApiResponse>,
+    validate: (await import('./schemas/api-response.schema.js')).validate as ValidateFunction<ApiResponse>,
     get schema() {
         return ApiResponse.validate.schema
     },
@@ -84,8 +84,7 @@ export interface GetInventoryResponse {
 }
 
 export const GetInventoryResponse = {
-    validate: (await import('./schemas/get-inventory-response.schema.js'))
-        .validate10 as unknown as ValidateFunction<GetInventoryResponse>,
+    validate: (await import('./schemas/get-inventory-response.schema.js')).validate as ValidateFunction<GetInventoryResponse>,
     get schema() {
         return GetInventoryResponse.validate.schema
     },
@@ -108,7 +107,7 @@ export interface Order {
 }
 
 export const Order = {
-    validate: (await import('./schemas/order.schema.js')).validate10 as unknown as ValidateFunction<Order>,
+    validate: (await import('./schemas/order.schema.js')).validate as ValidateFunction<Order>,
     get schema() {
         return Order.validate.schema
     },
@@ -118,7 +117,7 @@ export const Order = {
     is: (o: unknown): o is Order => Order.validate(o) === true,
     assert: (o: unknown) => {
         if (!Order.validate(o)) {
-            throw new AjvValidator.ValidationError(Order.errors ?? [])
+            throw new ValidationError(Order.errors ?? [])
         }
     },
 } as const
@@ -138,7 +137,7 @@ export interface User {
 }
 
 export const User = {
-    validate: (await import('./schemas/user.schema.js')).validate10 as unknown as ValidateFunction<User>,
+    validate: (await import('./schemas/user.schema.js')).validate as ValidateFunction<User>,
     get schema() {
         return User.validate.schema
     },
@@ -148,7 +147,7 @@ export const User = {
     is: (o: unknown): o is User => User.validate(o) === true,
     assert: (o: unknown) => {
         if (!User.validate(o)) {
-            throw new AjvValidator.ValidationError(User.errors ?? [])
+            throw new ValidationError(User.errors ?? [])
         }
     },
 } as const
@@ -157,7 +156,7 @@ export type CreateUsersWithListInputRequest = User[]
 
 export const CreateUsersWithListInputRequest = {
     validate: (await import('./schemas/create-users-with-list-input-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<CreateUsersWithListInputRequest>,
+        .validate as ValidateFunction<CreateUsersWithListInputRequest>,
     get schema() {
         return CreateUsersWithListInputRequest.validate.schema
     },
@@ -167,7 +166,7 @@ export const CreateUsersWithListInputRequest = {
     is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!CreateUsersWithListInputRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(CreateUsersWithListInputRequest.errors ?? [])
+            throw new ValidationError(CreateUsersWithListInputRequest.errors ?? [])
         }
     },
 } as const
@@ -175,8 +174,7 @@ export const CreateUsersWithListInputRequest = {
 export type LoginUserResponse = string
 
 export const LoginUserResponse = {
-    validate: (await import('./schemas/login-user-response.schema.js'))
-        .validate10 as unknown as ValidateFunction<LoginUserResponse>,
+    validate: (await import('./schemas/login-user-response.schema.js')).validate as ValidateFunction<LoginUserResponse>,
     get schema() {
         return LoginUserResponse.validate.schema
     },

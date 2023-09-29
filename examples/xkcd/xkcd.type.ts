@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface Comic {
     alt?: string
@@ -21,7 +21,7 @@ export interface Comic {
 }
 
 export const Comic = {
-    validate: (await import('./schemas/comic.schema.js')).validate10 as unknown as ValidateFunction<Comic>,
+    validate: (await import('./schemas/comic.schema.js')).validate as ValidateFunction<Comic>,
     get schema() {
         return Comic.validate.schema
     },
@@ -31,7 +31,7 @@ export const Comic = {
     is: (o: unknown): o is Comic => Comic.validate(o) === true,
     assert: (o: unknown) => {
         if (!Comic.validate(o)) {
-            throw new AjvValidator.ValidationError(Comic.errors ?? [])
+            throw new ValidationError(Comic.errors ?? [])
         }
     },
 } as const

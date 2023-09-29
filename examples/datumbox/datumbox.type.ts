@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface AdultContentDetectionRequest {
     /**
@@ -19,7 +19,7 @@ export interface AdultContentDetectionRequest {
 
 export const AdultContentDetectionRequest = {
     validate: (await import('./schemas/adult-content-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<AdultContentDetectionRequest>,
+        .validate as ValidateFunction<AdultContentDetectionRequest>,
     get schema() {
         return AdultContentDetectionRequest.validate.schema
     },
@@ -29,7 +29,7 @@ export const AdultContentDetectionRequest = {
     is: (o: unknown): o is AdultContentDetectionRequest => AdultContentDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!AdultContentDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(AdultContentDetectionRequest.errors ?? [])
+            throw new ValidationError(AdultContentDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -47,7 +47,7 @@ export interface CommercialDetectionRequest {
 
 export const CommercialDetectionRequest = {
     validate: (await import('./schemas/commercial-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<CommercialDetectionRequest>,
+        .validate as ValidateFunction<CommercialDetectionRequest>,
     get schema() {
         return CommercialDetectionRequest.validate.schema
     },
@@ -57,7 +57,7 @@ export const CommercialDetectionRequest = {
     is: (o: unknown): o is CommercialDetectionRequest => CommercialDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!CommercialDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(CommercialDetectionRequest.errors ?? [])
+            throw new ValidationError(CommercialDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -79,7 +79,7 @@ export interface DocumentSimilarityRequest {
 
 export const DocumentSimilarityRequest = {
     validate: (await import('./schemas/document-similarity-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<DocumentSimilarityRequest>,
+        .validate as ValidateFunction<DocumentSimilarityRequest>,
     get schema() {
         return DocumentSimilarityRequest.validate.schema
     },
@@ -89,7 +89,7 @@ export const DocumentSimilarityRequest = {
     is: (o: unknown): o is DocumentSimilarityRequest => DocumentSimilarityRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!DocumentSimilarityRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(DocumentSimilarityRequest.errors ?? [])
+            throw new ValidationError(DocumentSimilarityRequest.errors ?? [])
         }
     },
 } as const
@@ -107,7 +107,7 @@ export interface EducationalDetectionRequest {
 
 export const EducationalDetectionRequest = {
     validate: (await import('./schemas/educational-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<EducationalDetectionRequest>,
+        .validate as ValidateFunction<EducationalDetectionRequest>,
     get schema() {
         return EducationalDetectionRequest.validate.schema
     },
@@ -117,7 +117,7 @@ export const EducationalDetectionRequest = {
     is: (o: unknown): o is EducationalDetectionRequest => EducationalDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!EducationalDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(EducationalDetectionRequest.errors ?? [])
+            throw new ValidationError(EducationalDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -134,8 +134,7 @@ export interface GenderDetectionRequest {
 }
 
 export const GenderDetectionRequest = {
-    validate: (await import('./schemas/gender-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<GenderDetectionRequest>,
+    validate: (await import('./schemas/gender-detection-request.schema.js')).validate as ValidateFunction<GenderDetectionRequest>,
     get schema() {
         return GenderDetectionRequest.validate.schema
     },
@@ -145,7 +144,7 @@ export const GenderDetectionRequest = {
     is: (o: unknown): o is GenderDetectionRequest => GenderDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!GenderDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(GenderDetectionRequest.errors ?? [])
+            throw new ValidationError(GenderDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -167,7 +166,7 @@ export interface KeywordExtractionRequest {
 
 export const KeywordExtractionRequest = {
     validate: (await import('./schemas/keyword-extraction-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<KeywordExtractionRequest>,
+        .validate as ValidateFunction<KeywordExtractionRequest>,
     get schema() {
         return KeywordExtractionRequest.validate.schema
     },
@@ -177,7 +176,7 @@ export const KeywordExtractionRequest = {
     is: (o: unknown): o is KeywordExtractionRequest => KeywordExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!KeywordExtractionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(KeywordExtractionRequest.errors ?? [])
+            throw new ValidationError(KeywordExtractionRequest.errors ?? [])
         }
     },
 } as const
@@ -195,7 +194,7 @@ export interface LanguageDetectionRequest {
 
 export const LanguageDetectionRequest = {
     validate: (await import('./schemas/language-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<LanguageDetectionRequest>,
+        .validate as ValidateFunction<LanguageDetectionRequest>,
     get schema() {
         return LanguageDetectionRequest.validate.schema
     },
@@ -205,7 +204,7 @@ export const LanguageDetectionRequest = {
     is: (o: unknown): o is LanguageDetectionRequest => LanguageDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!LanguageDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(LanguageDetectionRequest.errors ?? [])
+            throw new ValidationError(LanguageDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -223,7 +222,7 @@ export interface ReadabilityAssessmentRequest {
 
 export const ReadabilityAssessmentRequest = {
     validate: (await import('./schemas/readability-assessment-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<ReadabilityAssessmentRequest>,
+        .validate as ValidateFunction<ReadabilityAssessmentRequest>,
     get schema() {
         return ReadabilityAssessmentRequest.validate.schema
     },
@@ -233,7 +232,7 @@ export const ReadabilityAssessmentRequest = {
     is: (o: unknown): o is ReadabilityAssessmentRequest => ReadabilityAssessmentRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!ReadabilityAssessmentRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(ReadabilityAssessmentRequest.errors ?? [])
+            throw new ValidationError(ReadabilityAssessmentRequest.errors ?? [])
         }
     },
 } as const
@@ -251,7 +250,7 @@ export interface SentimentAnalysisRequest {
 
 export const SentimentAnalysisRequest = {
     validate: (await import('./schemas/sentiment-analysis-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<SentimentAnalysisRequest>,
+        .validate as ValidateFunction<SentimentAnalysisRequest>,
     get schema() {
         return SentimentAnalysisRequest.validate.schema
     },
@@ -261,7 +260,7 @@ export const SentimentAnalysisRequest = {
     is: (o: unknown): o is SentimentAnalysisRequest => SentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SentimentAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SentimentAnalysisRequest.errors ?? [])
+            throw new ValidationError(SentimentAnalysisRequest.errors ?? [])
         }
     },
 } as const
@@ -278,8 +277,7 @@ export interface SpamDetectionRequest {
 }
 
 export const SpamDetectionRequest = {
-    validate: (await import('./schemas/spam-detection-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<SpamDetectionRequest>,
+    validate: (await import('./schemas/spam-detection-request.schema.js')).validate as ValidateFunction<SpamDetectionRequest>,
     get schema() {
         return SpamDetectionRequest.validate.schema
     },
@@ -289,7 +287,7 @@ export const SpamDetectionRequest = {
     is: (o: unknown): o is SpamDetectionRequest => SpamDetectionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SpamDetectionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SpamDetectionRequest.errors ?? [])
+            throw new ValidationError(SpamDetectionRequest.errors ?? [])
         }
     },
 } as const
@@ -307,7 +305,7 @@ export interface SubjectivityAnalysisRequest {
 
 export const SubjectivityAnalysisRequest = {
     validate: (await import('./schemas/subjectivity-analysis-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<SubjectivityAnalysisRequest>,
+        .validate as ValidateFunction<SubjectivityAnalysisRequest>,
     get schema() {
         return SubjectivityAnalysisRequest.validate.schema
     },
@@ -317,7 +315,7 @@ export const SubjectivityAnalysisRequest = {
     is: (o: unknown): o is SubjectivityAnalysisRequest => SubjectivityAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!SubjectivityAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(SubjectivityAnalysisRequest.errors ?? [])
+            throw new ValidationError(SubjectivityAnalysisRequest.errors ?? [])
         }
     },
 } as const
@@ -334,8 +332,7 @@ export interface TextExtractionRequest {
 }
 
 export const TextExtractionRequest = {
-    validate: (await import('./schemas/text-extraction-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<TextExtractionRequest>,
+    validate: (await import('./schemas/text-extraction-request.schema.js')).validate as ValidateFunction<TextExtractionRequest>,
     get schema() {
         return TextExtractionRequest.validate.schema
     },
@@ -345,7 +342,7 @@ export const TextExtractionRequest = {
     is: (o: unknown): o is TextExtractionRequest => TextExtractionRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TextExtractionRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TextExtractionRequest.errors ?? [])
+            throw new ValidationError(TextExtractionRequest.errors ?? [])
         }
     },
 } as const
@@ -363,7 +360,7 @@ export interface TopicClassificationRequest {
 
 export const TopicClassificationRequest = {
     validate: (await import('./schemas/topic-classification-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<TopicClassificationRequest>,
+        .validate as ValidateFunction<TopicClassificationRequest>,
     get schema() {
         return TopicClassificationRequest.validate.schema
     },
@@ -373,7 +370,7 @@ export const TopicClassificationRequest = {
     is: (o: unknown): o is TopicClassificationRequest => TopicClassificationRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TopicClassificationRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TopicClassificationRequest.errors ?? [])
+            throw new ValidationError(TopicClassificationRequest.errors ?? [])
         }
     },
 } as const
@@ -391,7 +388,7 @@ export interface TwitterSentimentAnalysisRequest {
 
 export const TwitterSentimentAnalysisRequest = {
     validate: (await import('./schemas/twitter-sentiment-analysis-request.schema.js'))
-        .validate10 as unknown as ValidateFunction<TwitterSentimentAnalysisRequest>,
+        .validate as ValidateFunction<TwitterSentimentAnalysisRequest>,
     get schema() {
         return TwitterSentimentAnalysisRequest.validate.schema
     },
@@ -401,7 +398,7 @@ export const TwitterSentimentAnalysisRequest = {
     is: (o: unknown): o is TwitterSentimentAnalysisRequest => TwitterSentimentAnalysisRequest.validate(o) === true,
     assert: (o: unknown) => {
         if (!TwitterSentimentAnalysisRequest.validate(o)) {
-            throw new AjvValidator.ValidationError(TwitterSentimentAnalysisRequest.errors ?? [])
+            throw new ValidationError(TwitterSentimentAnalysisRequest.errors ?? [])
         }
     },
 } as const

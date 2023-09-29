@@ -291,7 +291,7 @@ export async function generate({
         }
     }
 
-    const prettier = maybeLoadPrettier()
+    const prettier = await maybeLoadPrettier()
 
     const data = outputFiles.reduce<Record<string, ReferenceData>>(
         (agg, x) => ({

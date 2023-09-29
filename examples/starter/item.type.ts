@@ -5,7 +5,7 @@
 /* eslint-disable */
 import cartItemSchema from './schemas/cart-item.schema.json' assert { type: 'json' }
 import AjvValidator from 'ajv'
-import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface CartItem {
     id: string
@@ -23,6 +23,7 @@ export const CartItem = {
         logger: false,
         loopRequired: 5,
         loopEnum: 5,
+        code: { esm: true },
     }).compile<CartItem>(cartItemSchema),
     schema: cartItemSchema,
     get errors() {
@@ -31,7 +32,7 @@ export const CartItem = {
     is: (o: unknown): o is CartItem => CartItem.validate(o) === true,
     assert: (o: unknown) => {
         if (!CartItem.validate(o)) {
-            throw new AjvValidator.ValidationError(CartItem.errors ?? [])
+            throw new ValidationError(CartItem.errors ?? [])
         }
     },
 } as const

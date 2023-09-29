@@ -3,15 +3,15 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export interface File {
     [k: string]: unknown | undefined
 }
 
 export const File = {
-    validate: (await import('./schemas/file.schema.js')).validate10 as unknown as ValidateFunction<File>,
+    validate: (await import('./schemas/file.schema.js')).validate as ValidateFunction<File>,
     get schema() {
         return File.validate.schema
     },
@@ -21,7 +21,7 @@ export const File = {
     is: (o: unknown): o is File => File.validate(o) === true,
     assert: (o: unknown) => {
         if (!File.validate(o)) {
-            throw new AjvValidator.ValidationError(File.errors ?? [])
+            throw new ValidationError(File.errors ?? [])
         }
     },
 } as const
@@ -46,8 +46,7 @@ export interface OBErrorResponse1 {
 }
 
 export const OBErrorResponse1 = {
-    validate: (await import('./schemas/ob-error-response1.schema.js'))
-        .validate10 as unknown as ValidateFunction<OBErrorResponse1>,
+    validate: (await import('./schemas/ob-error-response1.schema.js')).validate as ValidateFunction<OBErrorResponse1>,
     get schema() {
         return OBErrorResponse1.validate.schema
     },
@@ -57,7 +56,7 @@ export const OBErrorResponse1 = {
     is: (o: unknown): o is OBErrorResponse1 => OBErrorResponse1.validate(o) === true,
     assert: (o: unknown) => {
         if (!OBErrorResponse1.validate(o)) {
-            throw new AjvValidator.ValidationError(OBErrorResponse1.errors ?? [])
+            throw new ValidationError(OBErrorResponse1.errors ?? [])
         }
     },
 } as const

@@ -8,6 +8,9 @@ export const defaultAjvConfig: Options = {
     logger: false,
     loopRequired: 5,
     loopEnum: 5,
+    code: {
+        esm: true,
+    },
     // AJV defaults
     // removeAdditional: false,
     // code: {

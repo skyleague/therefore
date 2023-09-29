@@ -59,7 +59,7 @@ export function writeThereforeSchema({
         .inlineBlock(() => {
             writer.writeLine(
                 isCompiled
-                    ? `validate: (await import('${validatorFile}')).validate10 as unknown as ValidateFunction<{{${uuid}:symbolName}}>,`
+                    ? `validate: (await import('${validatorFile}')).validate as ValidateFunction<{{${uuid}:symbolName}}>,`
                     : `validate: new AjvValidator.default(${JSON.stringify({
                           ...defaultAjvConfig,
                           ...description.ajvOptions,
@@ -79,7 +79,7 @@ export function writeThereforeSchema({
                     .write(`assert: (o: unknown) => `)
                     .inlineBlock(() => {
                         writer.write(`if (!{{${uuid}:symbolName}}.validate(o))`).block(() => {
-                            writer.writeLine(`throw new AjvValidator.ValidationError({{${uuid}:symbolName}}.errors ?? [])`)
+                            writer.writeLine(`throw new ValidationError({{${uuid}:symbolName}}.errors ?? [])`)
                         })
                     })
                     .write(',')
@@ -375,9 +375,13 @@ export function toTypescriptDefinition({
             walkTherefore($ref(child, { validator: child.description.validator }), typescriptVisitor, context)
         }
     } else if (schema.description.validator?.enabled === true) {
-        imports.push(`import type { ValidateFunction } from 'ajv'`)
         if (schema.description.validator.assert) {
+            imports.push(`import { ValidationError } from 'ajv'`)
+        }
+        if (schema.description.validator.compile === false) {
             imports.push(`import AjvValidator from 'ajv'`)
+        } else {
+            imports.push(`import type { ValidateFunction } from 'ajv'`)
         }
     }
 

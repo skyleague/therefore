@@ -1,7 +1,7 @@
 import { Headers, Query } from '../examples/http/http.type.js'
 
 import { dict, forAll, integer, isNumber, string, tuple, unknown } from '@skyleague/axioms'
-import { it } from 'vitest'
+import { it, expect } from 'vitest'
 
 it('headers', () => {
     forAll(tuple(dict(unknown()), string()), ([d, x]) => {
@@ -16,4 +16,23 @@ it('query', () => {
         Query.assert(q)
         return isNumber(q.limit)
     })
+})
+
+it('schema', () => {
+    expect(Query.schema).toMatchInlineSnapshot(`
+      {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": true,
+        "properties": {
+          "limit": {
+            "type": "number",
+          },
+        },
+        "required": [
+          "limit",
+        ],
+        "title": "Query",
+        "type": "object",
+      }
+    `)
 })

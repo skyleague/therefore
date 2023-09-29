@@ -3,8 +3,8 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 export type Json =
     | string
@@ -17,7 +17,7 @@ export type Json =
     | Json[]
 
 export const Json = {
-    validate: (await import('./schemas/json.schema.js')).validate10 as unknown as ValidateFunction<Json>,
+    validate: (await import('./schemas/json.schema.js')).validate as ValidateFunction<Json>,
     get schema() {
         return Json.validate.schema
     },
@@ -30,7 +30,7 @@ export const Json = {
 export type JsonAdv = JsonLocal
 
 export const JsonAdv = {
-    validate: (await import('./schemas/json-adv.schema.js')).validate10 as unknown as ValidateFunction<JsonAdv>,
+    validate: (await import('./schemas/json-adv.schema.js')).validate as ValidateFunction<JsonAdv>,
     get schema() {
         return JsonAdv.validate.schema
     },
@@ -40,7 +40,7 @@ export const JsonAdv = {
     is: (o: unknown): o is JsonAdv => JsonAdv.validate(o) === true,
     assert: (o: unknown) => {
         if (!JsonAdv.validate(o)) {
-            throw new AjvValidator.ValidationError(JsonAdv.errors ?? [])
+            throw new ValidationError(JsonAdv.errors ?? [])
         }
     },
 } as const

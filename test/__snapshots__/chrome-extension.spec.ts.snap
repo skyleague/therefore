@@ -122,8 +122,8 @@ exports[`schema > typedoc 1`] = `
 */
 /* eslint-disable */
 import extensionSchema from './schemas/extension.schema.json' assert { type: \\"json\\" }
-import AjvValidator from 'ajv'
 import type { ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 
 interface {{00061-000:symbolName}} {
@@ -527,13 +527,13 @@ export interface {{000143-000:symbolName}} {
 }
 
 export const {{000143-000:symbolName}} = {
-    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"strictSchema\\":false,\\"logger\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5}).compile<{{000143-000:symbolName}}>(extensionSchema),
+    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"strictSchema\\":false,\\"logger\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"esm\\":true}}).compile<{{000143-000:symbolName}}>(extensionSchema),
     schema: extensionSchema,
     get errors() { return {{000143-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{000143-000:symbolName}} => {{000143-000:symbolName}}.validate(o) === true,
     assert: (o: unknown) => {
         if (!{{000143-000:symbolName}}.validate(o)) {
-            throw new AjvValidator.ValidationError({{000143-000:symbolName}}.errors ?? [])
+            throw new ValidationError({{000143-000:symbolName}}.errors ?? [])
         }
     },
 } as const
