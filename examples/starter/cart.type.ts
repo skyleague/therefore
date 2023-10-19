@@ -5,7 +5,7 @@
 /* eslint-disable */
 import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
-import { CartItem } from './item.type.js'
+import { type CartItem } from './item.type.js'
 
 export interface Cart {
     id: string

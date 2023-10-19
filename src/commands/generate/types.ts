@@ -57,6 +57,7 @@ export interface FileDefinition {
     attachedFiles: { targetPath: string; content: string; prettify: boolean; type: ThereforeOutputType; clean?: () => void }[]
     symbols: FileSymbol[]
     dependencies: Record<string, string[] | undefined>
+    dependencyUsesValue: Record<string, Set<string>>
 }
 
 export interface ReferenceData {

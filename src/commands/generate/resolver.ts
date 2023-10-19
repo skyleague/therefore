@@ -12,7 +12,7 @@ import path from 'node:path'
 
 const { version } = packageJson
 
-export function renderTypescriptSchema(definition: FileDefinition) {
+export function renderTypescriptSchemaHeader(definition: FileDefinition) {
     const writer = createWriter()
     writer
         .writeLine('/**')
@@ -37,7 +37,10 @@ export function renderTypescriptSchema(definition: FileDefinition) {
     for (const importFile of Object.entries(definition.dependencies)
         .map(([targetPath, deps]) => ({
             targetPath,
-            deps: `{ ${[...new Set(deps)].sort().join(', ')} }`,
+            deps: `{ ${[...new Set(deps)]
+                .sort()
+                .map((d) => (definition.dependencyUsesValue[targetPath]?.has(d) ? d : `type ${d}`))
+                .join(', ')} }`,
         }))
         .filter(({ targetPath }) => targetPath !== definition.targetPath)
         .map(({ targetPath: f, deps }) => {
@@ -50,6 +53,11 @@ export function renderTypescriptSchema(definition: FileDefinition) {
 
     writer.newLine().newLine()
 
+    return writer.toString()
+}
+
+export function renderTypescriptSchemaContent(definition: FileDefinition) {
+    const writer = createWriter()
     for (const symbol of Object.values(definition.symbols)) {
         writer.writeLine(symbol.definition.declaration)
         if (symbol.definition.isExported && !symbol.typeOnly) {
@@ -89,9 +97,15 @@ export function resolveTypescriptSchema({
         .flat(2)
     const uniqueRequires = [...unique(required, (a, b) => a.uuid === b.uuid)]
 
+    const templateContent = renderTypescriptSchemaContent(definition)
     for (const r of uniqueRequires) {
         definition.dependencies[r.targetPath] ??= []
         definition.dependencies[r.targetPath]?.push(r.symbolName)
+
+        if (templateContent.includes(`${r.uuid}:symbolName~value`)) {
+            definition.dependencyUsesValue[r.targetPath] ??= new Set()
+            definition.dependencyUsesValue[r.targetPath]?.add(r.symbolName)
+        }
     }
 
     for (const symbol of definition.symbols) {
@@ -125,7 +139,7 @@ export function resolveTypescriptSchema({
             targetPath,
             relativeSource,
             type: 'typescript',
-            template: renderTypescriptSchema(definition),
+            template: `${renderTypescriptSchemaHeader(definition)}${templateContent}`,
             data: { ...localReferences, ...references },
             prettify: true,
         },
