@@ -81,6 +81,7 @@ export async function loadSymbol({
         attachedFiles: [],
         symbols: [],
         dependencies: {},
+        dependencyUsesValue: {},
     }
 
     const file = definitions[targetPath]!

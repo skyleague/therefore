@@ -612,7 +612,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                     })
                     let requestValidationStr = ''
                     if (request?.schema !== undefined) {
-                        requestValidationStr = `this.validateRequestBody({{${request.schema.uuid}:symbolName}}, ${request.name})`
+                        requestValidationStr = `this.validateRequestBody({{${request.schema.uuid}:symbolName~value}}, ${request.name})`
                         generateValidateRequestBody = true
                         if (!seenChildren.has(request.schema)) {
                             children.push(request.schema)
@@ -824,7 +824,7 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                                 if (!seenChildren.has(responseSchema as ThereforeCst)) {
                                                     children.push(responseSchema as ThereforeCst)
                                                 }
-                                                writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName}},`)
+                                                writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName~value}},`)
                                             } else if (statusCode !== 'default' || entriesOf(responses.right).length === 1) {
                                                 writer.write(
                                                     `${statusCode}: ${

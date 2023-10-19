@@ -77,7 +77,7 @@ export class {{000134-000:symbolName}} {
         return this.awaitResponse(this.client.get(\`api/projects/\${path.id}\${path.format}\`, {
             searchParams: query,responseType: 'json',
         }), {
-            200: {{00077-000:symbolName}},
+            200: {{00077-000:symbolName~value}},
         })
     }
 
@@ -89,7 +89,7 @@ export class {{000134-000:symbolName}} {
         return this.awaitResponse(this.client.get(\`api/projects\${path.format}\`, {
             searchParams: query,responseType: 'json',
         }), {
-            200: {{000133-000:symbolName}},
+            200: {{000133-000:symbolName~value}},
         })
     }
 
@@ -881,7 +881,7 @@ export class {{000137-000:symbolName}} {
         return this.awaitResponse(this.buildClient(auth).get(\`apod\`, {
             searchParams: query ?? {},responseType: 'json',
         }), {
-            200: {{000136-000:symbolName}},400: {is: (_x: unknown): _x is unknown => true},
+            200: {{000136-000:symbolName~value}},400: {is: (_x: unknown): _x is unknown => true},
         })
     }
 

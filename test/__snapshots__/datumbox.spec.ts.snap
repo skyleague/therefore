@@ -137,7 +137,7 @@ export class {{00061-000:symbolName}} {
      */
     public async adultContentDetection({body}: {body: {{0004-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{0004-000:symbolName}}, body)
+        this.validateRequestBody({{0004-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/AdultContentDetection.json\`, {
             form: body,
@@ -153,7 +153,7 @@ export class {{00061-000:symbolName}} {
      */
     public async commercialDetection({body}: {body: {{0008-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{0008-000:symbolName}}, body)
+        this.validateRequestBody({{0008-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/CommercialDetection.json\`, {
             form: body,
@@ -169,7 +169,7 @@ export class {{00061-000:symbolName}} {
      */
     public async documentSimilarity({body}: {body: {{00014-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00014-000:symbolName}}, body)
+        this.validateRequestBody({{00014-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/DocumentSimilarity.json\`, {
             form: body,
@@ -185,7 +185,7 @@ export class {{00061-000:symbolName}} {
      */
     public async educationalDetection({body}: {body: {{00018-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00018-000:symbolName}}, body)
+        this.validateRequestBody({{00018-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/EducationalDetection.json\`, {
             form: body,
@@ -201,7 +201,7 @@ export class {{00061-000:symbolName}} {
      */
     public async genderDetection({body}: {body: {{00022-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00022-000:symbolName}}, body)
+        this.validateRequestBody({{00022-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/GenderDetection.json\`, {
             form: body,
@@ -217,7 +217,7 @@ export class {{00061-000:symbolName}} {
      */
     public async keywordExtraction({body}: {body: {{00028-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00028-000:symbolName}}, body)
+        this.validateRequestBody({{00028-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/KeywordExtraction.json\`, {
             form: body,
@@ -233,7 +233,7 @@ export class {{00061-000:symbolName}} {
      */
     public async languageDetection({body}: {body: {{00032-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00032-000:symbolName}}, body)
+        this.validateRequestBody({{00032-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/LanguageDetection.json\`, {
             form: body,
@@ -249,7 +249,7 @@ export class {{00061-000:symbolName}} {
      */
     public async readabilityAssessment({body}: {body: {{00036-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00036-000:symbolName}}, body)
+        this.validateRequestBody({{00036-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/ReadabilityAssessment.json\`, {
             form: body,
@@ -265,7 +265,7 @@ export class {{00061-000:symbolName}} {
      */
     public async sentimentAnalysis({body}: {body: {{00040-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00040-000:symbolName}}, body)
+        this.validateRequestBody({{00040-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/SentimentAnalysis.json\`, {
             form: body,
@@ -281,7 +281,7 @@ export class {{00061-000:symbolName}} {
      */
     public async spamDetection({body}: {body: {{00044-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00044-000:symbolName}}, body)
+        this.validateRequestBody({{00044-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/SpamDetection.json\`, {
             form: body,
@@ -297,7 +297,7 @@ export class {{00061-000:symbolName}} {
      */
     public async subjectivityAnalysis({body}: {body: {{00048-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00048-000:symbolName}}, body)
+        this.validateRequestBody({{00048-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/SubjectivityAnalysis.json\`, {
             form: body,
@@ -313,7 +313,7 @@ export class {{00061-000:symbolName}} {
      */
     public async textExtraction({body}: {body: {{00052-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00052-000:symbolName}}, body)
+        this.validateRequestBody({{00052-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/TextExtraction.json\`, {
             form: body,
@@ -329,7 +329,7 @@ export class {{00061-000:symbolName}} {
      */
     public async topicClassification({body}: {body: {{00056-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00056-000:symbolName}}, body)
+        this.validateRequestBody({{00056-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/TopicClassification.json\`, {
             form: body,
@@ -345,7 +345,7 @@ export class {{00061-000:symbolName}} {
      */
     public async twitterSentimentAnalysis({body}: {body: {{00060-000:uniqueSymbolName}}})
     {
-        this.validateRequestBody({{00060-000:symbolName}}, body)
+        this.validateRequestBody({{00060-000:symbolName~value}}, body)
 
         return this.awaitResponse(this.client.post(\`1.0/TwitterSentimentAnalysis.json\`, {
             form: body,
