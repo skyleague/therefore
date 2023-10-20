@@ -38,3 +38,12 @@ export const defaults = $jsonschema(
     },
     { validator: { enabled: true, assert: true } }
 )
+
+export const keyword = $jsonschema(
+    {
+        properties: {
+            foo: { type: 'array', items: { type: 'string', minLength: 1 }, minItems: 4 },
+        },
+    },
+    { validator: { enabled: true, assert: true } }
+)

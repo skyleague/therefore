@@ -98,7 +98,7 @@ export async function loadSymbol({
 
     const nodeIsCompiled = simplified.description.validator?.compile ?? compile
 
-    const jsonschema = await toJsonSchema(simplified, nodeIsCompiled)
+    const jsonschema = toJsonSchema(simplified, nodeIsCompiled)
     const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
 
     file.symbols.push(

@@ -504,8 +504,8 @@ describe('toTypeDefinition', () => {
 })
 
 describe('toJsonSchema', () => {
-    it('simple', async () => {
-        expect(await toJsonSchema($string())).toMatchInlineSnapshot(`
+    it('simple', () => {
+        expect(toJsonSchema($string())).toMatchInlineSnapshot(`
             {
               "compiled": false,
               "schema": {
@@ -517,9 +517,9 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    it('object', async () => {
+    it('object', () => {
         expect(
-            await toJsonSchema(
+            toJsonSchema(
                 $object(
                     {
                         foo: $string,
@@ -559,9 +559,9 @@ describe('toJsonSchema', () => {
         `)
     })
 
-    it('ref', async () => {
+    it('ref', () => {
         const foo = $dict($string)
-        expect(await toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
+        expect(toJsonSchema($union([$ref(foo), $dict($nullable($ref(foo)))]))).toMatchInlineSnapshot(`
           {
             "compiled": false,
             "schema": {
