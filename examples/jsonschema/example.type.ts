@@ -33,6 +33,26 @@ export const Defaults = {
     },
 } as const
 
+export interface Keyword {
+    foo?: [string, string, string, string, ...string[]]
+}
+
+export const Keyword = {
+    validate: (await import('./schemas/keyword.schema.js')).validate as ValidateFunction<Keyword>,
+    get schema() {
+        return Keyword.validate.schema
+    },
+    get errors() {
+        return Keyword.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Keyword => Keyword.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Keyword.validate(o)) {
+            throw new ValidationError(Keyword.errors ?? [])
+        }
+    },
+} as const
+
 export interface Person {
     /**
      * The person's first name.

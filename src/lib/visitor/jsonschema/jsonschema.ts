@@ -13,7 +13,6 @@ import { asArray, evaluate, omit, omitUndefined } from '@skyleague/axioms'
 import type { Options as AjvOptions } from 'ajv'
 import _Ajv from 'ajv'
 import _standaloneCode from 'ajv/dist/standalone/index.js'
-import { transform } from 'esbuild'
 
 const Ajv = _Ajv.default ?? _Ajv
 const standaloneCode = _standaloneCode.default ?? _standaloneCode
@@ -216,9 +215,9 @@ export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
     }
 }
 
-export async function toJsonSchema(obj: ThereforeCst, compile: true): Promise<Extract<JsonSchemaValidator, { compiled: true }>>
-export async function toJsonSchema(obj: ThereforeCst, compile?: boolean): Promise<JsonSchemaValidator>
-export async function toJsonSchema(obj: ThereforeCst, compile = false): Promise<JsonSchemaValidator> {
+export function toJsonSchema(obj: ThereforeCst, compile: true): Extract<JsonSchemaValidator, { compiled: true }>
+export function toJsonSchema(obj: ThereforeCst, compile?: boolean): JsonSchemaValidator
+export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaValidator {
     const context = jsonSchemaContext(obj)
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
@@ -234,14 +233,9 @@ export async function toJsonSchema(obj: ThereforeCst, compile = false): Promise<
         const validator = ajv.compile(definition)
         let code = standaloneCode(ajv, validator)
         code = `${code};validate.schema=schema11;`
-        code = (
-            await transform(code, {
-                platform: 'node',
-                target: 'esnext',
-                format: 'esm',
-                minifyWhitespace: true,
-            })
-        ).code
+        if (code.includes('require(')) {
+            code = `import {createRequire} from 'module';const require = createRequire(import.meta.url);${code}`
+        }
 
         return {
             schema: definition,

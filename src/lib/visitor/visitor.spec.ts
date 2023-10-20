@@ -13,48 +13,48 @@ import { it } from 'vitest'
 
 it('string', async () => {
     const arb = $string()
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('number', async () => {
     const arb = $number()
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('integer', async () => {
     const arb = $integer({ maximum: 600 })
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('boolean', async () => {
     const arb = $boolean()
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('null', async () => {
     const arb = $null()
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('unknown', async () => {
     const arb = $unknown()
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('object', async () => {
     const arb = $object({ foo: $string() }, { indexSignature: $unknown() })
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
 
 it('array', async () => {
     const arb = $array($unknown)
-    const val = await toJsonSchema(arb, true)
+    const val = toJsonSchema(arb, true)
     forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
 })
