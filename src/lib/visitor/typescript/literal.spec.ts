@@ -53,8 +53,8 @@ describe('toLiteral', () => {
     })
 
     it('other', () => {
-        expect(() => toLiteral(Symbol())).toThrowErrorMatchingInlineSnapshot(`"not supported"`)
-        expect(() => toLiteral(() => 1)).toThrowErrorMatchingInlineSnapshot(`"not supported"`)
+        expect(() => toLiteral(Symbol())).toThrowErrorMatchingInlineSnapshot(`[Error: not supported]`)
+        expect(() => toLiteral(() => 1)).toThrowErrorMatchingInlineSnapshot(`[Error: not supported]`)
     })
 
     it('json literals', () => {

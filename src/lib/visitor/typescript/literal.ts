@@ -42,7 +42,7 @@ export function toLiteral(obj: unknown): string {
         number: (n: number) => `${n}`,
         bigint: (n: bigint) => `${n}`,
         string: (n: string) => stringLiteral(n, { allowBacktick: true }),
-        boolean: (n: boolean) => `${n.toString()}`,
+        boolean: (n: boolean) => n.toString(),
         undefined: (_: undefined) => 'null',
         symbol: unsupported,
         function: unsupported,

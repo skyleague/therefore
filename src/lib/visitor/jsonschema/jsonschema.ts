@@ -120,8 +120,8 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             additionalProperties: value.additionalProperties
                 ? true
                 : value.indexSignature !== undefined
-                ? walkTherefore(value.indexSignature, jsonSchemaVisitor, context)
-                : value.additionalProperties ?? context.defaults.additionalProperties,
+                  ? walkTherefore(value.indexSignature, jsonSchemaVisitor, context)
+                  : value.additionalProperties ?? context.defaults.additionalProperties,
             patternProperties:
                 value.indexPatterns !== undefined
                     ? (Object.fromEntries(

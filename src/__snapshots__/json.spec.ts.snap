@@ -31,8 +31,8 @@ exports[`json 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import jsonAdvSchema from './schemas/json-adv.schema.json' assert { type: \\"json\\" }
-import jsonSchema from './schemas/json.schema.json' assert { type: \\"json\\" }
+import jsonAdvSchema from './schemas/json-adv.schema.json' assert { type: "json" }
+import jsonSchema from './schemas/json.schema.json' assert { type: "json" }
 import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
@@ -42,7 +42,7 @@ export type {{00010-000:symbolName}} = string | null | boolean | number | {
 } | ({{00010-000:referenceName}})[]
 
 export const {{00010-000:symbolName}} = {
-    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"strictSchema\\":false,\\"logger\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"esm\\":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
+    validate: new AjvValidator.default({"strict":true,"strictTypes":true,"useDefaults":true,"strictSchema":false,"logger":false,"loopRequired":5,"loopEnum":5,"code":{"esm":true}}).compile<{{00010-000:symbolName}}>(jsonSchema),
     schema: jsonSchema,
     get errors() { return {{00010-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00010-000:symbolName}} => {{00010-000:symbolName}}.validate(o) === true,
@@ -51,7 +51,7 @@ export const {{00010-000:symbolName}} = {
 export type {{00012-000:symbolName}} = {{00021-000:referenceName}}
 
 export const {{00012-000:symbolName}} = {
-    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"strictSchema\\":false,\\"logger\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"esm\\":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
+    validate: new AjvValidator.default({"strict":true,"strictTypes":true,"useDefaults":true,"strictSchema":false,"logger":false,"loopRequired":5,"loopEnum":5,"code":{"esm":true}}).compile<{{00012-000:symbolName}}>(jsonAdvSchema),
     schema: jsonAdvSchema,
     get errors() { return {{00012-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{00012-000:symbolName}} => {{00012-000:symbolName}}.validate(o) === true,
@@ -95,31 +95,31 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "relativeSource": "./json.schema",
     "targetPath": "examples/json/schemas/json.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"title\\": \\"{{00010-000:uniqueSymbolName}}\\",
-  \\"anyOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{00010-000:uniqueSymbolName}}",
+  "anyOf": [
     {
-      \\"type\\": \\"string\\"
+      "type": "string"
     },
     {
-      \\"type\\": \\"null\\"
+      "type": "null"
     },
     {
-      \\"type\\": \\"boolean\\"
+      "type": "boolean"
     },
     {
-      \\"type\\": \\"number\\"
+      "type": "number"
     },
     {
-      \\"type\\": \\"object\\",
-      \\"additionalProperties\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#"
       }
     },
     {
-      \\"type\\": \\"array\\",
-      \\"items\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "array",
+      "items": {
+        "$ref": "#"
       }
     }
   ]
@@ -152,35 +152,35 @@ type {{00021-000:symbolName}} = string | null | boolean | number | {
     "relativeSource": "./json.schema",
     "targetPath": "examples/json/schemas/json-adv.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"title\\": \\"{{00012-000:uniqueSymbolName}}\\",
-  \\"$ref\\": \\"#/$defs/{{00021-000:uniqueSymbolName}}\\",
-  \\"$defs\\": {
-    \\"{{00021-000:uniqueSymbolName}}\\": {
-      \\"title\\": \\"{{00021-000:uniqueSymbolName}}\\",
-      \\"anyOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{00012-000:uniqueSymbolName}}",
+  "$ref": "#/$defs/{{00021-000:uniqueSymbolName}}",
+  "$defs": {
+    "{{00021-000:uniqueSymbolName}}": {
+      "title": "{{00021-000:uniqueSymbolName}}",
+      "anyOf": [
         {
-          \\"type\\": \\"string\\"
+          "type": "string"
         },
         {
-          \\"type\\": \\"null\\"
+          "type": "null"
         },
         {
-          \\"type\\": \\"boolean\\"
+          "type": "boolean"
         },
         {
-          \\"type\\": \\"number\\"
+          "type": "number"
         },
         {
-          \\"type\\": \\"object\\",
-          \\"additionalProperties\\": {
-            \\"$ref\\": \\"#\\"
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#"
           }
         },
         {
-          \\"type\\": \\"array\\",
-          \\"items\\": {
-            \\"$ref\\": \\"#\\"
+          "type": "array",
+          "items": {
+            "$ref": "#"
           }
         }
       ]
@@ -211,7 +211,7 @@ exports[`simple 1`] = `
 * Do not manually touch this
 */
 /* eslint-disable */
-import simpleSchema from './schemas/simple.schema.json' assert { type: \\"json\\" }
+import simpleSchema from './schemas/simple.schema.json' assert { type: "json" }
 import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
@@ -219,7 +219,7 @@ import { ValidationError } from 'ajv'
 export type {{0005-000:symbolName}} = number | ({{0005-000:referenceName}})[]
 
 export const {{0005-000:symbolName}} = {
-    validate: new AjvValidator.default({\\"strict\\":true,\\"strictTypes\\":true,\\"useDefaults\\":true,\\"strictSchema\\":false,\\"logger\\":false,\\"loopRequired\\":5,\\"loopEnum\\":5,\\"code\\":{\\"esm\\":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
+    validate: new AjvValidator.default({"strict":true,"strictTypes":true,"useDefaults":true,"strictSchema":false,"logger":false,"loopRequired":5,"loopEnum":5,"code":{"esm":true}}).compile<{{0005-000:symbolName}}>(simpleSchema),
     schema: simpleSchema,
     get errors() { return {{0005-000:symbolName}}.validate.errors ?? undefined },
     is: (o: unknown): o is {{0005-000:symbolName}} => {{0005-000:symbolName}}.validate(o) === true,
@@ -247,16 +247,16 @@ export const {{0005-000:symbolName}} = {
     "relativeSource": "./simple.schema",
     "targetPath": "examples/json/schemas/simple.schema.json",
     "template": "{
-  \\"$schema\\": \\"http://json-schema.org/draft-07/schema#\\",
-  \\"title\\": \\"{{0005-000:uniqueSymbolName}}\\",
-  \\"anyOf\\": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{0005-000:uniqueSymbolName}}",
+  "anyOf": [
     {
-      \\"type\\": \\"number\\"
+      "type": "number"
     },
     {
-      \\"type\\": \\"array\\",
-      \\"items\\": {
-        \\"$ref\\": \\"#\\"
+      "type": "array",
+      "items": {
+        "$ref": "#"
       }
     }
   ]

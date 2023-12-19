@@ -155,9 +155,7 @@ export function getIndexSignatureType(indexPattern: string) {
             return { names: split.map((s) => `"${s}"?`) }
         }
         return {
-            type: `\`${!hasStartToken ? '${string}' : ''}${split.map((s) => `${s}`).join(' | ')}${
-                !hasEndToken ? '${string}' : ''
-            }\``,
+            type: `\`${!hasStartToken ? '${string}' : ''}${split.join(' | ')}${!hasEndToken ? '${string}' : ''}\``,
         }
     }
     return { type: 'string' }
@@ -201,7 +199,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
                         indices.push([`[k: ${mappedType.type}]`, walkTherefore(node, typescriptVisitor, context)])
                     } else {
                         for (const name of mappedType.names) {
-                            indices.push([`${name}`, walkTherefore(node, typescriptVisitor, context)])
+                            indices.push([name, walkTherefore(node, typescriptVisitor, context)])
                         }
                     }
                 }

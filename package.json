@@ -26,7 +26,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "npx tsx build.config.ts",
+    "build": "node --import tsx/esm build.config.ts",
     "build:docs": "(cd docs; npm install; npm run build)",
     "check:cost": "npx cost-of-modules --no-install --include-dev",
     "check:coverage": "npx vitest run --coverage=true",
@@ -42,7 +42,7 @@
     "test": "npx vitest run"
   },
   "dependencies": {
-    "@skyleague/axioms": "^2.6.0",
+    "@skyleague/axioms": "^3.0.0",
     "camelcase": "^8.0.0",
     "code-block-writer": "^12.0.0",
     "decamelize": "^6.0.0",
@@ -57,20 +57,20 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^3.10.5",
+    "@skyleague/node-standards": "^4.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/uuid": "^9.0.7",
     "@types/yargs": "^17.0.32",
     "ajv": "^8.12.0",
-    "got": "^13.0.0",
+    "got": "^14.0.0",
     "nock": "^13.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "ajv": "^8.12.0",
-    "got": "^13.0.0",
-    "prettier": "^3.0.3",
+    "got": "^14.0.0",
+    "prettier": "^3.1.1",
     "ts-node": "^10.9.2"
   },
   "peerDependenciesMeta": {
@@ -79,7 +79,7 @@
     }
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public",
@@ -90,12 +90,6 @@
     "extends": [
       "yargs-cli",
       "docusaurus"
-    ],
-    "ignorePatterns": [
-      "bin/run.js"
-    ],
-    "rules": {
-      "scripts": false
-    }
+    ]
   }
 }

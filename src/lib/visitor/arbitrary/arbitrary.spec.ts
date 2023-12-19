@@ -61,15 +61,15 @@ it('object - with index', () => {
           Symbol(Symbol.iterator): [Function],
         },
         "value": {
-          "\\")qvP3BgY": "k:7Fr@",
+          "")qvP3BgY": "k:7Fr@",
           "#ol7": ",k'{/$G",
-          "(;\\\\mM": "/h",
+          "(;\\mM": "/h",
           "-Bx": "FNS\`u^-#",
           ";4An)Z{": "9a4qi!Zl5",
-          "Hc/\\" EK%": "rrBE",
+          "Hc/" EK%": "rrBE",
           "T w{nBD": "4IsT&)",
           "h4ym": "\` ",
-          "lBQs59@LE": "\\\\ojh",
+          "lBQs59@LE": "\\ojh",
         },
       }
     `)
