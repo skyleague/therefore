@@ -12,6 +12,6 @@ it('replace templates', () => {
 
 it('leave weird nesting', () => {
     expect(() => renderTemplate('foo{{bar{{bar}}}}', { bar: 'foo' })).toThrowErrorMatchingInlineSnapshot(
-        `"Reference bar{{bar not found"`
+        `[Error: Reference bar{{bar not found]`
     )
 })

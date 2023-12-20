@@ -26,6 +26,6 @@ describe('updatePet', () => {
         const client = new Edges({ prefixUrl: 'http://localhost' })
         const employees: string = eitherToError(await client.getEmployees())
 
-        expect(employees).toMatchInlineSnapshot('"foo: \\"bar\\""')
+        expect(employees).toMatchInlineSnapshot(`"foo: "bar""`)
     })
 })

@@ -767,8 +767,8 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
                                             ? successResponses.length > 0
                                                 ? successResponses
                                                 : defaultResponse.length > 0
-                                                ? defaultResponse
-                                                : errorResponses
+                                                  ? defaultResponse
+                                                  : errorResponses
                                             : ([undefined] as const)
                                         const eligibleResponse = eligibleResponseTypes[0]
                                         let hasWrittenHeaders = false

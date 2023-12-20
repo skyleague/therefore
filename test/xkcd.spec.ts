@@ -14,24 +14,24 @@ describe('xkcd', () => {
                 headers: expect.any(Object),
             },
             `
-                  {
-                    "body": {
-                      "alt": "\\"My parents were both omnitaurs, which is how I got interested in recombination,\\" said the normal human.",
-                      "day": "1",
-                      "img": "https://imgs.xkcd.com/comics/omnitaur.png",
-                      "link": "",
-                      "month": "8",
-                      "news": "",
-                      "num": 2653,
-                      "safe_title": "Omnitaur",
-                      "title": "Omnitaur",
-                      "transcript": "",
-                      "year": "2022",
-                    },
-                    "headers": Any<Object>,
-                    "statusCode": 200,
-                  }
-                `
+          {
+            "body": {
+              "alt": ""My parents were both omnitaurs, which is how I got interested in recombination," said the normal human.",
+              "day": "1",
+              "img": "https://imgs.xkcd.com/comics/omnitaur.png",
+              "link": "",
+              "month": "8",
+              "news": "",
+              "num": 2653,
+              "safe_title": "Omnitaur",
+              "title": "Omnitaur",
+              "transcript": "",
+              "year": "2022",
+            },
+            "headers": Any<Object>,
+            "statusCode": 200,
+          }
+        `
         )
     })
 })
