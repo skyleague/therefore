@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function requireModule(module: string): Promise<Record<string, ThereforeNode | unknown>> {
-    const relative = path.relative(__dirname, module).replace(/\\/g, '/').replace(/\.ts$/, '.js')
+    const relative = path.relative(__dirname, module).replace(/\\/g, '/')
 
     const mod = (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
     return (mod.default ?? mod) as Record<string, ThereforeNode | unknown>

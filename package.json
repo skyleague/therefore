@@ -90,6 +90,9 @@
     "extends": [
       "yargs-cli",
       "docusaurus"
+    ],
+    "ignorePatterns": [
+      "bin/run.js"
     ]
   }
 }
