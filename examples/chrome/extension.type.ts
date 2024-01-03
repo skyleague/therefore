@@ -6,95 +6,36 @@
 import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
-interface ExtensionContentScriptsArray {
+interface Action {
     /**
-     * Specifies which pages this content script will be injected into.
-     */
-    matches: [MatchPattern, ...MatchPattern[]]
-    /**
-     * Excludes pages that this content script would otherwise be injected into.
-     */
-    exclude_matches: MatchPattern[]
-    /**
-     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
-     */
-    css: Uri[]
-    /**
-     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
-     */
-    js: Scripts
-    /**
-     * Controls when the files in js are injected.
-     *
-     * @default 'document_idle'
-     */
-    run_at: 'document_start' | 'document_end' | 'document_idle'
-    /**
-     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
-     *
-     * @default false
-     */
-    all_frames: boolean
-    /**
-     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
-     */
-    include_globs: GlobPattern[]
-    /**
-     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
-     */
-    exclude_globs: GlobPattern[]
-    /**
-     * Whether to insert the content script on about:blank and about:srcdoc.
-     *
-     * @default false
-     */
-    match_about_blank: boolean
-}
-
-interface ExtensionFileBrowserHandlersArray {
-    /**
-     * Used by event handling code to differentiate between multiple file handlers
-     */
-    id: string
-    /**
-     * What the button will display.
+     * Tooltip for the main toolbar icon.
      */
     default_title: string
     /**
-     * Filetypes to match.
+     * The popup appears when the user clicks the icon.
      */
-    file_filters: [string, ...string[]]
+    default_popup: Uri
+    default_icon:
+        | string
+        | {
+              '19': Icon
+              '38': Icon
+          }
 }
 
-interface ExtensionInputComponentsArray {
-    name: string
-    type: string
-    id: string
+interface Command {
     description: string
-    language: string
-    layouts: string[]
+    suggested_key: {
+        [k: string]: string | undefined
+    }
 }
 
-type ExtensionVoicesArrayEventTypesArray = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
-
-interface ExtensionVoicesArray {
-    /**
-     * Identifies the name of the voice and the engine used.
-     */
-    voice_name: string
-    /**
-     * Almost always, a voice can synthesize speech in just a single language. When an engine supports more than one language, it can easily register a separate voice for each language.
-     */
-    lang: string
-    /**
-     * If your voice corresponds to a male or female voice, you can use this parameter to help clients choose the most appropriate voice for their application.
-     */
-    gender: string
-    /**
-     * Events sent to update the client on the progress of speech synthesis.
-     */
-    event_types?: [ExtensionVoicesArrayEventTypesArray, ...ExtensionVoicesArrayEventTypesArray[]]
-}
+/**
+ * This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.
+ *
+ * @default `script-src 'self'; object-src 'self'`
+ */
+type ContentSecurityPolicy = string
 
 /**
  * JSON schema for Google Chrome extension manifest files
@@ -425,51 +366,110 @@ export const Extension = {
     },
 } as const
 
-type MatchPattern = string
-
-type Uri = string
-
-type Scripts = [Uri, ...Uri[]]
-
-type GlobPattern = string
-
-type VersionString = string
-
-type Icon = Uri
-
-interface Action {
+interface ExtensionContentScriptsArray {
     /**
-     * Tooltip for the main toolbar icon.
+     * Specifies which pages this content script will be injected into.
+     */
+    matches: [MatchPattern, ...MatchPattern[]]
+    /**
+     * Excludes pages that this content script would otherwise be injected into.
+     */
+    exclude_matches: MatchPattern[]
+    /**
+     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
+     */
+    css: Uri[]
+    /**
+     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
+     */
+    js: Scripts
+    /**
+     * Controls when the files in js are injected.
+     *
+     * @default 'document_idle'
+     */
+    run_at: 'document_start' | 'document_end' | 'document_idle'
+    /**
+     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
+     *
+     * @default false
+     */
+    all_frames: boolean
+    /**
+     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
+     */
+    include_globs: GlobPattern[]
+    /**
+     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
+     */
+    exclude_globs: GlobPattern[]
+    /**
+     * Whether to insert the content script on about:blank and about:srcdoc.
+     *
+     * @default false
+     */
+    match_about_blank: boolean
+}
+
+interface ExtensionFileBrowserHandlersArray {
+    /**
+     * Used by event handling code to differentiate between multiple file handlers
+     */
+    id: string
+    /**
+     * What the button will display.
      */
     default_title: string
     /**
-     * The popup appears when the user clicks the icon.
+     * Filetypes to match.
      */
-    default_popup: Uri
-    default_icon:
-        | string
-        | {
-              '19': Icon
-              '38': Icon
-          }
+    file_filters: [string, ...string[]]
 }
 
-type Page = Uri
-
-interface Command {
+interface ExtensionInputComponentsArray {
+    name: string
+    type: string
+    id: string
     description: string
-    suggested_key: {
-        [k: string]: string | undefined
-    }
+    language: string
+    layouts: string[]
 }
 
-/**
- * This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.
- *
- * @default `script-src 'self'; object-src 'self'`
- */
-type ContentSecurityPolicy = string
+interface ExtensionVoicesArray {
+    /**
+     * Identifies the name of the voice and the engine used.
+     */
+    voice_name: string
+    /**
+     * Almost always, a voice can synthesize speech in just a single language. When an engine supports more than one language, it can easily register a separate voice for each language.
+     */
+    lang: string
+    /**
+     * If your voice corresponds to a male or female voice, you can use this parameter to help clients choose the most appropriate voice for their application.
+     */
+    gender: string
+    /**
+     * Events sent to update the client on the progress of speech synthesis.
+     */
+    event_types?: [ExtensionVoicesArrayEventTypesArray, ...ExtensionVoicesArrayEventTypesArray[]]
+}
+
+type ExtensionVoicesArrayEventTypesArray = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
+
+type GlobPattern = string
+
+type Icon = Uri
+
+type MatchPattern = string
 
 type MimeType = string
 
+type Page = Uri
+
 type Permissions = string[]
+
+type Scripts = [Uri, ...Uri[]]
+
+type Uri = string
+
+type VersionString = string

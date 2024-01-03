@@ -7,6 +7,22 @@ import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
 /**
+ * Specify the npm plugins that should be loaded. Omit to load all installed plugins.
+ */
+type Plugin = string[]
+
+/**
+ * Path to the readme file that should be displayed on the index page. Pass none to disable the index page and start the documentation on the globals page.
+ */
+type Readme = 'none' | string
+
+/**
+ * The sources files from which to build documentation.
+ * DEPRECATED: Use inputFiles instead.
+ */
+type Src = string | string[]
+
+/**
  * Specify the path to the theme that should be used.
  */
 export type Theme = 'default' | 'minimal' | string
@@ -198,19 +214,3 @@ export const Typedoc = {
         }
     },
 } as const
-
-/**
- * Specify the npm plugins that should be loaded. Omit to load all installed plugins.
- */
-type Plugin = string[]
-
-/**
- * Path to the readme file that should be displayed on the index page. Pass none to disable the index page and start the documentation on the globals page.
- */
-type Readme = 'none' | string
-
-/**
- * The sources files from which to build documentation.
- * DEPRECATED: Use inputFiles instead.
- */
-type Src = string | string[]

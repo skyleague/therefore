@@ -26,6 +26,26 @@ export const File = {
     },
 } as const
 
+export interface OBError1 {
+    /**
+     * Low level textual error code, e.g., UK.OBIE.Field.Missing
+     */
+    ErrorCode: string
+    /**
+     * A description of the error that occurred. e.g., 'A mandatory field isn't supplied' or 'RequestedExecutionDateTime must be in future'
+     * OBIE doesn't standardise this field
+     */
+    Message: string
+    /**
+     * Recommended but optional reference to the JSON Path of the field with error, e.g., Data.Initiation.InstructedAmount.Currency
+     */
+    Path?: string
+    /**
+     * URL to help remediate the problem, or provide more information, or to API Reference, or help etc
+     */
+    Url?: string
+}
+
 /**
  * An array of detail error codes, and messages, and URLs to documentation to help remediation.
  */
@@ -60,23 +80,3 @@ export const OBErrorResponse1 = {
         }
     },
 } as const
-
-export interface OBError1 {
-    /**
-     * Low level textual error code, e.g., UK.OBIE.Field.Missing
-     */
-    ErrorCode: string
-    /**
-     * A description of the error that occurred. e.g., 'A mandatory field isn't supplied' or 'RequestedExecutionDateTime must be in future'
-     * OBIE doesn't standardise this field
-     */
-    Message: string
-    /**
-     * Recommended but optional reference to the JSON Path of the field with error, e.g., Data.Initiation.InstructedAmount.Currency
-     */
-    Path?: string
-    /**
-     * URL to help remediate the problem, or provide more information, or to API Reference, or help etc
-     */
-    Url?: string
-}

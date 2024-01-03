@@ -63,28 +63,6 @@ export class PetStore {
     }
 
     /**
-     * Update an existing pet
-     *
-     * Update an existing pet by Id
-     */
-    public async updatePet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
-        this.validateRequestBody(Pet, body)
-
-        return this.awaitResponse(
-            this.buildClient(auth).put(`pet`, {
-                json: body,
-                responseType: 'json',
-            }),
-            {
-                200: Pet,
-                400: { is: (_x: unknown): _x is unknown => true },
-                404: { is: (_x: unknown): _x is unknown => true },
-                405: { is: (_x: unknown): _x is unknown => true },
-            }
-        )
-    }
-
-    /**
      * Add a new pet to the store
      */
     public async addPet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
@@ -100,6 +78,88 @@ export class PetStore {
                 405: { is: (_x: unknown): _x is unknown => true },
             }
         )
+    }
+
+    /**
+     * Create user
+     *
+     * This can only be done by the logged in user.
+     */
+    public async createUser({ body }: { body: User }) {
+        this.validateRequestBody(User, body)
+
+        return this.awaitResponse(
+            this.client.post(`user`, {
+                json: body,
+                responseType: 'json',
+            }),
+            {
+                default: User,
+            }
+        )
+    }
+
+    /**
+     * Creates list of users with given input array
+     */
+    public async createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }) {
+        this.validateRequestBody(CreateUsersWithListInputRequest, body)
+
+        return this.awaitResponse(
+            this.client.post(`user/createWithList`, {
+                json: body,
+                responseType: 'json',
+            }),
+            {
+                200: User,
+            }
+        )
+    }
+
+    /**
+     * Delete purchase order by ID
+     *
+     * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
+     */
+    public async deleteOrder({ path }: { path: { orderId: string } }) {
+        return this.awaitResponse(this.client.delete(`store/order/${path.orderId}`, {}), {
+            400: { is: (_x: unknown): _x is string => true },
+            404: { is: (_x: unknown): _x is string => true },
+        })
+    }
+
+    /**
+     * Deletes a pet
+     */
+    public async deletePet({
+        path,
+        headers,
+        auth = [['petstoreAuth']],
+    }: {
+        path: { petId: string }
+        headers?: { api_key?: string }
+        auth?: string[][] | string[]
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).delete(`pet/${path.petId}`, {
+                headers: headers ?? {},
+            }),
+            {
+                400: { is: (_x: unknown): _x is string => true },
+            }
+        )
+    }
+
+    /**
+     * Delete user
+     *
+     * This can only be done by the logged in user.
+     */
+    public async deleteUser({ path }: { path: { username: string } }) {
+        return this.awaitResponse(this.client.delete(`user/${path.username}`, {}), {
+            400: { is: (_x: unknown): _x is string => true },
+            404: { is: (_x: unknown): _x is string => true },
+        })
     }
 
     /**
@@ -145,6 +205,40 @@ export class PetStore {
     }
 
     /**
+     * Returns pet inventories by status
+     *
+     * Returns a map of status codes to quantities
+     */
+    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] } = {}) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`store/inventory`, {
+                responseType: 'json',
+            }),
+            {
+                200: GetInventoryResponse,
+            }
+        )
+    }
+
+    /**
+     * Find purchase order by ID
+     *
+     * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
+     */
+    public async getOrderById({ path }: { path: { orderId: string } }) {
+        return this.awaitResponse(
+            this.client.get(`store/order/${path.orderId}`, {
+                responseType: 'json',
+            }),
+            {
+                200: Order,
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
+            }
+        )
+    }
+
+    /**
      * Find pet by ID
      *
      * Returns a single pet
@@ -169,173 +263,17 @@ export class PetStore {
     }
 
     /**
-     * Updates a pet in the store with form data
+     * Get user by user name
      */
-    public async updatePetWithForm({
-        path,
-        query,
-        auth = [['petstoreAuth']],
-    }: {
-        path: { petId: string }
-        query?: { name?: string; status?: string }
-        auth?: string[][] | string[]
-    }) {
+    public async getUserByName({ path }: { path: { username: string } }) {
         return this.awaitResponse(
-            this.buildClient(auth).post(`pet/${path.petId}`, {
-                searchParams: query ?? {},
-            }),
-            {
-                405: { is: (_x: unknown): _x is string => true },
-            }
-        )
-    }
-
-    /**
-     * Deletes a pet
-     */
-    public async deletePet({
-        path,
-        headers,
-        auth = [['petstoreAuth']],
-    }: {
-        path: { petId: string }
-        headers?: { api_key?: string }
-        auth?: string[][] | string[]
-    }) {
-        return this.awaitResponse(
-            this.buildClient(auth).delete(`pet/${path.petId}`, {
-                headers: headers ?? {},
-            }),
-            {
-                400: { is: (_x: unknown): _x is string => true },
-            }
-        )
-    }
-
-    /**
-     * uploads an image
-     */
-    public async uploadFile({
-        body,
-        path,
-        query,
-        auth = [['petstoreAuth']],
-    }: {
-        body: string | Buffer
-        path: { petId: string }
-        query?: { additionalMetadata?: string }
-        auth?: string[][] | string[]
-    }) {
-        return this.awaitResponse(
-            this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
-                body: body,
-                searchParams: query ?? {},
-                responseType: 'json',
-            }),
-            {
-                200: ApiResponse,
-            }
-        )
-    }
-
-    /**
-     * Returns pet inventories by status
-     *
-     * Returns a map of status codes to quantities
-     */
-    public async getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] } = {}) {
-        return this.awaitResponse(
-            this.buildClient(auth).get(`store/inventory`, {
-                responseType: 'json',
-            }),
-            {
-                200: GetInventoryResponse,
-            }
-        )
-    }
-
-    /**
-     * Place an order for a pet
-     *
-     * Place a new order in the store
-     */
-    public async placeOrder({ body }: { body: Order }) {
-        this.validateRequestBody(Order, body)
-
-        return this.awaitResponse(
-            this.client.post(`store/order`, {
-                json: body,
-                responseType: 'json',
-            }),
-            {
-                200: Order,
-                405: { is: (_x: unknown): _x is unknown => true },
-            }
-        )
-    }
-
-    /**
-     * Find purchase order by ID
-     *
-     * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
-     */
-    public async getOrderById({ path }: { path: { orderId: string } }) {
-        return this.awaitResponse(
-            this.client.get(`store/order/${path.orderId}`, {
-                responseType: 'json',
-            }),
-            {
-                200: Order,
-                400: { is: (_x: unknown): _x is unknown => true },
-                404: { is: (_x: unknown): _x is unknown => true },
-            }
-        )
-    }
-
-    /**
-     * Delete purchase order by ID
-     *
-     * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
-     */
-    public async deleteOrder({ path }: { path: { orderId: string } }) {
-        return this.awaitResponse(this.client.delete(`store/order/${path.orderId}`, {}), {
-            400: { is: (_x: unknown): _x is string => true },
-            404: { is: (_x: unknown): _x is string => true },
-        })
-    }
-
-    /**
-     * Create user
-     *
-     * This can only be done by the logged in user.
-     */
-    public async createUser({ body }: { body: User }) {
-        this.validateRequestBody(User, body)
-
-        return this.awaitResponse(
-            this.client.post(`user`, {
-                json: body,
-                responseType: 'json',
-            }),
-            {
-                default: User,
-            }
-        )
-    }
-
-    /**
-     * Creates list of users with given input array
-     */
-    public async createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }) {
-        this.validateRequestBody(CreateUsersWithListInputRequest, body)
-
-        return this.awaitResponse(
-            this.client.post(`user/createWithList`, {
-                json: body,
+            this.client.get(`user/${path.username}`, {
                 responseType: 'json',
             }),
             {
                 200: User,
+                400: { is: (_x: unknown): _x is unknown => true },
+                404: { is: (_x: unknown): _x is unknown => true },
             }
         )
     }
@@ -366,17 +304,65 @@ export class PetStore {
     }
 
     /**
-     * Get user by user name
+     * Place an order for a pet
+     *
+     * Place a new order in the store
      */
-    public async getUserByName({ path }: { path: { username: string } }) {
+    public async placeOrder({ body }: { body: Order }) {
+        this.validateRequestBody(Order, body)
+
         return this.awaitResponse(
-            this.client.get(`user/${path.username}`, {
+            this.client.post(`store/order`, {
+                json: body,
                 responseType: 'json',
             }),
             {
-                200: User,
+                200: Order,
+                405: { is: (_x: unknown): _x is unknown => true },
+            }
+        )
+    }
+
+    /**
+     * Update an existing pet
+     *
+     * Update an existing pet by Id
+     */
+    public async updatePet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
+        this.validateRequestBody(Pet, body)
+
+        return this.awaitResponse(
+            this.buildClient(auth).put(`pet`, {
+                json: body,
+                responseType: 'json',
+            }),
+            {
+                200: Pet,
                 400: { is: (_x: unknown): _x is unknown => true },
                 404: { is: (_x: unknown): _x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
+            }
+        )
+    }
+
+    /**
+     * Updates a pet in the store with form data
+     */
+    public async updatePetWithForm({
+        path,
+        query,
+        auth = [['petstoreAuth']],
+    }: {
+        path: { petId: string }
+        query?: { name?: string; status?: string }
+        auth?: string[][] | string[]
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).post(`pet/${path.petId}`, {
+                searchParams: query ?? {},
+            }),
+            {
+                405: { is: (_x: unknown): _x is string => true },
             }
         )
     }
@@ -400,15 +386,29 @@ export class PetStore {
     }
 
     /**
-     * Delete user
-     *
-     * This can only be done by the logged in user.
+     * uploads an image
      */
-    public async deleteUser({ path }: { path: { username: string } }) {
-        return this.awaitResponse(this.client.delete(`user/${path.username}`, {}), {
-            400: { is: (_x: unknown): _x is string => true },
-            404: { is: (_x: unknown): _x is string => true },
-        })
+    public async uploadFile({
+        body,
+        path,
+        query,
+        auth = [['petstoreAuth']],
+    }: {
+        body: string | Buffer
+        path: { petId: string }
+        query?: { additionalMetadata?: string }
+        auth?: string[][] | string[]
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
+                body: body,
+                searchParams: query ?? {},
+                responseType: 'json',
+            }),
+            {
+                200: ApiResponse,
+            }
+        )
     }
 
     public validateRequestBody<T>(schema: { is: (o: unknown) => o is T; assert: (o: unknown) => void }, body: T) {

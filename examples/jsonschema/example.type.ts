@@ -8,13 +8,13 @@ import { ValidationError } from 'ajv'
 
 export interface Defaults {
     /**
-     * @default 'foobar'
-     */
-    str?: string
-    /**
      * @default 42
      */
     int?: number
+    /**
+     * @default 'foobar'
+     */
+    str?: string
 }
 
 export const Defaults = {
@@ -106,8 +106,8 @@ export const SalesPerson = {
 } as const
 
 export interface SelfReference {
-    foo?: string
     bar?: SelfReference
+    foo?: string
 }
 
 export const SelfReference = {
