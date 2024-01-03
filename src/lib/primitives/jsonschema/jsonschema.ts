@@ -152,12 +152,14 @@ const schemaWalker: JsonSchemaWalker = {
 
         return $object({
             properties: Object.fromEntries(
-                subSchemas.map(([name, schema]) => {
-                    const value = {
-                        ...schema,
-                    }
-                    return [name, node.required?.includes(name.toString()) ? value : $optional(value)]
-                })
+                subSchemas
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([name, schema]) => {
+                        const value = {
+                            ...schema,
+                        }
+                        return [name, node.required?.includes(name.toString()) ? value : $optional(value)]
+                    })
             ),
             additionalProperties,
             indexSignature,

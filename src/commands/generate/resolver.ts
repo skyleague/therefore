@@ -58,7 +58,7 @@ export function renderTypescriptSchemaHeader(definition: FileDefinition) {
 
 export function renderTypescriptSchemaContent(definition: FileDefinition) {
     const writer = createWriter()
-    for (const symbol of Object.values(definition.symbols)) {
+    for (const symbol of Object.values(definition.symbols).sort((a, b) => a.symbolName.localeCompare(b.symbolName))) {
         writer.writeLine(symbol.definition.declaration)
         if (symbol.definition.isExported && !symbol.typeOnly) {
             writer.writeLine(
