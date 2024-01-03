@@ -55,21 +55,20 @@ it('array', () => {
 it('object - with index', () => {
     const arb = arbitrary($object({}, { indexSignature: $string() }))
     forAll(arb, isObject)
-    expect(arb.value({ rng: xoroshiro128plus(42n) })).toMatchInlineSnapshot(`
+    expect(arb.value({ rng: xoroshiro128plus(44n) })).toMatchInlineSnapshot(`
       {
         "children": {
           Symbol(Symbol.iterator): [Function],
         },
         "value": {
-          "")qvP3BgY": "k:7Fr@",
-          "#ol7": ",k'{/$G",
-          "(;\\mM": "/h",
-          "-Bx": "FNS\`u^-#",
-          ";4An)Z{": "9a4qi!Zl5",
-          "Hc/" EK%": "rrBE",
-          "T w{nBD": "4IsT&)",
-          "h4ym": "\` ",
-          "lBQs59@LE": "\\ojh",
+          """: "ED3",
+          "*[e": "hXR",
+          ",CyD": "^jVAIeR?",
+          "9hb4=;": ":",
+          "\\'X<Y": "\\LpDK]qJ",
+          "_A9lB": "6\`i*{0P",
+          "p": "",
+          "rraCgV-F": "X6-r",
         },
       }
     `)
