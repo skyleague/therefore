@@ -4,41 +4,102 @@
  */
 /* eslint-disable */
 
-/**
- * The description of OpenAPI v3.0.x documents, as defined by https://spec.openapis.org/oas/v3.0.3
- */
-export interface OpenapiV3 {
-    openapi: string
-    info: Info
-    externalDocs?: ExternalDocumentation
-    servers?: Server[]
-    security?: SecurityRequirement[]
-    tags?: Tag[]
-    paths: Paths
-    components?: Components
+export interface APIKeySecurityScheme {
+    description?: string
+    in: 'header' | 'query' | 'cookie'
+    name: string
+    type: 'apiKey'
     [k: `x-${string}`]: unknown
 }
 
-export interface Info {
-    title: string
-    description?: string
-    termsOfService?: string
-    contact?: Contact
-    license?: License
-    version: string
+export interface AuthorizationCodeOAuthFlow {
+    authorizationUrl: string
+    refreshUrl?: string
+    scopes: {
+        [k: string]: string
+    }
+    tokenUrl: string
+    [k: `x-${string}`]: unknown
+}
+
+export interface Callback {
+    [k: string]: PathItem | unknown
+    [k: `x-${string}`]: unknown
+}
+
+export interface ClientCredentialsFlow {
+    refreshUrl?: string
+    scopes: {
+        [k: string]: string
+    }
+    tokenUrl: string
+    [k: `x-${string}`]: unknown
+}
+
+export interface Components {
+    callbacks?: {
+        [k: string]: Reference | Callback
+    }
+    examples?: {
+        [k: string]: Reference | Example
+    }
+    headers?: {
+        [k: string]: Reference | Header
+    }
+    links?: {
+        [k: string]: Reference | Link
+    }
+    parameters?: {
+        [k: string]: Reference | Parameter
+    }
+    requestBodies?: {
+        [k: string]: Reference | RequestBody
+    }
+    responses?: {
+        [k: string]: Reference | Response
+    }
+    schemas?: {
+        [k: string]: Schema | Reference
+    }
+    securitySchemes?: {
+        [k: string]: Reference | SecurityScheme
+    }
     [k: `x-${string}`]: unknown
 }
 
 export interface Contact {
+    email?: string
     name?: string
     url?: string
-    email?: string
     [k: `x-${string}`]: unknown
 }
 
-export interface License {
-    name: string
-    url?: string
+export interface Discriminator {
+    mapping?: {
+        [k: string]: string
+    }
+    propertyName: string
+}
+
+export interface Encoding {
+    /**
+     * @default false
+     */
+    allowReserved?: boolean
+    contentType?: string
+    explode?: boolean
+    headers?: {
+        [k: string]: Header | Reference
+    }
+    style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject'
+    [k: `x-${string}`]: unknown
+}
+
+export interface Example {
+    description?: string
+    externalValue?: string
+    summary?: string
+    value?: unknown
     [k: `x-${string}`]: unknown
 }
 
@@ -48,364 +109,37 @@ export interface ExternalDocumentation {
     [k: `x-${string}`]: unknown
 }
 
-export interface Server {
-    url: string
-    description?: string
-    variables?: {
-        [k: string]: ServerVariable
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export interface ServerVariable {
-    enum?: string[]
-    default: string
-    description?: string
-    [k: `x-${string}`]: unknown
-}
-
-export interface SecurityRequirement {
-    [k: string]: string[]
-}
-
-export interface Tag {
-    name: string
-    description?: string
-    externalDocs?: ExternalDocumentation
-    [k: `x-${string}`]: unknown
-}
-
-export interface Paths {
-    [k: `/${string}`]: PathItem
-    [k: `x-${string}`]: unknown
-}
-
-export interface PathItem {
-    get?: Operation
-    put?: Operation
-    post?: Operation
-    delete?: Operation
-    options?: Operation
-    head?: Operation
-    patch?: Operation
-    trace?: Operation
-    $ref?: string
-    summary?: string
-    description?: string
-    servers?: Server[]
-    parameters?: (Parameter | Reference)[]
-    [k: `x-${string}`]: unknown
-}
-
-export interface Operation {
-    tags?: string[]
-    summary?: string
-    description?: string
-    externalDocs?: ExternalDocumentation
-    operationId?: string
-    parameters?: (Parameter | Reference)[]
-    requestBody?: RequestBody | Reference
-    responses: Responses
-    callbacks?: {
-        [k: string]: Callback | Reference
-    }
-    /**
-     * @default false
-     */
-    deprecated?: boolean
-    security?: SecurityRequirement[]
-    servers?: Server[]
-    [k: `x-${string}`]: unknown
-}
-
-export interface Parameter {
-    name: string
-    in: string
-    description?: string
-    /**
-     * @default false
-     */
-    required?: boolean
-    /**
-     * @default false
-     */
-    deprecated?: boolean
+export interface Header {
     /**
      * @default false
      */
     allowEmptyValue?: boolean
-    style?: string
-    explode?: boolean
     /**
      * @default false
      */
     allowReserved?: boolean
-    schema?: Schema | Reference
     content?: {
         [k: string]: MediaType
     }
-    example?: unknown
-    examples?: {
-        [k: string]: Example | Reference
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export interface Schema {
-    title?: string
-    multipleOf?: number
-    maximum?: number
-    /**
-     * @default false
-     */
-    exclusiveMaximum?: boolean
-    minimum?: number
-    /**
-     * @default false
-     */
-    exclusiveMinimum?: boolean
-    maxLength?: number
-    /**
-     * @default 0
-     */
-    minLength?: number
-    pattern?: string
-    maxItems?: number
-    /**
-     * @default 0
-     */
-    minItems?: number
-    /**
-     * @default false
-     */
-    uniqueItems?: boolean
-    maxProperties?: number
-    /**
-     * @default 0
-     */
-    minProperties?: number
-    required?: [string, ...string[]]
-    enum?: [unknown, ...unknown[]]
-    type?: 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string'
-    not?: Schema | Reference
-    allOf?: (Schema | Reference)[]
-    oneOf?: (Schema | Reference)[]
-    anyOf?: (Schema | Reference)[]
-    items?: Schema | Reference
-    properties?: {
-        [k: string]: Schema | Reference
-    }
-    /**
-     * @default true
-     */
-    additionalProperties?: Schema | Reference | boolean
-    description?: string
-    format?: string
-    default?: unknown
-    /**
-     * @default false
-     */
-    nullable?: boolean
-    discriminator?: Discriminator
-    /**
-     * @default false
-     */
-    readOnly?: boolean
-    /**
-     * @default false
-     */
-    writeOnly?: boolean
-    example?: unknown
-    externalDocs?: ExternalDocumentation
     /**
      * @default false
      */
     deprecated?: boolean
-    xml?: XML
-    [k: `x-${string}`]: unknown
-}
-
-export interface Reference {
-    $ref: string
-}
-
-export interface Discriminator {
-    propertyName: string
-    mapping?: {
-        [k: string]: string
-    }
-}
-
-export interface XML {
-    name?: string
-    namespace?: string
-    prefix?: string
-    /**
-     * @default false
-     */
-    attribute?: boolean
-    /**
-     * @default false
-     */
-    wrapped?: boolean
-    [k: `x-${string}`]: unknown
-}
-
-export interface MediaType {
-    schema?: Schema | Reference
+    description?: string
     example?: unknown
     examples?: {
         [k: string]: Example | Reference
     }
-    encoding?: {
-        [k: string]: Encoding
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export interface Example {
-    summary?: string
-    description?: string
-    value?: unknown
-    externalValue?: string
-    [k: `x-${string}`]: unknown
-}
-
-export interface Encoding {
-    contentType?: string
-    headers?: {
-        [k: string]: Header | Reference
-    }
-    style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject'
     explode?: boolean
     /**
      * @default false
      */
-    allowReserved?: boolean
-    [k: `x-${string}`]: unknown
-}
-
-export interface Header {
-    description?: string
-    /**
-     * @default false
-     */
     required?: boolean
-    /**
-     * @default false
-     */
-    deprecated?: boolean
-    /**
-     * @default false
-     */
-    allowEmptyValue?: boolean
+    schema?: Schema | Reference
     /**
      * @default 'simple'
      */
     style?: 'simple'
-    explode?: boolean
-    /**
-     * @default false
-     */
-    allowReserved?: boolean
-    schema?: Schema | Reference
-    content?: {
-        [k: string]: MediaType
-    }
-    example?: unknown
-    examples?: {
-        [k: string]: Example | Reference
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export interface RequestBody {
-    description?: string
-    content: {
-        [k: string]: MediaType
-    }
-    /**
-     * @default false
-     */
-    required?: boolean
-    [k: `x-${string}`]: unknown
-}
-
-export interface Responses {
-    default?: Response | Reference
-    [k: string]: Response | Reference | unknown
-    [k: `x-${string}`]: unknown
-}
-
-export interface Response {
-    description: string
-    headers?: {
-        [k: string]: Header | Reference
-    }
-    content?: {
-        [k: string]: MediaType
-    }
-    links?: {
-        [k: string]: Link | Reference
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export interface Link {
-    operationId?: string
-    operationRef?: string
-    parameters?: {
-        [k: string]: unknown
-    }
-    requestBody?: unknown
-    description?: string
-    server?: Server
-    [k: `x-${string}`]: unknown
-}
-
-export interface Callback {
-    [k: string]: PathItem | unknown
-    [k: `x-${string}`]: unknown
-}
-
-export interface Components {
-    schemas?: {
-        [k: string]: Schema | Reference
-    }
-    responses?: {
-        [k: string]: Reference | Response
-    }
-    parameters?: {
-        [k: string]: Reference | Parameter
-    }
-    examples?: {
-        [k: string]: Reference | Example
-    }
-    requestBodies?: {
-        [k: string]: Reference | RequestBody
-    }
-    headers?: {
-        [k: string]: Reference | Header
-    }
-    securitySchemes?: {
-        [k: string]: Reference | SecurityScheme
-    }
-    links?: {
-        [k: string]: Reference | Link
-    }
-    callbacks?: {
-        [k: string]: Reference | Callback
-    }
-    [k: `x-${string}`]: unknown
-}
-
-export type SecurityScheme = APIKeySecurityScheme | HTTPSecurityScheme | OAuth2SecurityScheme | OpenIdConnectSecurityScheme
-
-export interface APIKeySecurityScheme {
-    type: 'apiKey'
-    name: string
-    in: 'header' | 'query' | 'cookie'
-    description?: string
     [k: `x-${string}`]: unknown
 }
 
@@ -417,21 +151,6 @@ export type HTTPSecurityScheme =
           scheme?: unknown
       }
 
-export interface OAuth2SecurityScheme {
-    type: 'oauth2'
-    flows: OAuthFlows
-    description?: string
-    [k: `x-${string}`]: unknown
-}
-
-export interface OAuthFlows {
-    implicit?: ImplicitOAuthFlow
-    password?: PasswordOAuthFlow
-    clientCredentials?: ClientCredentialsFlow
-    authorizationCode?: AuthorizationCodeOAuthFlow
-    [k: `x-${string}`]: unknown
-}
-
 export interface ImplicitOAuthFlow {
     authorizationUrl: string
     refreshUrl?: string
@@ -441,37 +160,318 @@ export interface ImplicitOAuthFlow {
     [k: `x-${string}`]: unknown
 }
 
-export interface PasswordOAuthFlow {
-    tokenUrl: string
-    refreshUrl?: string
-    scopes: {
-        [k: string]: string
-    }
+export interface Info {
+    contact?: Contact
+    description?: string
+    license?: License
+    termsOfService?: string
+    title: string
+    version: string
     [k: `x-${string}`]: unknown
 }
 
-export interface ClientCredentialsFlow {
-    tokenUrl: string
-    refreshUrl?: string
-    scopes: {
-        [k: string]: string
-    }
+export interface License {
+    name: string
+    url?: string
     [k: `x-${string}`]: unknown
 }
 
-export interface AuthorizationCodeOAuthFlow {
-    authorizationUrl: string
-    tokenUrl: string
-    refreshUrl?: string
-    scopes: {
-        [k: string]: string
+export interface Link {
+    description?: string
+    operationId?: string
+    operationRef?: string
+    parameters?: {
+        [k: string]: unknown
     }
+    requestBody?: unknown
+    server?: Server
+    [k: `x-${string}`]: unknown
+}
+
+export interface MediaType {
+    encoding?: {
+        [k: string]: Encoding
+    }
+    example?: unknown
+    examples?: {
+        [k: string]: Example | Reference
+    }
+    schema?: Schema | Reference
+    [k: `x-${string}`]: unknown
+}
+
+export interface OAuth2SecurityScheme {
+    description?: string
+    flows: OAuthFlows
+    type: 'oauth2'
+    [k: `x-${string}`]: unknown
+}
+
+export interface OAuthFlows {
+    authorizationCode?: AuthorizationCodeOAuthFlow
+    clientCredentials?: ClientCredentialsFlow
+    implicit?: ImplicitOAuthFlow
+    password?: PasswordOAuthFlow
+    [k: `x-${string}`]: unknown
+}
+
+/**
+ * The description of OpenAPI v3.0.x documents, as defined by https://spec.openapis.org/oas/v3.0.3
+ */
+export interface OpenapiV3 {
+    components?: Components
+    externalDocs?: ExternalDocumentation
+    info: Info
+    openapi: string
+    paths: Paths
+    security?: SecurityRequirement[]
+    servers?: Server[]
+    tags?: Tag[]
     [k: `x-${string}`]: unknown
 }
 
 export interface OpenIdConnectSecurityScheme {
-    type: 'openIdConnect'
-    openIdConnectUrl: string
     description?: string
+    openIdConnectUrl: string
+    type: 'openIdConnect'
+    [k: `x-${string}`]: unknown
+}
+
+export interface Operation {
+    callbacks?: {
+        [k: string]: Callback | Reference
+    }
+    /**
+     * @default false
+     */
+    deprecated?: boolean
+    description?: string
+    externalDocs?: ExternalDocumentation
+    operationId?: string
+    parameters?: (Parameter | Reference)[]
+    requestBody?: RequestBody | Reference
+    responses: Responses
+    security?: SecurityRequirement[]
+    servers?: Server[]
+    summary?: string
+    tags?: string[]
+    [k: `x-${string}`]: unknown
+}
+
+export interface Parameter {
+    /**
+     * @default false
+     */
+    allowEmptyValue?: boolean
+    /**
+     * @default false
+     */
+    allowReserved?: boolean
+    content?: {
+        [k: string]: MediaType
+    }
+    /**
+     * @default false
+     */
+    deprecated?: boolean
+    description?: string
+    example?: unknown
+    examples?: {
+        [k: string]: Example | Reference
+    }
+    explode?: boolean
+    in: string
+    name: string
+    /**
+     * @default false
+     */
+    required?: boolean
+    schema?: Schema | Reference
+    style?: string
+    [k: `x-${string}`]: unknown
+}
+
+export interface PasswordOAuthFlow {
+    refreshUrl?: string
+    scopes: {
+        [k: string]: string
+    }
+    tokenUrl: string
+    [k: `x-${string}`]: unknown
+}
+
+export interface PathItem {
+    $ref?: string
+    delete?: Operation
+    description?: string
+    get?: Operation
+    head?: Operation
+    options?: Operation
+    parameters?: (Parameter | Reference)[]
+    patch?: Operation
+    post?: Operation
+    put?: Operation
+    servers?: Server[]
+    summary?: string
+    trace?: Operation
+    [k: `x-${string}`]: unknown
+}
+
+export interface Paths {
+    [k: `/${string}`]: PathItem
+    [k: `x-${string}`]: unknown
+}
+
+export interface Reference {
+    $ref: string
+}
+
+export interface RequestBody {
+    content: {
+        [k: string]: MediaType
+    }
+    description?: string
+    /**
+     * @default false
+     */
+    required?: boolean
+    [k: `x-${string}`]: unknown
+}
+
+export interface Response {
+    content?: {
+        [k: string]: MediaType
+    }
+    description: string
+    headers?: {
+        [k: string]: Header | Reference
+    }
+    links?: {
+        [k: string]: Link | Reference
+    }
+    [k: `x-${string}`]: unknown
+}
+
+export interface Responses {
+    default?: Response | Reference
+    [k: string]: Response | Reference | unknown
+    [k: `x-${string}`]: unknown
+}
+
+export interface Schema {
+    /**
+     * @default true
+     */
+    additionalProperties?: Schema | Reference | boolean
+    allOf?: (Schema | Reference)[]
+    anyOf?: (Schema | Reference)[]
+    default?: unknown
+    /**
+     * @default false
+     */
+    deprecated?: boolean
+    description?: string
+    discriminator?: Discriminator
+    enum?: [unknown, ...unknown[]]
+    example?: unknown
+    /**
+     * @default false
+     */
+    exclusiveMaximum?: boolean
+    /**
+     * @default false
+     */
+    exclusiveMinimum?: boolean
+    externalDocs?: ExternalDocumentation
+    format?: string
+    items?: Schema | Reference
+    maximum?: number
+    maxItems?: number
+    maxLength?: number
+    maxProperties?: number
+    minimum?: number
+    /**
+     * @default 0
+     */
+    minItems?: number
+    /**
+     * @default 0
+     */
+    minLength?: number
+    /**
+     * @default 0
+     */
+    minProperties?: number
+    multipleOf?: number
+    not?: Schema | Reference
+    /**
+     * @default false
+     */
+    nullable?: boolean
+    oneOf?: (Schema | Reference)[]
+    pattern?: string
+    properties?: {
+        [k: string]: Schema | Reference
+    }
+    /**
+     * @default false
+     */
+    readOnly?: boolean
+    required?: [string, ...string[]]
+    title?: string
+    type?: 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string'
+    /**
+     * @default false
+     */
+    uniqueItems?: boolean
+    /**
+     * @default false
+     */
+    writeOnly?: boolean
+    xml?: XML
+    [k: `x-${string}`]: unknown
+}
+
+export interface SecurityRequirement {
+    [k: string]: string[]
+}
+
+export type SecurityScheme = APIKeySecurityScheme | HTTPSecurityScheme | OAuth2SecurityScheme | OpenIdConnectSecurityScheme
+
+export interface Server {
+    description?: string
+    url: string
+    variables?: {
+        [k: string]: ServerVariable
+    }
+    [k: `x-${string}`]: unknown
+}
+
+export interface ServerVariable {
+    default: string
+    description?: string
+    enum?: string[]
+    [k: `x-${string}`]: unknown
+}
+
+export interface Tag {
+    description?: string
+    externalDocs?: ExternalDocumentation
+    name: string
+    [k: `x-${string}`]: unknown
+}
+
+export interface XML {
+    /**
+     * @default false
+     */
+    attribute?: boolean
+    name?: string
+    namespace?: string
+    prefix?: string
+    /**
+     * @default false
+     */
+    wrapped?: boolean
     [k: `x-${string}`]: unknown
 }

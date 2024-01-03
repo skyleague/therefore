@@ -260,7 +260,7 @@ export function getResponseBodies({
         ])
     }
     if (result.length > 0) {
-        return { right: fromEntries(result) }
+        return { right: fromEntries(result.sort(([a], [b]) => a.localeCompare(b))) }
     }
     return { left: undefined }
 }
@@ -583,265 +583,265 @@ export async function $restclient(definition: OpenapiV3, options: Partial<Restcl
             .newLine()
             .newLine()
 
-        for (const [path, item] of entriesOf(openapi.paths)) {
-            let pathItem = item as PathItem
-            if (path.startsWith('/')) {
-                pathItem = (pathItem.$ref !== undefined ? pointer.get(pathItem, pathItem.$ref) : pathItem) as PathItem
-                for (const [httpMethod, operation] of Object.entries(
-                    omitUndefined({
-                        get: pathItem.get,
-                        put: pathItem.put,
-                        post: pathItem.post,
-                        delete: pathItem.delete,
-                        options: pathItem.options,
-                        head: pathItem.head,
-                        patch: pathItem.patch,
-                        trace: 'trace' in pathItem ? pathItem.trace : undefined,
-                    })
-                )) {
-                    const method = methodName(path, httpMethod, operation, options)
-                    const request = getRequestBody({
-                        request: jsonPointer({ schema: openapi, ptr: operation.requestBody }) as RequestBody | undefined,
-                        openapi,
-                        method,
-                        references,
-                        strict,
-                        optionalNullable,
-                        allowIntersectionTypes,
-                        compile,
-                    })
-                    let requestValidationStr = ''
-                    if (request?.schema !== undefined) {
-                        requestValidationStr = `this.validateRequestBody({{${request.schema.uuid}:symbolName~value}}, ${request.name})`
-                        generateValidateRequestBody = true
-                        if (!seenChildren.has(request.schema)) {
-                            children.push(request.schema)
-                        }
-                    }
-                    const parameters: Parameter[] = [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
-                        .map((parameter) => jsonPointer({ schema: openapi, ptr: parameter }) as Parameter | undefined)
-                        .filter(isDefined)
-
-                    let clientDecl = 'this.client'
-                    const authMethods: string[] = []
-                    const security = operation.security ?? openapi.security
-                    const usedSecurityHeaders: string[] = []
-                    if (security !== undefined) {
-                        const hasAuthParameters = operation.security !== undefined
-                        for (const secMethods of security) {
-                            const required = keysOf(secMethods)
-                                .map((sm) => securities.find((s) => s.type === sm)?.name)
-                                .filter((x): x is string => x !== undefined)
-                            authMethods.push(`[${required.map((r) => `'${r}'`).join(', ')}]`)
-                            usedSecurityHeaders.push(
-                                ...keysOf(secMethods)
-                                    .flatMap((sm) => securities.find((s) => s.type === sm)?.headers)
-                                    .filter((x): x is string => x !== undefined)
-                            )
-                        }
-                        clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
-                    }
-
-                    const pathParameters = getPathParameters(parameters, openapi)
-                    const queryParameters = getQueryParameters(parameters, openapi)
-                    const headerParameters = getHeaderParameters(parameters, usedSecurityHeaders, openapi)
-
-                    const responses = getResponseBodies({
-                        responses: operation.responses,
-                        openapi,
-                        method,
-                        references,
-                        useEither,
-                        strict,
-                        optionalNullable,
-                        allowIntersectionTypes,
-                        compile,
-                    })
-
-                    const parameterizedPath = pathParameters
-                        .reduce<string>((p, x) => p.replace(`{${x.id}}`, `{${x.name}}`), path)
-                        .replaceAll('{', '${path.')
-
-                    const urlPath = parameterizedPath.startsWith('/') ? parameterizedPath.slice(1) : parameterizedPath
-
-                    const pathArguments = pathParameters.map((p) => `${p.name}: ${p.type}`).join(', ')
-                    const queryArguments = queryParameters
-                        .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
-                        .join(', ')
-                    const queryOptionalStr = queryParameters.every((q) => q.required === true) ? '' : '?'
-                    const headerArguments = headerParameters
-                        .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
-                        .join(', ')
-
-                    const hasRequiredBody = request?.declaration !== undefined
-                    const hasRequiredPathArgument = pathArguments.length > 0
-                    const hasRequiredQueryArguments = queryParameters.some((q) => q.required === true)
-                    const hasRequiredHeaderArguments = headerParameters.some((q) => q.required === true)
-
-                    const hasRequiredArguments =
-                        hasRequiredBody || hasRequiredPathArgument || hasRequiredQueryArguments || hasRequiredHeaderArguments
-
-                    const headerOptionalStr = hasRequiredHeaderArguments ? '' : '?'
-                    const methodArgumentsInner = [
-                        ...(request?.declaration !== undefined
-                            ? [[request.name, `${request.name}: ${request.declaration}`]]
-                            : []),
-                        ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
-                        ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
-                        ...(headerArguments.length > 0
-                            ? [['headers', `headers${headerOptionalStr}: { ${headerArguments} }`]]
-                            : []),
-                        ...(operation.security?.length !== undefined && operation.security.length > 0
-                            ? [[`auth = [${authMethods.join(', ')}]`, `auth?: string[][] | string[]`]]
-                            : []),
-                    ]
-
-                    const methodArguments =
-                        methodArgumentsInner.length > 0
-                            ? `{${methodArgumentsInner.map(([name]) => name).join(', ')}}: {${methodArgumentsInner
-                                  .map(([, a]) => a)
-                                  .join(', ')}}`
-                            : ''
-
-                    writer.write('\n')
-                    const jsdoc = toJSDoc({ meta: operation })
-                    if (jsdoc !== undefined) {
-                        writer.write(jsdoc)
-                    }
-
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    const hasResponse = 'right' in responses && responses.right !== undefined
-                    let responseType: 'json' | 'text' | undefined
-                    generateAwaitResponse ||= hasResponse
-
-                    writer.writeLine(
-                        `public ${hasResponse ? 'async' : ''} ${method}(${methodArguments}${
-                            methodArgumentsInner.length > 0 && !hasRequiredArguments ? ' = {}' : ''
-                        })`
-                    )
-                    writer
-                        .block(() => {
-                            const hasInputObj =
-                                request !== undefined ||
-                                queryParameters.length > 0 ||
-                                headerParameters.length > 0 ||
-                                (explicitContentNegotiation && hasResponse)
-                            writer
-                                .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
-                                .conditionalWrite(hasResponse, 'return this.awaitResponse(')
-                                .conditionalWrite(!hasResponse, 'return ')
-                                .write(`${clientDecl}.${httpMethod}(\`${urlPath}\``)
-                            if (hasInputObj || hasResponse) {
-                                writer
-                                    .write(', ')
-                                    .inlineBlock(() => {
-                                        writer
-                                            .conditionalWrite(
-                                                request !== undefined,
-                                                `${request?.type ?? ''}: ${request?.name ?? ''},`
-                                            )
-                                            .conditionalWrite(
-                                                queryParameters.length > 0,
-                                                `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
-                                            )
-
-                                        const successResponses = hasResponse
-                                            ? entriesOf(responses.right)
-                                                  .filter((r) => r[1].isUnknown !== true)
-                                                  .filter(([statusCode]) => statusCode.startsWith('2'))
-                                            : ([undefined] as const)
-                                        const defaultResponse = hasResponse
-                                            ? entriesOf(responses.right).filter(
-                                                  ([statusCode, response]) =>
-                                                      response.isUnknown !== true && statusCode.startsWith('default')
-                                              )
-                                            : ([undefined] as const)
-                                        const errorResponses = hasResponse
-                                            ? entriesOf(responses.right).filter(
-                                                  ([statusCode, response]) =>
-                                                      response.isUnknown !== true &&
-                                                      (statusCode.startsWith('4') || statusCode.startsWith('5'))
-                                              )
-                                            : ([undefined] as const)
-                                        const eligibleResponseTypes = hasResponse
-                                            ? successResponses.length > 0
-                                                ? successResponses
-                                                : defaultResponse.length > 0
-                                                  ? defaultResponse
-                                                  : errorResponses
-                                            : ([undefined] as const)
-                                        const eligibleResponse = eligibleResponseTypes[0]
-                                        let hasWrittenHeaders = false
-                                        if (
-                                            explicitContentNegotiation &&
-                                            hasResponse &&
-                                            eligibleResponse?.[1].mimeType !== undefined
-                                        ) {
-                                            writer
-                                                .conditionalWrite(
-                                                    headerParameters.length > 0,
-                                                    `headers: { Accept: "${eligibleResponse[1].mimeType}", ...headers },`
-                                                )
-                                                .conditionalWrite(
-                                                    headerParameters.length === 0,
-                                                    `headers: { Accept: "${eligibleResponse[1].mimeType}" },`
-                                                )
-                                            hasWrittenHeaders = true
-                                        }
-                                        writer.conditionalWrite(
-                                            headerParameters.length > 0 && !hasWrittenHeaders,
-                                            `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
-                                        )
-                                        if (eligibleResponse !== undefined) {
-                                            responseType = eligibleResponse[1].type
-                                            writer.write(`responseType: '${eligibleResponse[1].type}',`)
-                                        } else if (hasResponse) {
-                                            const found = [
-                                                ...new Set(
-                                                    ...valuesOf(responses.right)
-                                                        .filter((r) => r.isUnknown !== true)
-                                                        .map((r) => r.type)
-                                                ),
-                                            ]
-                                            if (found.length === 1) {
-                                                responseType = found[0] as typeof responseType
-                                                writer.write(`responseType: '${found[0]!}',`)
-                                            }
-                                        }
-                                    })
-                                    .write(')')
-                            } else {
-                                writer.write(')')
-                            }
-                            if (hasResponse) {
-                                writer
-                                    .write(', ')
-                                    .inlineBlock(() => {
-                                        for (const [statusCode, { schema: responseSchema, isUnknown }] of entriesOf(
-                                            responses.right
-                                        )) {
-                                            if (responseSchema !== undefined && isUnknown !== true) {
-                                                if (!seenChildren.has(responseSchema as ThereforeCst)) {
-                                                    children.push(responseSchema as ThereforeCst)
-                                                }
-                                                writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName~value}},`)
-                                            } else if (statusCode !== 'default' || entriesOf(responses.right).length === 1) {
-                                                writer.write(
-                                                    `${statusCode}: ${
-                                                        responseType === 'text' || responseType === undefined
-                                                            ? isStringIs
-                                                            : isUnknownIs
-                                                    },`
-                                                )
-                                            }
-                                        }
-                                    })
-                                    .write(')')
-                            }
+        const pathItems = entriesOf(openapi.paths)
+            .flatMap(([path, item]) => {
+                let pathItem = item as PathItem
+                if (path.startsWith('/')) {
+                    pathItem = (pathItem.$ref !== undefined ? pointer.get(pathItem, pathItem.$ref) : pathItem) as PathItem
+                    return Object.entries(
+                        omitUndefined({
+                            get: pathItem.get,
+                            put: pathItem.put,
+                            post: pathItem.post,
+                            delete: pathItem.delete,
+                            options: pathItem.options,
+                            head: pathItem.head,
+                            patch: pathItem.patch,
+                            trace: 'trace' in pathItem ? pathItem.trace : undefined,
                         })
-                        .newLine()
+                    ).map(([httpMethod, operation]) => {
+                        const method = methodName(path, httpMethod, operation, options)
+                        return {
+                            httpMethod,
+                            method,
+                            path,
+                            pathItem,
+                            operation,
+                        }
+                    })
+                } else {
+                    return undefined
+                }
+            })
+            .filter(isDefined)
+            .sort((a, b) => a.method.localeCompare(b.method))
+
+        for (const { httpMethod, pathItem, path, operation, method } of pathItems) {
+            const request = getRequestBody({
+                request: jsonPointer({ schema: openapi, ptr: operation.requestBody }) as RequestBody | undefined,
+                openapi,
+                method,
+                references,
+                strict,
+                optionalNullable,
+                allowIntersectionTypes,
+                compile,
+            })
+            let requestValidationStr = ''
+            if (request?.schema !== undefined) {
+                requestValidationStr = `this.validateRequestBody({{${request.schema.uuid}:symbolName~value}}, ${request.name})`
+                generateValidateRequestBody = true
+                if (!seenChildren.has(request.schema)) {
+                    children.push(request.schema)
                 }
             }
+            const parameters: Parameter[] = [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
+                .map((parameter) => jsonPointer({ schema: openapi, ptr: parameter }) as Parameter | undefined)
+                .filter(isDefined)
+
+            let clientDecl = 'this.client'
+            const authMethods: string[] = []
+            const security = operation.security ?? openapi.security
+            const usedSecurityHeaders: string[] = []
+            if (security !== undefined) {
+                const hasAuthParameters = operation.security !== undefined
+                for (const secMethods of security) {
+                    const required = keysOf(secMethods)
+                        .map((sm) => securities.find((s) => s.type === sm)?.name)
+                        .filter((x): x is string => x !== undefined)
+                    authMethods.push(`[${required.map((r) => `'${r}'`).join(', ')}]`)
+                    usedSecurityHeaders.push(
+                        ...keysOf(secMethods)
+                            .flatMap((sm) => securities.find((s) => s.type === sm)?.headers)
+                            .filter((x): x is string => x !== undefined)
+                    )
+                }
+                clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
+            }
+
+            const pathParameters = getPathParameters(parameters, openapi)
+            const queryParameters = getQueryParameters(parameters, openapi)
+            const headerParameters = getHeaderParameters(parameters, usedSecurityHeaders, openapi)
+
+            const responses = getResponseBodies({
+                responses: operation.responses,
+                openapi,
+                method,
+                references,
+                useEither,
+                strict,
+                optionalNullable,
+                allowIntersectionTypes,
+                compile,
+            })
+
+            const parameterizedPath = pathParameters
+                .reduce<string>((p, x) => p.replace(`{${x.id}}`, `{${x.name}}`), path)
+                .replaceAll('{', '${path.')
+
+            const urlPath = parameterizedPath.startsWith('/') ? parameterizedPath.slice(1) : parameterizedPath
+
+            const pathArguments = pathParameters.map((p) => `${p.name}: ${p.type}`).join(', ')
+            const queryArguments = queryParameters
+                .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
+                .join(', ')
+            const queryOptionalStr = queryParameters.every((q) => q.required === true) ? '' : '?'
+            const headerArguments = headerParameters
+                .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
+                .join(', ')
+
+            const hasRequiredBody = request?.declaration !== undefined
+            const hasRequiredPathArgument = pathArguments.length > 0
+            const hasRequiredQueryArguments = queryParameters.some((q) => q.required === true)
+            const hasRequiredHeaderArguments = headerParameters.some((q) => q.required === true)
+
+            const hasRequiredArguments =
+                hasRequiredBody || hasRequiredPathArgument || hasRequiredQueryArguments || hasRequiredHeaderArguments
+
+            const headerOptionalStr = hasRequiredHeaderArguments ? '' : '?'
+            const methodArgumentsInner = [
+                ...(request?.declaration !== undefined ? [[request.name, `${request.name}: ${request.declaration}`]] : []),
+                ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
+                ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
+                ...(headerArguments.length > 0 ? [['headers', `headers${headerOptionalStr}: { ${headerArguments} }`]] : []),
+                ...(operation.security?.length !== undefined && operation.security.length > 0
+                    ? [[`auth = [${authMethods.join(', ')}]`, `auth?: string[][] | string[]`]]
+                    : []),
+            ]
+
+            const methodArguments =
+                methodArgumentsInner.length > 0
+                    ? `{${methodArgumentsInner.map(([name]) => name).join(', ')}}: {${methodArgumentsInner
+                          .map(([, a]) => a)
+                          .join(', ')}}`
+                    : ''
+
+            writer.write('\n')
+            const jsdoc = toJSDoc({ meta: operation })
+            if (jsdoc !== undefined) {
+                writer.write(jsdoc)
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            const hasResponse = 'right' in responses && responses.right !== undefined
+            let responseType: 'json' | 'text' | undefined
+            generateAwaitResponse ||= hasResponse
+
+            writer.writeLine(
+                `public ${hasResponse ? 'async' : ''} ${method}(${methodArguments}${
+                    methodArgumentsInner.length > 0 && !hasRequiredArguments ? ' = {}' : ''
+                })`
+            )
+            writer
+                .block(() => {
+                    const hasInputObj =
+                        request !== undefined ||
+                        queryParameters.length > 0 ||
+                        headerParameters.length > 0 ||
+                        (explicitContentNegotiation && hasResponse)
+                    writer
+                        .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
+                        .conditionalWrite(hasResponse, 'return this.awaitResponse(')
+                        .conditionalWrite(!hasResponse, 'return ')
+                        .write(`${clientDecl}.${httpMethod}(\`${urlPath}\``)
+                    if (hasInputObj || hasResponse) {
+                        writer
+                            .write(', ')
+                            .inlineBlock(() => {
+                                writer
+                                    .conditionalWrite(request !== undefined, `${request?.type ?? ''}: ${request?.name ?? ''},`)
+                                    .conditionalWrite(
+                                        queryParameters.length > 0,
+                                        `searchParams: query${queryOptionalStr.length > 0 ? ' ?? {}' : ''},`
+                                    )
+
+                                const successResponses = hasResponse
+                                    ? entriesOf(responses.right)
+                                          .filter((r) => r[1].isUnknown !== true)
+                                          .filter(([statusCode]) => statusCode.startsWith('2'))
+                                    : ([undefined] as const)
+                                const defaultResponse = hasResponse
+                                    ? entriesOf(responses.right).filter(
+                                          ([statusCode, response]) =>
+                                              response.isUnknown !== true && statusCode.startsWith('default')
+                                      )
+                                    : ([undefined] as const)
+                                const errorResponses = hasResponse
+                                    ? entriesOf(responses.right).filter(
+                                          ([statusCode, response]) =>
+                                              response.isUnknown !== true &&
+                                              (statusCode.startsWith('4') || statusCode.startsWith('5'))
+                                      )
+                                    : ([undefined] as const)
+                                const eligibleResponseTypes = hasResponse
+                                    ? successResponses.length > 0
+                                        ? successResponses
+                                        : defaultResponse.length > 0
+                                          ? defaultResponse
+                                          : errorResponses
+                                    : ([undefined] as const)
+                                const eligibleResponse = eligibleResponseTypes[0]
+                                let hasWrittenHeaders = false
+                                if (explicitContentNegotiation && hasResponse && eligibleResponse?.[1].mimeType !== undefined) {
+                                    writer
+                                        .conditionalWrite(
+                                            headerParameters.length > 0,
+                                            `headers: { Accept: "${eligibleResponse[1].mimeType}", ...headers },`
+                                        )
+                                        .conditionalWrite(
+                                            headerParameters.length === 0,
+                                            `headers: { Accept: "${eligibleResponse[1].mimeType}" },`
+                                        )
+                                    hasWrittenHeaders = true
+                                }
+                                writer.conditionalWrite(
+                                    headerParameters.length > 0 && !hasWrittenHeaders,
+                                    `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`
+                                )
+                                if (eligibleResponse !== undefined) {
+                                    responseType = eligibleResponse[1].type
+                                    writer.write(`responseType: '${eligibleResponse[1].type}',`)
+                                } else if (hasResponse) {
+                                    const found = [
+                                        ...new Set(
+                                            ...valuesOf(responses.right)
+                                                .filter((r) => r.isUnknown !== true)
+                                                .map((r) => r.type)
+                                        ),
+                                    ]
+                                    if (found.length === 1) {
+                                        responseType = found[0] as typeof responseType
+                                        writer.write(`responseType: '${found[0]!}',`)
+                                    }
+                                }
+                            })
+                            .write(')')
+                    } else {
+                        writer.write(')')
+                    }
+                    if (hasResponse) {
+                        writer
+                            .write(', ')
+                            .inlineBlock(() => {
+                                for (const [statusCode, { schema: responseSchema, isUnknown }] of entriesOf(responses.right)) {
+                                    if (responseSchema !== undefined && isUnknown !== true) {
+                                        if (!seenChildren.has(responseSchema as ThereforeCst)) {
+                                            children.push(responseSchema as ThereforeCst)
+                                        }
+                                        writer.write(`${statusCode}: {{${responseSchema.uuid}:symbolName~value}},`)
+                                    } else if (statusCode !== 'default' || entriesOf(responses.right).length === 1) {
+                                        writer.write(
+                                            `${statusCode}: ${
+                                                responseType === 'text' || responseType === undefined ? isStringIs : isUnknownIs
+                                            },`
+                                        )
+                                    }
+                                }
+                            })
+                            .write(')')
+                    }
+                })
+                .newLine()
         }
 
         if (generateValidateRequestBody) {

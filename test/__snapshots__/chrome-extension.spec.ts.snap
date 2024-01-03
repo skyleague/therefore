@@ -126,95 +126,34 @@ import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
 
-interface {{00061-000:symbolName}} {
+interface {{00010-000:symbolName}} {
     /**
-     * Specifies which pages this content script will be injected into.
-     */
-    matches: [{{00021-000:referenceName}},  ...({{00021-000:referenceName}})[]]
-    /**
-     * Excludes pages that this content script would otherwise be injected into.
-     */
-    exclude_matches: ({{00021-000:referenceName}})[]
-    /**
-     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
-     */
-    css: ({{0001-000:referenceName}})[]
-    /**
-     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
-     */
-    js: {{00018-000:referenceName}}
-    /**
-     * Controls when the files in js are injected.
-     * 
-     * @default 'document_idle'
-     */
-    run_at: 'document_start' | 'document_end' | 'document_idle'
-    /**
-     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
-     * 
-     * @default false
-     */
-    all_frames: boolean
-    /**
-     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
-     */
-    include_globs: ({{00020-000:referenceName}})[]
-    /**
-     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
-     */
-    exclude_globs: ({{00020-000:referenceName}})[]
-    /**
-     * Whether to insert the content script on about:blank and about:srcdoc.
-     * 
-     * @default false
-     */
-    match_about_blank: boolean
-}
-
-interface {{00075-000:symbolName}} {
-    /**
-     * Used by event handling code to differentiate between multiple file handlers
-     */
-    id: string
-    /**
-     * What the button will display.
+     * Tooltip for the main toolbar icon.
      */
     default_title: string
     /**
-     * Filetypes to match.
+     * The popup appears when the user clicks the icon.
      */
-    file_filters: [string,  ...(string)[]]
+    default_popup: {{0001-000:referenceName}}
+    default_icon: string | {
+        '19': {{0002-000:referenceName}}
+        '38': {{0002-000:referenceName}}
+    }
 }
 
-interface {{00086-000:symbolName}} {
-    name: string
-    type: string
-    id: string
+interface {{00014-000:symbolName}} {
     description: string
-    language: string
-    layouts: (string)[]
+    suggested_key: {
+        [k: string]: ( string ) | undefined
+    }
 }
 
-type {{000125-000:symbolName}} = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
-
-interface {{000127-000:symbolName}} {
-    /**
-     * Identifies the name of the voice and the engine used.
-     */
-    voice_name: string
-    /**
-     * Almost always, a voice can synthesize speech in just a single language. When an engine supports more than one language, it can easily register a separate voice for each language.
-     */
-    lang: string
-    /**
-     * If your voice corresponds to a male or female voice, you can use this parameter to help clients choose the most appropriate voice for their application.
-     */
-    gender: string
-    /**
-     * Events sent to update the client on the progress of speech synthesis.
-     */
-    event_types?: [{{000125-000:referenceName}},  ...({{000125-000:referenceName}})[]]
-}
+/**
+ * This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.
+ * 
+ * @default \`script-src 'self'; object-src 'self'\`
+ */
+type {{00019-000:symbolName}} = string
 
 /**
  * JSON schema for Google Chrome extension manifest files
@@ -538,52 +477,113 @@ export const {{000143-000:symbolName}} = {
     },
 } as const
 
-type {{00021-000:symbolName}} = string
-
-type {{0001-000:symbolName}} = string
-
-type {{00018-000:symbolName}} = [{{0001-000:referenceName}},  ...({{0001-000:referenceName}})[]]
-
-type {{00020-000:symbolName}} = string
-
-type {{00015-000:symbolName}} = string
-
-type {{0002-000:symbolName}} = {{0001-000:referenceName}}
-
-interface {{00010-000:symbolName}} {
+interface {{00061-000:symbolName}} {
     /**
-     * Tooltip for the main toolbar icon.
+     * Specifies which pages this content script will be injected into.
+     */
+    matches: [{{00021-000:referenceName}},  ...({{00021-000:referenceName}})[]]
+    /**
+     * Excludes pages that this content script would otherwise be injected into.
+     */
+    exclude_matches: ({{00021-000:referenceName}})[]
+    /**
+     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
+     */
+    css: ({{0001-000:referenceName}})[]
+    /**
+     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
+     */
+    js: {{00018-000:referenceName}}
+    /**
+     * Controls when the files in js are injected.
+     * 
+     * @default 'document_idle'
+     */
+    run_at: 'document_start' | 'document_end' | 'document_idle'
+    /**
+     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
+     * 
+     * @default false
+     */
+    all_frames: boolean
+    /**
+     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
+     */
+    include_globs: ({{00020-000:referenceName}})[]
+    /**
+     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
+     */
+    exclude_globs: ({{00020-000:referenceName}})[]
+    /**
+     * Whether to insert the content script on about:blank and about:srcdoc.
+     * 
+     * @default false
+     */
+    match_about_blank: boolean
+}
+
+interface {{00075-000:symbolName}} {
+    /**
+     * Used by event handling code to differentiate between multiple file handlers
+     */
+    id: string
+    /**
+     * What the button will display.
      */
     default_title: string
     /**
-     * The popup appears when the user clicks the icon.
+     * Filetypes to match.
      */
-    default_popup: {{0001-000:referenceName}}
-    default_icon: string | {
-        '19': {{0002-000:referenceName}}
-        '38': {{0002-000:referenceName}}
-    }
+    file_filters: [string,  ...(string)[]]
 }
 
-type {{00016-000:symbolName}} = {{0001-000:referenceName}}
-
-interface {{00014-000:symbolName}} {
+interface {{00086-000:symbolName}} {
+    name: string
+    type: string
+    id: string
     description: string
-    suggested_key: {
-        [k: string]: ( string ) | undefined
-    }
+    language: string
+    layouts: (string)[]
 }
 
-/**
- * This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.
- * 
- * @default \`script-src 'self'; object-src 'self'\`
- */
-type {{00019-000:symbolName}} = string
+interface {{000127-000:symbolName}} {
+    /**
+     * Identifies the name of the voice and the engine used.
+     */
+    voice_name: string
+    /**
+     * Almost always, a voice can synthesize speech in just a single language. When an engine supports more than one language, it can easily register a separate voice for each language.
+     */
+    lang: string
+    /**
+     * If your voice corresponds to a male or female voice, you can use this parameter to help clients choose the most appropriate voice for their application.
+     */
+    gender: string
+    /**
+     * Events sent to update the client on the progress of speech synthesis.
+     */
+    event_types?: [{{000125-000:referenceName}},  ...({{000125-000:referenceName}})[]]
+}
+
+type {{000125-000:symbolName}} = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
+
+type {{00020-000:symbolName}} = string
+
+type {{0002-000:symbolName}} = {{0001-000:referenceName}}
+
+type {{00021-000:symbolName}} = string
 
 type {{00022-000:symbolName}} = string
 
+type {{00016-000:symbolName}} = {{0001-000:referenceName}}
+
 type {{00024-000:symbolName}} = (string)[]
+
+type {{00018-000:symbolName}} = [{{0001-000:referenceName}},  ...({{0001-000:referenceName}})[]]
+
+type {{0001-000:symbolName}} = string
+
+type {{00015-000:symbolName}} = string
 
 ",
     "type": "typescript",

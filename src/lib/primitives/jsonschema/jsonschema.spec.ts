@@ -37,67 +37,67 @@ describe('person', () => {
     const therefore = () => $jsonschema(schema)
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
-            {
-              "children": [
-                {
-                  "children": [],
-                  "description": {
-                    "description": "The person's first name.",
-                    "name": "firstName",
-                    "optional": "implicit",
-                  },
-                  "name": "firstName",
-                  "type": "string",
-                  "uuid": "0004-000",
-                  "value": {
-                    "format": undefined,
-                    "maxLength": undefined,
-                    "minLength": undefined,
-                    "pattern": undefined,
-                  },
-                },
-                {
-                  "children": [],
-                  "description": {
-                    "description": "The person's last name.",
-                    "name": "lastName",
-                    "optional": "implicit",
-                  },
-                  "name": "lastName",
-                  "type": "string",
-                  "uuid": "0005-000",
-                  "value": {
-                    "format": undefined,
-                    "maxLength": undefined,
-                    "minLength": undefined,
-                    "pattern": undefined,
-                  },
-                },
-                {
-                  "children": [],
-                  "description": {
-                    "description": "Age in years which must be equal to or greater than zero.",
-                    "name": "age",
-                    "optional": "implicit",
-                  },
+          {
+            "children": [
+              {
+                "children": [],
+                "description": {
+                  "description": "Age in years which must be equal to or greater than zero.",
                   "name": "age",
-                  "type": "integer",
-                  "uuid": "0006-000",
-                  "value": {
-                    "maximum": undefined,
-                    "minimum": 0,
-                    "multipleOf": undefined,
-                  },
+                  "optional": "implicit",
                 },
-              ],
-              "description": {
-                "title": "Person",
+                "name": "age",
+                "type": "integer",
+                "uuid": "0004-000",
+                "value": {
+                  "maximum": undefined,
+                  "minimum": 0,
+                  "multipleOf": undefined,
+                },
               },
-              "prepass": true,
-              "type": "object",
-              "uuid": "0007-000",
-              "value": {},
-            }
+              {
+                "children": [],
+                "description": {
+                  "description": "The person's first name.",
+                  "name": "firstName",
+                  "optional": "implicit",
+                },
+                "name": "firstName",
+                "type": "string",
+                "uuid": "0005-000",
+                "value": {
+                  "format": undefined,
+                  "maxLength": undefined,
+                  "minLength": undefined,
+                  "pattern": undefined,
+                },
+              },
+              {
+                "children": [],
+                "description": {
+                  "description": "The person's last name.",
+                  "name": "lastName",
+                  "optional": "implicit",
+                },
+                "name": "lastName",
+                "type": "string",
+                "uuid": "0006-000",
+                "value": {
+                  "format": undefined,
+                  "maxLength": undefined,
+                  "minLength": undefined,
+                  "pattern": undefined,
+                },
+              },
+            ],
+            "description": {
+              "title": "Person",
+            },
+            "prepass": true,
+            "type": "object",
+            "uuid": "0007-000",
+            "value": {},
+          }
         `)
     })
 
@@ -138,29 +138,29 @@ describe('person', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "/**
-             * Person
-             */
-            interface {{0007-000:symbolName}} {
-                /**
-                 * The person's first name.
-                 */
-                firstName?: string
-                /**
-                 * The person's last name.
-                 */
-                lastName?: string
-                /**
-                 * Age in years which must be equal to or greater than zero.
-                 */
-                age?: number
-            }
-            ",
-              "referenceName": "{{0007-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          {
+            "declaration": "/**
+           * Person
+           */
+          interface {{0007-000:symbolName}} {
+              /**
+               * Age in years which must be equal to or greater than zero.
+               */
+              age?: number
+              /**
+               * The person's first name.
+               */
+              firstName?: string
+              /**
+               * The person's last name.
+               */
+              lastName?: string
+          }
+          ",
+            "referenceName": "{{0007-000:symbolName}}",
+            "render": [Function],
+            "sourceSymbol": undefined,
+          }
         `)
     })
 })
@@ -368,6 +368,17 @@ describe('array', () => {
                           {
                             "children": [],
                             "description": {
+                              "description": "Do I like this vegetable?",
+                              "name": "veggieLike",
+                            },
+                            "name": "veggieLike",
+                            "type": "boolean",
+                            "uuid": "0009-000",
+                            "value": {},
+                          },
+                          {
+                            "children": [],
+                            "description": {
                               "description": "The name of the vegetable.",
                               "name": "veggieName",
                             },
@@ -380,17 +391,6 @@ describe('array', () => {
                               "minLength": undefined,
                               "pattern": undefined,
                             },
-                          },
-                          {
-                            "children": [],
-                            "description": {
-                              "description": "Do I like this vegetable?",
-                              "name": "veggieLike",
-                            },
-                            "name": "veggieLike",
-                            "type": "boolean",
-                            "uuid": "0009-000",
-                            "value": {},
                           },
                         ],
                         "description": {
@@ -646,34 +646,6 @@ describe('object with nullable property', () => {
                 "children": [
                   {
                     "children": [],
-                    "description": {},
-                    "type": "string",
-                    "uuid": "0003-000",
-                    "value": {
-                      "format": undefined,
-                      "maxLength": undefined,
-                      "minLength": undefined,
-                      "pattern": undefined,
-                    },
-                  },
-                ],
-                "description": {
-                  "name": "vegetables",
-                  "optional": "implicit",
-                },
-                "name": "vegetables",
-                "type": "array",
-                "uuid": "00010-000",
-                "value": {
-                  "maxItems": undefined,
-                  "minItems": undefined,
-                  "uniqueItems": undefined,
-                },
-              },
-              {
-                "children": [
-                  {
-                    "children": [],
                     "description": {
                       "name": "store",
                       "nullable": true,
@@ -723,7 +695,7 @@ describe('object with nullable property', () => {
                 },
                 "name": "store",
                 "type": "union",
-                "uuid": "00011-000",
+                "uuid": "00010-000",
                 "value": {
                   "allowIntersectionTypes": false,
                   "cache": Map {},
@@ -764,6 +736,34 @@ describe('object with nullable property', () => {
                     "type": "object",
                   },
                   "strict": true,
+                },
+              },
+              {
+                "children": [
+                  {
+                    "children": [],
+                    "description": {},
+                    "type": "string",
+                    "uuid": "0003-000",
+                    "value": {
+                      "format": undefined,
+                      "maxLength": undefined,
+                      "minLength": undefined,
+                      "pattern": undefined,
+                    },
+                  },
+                ],
+                "description": {
+                  "name": "vegetables",
+                  "optional": "implicit",
+                },
+                "name": "vegetables",
+                "type": "array",
+                "uuid": "00011-000",
+                "value": {
+                  "maxItems": undefined,
+                  "minItems": undefined,
+                  "uniqueItems": undefined,
                 },
               },
             ],
@@ -842,20 +842,20 @@ describe('object with nullable property', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "/**
-             * An object with nullable properties
-             */
-            interface {{00012-000:symbolName}} {
-                fruits?: ((string)[] | null)
-                vegetables?: (string)[]
-                store?: string | number | null
-            }
-            ",
-              "referenceName": "{{00012-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          {
+            "declaration": "/**
+           * An object with nullable properties
+           */
+          interface {{00012-000:symbolName}} {
+              fruits?: ((string)[] | null)
+              store?: string | number | null
+              vegetables?: (string)[]
+          }
+          ",
+            "referenceName": "{{00012-000:symbolName}}",
+            "render": [Function],
+            "sourceSymbol": undefined,
+          }
         `)
     })
 })
@@ -881,6 +881,20 @@ describe('make optional properties nullable', () => {
               {
                 "children": [],
                 "description": {
+                  "name": "bar",
+                },
+                "name": "bar",
+                "type": "number",
+                "uuid": "0002-000",
+                "value": {
+                  "maximum": undefined,
+                  "minimum": undefined,
+                  "multipleOf": undefined,
+                },
+              },
+              {
+                "children": [],
+                "description": {
                   "name": "foo",
                   "nullable": true,
                   "optional": "implicit",
@@ -893,20 +907,6 @@ describe('make optional properties nullable', () => {
                   "maxLength": undefined,
                   "minLength": undefined,
                   "pattern": undefined,
-                },
-              },
-              {
-                "children": [],
-                "description": {
-                  "name": "bar",
-                },
-                "name": "bar",
-                "type": "number",
-                "uuid": "0002-000",
-                "value": {
-                  "maximum": undefined,
-                  "minimum": undefined,
-                  "multipleOf": undefined,
                 },
               },
               {
@@ -1069,20 +1069,20 @@ describe('make optional properties nullable', () => {
                 locals: {},
             } as unknown as TypescriptWalkerContext)
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "/**
-             * An object with optional properties
-             */
-            interface {{0009-000:symbolName}} {
-                foo?: (string | null)
-                bar: number
-                foobar?: boolean | number | null
-            }
-            ",
-              "referenceName": "{{0009-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          {
+            "declaration": "/**
+           * An object with optional properties
+           */
+          interface {{0009-000:symbolName}} {
+              bar: number
+              foo?: (string | null)
+              foobar?: boolean | number | null
+          }
+          ",
+            "referenceName": "{{0009-000:symbolName}}",
+            "render": [Function],
+            "sourceSymbol": undefined,
+          }
         `)
     })
 })
