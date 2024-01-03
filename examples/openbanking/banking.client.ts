@@ -46,43 +46,6 @@ export class Banking {
     }
 
     /**
-     * Get File Payment Consents
-     */
-    public async getFilePaymentConsentsConsentIdFile({
-        path,
-        headers,
-        auth = [['tppoAuth2Security']],
-    }: {
-        path: { consentId: string }
-        headers: {
-            ['x-fapi-auth-date']?: string
-            ['x-fapi-customer-ip-address']?: string
-            ['x-fapi-interaction-id']?: string
-            Authorization: string
-            ['x-customer-user-agent']?: string
-        }
-        auth?: string[][] | string[]
-    }) {
-        return this.awaitResponse(
-            this.buildClient(auth).get(`file-payment-consents/${path.consentId}/file`, {
-                headers: headers,
-                responseType: 'json',
-            }),
-            {
-                200: File,
-                400: OBErrorResponse1,
-                401: { is: (_x: unknown): _x is unknown => true },
-                403: OBErrorResponse1,
-                404: { is: (_x: unknown): _x is unknown => true },
-                405: { is: (_x: unknown): _x is unknown => true },
-                406: { is: (_x: unknown): _x is unknown => true },
-                429: { is: (_x: unknown): _x is unknown => true },
-                500: OBErrorResponse1,
-            }
-        )
-    }
-
-    /**
      * Create File Payment Consents
      */
     public async createFilePaymentConsentsConsentIdFile({
@@ -121,6 +84,43 @@ export class Banking {
                 405: { is: (_x: unknown): _x is unknown => true },
                 406: { is: (_x: unknown): _x is unknown => true },
                 415: { is: (_x: unknown): _x is unknown => true },
+                429: { is: (_x: unknown): _x is unknown => true },
+                500: OBErrorResponse1,
+            }
+        )
+    }
+
+    /**
+     * Get File Payment Consents
+     */
+    public async getFilePaymentConsentsConsentIdFile({
+        path,
+        headers,
+        auth = [['tppoAuth2Security']],
+    }: {
+        path: { consentId: string }
+        headers: {
+            ['x-fapi-auth-date']?: string
+            ['x-fapi-customer-ip-address']?: string
+            ['x-fapi-interaction-id']?: string
+            Authorization: string
+            ['x-customer-user-agent']?: string
+        }
+        auth?: string[][] | string[]
+    }) {
+        return this.awaitResponse(
+            this.buildClient(auth).get(`file-payment-consents/${path.consentId}/file`, {
+                headers: headers,
+                responseType: 'json',
+            }),
+            {
+                200: File,
+                400: OBErrorResponse1,
+                401: { is: (_x: unknown): _x is unknown => true },
+                403: OBErrorResponse1,
+                404: { is: (_x: unknown): _x is unknown => true },
+                405: { is: (_x: unknown): _x is unknown => true },
+                406: { is: (_x: unknown): _x is unknown => true },
                 429: { is: (_x: unknown): _x is unknown => true },
                 500: OBErrorResponse1,
             }

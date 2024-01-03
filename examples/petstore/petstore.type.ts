@@ -6,30 +6,43 @@
 import type { ValidateFunction } from 'ajv'
 import { ValidationError } from 'ajv'
 
-export interface Pet {
-    id?: number
-    name: string
-    category?: Category
-    photoUrls: string[]
-    tags?: Tag[]
-    /**
-     * pet status in the store
-     */
-    status?: 'available' | 'pending' | 'sold'
+export interface ApiResponse {
+    code?: number
+    message?: string
+    type?: string
 }
 
-export const Pet = {
-    validate: (await import('./schemas/pet.schema.js')).validate as ValidateFunction<Pet>,
+export const ApiResponse = {
+    validate: (await import('./schemas/api-response.schema.js')).validate as ValidateFunction<ApiResponse>,
     get schema() {
-        return Pet.validate.schema
+        return ApiResponse.validate.schema
     },
     get errors() {
-        return Pet.validate.errors ?? undefined
+        return ApiResponse.validate.errors ?? undefined
     },
-    is: (o: unknown): o is Pet => Pet.validate(o) === true,
+    is: (o: unknown): o is ApiResponse => ApiResponse.validate(o) === true,
+} as const
+
+export interface Category {
+    id?: number
+    name?: string
+}
+
+export type CreateUsersWithListInputRequest = User[]
+
+export const CreateUsersWithListInputRequest = {
+    validate: (await import('./schemas/create-users-with-list-input-request.schema.js'))
+        .validate as ValidateFunction<CreateUsersWithListInputRequest>,
+    get schema() {
+        return CreateUsersWithListInputRequest.validate.schema
+    },
+    get errors() {
+        return CreateUsersWithListInputRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
     assert: (o: unknown) => {
-        if (!Pet.validate(o)) {
-            throw new ValidationError(Pet.errors ?? [])
+        if (!CreateUsersWithListInputRequest.validate(o)) {
+            throw new ValidationError(CreateUsersWithListInputRequest.errors ?? [])
         }
     },
 } as const
@@ -62,23 +75,6 @@ export const FindPetsByTagsResponse = {
     is: (o: unknown): o is FindPetsByTagsResponse => FindPetsByTagsResponse.validate(o) === true,
 } as const
 
-export interface ApiResponse {
-    code?: number
-    type?: string
-    message?: string
-}
-
-export const ApiResponse = {
-    validate: (await import('./schemas/api-response.schema.js')).validate as ValidateFunction<ApiResponse>,
-    get schema() {
-        return ApiResponse.validate.schema
-    },
-    get errors() {
-        return ApiResponse.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ApiResponse => ApiResponse.validate(o) === true,
-} as const
-
 export interface GetInventoryResponse {
     [k: string]: number
 }
@@ -94,7 +90,21 @@ export const GetInventoryResponse = {
     is: (o: unknown): o is GetInventoryResponse => GetInventoryResponse.validate(o) === true,
 } as const
 
+export type LoginUserResponse = string
+
+export const LoginUserResponse = {
+    validate: (await import('./schemas/login-user-response.schema.js')).validate as ValidateFunction<LoginUserResponse>,
+    get schema() {
+        return LoginUserResponse.validate.schema
+    },
+    get errors() {
+        return LoginUserResponse.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
+} as const
+
 export interface Order {
+    complete?: boolean
     id?: number
     petId?: number
     quantity?: number
@@ -103,7 +113,6 @@ export interface Order {
      * Order Status
      */
     status?: 'placed' | 'approved' | 'delivered'
-    complete?: boolean
 }
 
 export const Order = {
@@ -122,14 +131,47 @@ export const Order = {
     },
 } as const
 
-export interface User {
+export interface Pet {
+    category?: Category
     id?: number
-    username?: string
-    firstName?: string
-    lastName?: string
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold'
+    tags?: Tag[]
+}
+
+export const Pet = {
+    validate: (await import('./schemas/pet.schema.js')).validate as ValidateFunction<Pet>,
+    get schema() {
+        return Pet.validate.schema
+    },
+    get errors() {
+        return Pet.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Pet => Pet.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Pet.validate(o)) {
+            throw new ValidationError(Pet.errors ?? [])
+        }
+    },
+} as const
+
+export interface Tag {
+    id?: number
+    name?: string
+}
+
+export interface User {
     email?: string
+    firstName?: string
+    id?: number
+    lastName?: string
     password?: string
     phone?: string
+    username?: string
     /**
      * User Status
      */
@@ -151,45 +193,3 @@ export const User = {
         }
     },
 } as const
-
-export type CreateUsersWithListInputRequest = User[]
-
-export const CreateUsersWithListInputRequest = {
-    validate: (await import('./schemas/create-users-with-list-input-request.schema.js'))
-        .validate as ValidateFunction<CreateUsersWithListInputRequest>,
-    get schema() {
-        return CreateUsersWithListInputRequest.validate.schema
-    },
-    get errors() {
-        return CreateUsersWithListInputRequest.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is CreateUsersWithListInputRequest => CreateUsersWithListInputRequest.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!CreateUsersWithListInputRequest.validate(o)) {
-            throw new ValidationError(CreateUsersWithListInputRequest.errors ?? [])
-        }
-    },
-} as const
-
-export type LoginUserResponse = string
-
-export const LoginUserResponse = {
-    validate: (await import('./schemas/login-user-response.schema.js')).validate as ValidateFunction<LoginUserResponse>,
-    get schema() {
-        return LoginUserResponse.validate.schema
-    },
-    get errors() {
-        return LoginUserResponse.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
-} as const
-
-export interface Category {
-    id?: number
-    name?: string
-}
-
-export interface Tag {
-    id?: number
-    name?: string
-}

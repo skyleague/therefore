@@ -6,6 +6,134 @@
 import type { ValidateFunction } from 'ajv'
 
 /**
+ * Represents a file hyperlink or external hyperlink to a project closeout final report artifact.
+ */
+export type CloseoutDocument = string
+
+/**
+ * The name of an investigator who is a scientist or engineer for an project.
+ */
+export type CoInvestigator = string
+
+/**
+ * Represents a destination towards which the technology on this project helps advance the Agency goals.
+ */
+export type Destination = string
+
+/**
+ * Represents a file associated with a library item.
+ */
+export interface File {
+    /**
+     * Unique identifier for the file.
+     */
+    id?: number
+    /**
+     * The size of the file in bytes.
+     */
+    size?: string
+    /**
+     * The TechPort URL at which the file is accessible for download.
+     */
+    url?: string
+}
+
+export interface GetApiByResponse200 {
+    id?: number
+    lastUpdated?: string
+}
+
+export const GetApiByResponse200 = {
+    validate: (await import('./schemas/get-api-by-response200.schema.js')).validate as ValidateFunction<GetApiByResponse200>,
+    get schema() {
+        return GetApiByResponse200.validate.schema
+    },
+    get errors() {
+        return GetApiByResponse200.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is GetApiByResponse200 => GetApiByResponse200.validate(o) === true,
+} as const
+
+/**
+ * Represents a specific library item that is part of this project.
+ */
+export interface LibraryItem {
+    /**
+     * Date the library item was completed.
+     */
+    completionDate?: string
+    /**
+     * Description of the library item.
+     */
+    description?: string
+    /**
+     * External URL for the library item.
+     */
+    externalUrl?: string
+    /**
+     * List of files associated with the library item.
+     */
+    files?: File[]
+    /**
+     * Unique identifier for the library item.
+     */
+    id?: number
+    /**
+     * Publisher of the library item.
+     */
+    publishedBy?: string
+    /**
+     * Date the library item was published.
+     */
+    publishedDate?: string
+    /**
+     * Title of the library item
+     */
+    title?: string
+    /**
+     * Identifies the type of library item, e.g. Image
+     */
+    type?: string
+}
+
+/**
+ * A NASA center/facility associated with an project.
+ */
+export interface Organization {
+    /**
+     * The acronym of the organization.
+     */
+    acronym?: string
+    /**
+     * The city in which the organization is located.
+     */
+    city?: string
+    /**
+     * The name of the organization.
+     */
+    name?: string
+    /**
+     * The state in which the organization is located.
+     */
+    state?: string
+}
+
+/**
+ * The name of the Principal Investigator who is a lead scientist or engineer for an project.
+ */
+export type PrincipalInvestigator = string
+
+/**
+ * The name of a Program Director responsible for management of an project.
+ */
+export type ProgramDirector = string
+
+/**
+ * The name of a Program Manager responsible for management of an project.
+ */
+export type ProgramManager = string
+
+/**
  * Top-level TechPort object representing a NASA technology project and its associated data.
  */
 export interface Project {
@@ -143,21 +271,10 @@ export const Project = {
     is: (o: unknown): o is Project => Project.validate(o) === true,
 } as const
 
-export interface GetApiByResponse200 {
-    id?: number
-    lastUpdated?: string
-}
-
-export const GetApiByResponse200 = {
-    validate: (await import('./schemas/get-api-by-response200.schema.js')).validate as ValidateFunction<GetApiByResponse200>,
-    get schema() {
-        return GetApiByResponse200.validate.schema
-    },
-    get errors() {
-        return GetApiByResponse200.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is GetApiByResponse200 => GetApiByResponse200.validate(o) === true,
-} as const
+/**
+ * The name of a Project Manager responsible for management of an project.
+ */
+export type ProjectManager = string
 
 /**
  * The Technology Area for a given technology that corresponds to the NASA Technology Roadmap.
@@ -176,123 +293,6 @@ export interface TechnologyArea {
      */
     name?: string
 }
-
-/**
- * Represents a file hyperlink or external hyperlink to a project closeout final report artifact.
- */
-export type CloseoutDocument = string
-
-/**
- * A NASA center/facility associated with an project.
- */
-export interface Organization {
-    /**
-     * The acronym of the organization.
-     */
-    acronym?: string
-    /**
-     * The city in which the organization is located.
-     */
-    city?: string
-    /**
-     * The name of the organization.
-     */
-    name?: string
-    /**
-     * The state in which the organization is located.
-     */
-    state?: string
-}
-
-/**
- * The name of an investigator who is a scientist or engineer for an project.
- */
-export type CoInvestigator = string
-
-/**
- * Represents a destination towards which the technology on this project helps advance the Agency goals.
- */
-export type Destination = string
-
-/**
- * Represents a specific library item that is part of this project.
- */
-export interface LibraryItem {
-    /**
-     * Date the library item was completed.
-     */
-    completionDate?: string
-    /**
-     * Description of the library item.
-     */
-    description?: string
-    /**
-     * External URL for the library item.
-     */
-    externalUrl?: string
-    /**
-     * List of files associated with the library item.
-     */
-    files?: File[]
-    /**
-     * Unique identifier for the library item.
-     */
-    id?: number
-    /**
-     * Publisher of the library item.
-     */
-    publishedBy?: string
-    /**
-     * Date the library item was published.
-     */
-    publishedDate?: string
-    /**
-     * Title of the library item
-     */
-    title?: string
-    /**
-     * Identifies the type of library item, e.g. Image
-     */
-    type?: string
-}
-
-/**
- * Represents a file associated with a library item.
- */
-export interface File {
-    /**
-     * Unique identifier for the file.
-     */
-    id?: number
-    /**
-     * The size of the file in bytes.
-     */
-    size?: string
-    /**
-     * The TechPort URL at which the file is accessible for download.
-     */
-    url?: string
-}
-
-/**
- * The name of the Principal Investigator who is a lead scientist or engineer for an project.
- */
-export type PrincipalInvestigator = string
-
-/**
- * The name of a Program Director responsible for management of an project.
- */
-export type ProgramDirector = string
-
-/**
- * The name of a Program Manager responsible for management of an project.
- */
-export type ProgramManager = string
-
-/**
- * The name of a Project Manager responsible for management of an project.
- */
-export type ProjectManager = string
 
 /**
  * A state/territory where work on this project is performed.

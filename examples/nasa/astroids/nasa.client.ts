@@ -37,21 +37,6 @@ export class Astroids {
     }
 
     /**
-     * Returns information about a specific technology project.
-     */
-    public async getApiProjectByFormat({ path, query }: { path: { id: string; format: string }; query: { format: string } }) {
-        return this.awaitResponse(
-            this.client.get(`api/projects/${path.id}${path.format}`, {
-                searchParams: query,
-                responseType: 'json',
-            }),
-            {
-                200: Project,
-            }
-        )
-    }
-
-    /**
      * Returns a list of available technology project IDs.
      */
     public async getApiBy({ path, query }: { path: { format: string }; query: { updatedSince: string; format: string } }) {
@@ -62,6 +47,21 @@ export class Astroids {
             }),
             {
                 200: GetApiByResponse200,
+            }
+        )
+    }
+
+    /**
+     * Returns information about a specific technology project.
+     */
+    public async getApiProjectByFormat({ path, query }: { path: { id: string; format: string }; query: { format: string } }) {
+        return this.awaitResponse(
+            this.client.get(`api/projects/${path.id}${path.format}`, {
+                searchParams: query,
+                responseType: 'json',
+            }),
+            {
+                200: Project,
             }
         )
     }
