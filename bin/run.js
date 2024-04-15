@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-import { spawn } from 'child_process'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { spawn } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const project = path.join(__dirname, '../tsconfig.json')
-const dev = fs.existsSync(project) && process.env.DEBUG != 'false'
+const dev = fs.existsSync(project) && process.env.DEBUG !== 'false'
 
 /**
  * In contrast to most of the SkyLeague packages, we always need to hook in tsx for Therefore.

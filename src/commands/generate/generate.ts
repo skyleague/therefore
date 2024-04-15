@@ -1,331 +1,193 @@
-import { generatedAjv, generatedBy } from './constants.js'
+import { type Prettier, maybeLoadPrettier } from './format.js'
 import { expandGlobs } from './glob.js'
-import { formatFile, maybeLoadPrettier } from './prettier.js'
-import { resolveTypescriptSchema } from './resolver.js'
-import type { FileDefinition, OutputFile, ReferenceData, ThereforeOutputType } from './types.js'
 
-import { getExtension, replaceExtension } from '../../common/template/path.js'
-import { renderTemplate } from '../../common/template/template.js'
-import type { ThereforeNode } from '../../lib/cst/cst.js'
-import type { ThereforeCst } from '../../lib/primitives/types.js'
-import { isThereforeExport } from '../../lib/primitives/types.js'
-import { toJsonSchema } from '../../lib/visitor/jsonschema/jsonschema.js'
-import { prepass } from '../../lib/visitor/prepass/prepass.js'
-import { toTypescriptDefinition } from '../../lib/visitor/typescript/typescript.js'
-
-import { entriesOf, enumerate, groupBy, isDefined, range, second } from '@skyleague/axioms'
-import decamelize from 'decamelize'
+import { isNode } from '../../lib/cst/cst.js'
+import type { Node, SourceNode } from '../../lib/cst/node.js'
+import { GenericFileOutput } from '../../lib/output/generic.js'
+import type { ThereforeOutput } from '../../lib/output/types.js'
+import { TypescriptFileOutput } from '../../lib/output/typescript.js'
+import { therefore } from '../../lib/primitives/therefore.js'
+import { generateNode } from '../../lib/visitor/prepass/prepass.js'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-async function requireModule(module: string): Promise<Record<string, ThereforeNode | unknown>> {
+async function requireModule(module: string): Promise<Record<string, Node | unknown>> {
     const relative = path.relative(__dirname, module).replace(/\\/g, '/')
 
     const mod = (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
-    return (mod.default ?? mod) as Record<string, ThereforeNode | unknown>
+    return (mod.default ?? mod) as Record<string, Node | unknown>
 }
 
-export async function loadSymbol({
-    srcPath,
-    basePath,
-    symbol,
+export function loadNodes({
     sourceSymbol,
-    compile,
-    definitions,
-    entry,
-    fileSuffix,
-    filePath,
-    outputFileRename,
-    appendSourceSymbolName: appendSourceName = false,
-    rootPath = srcPath,
+    node,
+    sourcePath,
+    seen = new Set<string>(),
 }: {
-    srcPath: string
-    basePath: string
-    symbol: ThereforeCst
-    sourceSymbol: string
-    compile: boolean
-    definitions: Record<string, FileDefinition | undefined>
-    entry: string
-    fileSuffix?: string | undefined
-    filePath?: string | undefined
-    outputFileRename: (path: string) => string
-    appendSourceSymbolName?: boolean
-    rootPath?: string
-}) {
-    const simplified = prepass(symbol)
-    let targetDir = '.'
-    if (simplified.type === 'custom') {
-        if (simplified.value.fileSuffix !== undefined) {
-            fileSuffix = simplified.value.fileSuffix
-        }
-        if (simplified.value.filePath !== undefined) {
-            const dir = path.dirname(simplified.value.filePath)
-            const basename = path.basename(simplified.value.filePath)
-            filePath = basename
-            targetDir = dir
-        }
+    sourceSymbol: string | undefined
+    node: Node
+    sourcePath: string
+    seen?: Set<string>
+}): Node[] {
+    if (seen.has(node.id)) {
+        return []
     }
 
-    const { base: baseName, dir: baseDir } = path.parse(srcPath)
-    const ext = getExtension(srcPath) ?? ''
-    const targetBaseDir = path.relative(basePath, path.join(baseDir, targetDir))
-    const targetSrcPath = `${targetBaseDir}/${(filePath ?? baseName).replace(ext, '')}${ext}`
-    const targetPath = fileSuffix !== undefined ? replaceExtension(targetSrcPath, fileSuffix) : outputFileRename(targetSrcPath)
+    const evaluated = therefore.exportSymbol({ symbol: node, sourcePath, sourceSymbol })
 
-    definitions[targetPath] ??= {
-        srcPath: path.relative(basePath, rootPath),
-        targetPath,
-        attachedFiles: [],
-        symbols: [],
-        dependencies: {},
-        dependencyUsesValue: {},
+    seen.add(evaluated.id)
+
+    // DFS on hypergraph
+    const nodes: Node[] = []
+    for (const connection of evaluated.connections ?? []) {
+        nodes.push(
+            ...loadNodes({
+                sourceSymbol: undefined,
+                node: connection,
+                sourcePath: evaluated.sourcePath,
+                seen,
+            }),
+        )
     }
+    nodes.push(evaluated)
 
-    const file = definitions[targetPath]!
-    // check if symbol is not seen yet
-    if (file.symbols.find((s) => s.uuid === simplified.uuid)) {
-        return
-    }
-    const symbolName = simplified.name ?? sourceSymbol
-
-    sourceSymbol = appendSourceName && simplified.name !== undefined ? `${sourceSymbol}.${simplified.name}` : symbolName
-    const schemaName = decamelize(symbolName, { separator: '-' })
-    const schemaFile = `./schemas/${schemaName}.schema.json`
-    const compiledFile = `./schemas/${schemaName}.schema.js`
-
-    const nodeIsCompiled = simplified.description.validator?.compile ?? compile
-
-    const jsonschema = toJsonSchema(simplified, nodeIsCompiled)
-    const { definition, subtrees } = toTypescriptDefinition({ sourceSymbol, symbolName, schema: simplified })
-
-    file.symbols.push(
-        ...Object.values(definition.locals ?? {})
-            .filter(isDefined)
-            .map((local) => ({
-                uuid: local.uuid,
-                symbolName: local.symbolName,
-                definition: local,
-                typeOnly: true,
-            }))
-    )
-
-    file.symbols.push({
-        uuid: simplified.uuid,
-        symbolName,
-        definition: definition,
-        schemaFile,
-        compiledFile: nodeIsCompiled ? compiledFile : undefined,
-        typeOnly: simplified.description.validator?.enabled !== true,
-    })
-
-    if (definition.isExported && simplified.description.validator?.enabled) {
-        const cleanSchemasFolder = () => {
-            const targetFolder = path.dirname(path.join(targetBaseDir, compiledFile))
-            if (fs.existsSync(targetFolder)) {
-                console.warn(`Cleaning ${targetFolder}`)
-                fs.rmSync(targetFolder, { force: true, recursive: true })
-            }
-        }
-        if (jsonschema.compiled) {
-            file.attachedFiles.push({
-                targetPath: path.join(targetBaseDir, compiledFile),
-                content: `/**\n * ${generatedAjv} \n * eslint-disable\n */\n${jsonschema.code}`,
-                prettify: false,
-                type: 'validator',
-                clean: cleanSchemasFolder,
-            })
-        } else {
-            file.attachedFiles.push({
-                targetPath: path.join(targetBaseDir, schemaFile),
-                content: JSON.stringify(jsonschema.schema, null, 2),
-                prettify: true,
-                type: 'jsonschema',
-                clean: cleanSchemasFolder,
-            })
-        }
-
-        console.debug(` - found ${definition.symbolName}`)
-    }
-    for (const { node: subSymbol, fileSuffix: subFileSuffix, filePath: subFilePath } of subtrees) {
-        await loadSymbol({
-            symbol: subSymbol,
-            basePath,
-            sourceSymbol,
-            compile,
-            definitions,
-            srcPath: path.join(basePath, targetPath),
-            rootPath: srcPath,
-            fileSuffix: subFileSuffix,
-            filePath: subFilePath,
-            entry,
-            outputFileRename,
-            appendSourceSymbolName: true,
-        })
-    }
+    return nodes
 }
 
 export async function scanModule({
     entry,
-    srcPath,
-    basePath,
-    compile,
-    definitions,
+    sourcePath,
+    basePath: _,
     require = requireModule,
-    outputFileRename,
 }: {
     entry: string
-    srcPath: string
+    sourcePath: string
     basePath: string
-    compile: boolean
-    definitions: Record<string, FileDefinition>
-    require?: (module: string) => Promise<Record<string, ThereforeNode | unknown>>
-    outputFileRename: (path: string) => string
+    require?: (module: string) => Promise<Record<string, Node | unknown>>
 }) {
     const module = await require(entry)
 
-    for (const [sourceSymbol, symbolPromise] of Object.entries(module)) {
-        const symbol = await symbolPromise
+    const exports: Node[] = []
 
-        if (!isThereforeExport(symbol)) {
+    for (const [nodeName, nodePromise] of Object.entries(module)) {
+        const node = await nodePromise
+
+        if (!isNode(node)) {
             continue
         }
+        const evaluated = loadNodes({ sourceSymbol: nodeName, node, sourcePath })
 
-        await loadSymbol({ symbol, sourceSymbol, compile, definitions, srcPath, entry, basePath, outputFileRename })
+        exports.push(...evaluated)
     }
+
+    console.log(` - found ${[...new Set(exports.map((e) => e.name))].join(', ')}`)
+
+    return exports
+}
+type SrcPath = string
+type ThereforeModules = Record<SrcPath, Node[]>
+export async function scanModules({ files, basePath }: { files: string[]; basePath: string }): Promise<ThereforeModules> {
+    const modules: ThereforeModules = {}
+
+    const moduleNodes = (
+        await Promise.all(
+            files.map((entry) => {
+                const sourcePath = path.resolve(basePath, entry)
+                console.log(`Scanning ${entry}`)
+
+                return scanModule({ entry, basePath, sourcePath })
+            }),
+        )
+    ).flat()
+
+    for (const node of moduleNodes) {
+        if (node.sourcePath !== undefined) {
+            modules[node.sourcePath] ??= []
+            modules[node.sourcePath]?.push(node)
+        }
+    }
+
+    return modules
 }
 
-export async function scanFiles({
-    files,
-    basePath,
-    compile,
-    outputFileRename,
-}: {
-    files: string[]
-    basePath: string
-    compile: boolean
-    outputFileRename: (path: string) => string
-}): Promise<Record<string, FileDefinition>> {
-    const definitions: Record<string, FileDefinition> = {}
-    for (const entry of files) {
-        const srcPath = path.resolve(basePath, entry)
-        let isGenerated = false
-        const strippedPath = srcPath.substr(0, srcPath.lastIndexOf('.'))
-        for (const ext of ['.ts', '.js']) {
-            const p = `${strippedPath}${ext}`
-            isGenerated ||= fs.existsSync(p) && fs.readFileSync(p).includes(generatedBy)
-        }
-        if (isGenerated) {
-            console.debug(`scanning ${entry}`)
-            console.debug(` * skipping generated schema`)
-            continue
-        }
+export function compileModuleExports(modules: ThereforeModules): ThereforeOutput {
+    const output: ThereforeOutput = {}
+    for (const [_, symbols] of Object.entries(modules)) {
+        for (const symbol of symbols) {
+            const hasSourcePath = (node: Node): node is SourceNode => 'sourcePath' in node
+            if (!hasSourcePath(symbol)) {
+                throw new Error('Can only load symbols that have a well defined export path')
+            }
 
-        console.log(`scanning ${entry}`)
-        try {
-            await scanModule({ entry, basePath, srcPath, compile, definitions, outputFileRename })
-        } catch (e: unknown) {
-            const error = e as Error
-            console.debug(error.message, error.stack)
-            throw error
+            generateNode(symbol)
+            for (const generator of therefore.generators) {
+                generator.fromSymbol({ symbol, output })
+            }
         }
     }
-    return definitions
+    return output
 }
 
-export async function compileOutputFiles(
-    entries: string[],
-    { compile = false, cwd, outputFileRename }: { cwd: string; compile: boolean; outputFileRename: (path: string) => string }
-): Promise<
-    {
-        targetPath: string
-        template: string
-        data: Record<string, ReferenceData>
-        type: ThereforeOutputType
-        prettify: boolean
-        clean?: () => void
-    }[]
-> {
-    const outputFiles: OutputFile[] = []
-    const definitions = await scanFiles({ files: entries, basePath: cwd, compile, outputFileRename })
+export async function compileOutput(entries: string[], { cwd, prettier = undefined }: { cwd: string; prettier?: Prettier }) {
+    therefore.generators = [GenericFileOutput, TypescriptFileOutput]
 
-    const localReferences = {}
+    const modules = await scanModules({ files: entries, basePath: cwd })
 
-    for (const targetPath of Object.keys(definitions)) {
-        resolveTypescriptSchema({ definitions, targetPath, cwd, outputFiles, localReferences })
+    const output = compileModuleExports(modules)
+
+    const outputFiles: Record<string, string> = {}
+
+    for (const file of Object.values(output)) {
+        file.bind()
     }
 
-    return compile ? outputFiles : outputFiles.filter((f) => f.type !== 'validator')
+    for (const [targetPath, file] of Object.entries(output)) {
+        const contents = await file.render({ prettier })
+        if (contents !== undefined) {
+            outputFiles[path.relative(cwd, targetPath)] = contents
+        }
+    }
+
+    return {
+        cleanFn: () => {
+            for (const of of Object.values(output)) {
+                of.clean()
+            }
+        },
+        outputFiles,
+    }
 }
 
 export async function generate({
     globs,
     ignore,
     extension,
-    compile,
-    outputFileRename,
     clean,
 }: {
     globs: string[]
     ignore: string[]
     extension: string
-    compile: boolean
-    outputFileRename: (path: string) => string
     clean: boolean
 }): Promise<void> {
     const cwd = process.cwd()
     const entries = await expandGlobs({ patterns: globs, ignore: [`!${extension}`, ...ignore], cwd, extension })
 
-    const outputFiles = await compileOutputFiles(entries, {
+    const prettier = await maybeLoadPrettier()
+    const { cleanFn, outputFiles } = await compileOutput(entries, {
+        prettier,
         cwd,
-        outputFileRename,
-        compile,
     })
 
     if (clean) {
-        for (const of of outputFiles) {
-            if (of.clean !== undefined) {
-                of.clean()
-            }
-        }
+        cleanFn()
     }
 
-    const prettier = await maybeLoadPrettier()
-
-    const data = outputFiles.reduce<Record<string, ReferenceData>>(
-        (agg, x) => ({
-            ...agg,
-            ...x.data,
-        }),
-        {}
-    )
-
-    const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => `${values.srcPath}${values.symbolName}`)).filter(
-        ([, records]) => records.length > 1
-    )
-    for (const duplicateGroup of duplicates.map((d) => second(d))) {
-        for (const [i, [key]] of enumerate(duplicateGroup)) {
-            // data[key].referenceName = `${data[key].referenceName}${i}`
-            data[key]!.symbolName = `${data[key]!.symbolName}${i}`
-            data[key]!.uniqueSymbolName = `${data[key]!.uniqueSymbolName}${i}`
-        }
-    }
-
-    const variablesMap = Object.fromEntries(
-        Object.entries(data)
-            .map(([key, vals]) => Object.entries(vals).map(([varName, value]) => [`${key}:${varName}`, value] as const))
-            .flat()
-    )
-
-    for (const { targetPath, template, type, prettify } of outputFiles) {
-        fs.mkdirSync(path.dirname(targetPath), { recursive: true })
-        // allow nested references up to 3 deep
-        let contents = template
-        for (const _ of range(3)) {
-            contents = renderTemplate(contents, variablesMap)
-        }
-        fs.writeFileSync(targetPath, prettify ? await formatFile(prettier, contents, targetPath, type) : contents)
+    for (const [targetPath, contents] of Object.entries(outputFiles)) {
+        const absTargetPath = path.join(cwd, targetPath)
+        fs.mkdirSync(path.dirname(absTargetPath), { recursive: true })
+        fs.writeFileSync(absTargetPath, contents)
     }
 }

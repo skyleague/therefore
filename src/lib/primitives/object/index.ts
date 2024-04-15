@@ -1,1 +1,1 @@
-export { type ObjectOptions, type ObjectPropertiesArg, $object, type ObjectType, type LazyObjectOptions } from './object.js'
+export { type ObjectOptions, type ObjectShape as ObjectPropertiesArg, $object, type ObjectType } from './object.js'

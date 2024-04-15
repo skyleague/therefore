@@ -1,6 +1,6 @@
 import { generate } from './generate.js'
 
-import { getExtension } from '../../common/template/path.js'
+import { constants } from '../../lib/constants.js'
 
 import type { Argv } from 'yargs'
 
@@ -19,18 +19,6 @@ export function builder(yargs: Argv) {
             describe: 'globs to exclude',
             type: 'array',
         })
-        .option('compile', {
-            default: true,
-            type: 'boolean',
-        })
-        .option('ext', {
-            default: '.schema.ts',
-            type: 'string',
-        })
-        .option('out-ext', {
-            default: '.type.ts',
-            type: 'string',
-        })
         .option('clean', {
             default: false,
             type: 'boolean',
@@ -38,14 +26,12 @@ export function builder(yargs: Argv) {
 }
 
 export async function handler(argv: ReturnType<typeof builder>['argv']): Promise<void> {
-    const { files = [], 'ignore-pattern': ignorePatterns, ext, 'out-ext': outExt, compile, clean } = await argv
+    const { files = [], 'ignore-pattern': ignorePatterns, clean } = await argv
 
     await generate({
         globs: files.map((f) => f.toString()),
         ignore: ignorePatterns.map((p) => p.toString()),
-        extension: ext,
-        outputFileRename: (path: string) => path.replace(getExtension(path)!, outExt),
-        compile,
+        extension: constants.schemaExtension,
         clean,
     })
 }

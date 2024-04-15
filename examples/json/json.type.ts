@@ -3,8 +3,11 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as JsonAdvValidator } from './schemas/json-adv.schema.js'
+import { validate as JsonValidator } from './schemas/json.schema.js'
 
 export type Json =
     | string
@@ -17,7 +20,7 @@ export type Json =
     | Json[]
 
 export const Json = {
-    validate: (await import('./schemas/json.schema.js')).validate as ValidateFunction<Json>,
+    validate: JsonValidator as ValidateFunction<Json>,
     get schema() {
         return Json.validate.schema
     },
@@ -25,12 +28,18 @@ export const Json = {
         return Json.validate.errors ?? undefined
     },
     is: (o: unknown): o is Json => Json.validate(o) === true,
+    parse: (o: unknown): { right: Json } | { left: DefinedError[] } => {
+        if (Json.is(o)) {
+            return { right: o }
+        }
+        return { left: (Json.errors ?? []) as DefinedError[] }
+    },
 } as const
 
 export type JsonAdv = JsonLocal
 
 export const JsonAdv = {
-    validate: (await import('./schemas/json-adv.schema.js')).validate as ValidateFunction<JsonAdv>,
+    validate: JsonAdvValidator as ValidateFunction<JsonAdv>,
     get schema() {
         return JsonAdv.validate.schema
     },
@@ -38,10 +47,11 @@ export const JsonAdv = {
         return JsonAdv.validate.errors ?? undefined
     },
     is: (o: unknown): o is JsonAdv => JsonAdv.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!JsonAdv.validate(o)) {
-            throw new ValidationError(JsonAdv.errors ?? [])
+    parse: (o: unknown): { right: JsonAdv } | { left: DefinedError[] } => {
+        if (JsonAdv.is(o)) {
+            return { right: o }
         }
+        return { left: (JsonAdv.errors ?? []) as DefinedError[] }
     },
 } as const
 

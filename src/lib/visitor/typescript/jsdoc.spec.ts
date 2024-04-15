@@ -1,10 +1,10 @@
-import { toJSDoc } from './jsdoc.js'
+import { JSDoc } from './jsdoc.js'
 
 import { array, boolean, forAll, json, object, string, tuple } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
 
 it('description', () => {
-    expect(toJSDoc({ key: 'foo', meta: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', definition: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
              */
@@ -13,7 +13,7 @@ it('description', () => {
 })
 
 it('summary', () => {
-    expect(toJSDoc({ key: 'foo', meta: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', definition: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
              */
@@ -22,14 +22,14 @@ it('summary', () => {
 })
 
 it('examples', () => {
-    expect(toJSDoc({ key: 'foo', meta: { examples: [] } })).toMatchInlineSnapshot(`undefined`)
+    expect(JSDoc.from({ key: 'foo', definition: { examples: [] } })).toMatchInlineSnapshot('undefined')
     expect(
-        toJSDoc({
+        JSDoc.from({
             key: 'foo',
-            meta: {
+            definition: {
                 examples: ['lorum ipsum', 'dolor sit amet'],
             },
-        })
+        }),
     ).toMatchInlineSnapshot(`
             "/**
              * @example foo = 'lorum ipsum'
@@ -40,13 +40,13 @@ it('examples', () => {
 })
 
 it('default', () => {
-    expect(toJSDoc({ key: 'foo', meta: { default: [] } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', definition: { default: [] } })).toMatchInlineSnapshot(`
             "/**
              * @default []
              */
             "
         `)
-    expect(toJSDoc({ key: 'foo', meta: { default: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', definition: { default: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * @default 'lorum ipsum'
              */
@@ -56,15 +56,15 @@ it('default', () => {
 
 it('combined', () => {
     expect(
-        toJSDoc({
+        JSDoc.from({
             key: 'foo',
-            meta: {
+            definition: {
                 description: 'lorum ipsum',
                 default: 'dolor sit amet',
                 examples: ['lorum ipsum', 'dolor sit amet'],
                 deprecated: true,
             },
-        })
+        }),
     ).toMatchInlineSnapshot(`
         "/**
          * lorum ipsum
@@ -90,9 +90,10 @@ it('jsdoc is always valid javascript', () => {
                 examples: array(json()),
                 readonly: boolean(),
                 deprecated: boolean(),
-            })
+            }),
         ),
         ([key, { description, title, default: def, examples, readonly, deprecated }]) =>
-            eval(toJSDoc({ key, meta: { description, title, default: def, examples, readonly, deprecated } }) ?? '')
+            // biome-ignore lint/security/noGlobalEval: it's a test, we're okay with eval here
+            eval(JSDoc.from({ key, definition: { description, title, default: def, examples, readonly, deprecated } }) ?? ''),
     )
 })

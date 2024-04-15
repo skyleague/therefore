@@ -1,6 +1,6 @@
-import { uri, icon } from './icon.js'
+import { icon, uri } from './icon.js'
 
-import { $string, $object, $ref, $union } from '../../src/index.js'
+import { $object, $ref, $string, $union } from '../../src/index.js'
 
 // const action = {
 //     type: 'object',
@@ -17,22 +17,18 @@ export const action = $object(
         default_title: $string({
             description: 'Tooltip for the main toolbar icon.',
         }),
-        default_popup: $ref({
+        default_popup: $ref(uri, {
             description: 'The popup appears when the user clicks the icon.',
-            reference: uri,
         }),
         default_icon: $union([
             $string({
                 description: 'FIXME: String form is deprecated.',
             }),
             $object({
-                description: 'Icon for the main toolbar.',
-                properties: {
-                    '19': $ref(icon),
-                    '38': $ref(icon),
-                },
-            }),
+                '19': $ref(icon),
+                '38': $ref(icon),
+            }).describe('Icon for the main toolbar.'),
         ]),
     },
-    { name: 'action' }
+    { name: 'action' },
 )

@@ -1,3 +1,5 @@
+import { entriesOf, evaluate, isArray, isBoolean, isObject, keysOf, memoize, omitUndefined, pick } from '@skyleague/axioms'
+import type { JsonValue } from '@skyleague/axioms/types'
 import { jsonPointer } from '../../../common/json/json.js'
 import type {
     JsonAnnotations,
@@ -9,45 +11,54 @@ import type {
     JsonSchema7TypeName,
     JsonStringInstance,
 } from '../../../json.js'
-import type { ThereforeNode } from '../../cst/cst.js'
-import { prepass } from '../../visitor/prepass/prepass.js'
-import { $array } from '../array/index.js'
-import type { SchemaMeta, SchemaOptions } from '../base.js'
-import { descriptionKeys } from '../base.js'
-import { $boolean } from '../boolean/index.js'
-import { $const } from '../const/index.js'
-import { $dict } from '../dict/index.js'
-import { $enum } from '../enum/index.js'
-import { $integer } from '../integer/index.js'
-import { $intersection } from '../intersection/index.js'
-import { $number } from '../number/index.js'
-import type { ObjectType } from '../object/index.js'
-import { $object } from '../object/index.js'
-import { $optional } from '../optional/index.js'
-import type { RefType } from '../ref/index.js'
-import { $ref } from '../ref/index.js'
-import type { StringOptions } from '../string/index.js'
-import { $string } from '../string/index.js'
-import { $tuple } from '../tuple/index.js'
-import type { ThereforeCst } from '../types.js'
-import { $union } from '../union/index.js'
-import { $unknown } from '../unknown/index.js'
+import type { ThereforeNodeDefinition } from '../../cst/cst.js'
+import { type Node, definitionKeys } from '../../cst/node.js'
+import { loadNode } from '../../visitor/prepass/prepass.js'
+import { $array, type ArrayOptions } from '../array/array.js'
+import type { SchemaOptions } from '../base.js'
+import { $boolean } from '../boolean/boolean.js'
+import { $const } from '../const/const.js'
+import { $enum } from '../enum/enum.js'
+import { $integer, type IntegerOptions } from '../integer/integer.js'
+import { $intersection } from '../intersection/intersection.js'
+import { $number, type NumberOptions } from '../number/number.js'
+import { type ObjectOptions, type ObjectShape, ObjectType } from '../object/object.js'
+import { $ref } from '../ref/ref.js'
+import { $string, type StringFormat, type StringOptions } from '../string/string.js'
+import { $tuple } from '../tuple/tuple.js'
+import type { ThereforeSchema } from '../types.js'
+import { $union } from '../union/union.js'
+import { $unknown, type UnknownOptions, UnknownType } from '../unknown/unknown.js'
 
-import type { Json, UndefinedFields } from '@skyleague/axioms'
-import { entriesOf, evaluate, isArray, isBoolean, keysOf, memoize, omit, omitUndefined, pick } from '@skyleague/axioms'
+export const jsonschemaKeys = ['examples', 'title', 'writeonly'] as const satisfies Exclude<
+    keyof JsonAnnotations,
+    keyof ThereforeNodeDefinition
+>[]
 
-function annotate<T = unknown>(doc: JsonAnnotations, context: JsonSchemaContext): SchemaMeta<T> {
-    return omitUndefined({
-        name: context.name,
-        title: doc.title,
-        description: doc.description,
-        default: doc.default as T,
-        readonly: doc.readonly,
-        // writeonly?: boolean
-        examples: doc.examples as T[],
-        deprecated: doc.deprecated,
-        nullable: doc.nullable,
-    })
+type JSONDefinitionKeys = keyof ThereforeNodeDefinition & keyof JsonAnnotations
+export const jsonDefinitionKeys = keysOf({
+    description: true,
+    nullable: true,
+    default: true,
+    readonly: true,
+    deprecated: true,
+} satisfies Record<JSONDefinitionKeys, true>)
+
+export function annotateNode<N extends Node>(node: N, doc: JsonAnnotations & { optional?: boolean }, context: JsonSchemaContext) {
+    // properly propagate the name
+    // if it contains ascii
+    if (context.name !== undefined && /[a-zA-Z]+/.test(context.name)) {
+        node.name = context.name
+    }
+
+    const jsonschema = omitUndefined(pick(doc, jsonschemaKeys))
+    if (Object.entries(jsonschema).length > 0) {
+        node.definition.jsonschema ??= {}
+        Object.assign(node.definition.jsonschema, jsonschema)
+    }
+    const definition = omitUndefined(pick(doc, jsonDefinitionKeys))
+    Object.assign(node.definition, definition)
+    return node
 }
 
 export function retrievePropertiesFromPattern(indexPattern: string) {
@@ -66,36 +77,26 @@ export function retrievePropertiesFromPattern(indexPattern: string) {
 }
 
 export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
-    let indexSignature: ThereforeNode | undefined = undefined
-    let indexPatterns: Record<string, ThereforeNode> | undefined = undefined
-    let additionalProperties: boolean | undefined = undefined
+    let recordType: Node | undefined = undefined
+    let patternProperties: Record<string, Node> | undefined = undefined
+    let strict: boolean | undefined = undefined
     const properties: Record<string, JsonSchema> = {}
     if (node.additionalProperties !== undefined) {
         if (isBoolean(node.additionalProperties)) {
-            additionalProperties = node.additionalProperties ? true : undefined
+            strict = node.additionalProperties ? false : undefined
         } else {
-            indexSignature = walkJsonschema({
-                node: node.additionalProperties,
-                visitor: schemaWalker,
-                childProperty: undefined,
-                context,
-            })
+            recordType = context.render(node.additionalProperties)
         }
-    } else if (!context.strict) {
-        additionalProperties = true
+    } else if (context.strict) {
+        strict = true
     }
 
     if (node.patternProperties !== undefined) {
         for (const [pattern, value] of Object.entries(node.patternProperties)) {
             const property = retrievePropertiesFromPattern(pattern)
             if ('pattern' in property) {
-                indexPatterns ??= {}
-                indexPatterns[pattern] = walkJsonschema({
-                    node: value,
-                    visitor: schemaWalker,
-                    childProperty: undefined,
-                    context,
-                })
+                patternProperties ??= {}
+                patternProperties[pattern] = context.render(value)
             } else {
                 for (const name of property.names) {
                     properties[name] = value
@@ -106,15 +107,46 @@ export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonOb
 
     return {
         properties,
-        additionalProperties,
-        indexSignature,
-        indexPatterns,
+        strict,
+        recordType,
+        patternProperties,
     }
 }
 
+export class JSONObjectType extends ObjectType {
+    public constructor(
+        {
+            shape,
+            recordType,
+            patternProperties,
+        }: {
+            shape: ObjectShape
+            recordType?: Node | undefined
+            patternProperties?: Record<string, Node> | undefined
+        },
+        options: SchemaOptions<ObjectOptions, Record<string, Node>> = {},
+    ) {
+        super({}, options)
+        this.from({ shape, recordType, patternProperties })
+    }
+}
+
+export const fromFormat: Record<Exclude<JsonSchema['format'], undefined> | 'ulid' | 'uuid' | string, StringFormat> = {
+    'date-time': 'date-time',
+    date: 'date',
+    time: 'time',
+    email: 'email',
+    hostname: 'hostname',
+    ipv4: 'ipv4',
+    ipv6: 'ipv6',
+    uri: 'uri',
+    ulid: 'ulid',
+    uuid: 'uuid',
+}
+
 type JsonSchemaWalker = Record<
-    JsonSchema7TypeName | 'const' | 'enum',
-    (node: JsonSchema & { type?: JsonSchema['type'] | 'const' | 'enum' }, context: JsonSchemaContext) => ThereforeCst
+    JsonSchema7TypeName | 'const' | 'enum' | 'unknown',
+    (node: JsonSchema & { type?: JsonSchema['type'] | 'const' | 'enum' | 'unknown' }, context: JsonSchemaContext) => Node
 >
 const schemaWalker: JsonSchemaWalker = {
     object: (node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) => {
@@ -122,105 +154,207 @@ const schemaWalker: JsonSchemaWalker = {
             (node.properties === undefined || keysOf(node.properties).length === 0) &&
             (node.additionalProperties === false ||
                 node.additionalProperties === undefined ||
-                (isBoolean(node.additionalProperties) && keysOf(node.additionalProperties).length === 0)) &&
+                isBoolean(node.additionalProperties) ||
+                keysOf(node.additionalProperties).length === 0) &&
             (node.patternProperties === undefined || keysOf(node.patternProperties).length === 0)
         ) {
-            if (node.type === 'object') {
-                return $dict($unknown(), { ...annotate(node, context) })
+            if (node.type === undefined) {
+                return annotateNode(
+                    $unknown({
+                        restrictToJson: true,
+
+                        arbitrary: (node as { 'x-arbitrary'?: UnknownOptions['arbitrary'] })['x-arbitrary'],
+                    }),
+                    node,
+                    context,
+                )
             }
-            return $unknown({ ...annotate(node, context), json: true })
         }
-        const { properties, indexSignature, indexPatterns, additionalProperties } = indexProperties(node, context)
+        const { properties, recordType, patternProperties, strict } = indexProperties(node, context)
         const mergedProperties = { ...properties, ...node.properties }
         const subSchemas = entriesOf(mergedProperties).map(
             ([name, v]) =>
                 [
                     name,
-                    walkJsonschema({
-                        node: omitUndefined({
+                    context.render(
+                        {
                             ...v,
                             nullable:
-                                v.nullable ?? (context.optionalNullable && !node.required?.includes(name)) ? true : undefined,
-                        }),
-                        visitor: schemaWalker,
-                        childProperty: undefined,
-                        context,
-                        name: name.toString(),
-                    }),
-                ] as const
+                                v.nullable ?? (context.optionalNullable && !node.required?.includes(name) ? true : undefined),
+                        },
+                        { name: name.toString() },
+                    ),
+                ] as const,
+        )
+        const shape = Object.fromEntries(
+            subSchemas
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([name, schema]) => {
+                    if (node.required?.includes(name.toString()) !== true) {
+                        schema.definition.optional = true
+                    }
+                    return [name, schema]
+                }),
         )
 
-        return $object({
-            properties: Object.fromEntries(
-                subSchemas
-                    .sort(([a], [b]) => a.localeCompare(b))
-                    .map(([name, schema]) => {
-                        const value = {
-                            ...schema,
-                        }
-                        return [name, node.required?.includes(name.toString()) ? value : $optional(value)]
-                    })
+        return annotateNode(
+            new JSONObjectType(
+                { shape, recordType, patternProperties },
+                {
+                    strict,
+
+                    arbitrary: (node as { 'x-arbitrary'?: ObjectOptions['arbitrary'] })['x-arbitrary'],
+                },
             ),
-            additionalProperties,
-            indexSignature,
-            indexPatterns,
-            ...annotate(node, context),
-        })
+            node,
+            context,
+        )
     },
-    array: (node: JsonAnnotations & JsonAnyInstance & JsonArrayInstance, context: JsonSchemaContext) =>
-        $array(walkJsonschema({ node, visitor: schemaWalker, childProperty: 'items', context }), {
-            ...annotate(node, context),
-            minItems: node.minItems,
-            maxItems: node.maxItems,
-            uniqueItems: node.uniqueItems,
-        }),
-    boolean: (node: JsonAnnotations, context) => $boolean(annotate<boolean>(node, context)),
+    array: (node: JsonAnnotations & JsonAnyInstance & JsonArrayInstance, context: JsonSchemaContext) => {
+        if (Array.isArray(node.items)) {
+            // tuple json schema definition
+            return annotateNode(
+                $tuple((node.items ?? []).map((c) => context.render(c)) as [Node, ...Node[]], {
+                    rest:
+                        node.additionalItems !== undefined && isObject(node.additionalItems)
+                            ? context.render(node.additionalItems)
+                            : undefined,
+                }),
+                node,
+                context,
+            )
+        }
+        return annotateNode(
+            $array(context.render(node, { childProperty: 'items' }), {
+                minItems: node.minItems,
+                maxItems: node.maxItems,
+                set: node.uniqueItems,
+
+                arbitrary: (node as { 'x-arbitrary'?: ArrayOptions['arbitrary'] })['x-arbitrary'],
+            }),
+            node,
+            context,
+        )
+    },
+    boolean: (node: JsonAnnotations, context) => annotateNode($boolean(), node, context),
     integer: (node: JsonAnnotations & JsonNumericInstance, context) =>
-        $integer({
-            ...annotate<number>(node, context),
-            multipleOf: node.multipleOf,
-            maximum: node.maximum,
-            minimum: node.minimum,
-        }),
-    null: (node, context) => $const(null, annotate<null>(node, context)),
+        annotateNode(
+            $integer({
+                multipleOf: node.multipleOf,
+                min: node.minimum,
+                max: node.maximum,
+                ...(node.exclusiveMinimum !== undefined ? { min: node.exclusiveMinimum, minInclusive: false } : {}),
+                ...(node.exclusiveMaximum !== undefined ? { max: node.exclusiveMaximum, maxInclusive: false } : {}),
+
+                arbitrary: (node as { 'x-arbitrary'?: IntegerOptions['arbitrary'] })['x-arbitrary'],
+            }),
+            node,
+            context,
+        ),
+    null: (node, context) => annotateNode($const(null), node, context),
     number: (node: JsonAnnotations & JsonNumericInstance, context) =>
-        $number({
-            ...annotate<number>(node, context),
-            multipleOf: node.multipleOf,
-            maximum: node.maximum,
-            minimum: node.minimum,
-        }),
-    string: (node: JsonAnnotations & JsonStringInstance, context) =>
-        $string({
-            ...annotate<string>(node, context),
-            minLength: node.minLength,
-            maxLength: node.maxLength,
-            pattern: node.pattern,
-            format: node.format as StringOptions['format'],
-        }),
-    enum: (node: JsonAnnotations & JsonAnyInstance, context) =>
-        $enum(node.enum as Json[], {
-            ...annotate<string>(node, context),
-        }),
-    const: (node: JsonAnnotations & JsonAnyInstance, context) =>
-        $const(node.const as Json, {
-            ...annotate<string>(node, context),
-        }),
-}
+        annotateNode(
+            $number({
+                multipleOf: node.multipleOf,
+                min: node.minimum,
+                max: node.maximum,
+                ...(node.exclusiveMaximum !== undefined ? { max: node.exclusiveMaximum, maxInclusive: false } : {}),
+                ...(node.exclusiveMinimum !== undefined ? { min: node.exclusiveMinimum, minInclusive: false } : {}),
+
+                arbitrary: (node as { 'x-arbitrary'?: NumberOptions['arbitrary'] })['x-arbitrary'],
+            }),
+            node,
+            context,
+        ),
+    string: (node: JsonAnnotations & JsonStringInstance, context) => {
+        const str = annotateNode(
+            $string({
+                minLength: node.minLength,
+                maxLength: node.maxLength,
+                regex: node.pattern,
+                format: node.format !== undefined ? fromFormat[node.format] : undefined,
+
+                arbitrary: (node as { 'x-arbitrary'?: StringOptions['arbitrary'] })['x-arbitrary'],
+            }),
+            node,
+            context,
+        )
+        const format = node.format !== undefined ? fromFormat[node.format] : undefined
+        if (format !== undefined) {
+            // we also set additional options using this method
+            if (format === 'date-time') {
+                str.datetime()
+            } else {
+                str[format]()
+            }
+        }
+
+        return str
+    },
+    enum: (node: JsonAnnotations & JsonAnyInstance, context) => annotateNode($enum(node.enum as string[]), node, context),
+    const: (node: JsonAnnotations & JsonAnyInstance, context) => annotateNode($const(node.const as JsonValue), node, context),
+    unknown: (node: JsonAnnotations, context) => annotateNode($unknown({ restrictToJson: true }), node, context),
+} as const
 
 interface JsonSchemaContext {
     strict: boolean
-    metaSchemas: Record<string, JsonSchema>
-    references: Map<string, [name: string, value: () => ThereforeNode]>
-    root: JsonSchema
-    cache: Map<string, () => ThereforeCst>
+    references: Map<string, () => Node>
+    document: object
+    cache: Map<string, () => Node>
     exportAllSymbols: boolean
     name?: string | undefined
-    allowIntersectionTypes?: boolean
+    allowIntersection?: boolean
     optionalNullable: boolean
+    connections: Node[]
+
+    render: (
+        node: JsonSchema,
+        options?: { childProperty?: keyof Pick<JsonSchema, 'items'> | undefined; name?: string | undefined },
+    ) => Node
 }
 
-function walkJsonschema({
+export function buildContext({
+    node,
+    name,
+    context: maybeContext = {},
+}: {
+    node: JsonSchema
+    name?: string | undefined
+    context?: Partial<JsonSchemaContext>
+}): JsonSchemaContext {
+    const {
+        references = new Map<string, () => Node>(),
+        document = node,
+        cache = new Map<string, () => Node>(),
+        exportAllSymbols = false,
+        strict = false,
+        allowIntersection = true,
+        optionalNullable = false,
+        connections = [],
+    } = maybeContext
+
+    const context: JsonSchemaContext = {
+        references,
+        document,
+        cache,
+        exportAllSymbols,
+        strict,
+        allowIntersection,
+        optionalNullable,
+        connections,
+        name,
+        render: (
+            schema: JsonSchema,
+            {
+                childProperty,
+                name: n,
+            }: { childProperty?: keyof Pick<JsonSchema, 'items'> | undefined; name?: string | undefined } = {},
+        ) => walkJsonschema({ node: schema, visitor: schemaWalker, context, childProperty, name: n ?? name }),
+    }
+    return context
+}
+
+export function walkJsonschema({
     node,
     visitor,
     childProperty,
@@ -231,41 +365,20 @@ function walkJsonschema({
     visitor: JsonSchemaWalker
     name?: string | undefined
     childProperty?: keyof Pick<JsonSchema, 'items'> | undefined
-    context?: SchemaOptions<UndefinedFields<JsonSchemaContext>>
-}): ThereforeCst {
-    const {
-        metaSchemas = {},
-        references = new Map<string, [name: string, value: () => ThereforeNode]>(),
-        root = node,
-        cache = new Map<string, () => ThereforeCst>(),
-        exportAllSymbols = false,
-        strict = true,
-        allowIntersectionTypes = false,
-        optionalNullable = false,
-        ...rest
-    } = maybeContext
-    const context = {
-        metaSchemas,
-        references,
-        root,
-        cache,
-        name,
-        exportAllSymbols,
-        strict,
-        allowIntersectionTypes,
-        optionalNullable,
-        ...omit(pick(rest, descriptionKeys), ['name']),
+    context?: Partial<JsonSchemaContext>
+}): Node {
+    const context: JsonSchemaContext = buildContext({ node, name, context: maybeContext })
+
+    const child = childProperty !== undefined ? node[childProperty] ?? { type: 'unknown' } : node
+
+    if (isArray(child) || (isObject(node.additionalItems) && node.type === 'array')) {
+        return visitor.array(node, context)
     }
 
-    const child = childProperty !== undefined ? node[childProperty] ?? { type: 'object' } : node
-
-    if (isArray(child)) {
-        // tuple json schema definition
-        return $tuple(
-            child.map((c) => walkJsonschema({ node: c, visitor, childProperty: undefined, context })),
-            annotate(node, context)
-        )
+    if (child.type === 'unknown') {
+        return visitor.unknown(child as JsonAnnotations, context)
     }
+
     if (child.enum !== undefined) {
         return visitor.enum(child, context)
     }
@@ -275,85 +388,79 @@ function walkJsonschema({
     const childRef = child.$ref
     if (childRef !== undefined) {
         //solve reference
-        if (!references.has(childRef)) {
-            const ref = jsonPointer({ schema: root, ptr: child, metaSchemas })
+        if (!context.references.has(childRef)) {
+            const ref = jsonPointer({ schema: context.document, ptr: child })
             if (ref === undefined) {
-                throw new Error('invalid json ptr')
+                throw new Error('Could not resolve reference')
             }
             const split = childRef.split('/')
-            const refName = split[split.length - 1]!
+            const refName = split[split.length - 1]
 
-            references.set(childRef, [
-                refName,
-                memoize(() => walkJsonschema({ node: ref, visitor, name: refName, childProperty: undefined, context })),
-            ])
-        }
-
-        const [refName, reference] = references.get(childRef)!
-        return $ref({
-            ...context,
-            exportSymbol: exportAllSymbols,
-            reference: [name ?? refName, reference],
-        })
-    }
-
-    if (child.anyOf !== undefined) {
-        return $union(
-            child.anyOf.map((c) =>
-                walkJsonschema({
-                    node: omitUndefined({ ...c }),
-                    visitor,
-                    childProperty: undefined,
-                    context,
-                })
-            ),
-            annotate(node, context)
-        )
-    }
-
-    if (child.oneOf !== undefined) {
-        return $union(
-            child.oneOf.map((c) =>
-                walkJsonschema({
-                    node: omitUndefined({ ...c }),
-                    visitor,
-                    childProperty: undefined,
-                    context,
-                })
-            ),
-            annotate(node, context)
-        )
-    }
-
-    const validAllOf = child.allOf?.filter((c) => c.properties !== undefined || c.$ref !== undefined) ?? []
-    if (validAllOf.length > 0) {
-        if (allowIntersectionTypes) {
-            return $intersection(
-                validAllOf.map((c) =>
-                    walkJsonschema({
-                        node: omitUndefined({ ...c }),
-                        visitor,
-                        childProperty: undefined,
-                        context,
-                    })
-                ) as (ObjectType | RefType)[],
-                annotate(node, context)
+            context.references.set(
+                childRef,
+                memoize(() => {
+                    const reference = context.render(ref, { name: refName })
+                    context.connections.push(reference)
+                    return reference
+                }),
             )
-        } else {
-            console.warn('Encountered intersection type in jsonschema without explicitly allowing it, defaulting to unknown')
         }
+
+        // biome-ignore lint/style/noNonNullAssertion: we just set this value
+        const reference = context.references.get(childRef)!
+
+        return annotateNode($ref(reference), child, context)
     }
 
     if (isArray(child.type)) {
-        const isNullable = child.nullable === true || (optionalNullable && !node.required?.includes(childProperty as string))
-        const types: JsonSchema7TypeName[] = [...child.type, ...((isNullable ? ['null'] : []) satisfies JsonSchema7TypeName[])]
-        return $union(
-            types.map((t) => visitor[t]({ ...child, type: t }, context)),
-            context
+        const isNullable = child.nullable === true
+        const types: JsonSchema7TypeName[] = child.type.filter(
+            (type) => !isNullable || type !== 'null' || child.type?.length === 1,
+        ) satisfies JsonSchema7TypeName[]
+
+        if (types.length > 1) {
+            return annotateNode($union(types.map((t) => visitor[t]({ type: t }, context))), child, context)
+        }
+        child.type = types[0]
+    }
+
+    const validType =
+        child.type === undefined || ['null', 'boolean', 'object', 'array', 'number', 'string', 'integer'].includes(child.type)
+            ? child.type ?? 'object'
+            : 'unknown'
+
+    const value = visitor[validType](child, context)
+
+    if (child.anyOf !== undefined) {
+        return annotateNode(
+            $union([...(value instanceof UnknownType ? [] : [value]), ...child.anyOf.map((c) => context.render(c))]),
+            child,
+            context,
+        )
+    }
+    if (child.oneOf !== undefined) {
+        return annotateNode(
+            $union([...(value instanceof UnknownType ? [] : [value]), ...child.oneOf.map((c) => context.render(c))]),
+            child,
+            context,
         )
     }
 
-    return visitor[child.type ?? 'object'](child, context)
+    const validAllOf = child.allOf?.filter((c) => c.properties !== undefined || c.type === 'object' || c.$ref !== undefined) ?? []
+    if (validAllOf.length > 0) {
+        if (context.allowIntersection) {
+            return annotateNode(
+                $intersection([
+                    ...(value instanceof UnknownType ? [] : [value]),
+                    ...validAllOf.map((c) => context.render(c)),
+                ] as ObjectType[]),
+                child,
+                context,
+            )
+        }
+        console.warn('Encountered intersection type in jsonschema without explicitly allowing it, defaulting to unknown')
+    }
+    return value
 }
 
 /**
@@ -367,18 +474,24 @@ export interface JsonSchemaOptions {
      * @defaultValue false
      */
     strict?: boolean
-    metaSchemas?: Record<string, JsonSchema>
-    references?: Map<string, [name: string, value: () => ThereforeNode]>
-    reference?: string
+    references?: Map<string, () => Node>
+    connections?: Node[]
     exportAllSymbols?: boolean
-    root?: JsonSchema
-    dereferenceRoot?: boolean
+
+    document?: object
+
+    /**
+     * If true, the schema will be dereferenced if the root node is a reference.
+     *
+     * @default true
+     */
+    dereference?: boolean
     /**
      * If true, intersection types are being calculated from the `allOf` clause.
      *
-     * @defaultValue false
+     * @defaultValue true
      */
-    allowIntersectionTypes?: boolean
+    allowIntersection?: boolean
     /**
      * If true, all non-required fields will also be allowed to be `null`
      */
@@ -398,41 +511,31 @@ export interface JsonSchemaOptions {
  *
  * @group Schema
  */
-export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): ThereforeCst {
-    const {
-        root,
-        name,
-        reference,
-        references = new Map<string, [name: string, value: () => ThereforeNode]>(),
-        dereferenceRoot = true,
-    } = options
-
-    if (reference !== undefined && references.has(reference)) {
-        return evaluate(references.get(reference)?.[1]) as ThereforeCst
-    }
-
-    references.set('#', [
-        reference!,
-        memoize(() =>
-            walkJsonschema({
-                name,
+export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): ThereforeSchema {
+    const { document = schema, name, references = new Map<string, () => Node>(), dereference = true, connections = [] } = options
+    references.set(
+        '#',
+        memoize(() => {
+            const context = buildContext({
                 node: schema,
-                visitor: schemaWalker,
-                childProperty: undefined,
-                context: { ...options, references, root: root ?? schema },
+                context: { ...options, connections, references, document },
             })
-        ),
-    ])
+            const node = context.render(schema, { name })
+            node.definition = { ...node.definition, ...pick(options, definitionKeys) }
+            if (options.exportAllSymbols === true) {
+                node.connections = connections
+            }
+            return node
+        }),
+    )
 
-    let value = references.get('#')![1]()
+    // biome-ignore lint/style/noNonNullAssertion: we know that the reference exists since we set it the statement above
+    let value = references.get('#')!()
 
-    if (dereferenceRoot && value.type === 'ref') {
-        value = evaluate(value.children[0]) as ThereforeCst
+    if (dereference && value.type === 'ref' && value.children?.[0] !== undefined) {
+        const oldConnections = value.connections ?? []
+        value = evaluate(value.children[0])
+        value.connections = oldConnections
     }
-    value.description = omitUndefined({
-        ...omit(options, ['root']),
-        ...value.description,
-    })
-
-    return prepass(value as ThereforeCst)
+    return loadNode(value) as ThereforeSchema
 }

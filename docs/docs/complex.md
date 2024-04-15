@@ -16,7 +16,7 @@ An easy type that holds such a circular reference is the JSON data type. We'll p
 
 ```ts title="./src/json1.schema.ts"
 export const json: ThereforeSchema = $validator(
-    $union([$string, $null, $boolean, $number, $dict($ref(() => json)), $array($ref(() => json))]),
+    $union([$string, $null, $boolean, $number, $record($ref(() => json)), $array($ref(() => json))]),
     {
         assert: false,
     }
@@ -54,7 +54,7 @@ export const jsonAdv: ThereforeSchema = $validator(
             $null,
             $boolean,
             $number,
-            $dict($ref(() => jsonAdv)),
+            $record($ref(() => jsonAdv)),
             $array($ref(() => jsonAdv))
         ], {
             name: 'jsonLocal',

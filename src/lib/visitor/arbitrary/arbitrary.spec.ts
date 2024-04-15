@@ -1,20 +1,26 @@
 import { arbitrary } from './arbitrary.js'
 
-import { $array, $boolean, $integer, $null, $object } from '../../primitives/index.js'
-import { $number } from '../../primitives/number/index.js'
-import { $optional } from '../../primitives/optional/index.js'
-import { $string } from '../../primitives/string/index.js'
-import { $unknown } from '../../primitives/unknown/index.js'
+import { $array } from '../../primitives/array/array.js'
+import { $boolean } from '../../primitives/boolean/boolean.js'
+import { $integer } from '../../primitives/integer/integer.js'
+import { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
+import { $null } from '../../primitives/null/null.js'
+import { $number } from '../../primitives/number/number.js'
+import { $object } from '../../primitives/object/object.js'
+import { $optional } from '../../primitives/optional/optional.js'
+import { $string } from '../../primitives/string/string.js'
+import { $unknown } from '../../primitives/unknown/unknown.js'
 
 import {
+    arbitraryContext,
     forAll,
+    isArray,
+    isBoolean,
     isInteger,
     isNumber,
-    isString,
-    isBoolean,
-    isArray,
-    toISO8601Date,
     isObject,
+    isString,
+    toISO8601Date,
     xoroshiro128plus,
 } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
@@ -24,11 +30,11 @@ it('string', () => {
 })
 
 it('date', () => {
-    forAll(arbitrary<string>($string({ format: 'date' })), (x) => toISO8601Date(new Date(x), { format: 'date' }) === x)
+    forAll(arbitrary($string({ format: 'date' })), (x) => toISO8601Date(new Date(x), { format: 'date' }) === x)
 })
 
 it('date-time', () => {
-    forAll(arbitrary<string>($string({ format: 'date-time' })), (x) => toISO8601Date(new Date(x)) === x)
+    forAll(arbitrary($string({ format: 'date-time' })), (x) => toISO8601Date(new Date(x)) === x)
 })
 
 it('number', () => {
@@ -53,22 +59,23 @@ it('array', () => {
 })
 
 it('object - with index', () => {
-    const arb = arbitrary($object({}, { indexSignature: $string() }))
+    const arb = arbitrary(new JSONObjectType({ shape: {}, recordType: $string() }))
     forAll(arb, isObject)
-    expect(arb.value({ rng: xoroshiro128plus(44n) })).toMatchInlineSnapshot(`
+    expect(arb.value(arbitraryContext({ rng: xoroshiro128plus(44n) }))).toMatchInlineSnapshot(`
       {
         "children": {
           Symbol(Symbol.iterator): [Function],
         },
         "value": {
-          """: "ED3",
-          "*[e": "hXR",
-          ",CyD": "^jVAIeR?",
-          "9hb4=;": ":",
-          "\\'X<Y": "\\LpDK]qJ",
-          "_A9lB": "6\`i*{0P",
-          "p": "",
-          "rraCgV-F": "X6-r",
+          "#": "P",
+          "*\\fr": "X6.sj",
+          ",CzE": "ED3",
+          "9ic4=<o": "",
+          "9mB": "|",
+          "LqDK^rK": ":",
+          "]'X<Z": "iYS",
+          "q": "^kVBIfS@",
+          "sbDhV-GR\`": "aj",
         },
       }
     `)

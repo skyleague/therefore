@@ -1,250 +1,309 @@
-import type { JsonSchemaValidator } from '../../../commands/generate/types.js'
-import type { JsonAnnotations, JsonSchema, JsonSchema7TypeName } from '../../../json.js'
-import { defaultAjvConfig } from '../../ajv/defaults.js'
-import type { ThereforeNode } from '../../cst/cst.js'
+import type {
+    JsonAnnotations,
+    JsonAnyInstance,
+    JsonArrayInstance,
+    JsonObjectInstance,
+    JsonSchema,
+    ThereforeExtension,
+} from '../../../json.js'
+import { hasOptionalPrimitive } from '../../cst/graph.js'
+import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import { isNamedArray } from '../../guard.js'
-import type { MetaDescription, SchemaMeta } from '../../primitives/base.js'
-import type { ThereforeCst } from '../../primitives/types.js'
+import { References } from '../../output/references.js'
+import { ConstType } from '../../primitives/const/const.js'
+import { $null } from '../../primitives/null/null.js'
+import { ajvOptions } from '../../primitives/validator/validator.js'
 
 import type { RelaxedPartial } from '@skyleague/axioms'
-import { asArray, evaluate, omit, omitUndefined } from '@skyleague/axioms'
-import type { Options as AjvOptions } from 'ajv'
-import _Ajv from 'ajv'
-import _standaloneCode from 'ajv/dist/standalone/index.js'
-
-const Ajv = _Ajv.default ?? _Ajv
-const standaloneCode = _standaloneCode.default ?? _standaloneCode
+import { omitUndefined, second } from '@skyleague/axioms'
+import type { Options as AjvOptions, Schema } from 'ajv'
+import Ajv from 'ajv'
+import addFormats, { type FormatName } from 'ajv-formats'
+import standaloneCode from 'ajv/dist/standalone/index.js'
+import type { StringFormat } from '../../primitives/string/string.js'
 
 export interface JsonSchemaWalkerContext {
-    defaults: {
-        additionalProperties: boolean
-    }
-    ajvOptions: AjvOptions
-    entry?: ThereforeNode | undefined
+    ajv: AjvOptions
+    entry?: Node | undefined
     definitions: NonNullable<JsonSchema['definitions']>
-    transform: (node: ThereforeNode, schema: RelaxedPartial<JsonSchema>) => JsonSchema
+    references: References<'generic'>
+    formats: Set<string>
+    transform: (node: Node, schema: RelaxedPartial<JsonSchema>) => JsonSchema
+    render: (node: Node) => JsonSchema
 }
 
-export function toType(type: JsonSchema['type'], definition: MetaDescription): JsonSchema['type'] {
-    if (type === undefined) {
-        return undefined
+export function buildContext(
+    obj?: Node,
+    { references = new References('generic') }: { references?: References<'generic'> } = {},
+): JsonSchemaWalkerContext {
+    const ajv = ajvOptions(obj)
+    ajv.code ??= {}
+    ajv.code.source = true
+
+    const context: JsonSchemaWalkerContext = {
+        ajv,
+        definitions: {},
+        entry: obj,
+        references,
+        formats: new Set(),
+        transform: (node, schema): JsonSchema => {
+            const { type, ...other } = schema
+            return omitUndefined({
+                type,
+                ...annotate(schema, node),
+                ...other,
+            })
+        },
+        render: (node) => walkTherefore(node, jsonSchemaVisitor, context),
     }
-    return definition.nullable ? [...asArray(type), 'null'] : type
+    return context
 }
 
-export function annotate(schemaType: JsonSchema7TypeName | JsonSchema7TypeName[] | undefined, doc: SchemaMeta): JsonAnnotations {
-    return omitUndefined({
-        title: doc.title ?? doc.name,
-        description: doc.description,
-        default: doc.default,
-        readonly: doc.readonly,
-        // writeonly?: boolean
-        examples: doc.examples,
-        deprecated: doc.deprecated,
-        nullable: schemaType !== undefined ? doc.nullable : undefined,
-    })
+export function annotate(schema: JsonSchema, node: Node): JsonAnnotations {
+    const hasType = schema.type !== undefined
+
+    return {
+        title: node.definition.jsonschema?.title,
+        writeonly: node.definition.jsonschema?.writeonly,
+        examples: node.definition.jsonschema?.examples,
+
+        description: node.definition.description,
+        default: node.definition.default,
+        readonly: node.definition.readonly,
+        deprecated: node.definition.deprecated,
+        nullable: hasType ? node.definition.nullable : undefined,
+    }
+}
+
+export const toFormat: Record<StringFormat, JsonSchema['format'] | 'ulid' | 'uuid'> = {
+    'date-time': 'date-time',
+    date: 'date',
+    time: 'time',
+    email: 'email',
+    hostname: 'hostname',
+    ipv4: 'ipv4',
+    ipv6: 'ipv6',
+    uri: 'uri',
+    ulid: 'ulid',
+    uuid: 'uuid',
 }
 
 export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, JsonSchemaWalkerContext> = {
-    string: ({ value: image }) => ({
-        type: 'string',
-        ...image,
-        pattern: typeof image.pattern !== 'string' ? image.pattern?.source : image.pattern,
-    }),
-    number: (node) => ({
+    string: ({ options }, { formats }) => {
+        const format = options.format ? (toFormat[options.format] as JsonSchema['format']) : undefined
+        if (format !== undefined) {
+            formats.add(format)
+        }
+        return {
+            type: 'string',
+            minLength: options.minLength,
+            maxLength: options.maxLength,
+            pattern: typeof options.regex !== 'string' ? options.regex?.source : options.regex,
+            format: format,
+            'x-arbitrary': options.arbitrary,
+        }
+    },
+    number: ({ options }) => ({
         type: 'number',
-        ...node.value,
+        multipleOf: options.multipleOf,
+        ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
+        ...(options.maxInclusive ? { maximum: options.max } : { exclusiveMaximum: options.max }),
+        'x-arbitrary': options.arbitrary,
     }),
-    integer: (node) => ({
+    integer: ({ options }) => ({
         type: 'integer',
-        ...node.value,
+        multipleOf: options.multipleOf,
+        ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
+        ...(options.maxInclusive ? { maximum: options.max } : { exclusiveMaximum: options.max }),
+        'x-arbitrary': options.arbitrary,
     }),
-    boolean: (node) => ({
+    boolean: () => ({
         type: 'boolean',
-        ...node.value,
     }),
-    null: () => ({
-        type: 'null',
-    }),
-    unknown: () => ({}),
-    enum: ({ children }) => {
-        const values = isNamedArray(children) ? children.map(([, c]) => c) : children
-        if (values.length === 1) {
+    unknown: ({ options }) => ({ 'x-arbitrary': options.arbitrary }),
+    const: (node) => {
+        if (node.const === null) {
             return {
-                const: values[0],
+                type: 'null',
+            }
+        }
+        // we need to extend the set
+        if (node.definition.nullable) {
+            return {
+                enum: [node.const, null],
+            }
+        }
+        return {
+            const: node.const,
+        }
+    },
+    enum: (node) => {
+        const values = node.isNamed ? node.values.map(second) : node.values
+        if (node.definition.nullable) {
+            return {
+                enum: [...values, null],
             }
         }
         return {
             enum: values,
         }
     },
-    union: ({ children }, context) => {
-        return {
-            anyOf: children.map((u) => walkTherefore(u, jsonSchemaVisitor, context)),
-        }
-    },
-    intersection: ({ children }, context) => {
-        return {
-            allOf: children.map((u) =>
-                walkTherefore(
-                    {
-                        ...u,
-                        value: {
-                            ...u.value,
-                            // force non strict subsets
-                            additionalProperties: true,
-                        },
-                    },
-                    jsonSchemaVisitor,
-                    context
-                )
-            ),
-        }
-    },
-    object: ({ children, value }, context) => {
-        const properties: NonNullable<JsonSchema['properties']> = {}
-        const required: string[] = []
-        for (const child of children) {
-            properties[child.name] = walkTherefore(child, jsonSchemaVisitor, context)
-            const defaultIsInferred = child.description.default !== undefined && context.ajvOptions.useDefaults === true
-            if (!defaultIsInferred && (child.description.optional === undefined || child.description.optional === 'explicit')) {
-                required.push(child.name)
+    union: ({ children, definition }, context) => {
+        if (definition.nullable === true && children.find((c) => c instanceof ConstType && c.const === null) === undefined) {
+            return {
+                anyOf: [...children, $null()].map((u) => context.render(u)),
             }
         }
-        return omitUndefined({
-            type: 'object',
-            properties,
-            required: required.length > 0 ? required : undefined,
-            additionalProperties: value.additionalProperties
-                ? true
-                : value.indexSignature !== undefined
-                  ? walkTherefore(value.indexSignature, jsonSchemaVisitor, context)
-                  : value.additionalProperties ?? context.defaults.additionalProperties,
-            patternProperties:
-                value.indexPatterns !== undefined
-                    ? (Object.fromEntries(
-                          Object.entries(value.indexPatterns).map(([pattern, values]) => [
-                              pattern,
-                              walkTherefore(values, jsonSchemaVisitor, context),
-                          ])
-                      ) as JsonSchema['patternProperties'])
-                    : undefined,
-        }) as JsonSchema
+        return {
+            anyOf: children.map((u) => context.render(u)),
+        }
     },
-    array: (node, context) => {
-        const [items] = node.children
+    intersection: ({ children, definition }, context) => {
+        if (definition.nullable === true) {
+            return {
+                anyOf: [
+                    {
+                        allOf: children.map((u) => context.render(u)),
+                    },
+                    {
+                        type: 'null',
+                    },
+                ],
+            }
+        }
+        return {
+            allOf: children.map((u) => {
+                return context.render(u)
+            }),
+        }
+    },
+    object: (
+        { shape, options, recordType, patternProperties: childPatternProperties },
+        context,
+    ): JsonAnyInstance & JsonObjectInstance & ThereforeExtension => {
+        const properties: NonNullable<JsonSchema['properties']> = {}
+        const required: string[] = []
+        for (const [name, child] of Object.entries(shape)) {
+            properties[name] = context.render(child)
+            const defaultIsInferred = child.definition.default !== undefined && context.ajv.useDefaults === true
+            if (!(defaultIsInferred || hasOptionalPrimitive(child))) {
+                required.push(name)
+            }
+        }
+
+        const additionalProperties: JsonSchema['additionalProperties'] =
+            recordType !== undefined ? context.render(recordType) : options.strict !== true
+        const patternProperties: JsonSchema['patternProperties'] =
+            childPatternProperties !== undefined
+                ? Object.fromEntries(
+                      Object.entries(childPatternProperties).map(([pattern, values]) => [pattern, context.render(values)]),
+                  )
+                : undefined
+        return {
+            type: 'object' as const,
+            properties: Object.keys(shape).length > 0 ? properties : undefined,
+            required: required.length > 0 ? required.sort((a, b) => a.localeCompare(b)) : undefined,
+            additionalProperties,
+            patternProperties,
+            'x-arbitrary': options.arbitrary,
+        } satisfies JsonSchema
+    },
+    array: ({ options, element }, context): JsonArrayInstance & JsonAnyInstance & ThereforeExtension => {
+        return {
+            type: 'array' as const,
+            items: context.render(element),
+            minItems: options.minItems,
+            maxItems: options.maxItems,
+            uniqueItems: options.set,
+            'x-arbitrary': options.arbitrary,
+        }
+    },
+    tuple: ({ elements, options: { rest } }, context): JsonArrayInstance & JsonAnyInstance => {
         return {
             type: 'array',
-            items: walkTherefore(items, jsonSchemaVisitor, context),
-            ...node.value,
+            items: elements.map((c) => context.render(c)),
+            additionalItems: rest !== undefined ? context.render(rest) : false,
+            minItems: elements.length,
         }
     },
-    tuple: ({ children }, context) => {
-        return {
-            type: 'array',
-            items: children.map((c) => walkTherefore(c, jsonSchemaVisitor, context)),
-            additionalItems: false,
-            minItems: children.length,
-        }
-    },
-    dict: ({ children }, context) => {
-        const [items] = children
-        return {
-            type: 'object',
-            additionalProperties: walkTherefore(items, jsonSchemaVisitor, context),
-        }
-    },
-    ref: ({ children: unevaluatedReference, description }, context) => {
-        const reference = evaluate(unevaluatedReference[0])
+    ref: ({ children: [reference], definition }, context) => {
+        const { definitions, entry, references } = context
 
-        const { definitions, entry } = context
+        const uuid = reference.id
 
-        const uuid = reference.uuid
-
-        if (entry && uuid === entry.uuid) {
+        if (
+            entry !== undefined &&
+            (uuid === entry.id || (reference.isCommutative && reference.children?.find((c) => c.id === entry.id) !== undefined))
+        ) {
             // we referenced the root of the schema
             return { $ref: '#' }
         }
 
-        if (definitions[`{{${uuid}:uniqueSymbolName}}`] === undefined) {
-            definitions[`{{${uuid}:uniqueSymbolName}}`] = {} // mark spot as taken (prevents recursion)
-            const node: JsonSchema = walkTherefore(reference, jsonSchemaVisitor, context)
-            node.title = `{{${uuid}:uniqueSymbolName}}`
-            definitions[`{{${uuid}:uniqueSymbolName}}`] = node
+        const symbolName = references.reference(reference, 'symbolName')
+        if (definitions[symbolName] === undefined) {
+            definitions[symbolName] = {} // mark spot as taken (prevents recursion)
+            const node: JsonSchema = context.render(reference)
+            // node.title = symbolName
+            definitions[symbolName] = node
         }
-        if (description.nullable) {
-            return { oneOf: [{ type: 'null' }, { $ref: `#/$defs/{{${uuid}:uniqueSymbolName}}` }] }
+        if (definition.nullable) {
+            // https://github.com/OAI/OpenAPI-Specification/issues/1368
+            return { oneOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
         }
-        return { $ref: `#/$defs/{{${uuid}:uniqueSymbolName}}` }
+        return { $ref: `#/$defs/${symbolName}` }
     },
-    custom: () => {
-        return {}
-    },
-    default: (node) => {
+    default: (node, context) => {
+        const child = node.children?.[0]
+        if (node.isCommutative && child !== undefined) {
+            return context.render(child)
+        }
         console.error(node)
         throw new Error('should not be called')
     },
 }
 
-export function jsonSchemaContext(obj?: ThereforeCst): JsonSchemaWalkerContext {
-    return {
-        defaults: {
-            additionalProperties: true,
-            ...(obj !== undefined && 'defaults' in obj.value ? obj.value.defaults : {}),
-        },
-        ajvOptions: {
-            ...defaultAjvConfig,
-            ...obj?.description.ajvOptions,
-            code: {
-                ...defaultAjvConfig.code,
-                source: true,
-            },
-        },
-        definitions: {},
-        entry: obj,
-        transform: (node, schema): JsonSchema => {
-            const schemaType = toType(schema.type, node.description)
-            return omitUndefined({
-                type: schemaType,
-                ...annotate(schemaType, node.description),
-                ...omit(schema, ['type']),
-            })
-        },
-    }
-}
-
-export function toJsonSchema(obj: ThereforeCst, compile: true): Extract<JsonSchemaValidator, { compiled: true }>
-export function toJsonSchema(obj: ThereforeCst, compile?: boolean): JsonSchemaValidator
-export function toJsonSchema(obj: ThereforeCst, compile = false): JsonSchemaValidator {
-    const context = jsonSchemaContext(obj)
+export function toJsonSchema(
+    obj: Node,
+    {
+        compile = true,
+        references = new References('generic'),
+        formats = true,
+    }: { compile?: boolean; references?: References<'generic'>; formats?: boolean } = {},
+) {
+    const context = buildContext(obj, { references })
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
-        title: `{{${obj.uuid}:uniqueSymbolName}}`,
-        ...walkTherefore(obj, jsonSchemaVisitor, context),
-    }
+        title: references.reference(obj, 'symbolName'),
+        ...context.render(obj),
+    } as const
 
     if (Object.keys(context.definitions).length > 0) {
         definition.$defs = context.definitions
     }
     if (compile) {
-        const ajv = new Ajv(context.ajvOptions)
-        const validator = ajv.compile(definition)
-        let code = standaloneCode(ajv, validator)
+        const ajv = new Ajv.default(context.ajv)
+        if (context.formats.size > 0 && formats) {
+            addFormats.default(ajv, { formats: [...context.formats] as FormatName[] })
+        }
+
+        const validator = ajv.compile(definition as Schema)
+        let code = standaloneCode.default(ajv, validator)
         code = `${code};validate.schema=schema11;`
         if (code.includes('require(')) {
             code = `import {createRequire} from 'module';const require = createRequire(import.meta.url);${code}`
         }
-
+        // nice little "hack" to disble inferrence on the validate function
+        // it also allows copying over the javascript files like tsc should
+        code = code.replace('export const validate =', '\n/** @type {unknown} */\nexport const validate =')
         return {
             schema: definition,
             code,
             validator,
-            compiled: true,
+            compiled: true as const,
+            references: context.references,
+            formats: [...context.formats],
         }
     }
-    return { schema: definition, compiled: false }
+    return { schema: definition, compiled: false as const, formats: [...context.formats], references: context.references }
 }
-
-export { toJsonSchema as toSchema }

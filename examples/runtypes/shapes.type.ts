@@ -3,15 +3,20 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as CircleValidator } from './schemas/circle.schema.js'
+import { validate as RectangleValidator } from './schemas/rectangle.schema.js'
+import { validate as ShapeValidator } from './schemas/shape.schema.js'
+import { validate as SquareValidator } from './schemas/square.schema.js'
 
 export interface Circle {
     radius: number
 }
 
 export const Circle = {
-    validate: (await import('./schemas/circle.schema.js')).validate as ValidateFunction<Circle>,
+    validate: CircleValidator as ValidateFunction<Circle>,
     get schema() {
         return Circle.validate.schema
     },
@@ -19,10 +24,11 @@ export const Circle = {
         return Circle.validate.errors ?? undefined
     },
     is: (o: unknown): o is Circle => Circle.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Circle.validate(o)) {
-            throw new ValidationError(Circle.errors ?? [])
+    parse: (o: unknown): { right: Circle } | { left: DefinedError[] } => {
+        if (Circle.is(o)) {
+            return { right: o }
         }
+        return { left: (Circle.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -32,7 +38,7 @@ export interface Rectangle {
 }
 
 export const Rectangle = {
-    validate: (await import('./schemas/rectangle.schema.js')).validate as ValidateFunction<Rectangle>,
+    validate: RectangleValidator as ValidateFunction<Rectangle>,
     get schema() {
         return Rectangle.validate.schema
     },
@@ -40,17 +46,18 @@ export const Rectangle = {
         return Rectangle.validate.errors ?? undefined
     },
     is: (o: unknown): o is Rectangle => Rectangle.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Rectangle.validate(o)) {
-            throw new ValidationError(Rectangle.errors ?? [])
+    parse: (o: unknown): { right: Rectangle } | { left: DefinedError[] } => {
+        if (Rectangle.is(o)) {
+            return { right: o }
         }
+        return { left: (Rectangle.errors ?? []) as DefinedError[] }
     },
 } as const
 
 export type Shape = Square | Rectangle | Circle
 
 export const Shape = {
-    validate: (await import('./schemas/shape.schema.js')).validate as ValidateFunction<Shape>,
+    validate: ShapeValidator as ValidateFunction<Shape>,
     get schema() {
         return Shape.validate.schema
     },
@@ -58,10 +65,11 @@ export const Shape = {
         return Shape.validate.errors ?? undefined
     },
     is: (o: unknown): o is Shape => Shape.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Shape.validate(o)) {
-            throw new ValidationError(Shape.errors ?? [])
+    parse: (o: unknown): { right: Shape } | { left: DefinedError[] } => {
+        if (Shape.is(o)) {
+            return { right: o }
         }
+        return { left: (Shape.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -70,7 +78,7 @@ export interface Square {
 }
 
 export const Square = {
-    validate: (await import('./schemas/square.schema.js')).validate as ValidateFunction<Square>,
+    validate: SquareValidator as ValidateFunction<Square>,
     get schema() {
         return Square.validate.schema
     },
@@ -78,9 +86,10 @@ export const Square = {
         return Square.validate.errors ?? undefined
     },
     is: (o: unknown): o is Square => Square.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Square.validate(o)) {
-            throw new ValidationError(Square.errors ?? [])
+    parse: (o: unknown): { right: Square } | { left: DefinedError[] } => {
+        if (Square.is(o)) {
+            return { right: o }
         }
+        return { left: (Square.errors ?? []) as DefinedError[] }
     },
 } as const

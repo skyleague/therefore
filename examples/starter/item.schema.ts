@@ -1,13 +1,10 @@
-import { $object, $string, $ref, $number, $enum, $optional, $validator } from '../../src/index.js'
+import { $enum, $number, $object, $string } from '../../src/index.js'
 
 export const size = $enum(['XS', 'S', 'M', 'L', 'XL'])
 
-export const cartItem = $validator(
-    $object({
-        id: $string,
-        name: $string,
-        price: $number,
-        size: $optional($ref(size)),
-    }),
-    { compile: false }
-)
+export const cartItem = $object({
+    id: $string,
+    name: $string,
+    price: $number,
+    size: size.reference().optional(),
+}).validator({ compile: false })

@@ -1,7 +1,5 @@
-import { $boolean, $object, $validator } from '../../src/index.js'
+import { $boolean, $object } from '../../src/index.js'
 
-export const defaults = $validator(
-    $object({
-        foo: $boolean({ default: false }),
-    })
-)
+export const defaults = $object({
+    foo: $boolean().default(false),
+}).validator()

@@ -1,4 +1,4 @@
-import { renderTemplate } from './index.js'
+import { renderTemplate } from './template.js'
 
 import { expect, it } from 'vitest'
 
@@ -11,7 +11,5 @@ it('replace templates', () => {
 })
 
 it('leave weird nesting', () => {
-    expect(() => renderTemplate('foo{{bar{{bar}}}}', { bar: 'foo' })).toThrowErrorMatchingInlineSnapshot(
-        `[Error: Reference bar{{bar not found]`
-    )
+    expect(renderTemplate('foo{{bar{{bar}}}}', { bar: 'foo' })).toMatchInlineSnapshot(`"foo{{barfoo}}"`)
 })

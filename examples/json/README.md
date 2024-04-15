@@ -24,7 +24,7 @@ export const json = $union([
     $null,
     $boolean,
     $number,
-    $dict($ref({ json: () => json })),
+    $record($ref({ json: () => json })),
     $array($ref({ json: () => json })),
 ])
 ```
@@ -110,7 +110,7 @@ export const jsonAdv: RefType = $ref({
             $null,
             $boolean,
             $number,
-            $dict($ref({ jsonRef: () => jsonAdv })),
+            $record($ref({ jsonRef: () => jsonAdv })),
             $array($ref({ jsonRef: () => jsonAdv })),
         ]),
 })

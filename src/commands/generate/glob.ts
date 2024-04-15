@@ -1,6 +1,4 @@
-import { awaitAll } from '../../common/util.js'
-
-import { normalizePath, fstat, isJust, isRight, Nothing } from '@skyleague/axioms'
+import { Nothing, fstat, isJust, isRight, normalizePath } from '@skyleague/axioms'
 import fastGlob from 'fast-glob'
 
 import path from 'node:path'
@@ -26,27 +24,33 @@ export async function expandGlobs({
     }
 
     const entries: string[] = (
-        await awaitAll(patterns, async (pattern) => {
-            const absolutePath = path.resolve(cwd, pattern)
-            if (ignoredDirectories.some((i) => pattern.includes(i))) {
-                return Nothing
-            }
-
-            const eitherStat = await fstat(absolutePath)
-            if (isRight(eitherStat) && isJust(eitherStat.right)) {
-                if (eitherStat.right.isFile()) {
-                    return fastGlob.escapePath(normalizePath(pattern))
-                } else if (eitherStat.right.isDirectory()) {
-                    return `${fastGlob.escapePath(normalizePath(path.relative(cwd, absolutePath)))}/**/*${extension}`
+        await Promise.allSettled(
+            patterns.map(async (pattern) => {
+                const absolutePath = path.resolve(cwd, pattern)
+                if (ignoredDirectories.some((i) => pattern.includes(i))) {
+                    return Nothing
                 }
 
-                return Nothing
-            } else if (pattern.startsWith('!')) {
-                globOptions.ignore.push(normalizePath(pattern.slice(1)))
-                return Nothing
-            }
-            return normalizePath(pattern)
-        })
-    ).filter(isJust)
+                const eitherStat = await fstat(absolutePath)
+                if (isRight(eitherStat) && isJust(eitherStat.right)) {
+                    if (eitherStat.right.isFile()) {
+                        return fastGlob.escapePath(normalizePath(pattern))
+                    }
+                    if (eitherStat.right.isDirectory()) {
+                        return `${fastGlob.escapePath(normalizePath(path.relative(cwd, absolutePath)))}/**/*${extension}`
+                    }
+
+                    return Nothing
+                }
+                if (pattern.startsWith('!')) {
+                    globOptions.ignore.push(normalizePath(pattern.slice(1)))
+                    return Nothing
+                }
+                return normalizePath(pattern)
+            }),
+        )
+    )
+        .map((result) => (result.status === 'fulfilled' ? result.value : Nothing))
+        .filter(isJust)
     return await fastGlob(entries, globOptions)
 }

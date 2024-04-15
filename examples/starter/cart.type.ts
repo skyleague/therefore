@@ -3,9 +3,11 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
-import { type CartItem } from './item.type.js'
+
+import type { CartItem } from './item.type.js'
+import { validate as CartValidator } from './schemas/cart.schema.js'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
 
 export interface Cart {
     id: string
@@ -15,7 +17,7 @@ export interface Cart {
 }
 
 export const Cart = {
-    validate: (await import('./schemas/cart.schema.js')).validate as ValidateFunction<Cart>,
+    validate: CartValidator as ValidateFunction<Cart>,
     get schema() {
         return Cart.validate.schema
     },
@@ -23,9 +25,10 @@ export const Cart = {
         return Cart.validate.errors ?? undefined
     },
     is: (o: unknown): o is Cart => Cart.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Cart.validate(o)) {
-            throw new ValidationError(Cart.errors ?? [])
+    parse: (o: unknown): { right: Cart } | { left: DefinedError[] } => {
+        if (Cart.is(o)) {
+            return { right: o }
         }
+        return { left: (Cart.errors ?? []) as DefinedError[] }
     },
 } as const

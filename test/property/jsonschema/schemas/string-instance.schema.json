@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StringInstance",
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "string"
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 0,
+          "x-arbitrary": {
+            "max": 100
+          }
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0,
+          "x-arbitrary": {
+            "max": 100
+          }
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": true
+    },
+    {
+      "$ref": "#/$defs/JsonAnnotations"
+    }
+  ],
+  "$defs": {
+    "JsonAnnotations": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "default": {},
+        "deprecated": {
+          "type": "boolean"
+        },
+        "readonly": {
+          "type": "boolean"
+        },
+        "writeonly": {
+          "type": "boolean"
+        },
+        "examples": {
+          "type": "array",
+          "items": {}
+        },
+        "nullable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true,
+      "title": "JsonAnnotations"
+    }
+  }
+}
