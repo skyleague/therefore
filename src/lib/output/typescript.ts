@@ -1,7 +1,7 @@
 import { References } from './references.js'
 import type { ThereforeOutput } from './types.js'
 
-import { version } from '../../../package.json' assert { type: 'json' }
+import packageJson from '../../../package.json' with { type: 'json' }
 import { generatedBy } from '../../commands/generate/constants.js'
 import { type Prettier, formatFile } from '../../commands/generate/format.js'
 import { renderTemplate } from '../../common/template/template.js'
@@ -17,6 +17,8 @@ import { entriesOf, groupBy, second } from '@skyleague/axioms'
 import camelcase from 'camelcase'
 
 import path from 'node:path'
+
+const { version } = packageJson
 
 export function sanitizeTypescriptTypeName(symbol: string): string {
     return symbol
