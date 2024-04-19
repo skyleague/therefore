@@ -35,6 +35,6 @@ export interface ConstTyp extends Node, NodeTrait {}
  *
  * @group Primitives
  */
-export function $const<T extends JsonValue>(value: T, options: SchemaOptions<ConstOptions> = {}): ConstType<T> {
+export function $const<T extends JsonValue | undefined>(value: T, options: SchemaOptions<ConstOptions> = {}): ConstType<T> {
     return new ConstType(value, options)
 }

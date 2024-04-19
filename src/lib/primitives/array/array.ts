@@ -85,7 +85,7 @@ export interface ArrayType extends Node, NodeTrait {}
  */
 export function $array<E extends Node = Node>(
     items: ConstExpr<E>,
-    options: SchemaOptions<ArrayOptions, E['infer']> = {},
+    options: SchemaOptions<ArrayOptions, E['infer'][]> = {},
 ): ArrayType<E> {
     return new ArrayType(items, options)
 }
