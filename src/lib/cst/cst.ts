@@ -1,49 +1,106 @@
-import type { MetaDescription, SchemaMeta, SchemaOptions, TypeDiscriminator } from '../primitives/base.js'
-import { descriptionKeys } from '../primitives/base.js'
+import type { Node, SourceNode } from './node.js'
 
-import type { RequireKeys } from '@skyleague/axioms'
-import { omit, omitUndefined, pick, isObject } from '@skyleague/axioms'
-import { v4 as uuid } from 'uuid'
+import { isObject } from '@skyleague/axioms'
+import type {} from '@skyleague/axioms/types'
+import type { JsonAnnotations } from '../../json.js'
+import type { References } from '../output/references.js'
+import type { ThereforeOutputType } from '../output/types.js'
+import type { ValidatorOptions } from '../primitives/validator/validator.js'
+import type { TypescriptWalkerContext } from '../visitor/typescript/typescript.js'
 
-export type ThereforeExpr = ThereforeNode | (() => ThereforeNode)
+export type ThereforeExpr = Node | (() => Node)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ThereforeNode<D extends string = string, I = unknown, T = unknown, C extends readonly any[] = unknown[]> {
-    name?: string
-    uuid: string
-    type: D
-    value: I
-    description: SchemaMeta<T>
-    children: C
+export interface ThereforeOutputFile {
+    onExport?: ((node: Node) => void)[]
+    targetPath?: (node: SourceNode) => string
+    clean?: (targetPath: string) => void
+    type: string
 }
 
-export function cstNode<D extends TypeDiscriminator, O, T>(type: D, options: SchemaOptions<O, T>): ThereforeNode<D, O, T, never>
-export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly unknown[]>(
-    type: D,
-    options: SchemaOptions<O, T>,
-    children?: C,
-    name?: string
-): ThereforeNode<D, O, T, C>
-export function cstNode<D extends TypeDiscriminator, O, T, C extends readonly unknown[]>(
-    type: D,
-    options: SchemaOptions<O, T>,
-    children?: C,
-    name?: string
-): ThereforeNode<D, O, T, C> {
-    return omitUndefined({
-        uuid: uuid(),
-        type,
-        value: omit(options, descriptionKeys) as unknown as O,
-        description: pick(options, descriptionKeys) as MetaDescription<T>,
-        children,
-        name: name ?? options.name,
-    }) as unknown as ThereforeNode<D, O, T, C>
+export interface TypescriptOutput extends ThereforeOutputFile {
+    definition?: (node: Node, context: TypescriptWalkerContext) => string | undefined
+    content?: false
+    type: 'typescript'
 }
 
-export function isNamedCstNodeArray<T extends ThereforeNode>(
-    x: Omit<T, 'name'>[] | RequireKeys<T, 'name'>[]
-): x is RequireKeys<T, 'name'>[] {
-    return x.length > 0 && x[0] !== undefined && 'name' in x[0]
+export interface TypescriptAttributes {
+    referenceName: string
+    symbolName: string
+    aliasName?: string
+    isModule?: boolean
+    path: string
+
+    schemaPath?: string
+}
+
+export interface GenericAttributes {
+    referenceName: string
+    symbolName: string
+
+    // unused
+    aliasName?: string
+}
+
+export interface GenericOutput extends ThereforeOutputFile {
+    targetPath: (node: SourceNode) => string
+    content: (options: GenericOutput, args: { references: References<'generic'> }) => string
+    type: 'file'
+    subtype: (() => ThereforeOutputType) | ThereforeOutputType
+    prettify?: () => boolean
+}
+
+export interface ThereforeNodeDefinition<T = unknown> {
+    jsonschema?: JsonAnnotations<T> | undefined
+
+    /**
+     * Describes the name of the field.
+     */
+    description?: string | undefined
+
+    /**
+     * Mark the property as optional (either defined, or not present).
+     *
+     * @example
+     *
+     *      $string({optional: true})
+     *
+     * @see {@link $optional} for a helper function.
+     */
+    optional?: boolean | undefined
+
+    /**
+     * Mark the property as nullable (either defined or null, but present).
+     *
+     * @example
+     *
+     *      $string({nullable: true})
+     *
+     * @see {@link $nullable} for a helper function.
+     */
+    nullable?: boolean | undefined
+
+    /**
+     * Specifies the default value that is used when no value is found during validation (dependend on validation options).
+     */
+    default?: T | undefined
+
+    /**
+     * The property is marked explicitly as `readonly`, and any changes to the value should be avoided.
+     *
+     * @example
+     *
+     *      $string({readonly: true})
+     */
+    readonly?: boolean | undefined
+
+    /**
+     *  This indicates that applications SHOULD refrain from usage of the declared property. It MAY mean the property is going to be removed in the future.
+     *
+     * @deprecated
+     */
+    deprecated?: boolean | undefined
+
+    validator?: ValidatorOptions | undefined
 }
 
 /**
@@ -54,6 +111,6 @@ export function isNamedCstNodeArray<T extends ThereforeNode>(
  *
  * @group Guards
  */
-export function isThereforeNode(x: unknown): x is ThereforeNode {
-    return isObject(x) && 'type' in x && 'uuid' in x && 'value' in x && 'description' in x
+export function isNode(x: unknown): x is Node {
+    return isObject(x) && 'type' in x && 'id' in x
 }

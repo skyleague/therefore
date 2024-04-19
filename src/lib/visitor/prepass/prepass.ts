@@ -1,55 +1,58 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import type { ThereforeNode } from '../../cst/cst.js'
-import { isThereforeNode } from '../../cst/cst.js'
+import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import type { ThereforeCst, ThereforeSchema } from '../../primitives/types.js'
+import { therefore } from '../../primitives/therefore.js'
 
-import { entriesOf, evaluate } from '@skyleague/axioms'
-
-export function prepass(obj: ThereforeCst & { prepass?: true }): ThereforeCst & { prepass?: true } {
+export function loadNode<T extends Node>(obj: T & { loaded?: true }): T & { loaded?: true } {
     const seen = new WeakSet()
-    const prepassVisitor: ThereforeVisitor<ThereforeNode> = {
-        object: (node, ctx) => {
-            if (seen.has(node)) {
-                return node
-            }
-
-            const { value } = node
-            const { indexSignature } = value
-
-            prepassVisitor.default(node, ctx)
-            if (value.indexPatterns !== undefined) {
-                node.value.indexPatterns = Object.fromEntries(
-                    entriesOf(value.indexPatterns).map(
-                        ([name, pattern]) => [name, prepassVisitor.default(pattern as ThereforeSchema, ctx)] as const
-                    )
-                )
-            }
-            if (indexSignature !== undefined) {
-                node.value.indexSignature = prepassVisitor.default(indexSignature as ThereforeSchema, ctx)
-            }
-
-            return node
-        },
+    const loadedVisitor: ThereforeVisitor<Node> = {
         default: (node) => {
             if (seen.has(node)) {
                 return node
             }
             seen.add(node)
 
-            const children = []
+            therefore.loadSymbol(node)
+
             for (const v of node.children ?? []) {
-                const evaluated = evaluate(v)
-                children.push(isThereforeNode(evaluated) ? walkTherefore(evaluated, prepassVisitor) : evaluated)
+                walkTherefore(v, loadedVisitor)
             }
-            node.children = children
+
             return node
         },
     }
 
-    if (obj.prepass !== true) {
-        return { ...walkTherefore(obj, prepassVisitor), prepass: true } as ThereforeSchema
+    if (obj.loaded !== true) {
+        const evaluated: T & { loaded?: true } = walkTherefore(obj, loadedVisitor) as unknown as T & { loaded?: true }
+        evaluated.loaded = true
+        return evaluated
+    }
+    return obj
+}
+
+export function generateNode<T extends Node>(obj: T & { generate?: true }): T & { generate?: true } {
+    const seen = new WeakSet()
+    const generateVisitor: ThereforeVisitor<Node> = {
+        default: (node) => {
+            if (seen.has(node)) {
+                return node
+            }
+            seen.add(node)
+
+            therefore.generateSymbol(node)
+
+            for (const v of node.children ?? []) {
+                walkTherefore(v, generateVisitor)
+            }
+
+            return node
+        },
+    }
+
+    if (obj.generate !== true) {
+        const evaluated: T & { generate?: true } = walkTherefore(obj, generateVisitor) as unknown as T & { generate?: true }
+        evaluated.generate = true
+        return evaluated
     }
     return obj
 }

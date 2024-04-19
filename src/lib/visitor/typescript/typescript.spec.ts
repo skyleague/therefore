@@ -1,48 +1,30 @@
-import type { TypescriptWalkerContext } from './typescript.js'
-import {
-    typeDefinitionVisitor,
-    toTypescriptDefinition,
-    typescriptVisitor,
-    readonly,
-    optional,
-    getIndexSignatureType,
-} from './typescript.js'
+import { getIndexSignatureType, optional, readonly } from './typescript.js'
 
-import { walkTherefore } from '../../cst/visitor.js'
-import {
-    $array,
-    $boolean,
-    $dict,
-    $enum,
-    $integer,
-    $intersection,
-    $null,
-    $nullable,
-    $number,
-    $object,
-    $optional,
-    $ref,
-    $string,
-    $tuple,
-    $union,
-    $unknown,
-} from '../../primitives/index.js'
+import { mockTypescriptContext } from '../../../../test/context.js'
+import { TypescriptFileOutput } from '../../output/typescript.js'
+import { $array } from '../../primitives/array/array.js'
+import { $boolean } from '../../primitives/boolean/boolean.js'
+import { $enum } from '../../primitives/enum/enum.js'
+import { $integer } from '../../primitives/integer/integer.js'
+import { $intersection } from '../../primitives/intersection/intersection.js'
+import { $null } from '../../primitives/null/null.js'
+import { $nullable } from '../../primitives/nullable/nullable.js'
+import { $number } from '../../primitives/number/number.js'
+import { $object } from '../../primitives/object/object.js'
+import { $optional } from '../../primitives/optional/optional.js'
+import { $record } from '../../primitives/record/record.js'
+import { $ref } from '../../primitives/ref/ref.js'
+import { $string } from '../../primitives/string/string.js'
+import { $tuple } from '../../primitives/tuple/tuple.js'
+import { $union } from '../../primitives/union/union.js'
+import { $unknown } from '../../primitives/unknown/unknown.js'
 
-import { alphaNumeric, forAll, omitUndefined } from '@skyleague/axioms'
-import { expect, describe, it } from 'vitest'
+import { alphaNumeric, forAll, pick } from '@skyleague/axioms'
+import { describe, expect, it } from 'vitest'
 
 describe('optional', () => {
-    it('undefined', () => {
-        expect(optional({})).toMatchInlineSnapshot(`""`)
-        expect(optional(omitUndefined({ optional: undefined }))).toMatchInlineSnapshot(`""`)
-    })
-
     it('explicit', () => {
-        expect(optional({ optional: 'explicit' })).toMatchInlineSnapshot(`"?"`)
-    })
-
-    it('implicit', () => {
-        expect(optional({ optional: 'implicit' })).toMatchInlineSnapshot(`"?"`)
+        expect(optional($integer())).toMatchInlineSnapshot(`""`)
     })
 })
 
@@ -58,191 +40,1106 @@ describe('readonly', () => {
 
 describe('typescriptVisitor', () => {
     it('string', () => {
-        expect(walkTherefore($string(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"string"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($string())).toEqual('string')
+
+        expect(ctx.render($optional($string()))).toEqual('(string | undefined)')
+        expect(ctx.render($nullable($string()))).toEqual('(string | null)')
+        expect(ctx.render($optional($nullable($string())))).toEqual('(string | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('number', () => {
-        expect(walkTherefore($number(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($number())).toEqual('number')
+
+        expect(ctx.render($optional($number()))).toEqual('(number | undefined)')
+        expect(ctx.render($nullable($number()))).toEqual('(number | null)')
+        expect(ctx.render($optional($nullable($number())))).toEqual('(number | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('integer', () => {
-        expect(walkTherefore($integer(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"number"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($integer())).toEqual('number')
+
+        expect(ctx.render($optional($integer()))).toEqual('(number | undefined)')
+        expect(ctx.render($nullable($integer()))).toEqual('(number | null)')
+        expect(ctx.render($optional($nullable($integer())))).toEqual('(number | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('boolean', () => {
-        expect(walkTherefore($boolean(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"boolean"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($boolean())).toEqual('boolean')
+
+        expect(ctx.render($optional($boolean()))).toEqual('(boolean | undefined)')
+        expect(ctx.render($nullable($boolean()))).toEqual('(boolean | null)')
+        expect(ctx.render($optional($nullable($boolean())))).toEqual('(boolean | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('null', () => {
-        expect(walkTherefore($null(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"null"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($null())).toEqual('null')
+
+        expect(ctx.render($optional($null()))).toEqual('(null | undefined)')
+        expect(ctx.render($nullable($null()))).toEqual('null')
+        expect(ctx.render($optional($nullable($null())))).toEqual('(null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('unknown', () => {
-        expect(walkTherefore($unknown(), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`"unknown"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($unknown())).toEqual('unknown')
+
+        expect(ctx.render($optional($unknown()))).toEqual('unknown')
+        expect(ctx.render($nullable($unknown()))).toEqual('unknown')
+        expect(ctx.render($optional($nullable($unknown())))).toEqual('unknown')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('enum', () => {
-        expect(
-            walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typescriptVisitor, {} as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"'foo' | 'bar' | { foo: 'bar' }"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($enum(['foo', 'bar']))).toEqual("'foo' | 'bar'")
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
+    })
+
+    it('enum - optional', () => {
+        const ctx = mockTypescriptContext()
+
+        expect(ctx.render($optional($enum(['foo', 'bar'])))).toEqual("('foo' | 'bar' | undefined)")
+        expect(ctx.render($nullable($enum(['foo', 'bar'])))).toEqual("('foo' | 'bar' | null)")
+        expect(ctx.render($optional($nullable($enum(['foo', 'bar']))))).toEqual("('foo' | 'bar' | null | undefined)")
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
+    })
+
+    it('enum - named', () => {
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($enum({ foo: 'foo', bar: 'bar' }))).toEqual("'foo' | 'bar'")
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('array', () => {
-        expect(
-            walkTherefore($array($string), typescriptVisitor, {
-                locals: {},
-                references: [],
-                symbolName: '',
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"(string)[]"`)
-        expect(
-            walkTherefore($array($enum(['foo', 'bar', { foo: 'bar' }])), typescriptVisitor, {
-                locals: {},
-                references: [],
-                symbolName: '',
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"('foo' | 'bar' | { foo: 'bar' })[]"`)
-        expect(
-            walkTherefore($array($union([$string, $integer])), typescriptVisitor, {
-                locals: {},
-                references: [],
-                symbolName: '',
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"(string | number)[]"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($array($string))).toEqual('(string)[]')
+        expect(ctx.render($array($enum(['foo', 'bar'])))).toEqual("('foo' | 'bar')[]")
+        expect(ctx.render($array($union([$string, $integer])))).toEqual('((string | number))[]')
+
+        expect(ctx.render($optional($array($string)))).toEqual('((string)[] | undefined)')
+        expect(ctx.render($nullable($array($string)))).toEqual('((string)[] | null)')
+        expect(ctx.render($optional($nullable($array($string))))).toEqual('((string)[] | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('tuple', () => {
-        expect(
-            walkTherefore($tuple([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"[string, string, number]"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($tuple([$string, $string, $integer]))).toEqual('[string, string, number]')
+
+        expect(ctx.render($optional($tuple([$string])))).toEqual('([string] | undefined)')
+        expect(ctx.render($nullable($tuple([$string])))).toEqual('([string] | null)')
+        expect(ctx.render($optional($nullable($tuple([$string]))))).toEqual('([string] | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
-    it('named tuple', () => {
-        expect(
-            walkTherefore(
-                $tuple({
-                    foo: $string,
-                    boo: $integer,
-                }),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`"[foo: string, boo: number]"`)
-        expect(
-            walkTherefore(
-                $tuple({
-                    x: $number,
-                    y: $number,
-                    z: $number,
-                }),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`"[x: number, y: number, z: number]"`)
+    it('tuple - variadic', () => {
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($tuple([$string, $string, $integer]).rest($string))).toEqual('[string, string, number, ...string]')
+
+        expect(ctx.render($tuple([$string]).optional().rest($integer))).toEqual('([string, ...number] | undefined)')
+        expect(ctx.render($tuple([$string]).nullable().rest($integer))).toEqual('([string, ...number] | null)')
+        expect(ctx.render($tuple([$string]).optional().nullable().rest($integer))).toEqual(
+            '([string, ...number] | null | undefined)',
+        )
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
-    it('dict', () => {
-        expect(walkTherefore($dict($string), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
-            "{
-                [k: string]: ( string ) | undefined
-            }"
+    it('record', () => {
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($record($string))).toMatchInlineSnapshot(`
+          "{
+              [k: string]: (string | undefined)
+          }"
+        `)
+
+        expect(ctx.render($optional($record($string)))).toMatchInlineSnapshot(`
+          "({
+              [k: string]: (string | undefined)
+          } | undefined)"
+        `)
+        expect(ctx.render($nullable($record($string)))).toMatchInlineSnapshot(`
+          "({
+              [k: string]: (string | undefined)
+          } | null)"
+        `)
+        expect(ctx.render($optional($nullable($record($string))))).toMatchInlineSnapshot(`
+          "({
+              [k: string]: (string | undefined)
+          } | null | undefined)"
+        `)
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('ref', () => {
-        const foo = $dict($string)
-        expect(
-            walkTherefore($ref(foo), typescriptVisitor, {
-                references: [],
-                locals: {},
-                symbolName: '',
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"{{0002-000:referenceName}}"`)
+        let ctx = mockTypescriptContext()
+        const foo = $record($string)
+        expect(ctx.render($ref(foo))).toEqual('{{2:referenceName}}')
+
+        expect(ctx.render($optional($ref(foo)))).toEqual('({{2:referenceName}} | undefined)')
+        expect(ctx.render($nullable($ref(foo)))).toEqual('({{2:referenceName}} | null)')
+        expect(ctx.render($optional($nullable($ref(foo))))).toEqual('({{2:referenceName}} | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [
+              RecordType {
+                "attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "children": [
+                  StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                ],
+                "definition": {},
+                "id": "2",
+                "isCommutative": false,
+                "options": {},
+                "recordType": StringType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "definition": {},
+                  "id": "1",
+                  "isCommutative": true,
+                  "options": {},
+                  "type": "string",
+                },
+                "shape": {},
+                "type": "object",
+              },
+            ],
+            "references": References {
+              "_data": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {
+                "2:symbolName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:aliasName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:referenceName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "references": Map {
+                "2" => Set {
+                  "referenceName",
+                  "aliasName",
+                  "symbolName",
+                },
+              },
+              "symbols": Map {
+                "2" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "transform": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "type": "typescript",
+            },
+          }
+        `)
+        ctx = mockTypescriptContext()
         // test the stable uuid referencing
-        expect(
-            walkTherefore($union([$ref(foo), $dict($ref(foo))]), typescriptVisitor, {
-                references: [],
-                locals: {},
-                symbolName: '',
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            "{{0002-000:referenceName}} | {
-                [k: string]: ( {{0002-000:referenceName}} ) | undefined
-            }"
+        expect(ctx.render($union([$ref(foo), $record($ref(foo))]))).toMatchInlineSnapshot(`
+          "({{2:referenceName}} | {
+              [k: string]: ({{2:referenceName}} | undefined)
+          })"
+        `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [
+              RecordType {
+                "attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "children": [
+                  StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                ],
+                "definition": {},
+                "id": "2",
+                "isCommutative": false,
+                "options": {},
+                "recordType": StringType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "definition": {},
+                  "id": "1",
+                  "isCommutative": true,
+                  "options": {},
+                  "type": "string",
+                },
+                "shape": {},
+                "type": "object",
+              },
+            ],
+            "references": References {
+              "_data": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {
+                "2:symbolName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:aliasName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:referenceName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "references": Map {
+                "2" => Set {
+                  "referenceName",
+                  "aliasName",
+                  "symbolName",
+                },
+              },
+              "symbols": Map {
+                "2" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "transform": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "type": "typescript",
+            },
+          }
+        `)
+    })
+
+    it('ref - named', () => {
+        const ctx = mockTypescriptContext()
+        const foo = $record($string)
+        foo.name = 'foo-bar'
+        expect(ctx.render($ref(foo))).toEqual('{{2:referenceName}}')
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [
+              RecordType {
+                "attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "children": [
+                  StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                ],
+                "definition": {},
+                "id": "2",
+                "isCommutative": false,
+                "name": "foo-bar",
+                "options": {},
+                "recordType": StringType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "definition": {},
+                  "id": "1",
+                  "isCommutative": true,
+                  "options": {},
+                  "type": "string",
+                },
+                "shape": {},
+                "type": "object",
+              },
+            ],
+            "references": References {
+              "_data": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {
+                "2:symbolName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "name": "foo-bar",
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:aliasName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "name": "foo-bar",
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+                "2:referenceName" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "name": "foo-bar",
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "references": Map {
+                "2" => Set {
+                  "referenceName",
+                  "aliasName",
+                  "symbolName",
+                },
+              },
+              "symbols": Map {
+                "2" => RecordType {
+                  "attributes": {
+                    "generic": {},
+                    "typescript": {},
+                  },
+                  "children": [
+                    StringType {
+                      "attributes": {
+                        "generic": {},
+                        "typescript": {},
+                      },
+                      "definition": {},
+                      "id": "1",
+                      "isCommutative": true,
+                      "options": {},
+                      "type": "string",
+                    },
+                  ],
+                  "definition": {},
+                  "id": "2",
+                  "isCommutative": false,
+                  "name": "foo-bar",
+                  "options": {},
+                  "recordType": StringType {
+                    "attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "definition": {},
+                    "id": "1",
+                    "isCommutative": true,
+                    "options": {},
+                    "type": "string",
+                  },
+                  "shape": {},
+                  "type": "object",
+                },
+              },
+              "transform": {
+                "2:aliasName": [Function],
+                "2:referenceName": [Function],
+                "2:symbolName": [Function],
+              },
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('union', () => {
-        expect(walkTherefore($union([$string]), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(
-            `"string"`
-        )
-        expect(
-            walkTherefore($union([$string, $string, $integer]), typescriptVisitor, {} as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`"string | string | number"`)
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($union([$string]))).toEqual('(string)')
+        expect(ctx.render($union([$string, $string, $integer]))).toEqual('(string | string | number)')
+
+        expect(ctx.render($optional($union([$string])))).toEqual('((string) | undefined)')
+        expect(ctx.render($nullable($union([$string])))).toEqual('((string) | null)')
+        expect(ctx.render($optional($nullable($union([$string]))))).toEqual('((string) | null | undefined)')
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 
     it('intersection', () => {
-        expect(walkTherefore($intersection([$object({ foo: $string })]), typescriptVisitor, {} as TypescriptWalkerContext))
-            .toMatchInlineSnapshot(`
-            "{
-                foo: string
-            }"
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($intersection([$object({ foo: $string })]))).toMatchInlineSnapshot(`
+          "({
+              foo: string
+          })"
         `)
-        expect(
-            walkTherefore(
-                $intersection([$object({ foo: $string }), $object({ bar: $string })]),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`
-            "{
-                foo: string
-            } & {
-                bar: string
-            }"
+        expect(ctx.render($intersection([$object({ foo: $string }), $object({ bar: $string })]))).toMatchInlineSnapshot(`
+          "({
+              foo: string
+          } & {
+              bar: string
+          })"
+        `)
+
+        expect(ctx.render($optional($intersection([$object({ foo: $string })])))).toMatchInlineSnapshot(`
+          "(({
+              foo: string
+          }) | undefined)"
+        `)
+        expect(ctx.render($nullable($intersection([$object({ foo: $string })])))).toMatchInlineSnapshot(`
+          "(({
+              foo: string
+          }) | null)"
+        `)
+        expect(ctx.render($optional($nullable($intersection([$object({ foo: $string })]))))).toMatchInlineSnapshot(`
+          "(({
+              foo: string
+          }) | null | undefined)"
+        `)
+
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('object', () => {
-        expect(walkTherefore($object({ foo: $string }), typescriptVisitor, {} as TypescriptWalkerContext)).toMatchInlineSnapshot(`
+        const ctx = mockTypescriptContext()
+        expect(ctx.render($object({ foo: $string }))).toMatchInlineSnapshot(`
             "{
                 foo: string
             }"
         `)
-        expect(
-            walkTherefore(
-                $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`
-            "{
-                foo: string
-                bar: (number | null)
-                baz?: number
-            }"
+        expect(ctx.render($object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }))).toMatchInlineSnapshot(`
+          "{
+              foo: string
+              bar: (number | null)
+              baz?: (number | undefined)
+          }"
+        `)
+        expect(ctx.render($object({ foo: $string, bar: $string({ description: 'fooscription' }) }))).toMatchInlineSnapshot(`
+          "{
+              foo: string
+              /**
+               * fooscription
+               */
+              bar: string
+          }"
         `)
         expect(
-            walkTherefore(
-                $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`
-            "{
-                foo: string
-                /**
-                 * fooscription
-                 */
-                bar: string
-            }"
-        `)
-        expect(
-            walkTherefore(
-                $object({ foo: $string, bar: $string({ description: 'fooscription', readonly: true }) }),
-                typescriptVisitor,
-                {} as TypescriptWalkerContext
-            )
+            ctx.render($object({ foo: $string, bar: $string({ description: 'fooscription', readonly: true }) })),
         ).toMatchInlineSnapshot(`
             "{
                 foo: string
@@ -254,504 +1151,482 @@ describe('typescriptVisitor', () => {
                 readonly bar: string
             }"
         `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
+        `)
     })
 })
 
 describe('toTypeDefinition', () => {
     it('string', () => {
-        expect(
-            walkTherefore($string(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = string
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $string(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = string"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('number', () => {
-        expect(
-            walkTherefore($number(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = number
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $number(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = number"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('integer', () => {
-        expect(
-            walkTherefore($integer(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = number
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $integer(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = number"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('boolean', () => {
-        expect(
-            walkTherefore($boolean(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = boolean
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $boolean(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = boolean"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('null', () => {
-        expect(
-            walkTherefore($null(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = null
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $null(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = null"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('unknown', () => {
-        expect(
-            walkTherefore($unknown(), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = unknown
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $unknown(), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = unknown"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('enum', () => {
-        expect(
-            walkTherefore($enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0001-000:symbolName}} = 'foo' | 'bar' | { foo: 'bar' }
-            ",
-              "referenceName": "{{0001-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $enum(['foo', 'bar']), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = 'foo' | 'bar'"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
-        expect(
-            walkTherefore($enum({ foo: 'bar', bar: 1, baz: true }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "enum {{0002-000:symbolName}} {
-                foo = 'bar',
-                bar = 1,
-                baz = true,
-            }
+    })
 
-            ",
-              "referenceName": "{{0002-000:symbolName}}",
-            }
+    it('enum - record', () => {
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $enum({ foo: 'bar' }), context: ctx })).toMatchInlineSnapshot(`
+          "export const {{1:symbolName}} = {
+              foo: 'bar',
+          } as const
+          export type {{1:symbolName}} = typeof {{1:symbolName}}
+
+          "
         `)
-        expect(
-            walkTherefore($enum({ foo: 'bar', bar: [1, 2, 3] }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "const {{0003-000:symbolName}}Enum = {
-                foo: 'bar',
-                bar: [1, 2, 3],
-            } as const
-            type {{0003-000:symbolName}} = typeof {{0003-000:symbolName}}Enum
+        expect(TypescriptFileOutput.define({ symbol: $enum({ foo: 'bar' }), context: ctx })).toMatchInlineSnapshot(`
+          "export const {{2:symbolName}} = {
+              foo: 'bar',
+          } as const
+          export type {{2:symbolName}} = typeof {{2:symbolName}}
 
-            ",
-              "referenceName": "keyof typeof {{0003-000:symbolName}}",
-            }
+          "
+        `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('array', () => {
-        expect(
-            walkTherefore($array($string), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0002-000:symbolName}} = (string)[]
-            ",
-              "referenceName": "{{0002-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $array($string), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = (string)[]"`,
+        )
+        expect(TypescriptFileOutput.define({ symbol: $array($enum(['foo', 'bar'])), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{4:symbolName}} = ('foo' | 'bar')[]"`,
+        )
+        expect(TypescriptFileOutput.define({ symbol: $array($union([$string, $integer])), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{8:symbolName}} = ((string | number))[]"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
-        expect(
-            walkTherefore($array($enum(['foo', 'bar', { foo: 'bar' }])), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0004-000:symbolName}} = ('foo' | 'bar' | { foo: 'bar' })[]
-            ",
-              "referenceName": "{{0004-000:symbolName}}",
-            }
-        `)
-        const locals = {}
-        expect(
-            walkTherefore($array($union([$string, $integer])), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals,
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0008-000:symbolName}} = (string | number)[]
-            ",
-              "referenceName": "{{0008-000:symbolName}}",
-            }
-        `)
-        expect(locals).toMatchInlineSnapshot(`{}`)
     })
 
     it('tuple', () => {
-        expect(
-            walkTherefore($tuple([$string, $string, $integer]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0004-000:symbolName}} = [string, string, number]
-            ",
-              "referenceName": "{{0004-000:symbolName}}",
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $tuple([$string, $string, $integer]), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = [string, string, number]"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
-    it('named tuple', () => {
-        expect(
-            walkTherefore(
-                $tuple({
-                    foo: $string,
-                    boo: $integer,
-                }),
-
-                typeDefinitionVisitor,
-                { references: [], symbolName: 'Foo', locals: {} } as unknown as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0003-000:symbolName}} = [foo: string, boo: number]
-            ",
-              "referenceName": "{{0003-000:symbolName}}",
-            }
+    it('record', () => {
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $record($string), context: ctx })).toMatchInlineSnapshot(`
+          "export interface {{2:symbolName}} {
+              [k: string]: (string | undefined)
+          }"
         `)
-        expect(
-            walkTherefore(
-                $tuple({
-                    x: $number,
-                    y: $number,
-                    z: $number,
-                }),
-
-                typeDefinitionVisitor,
-                { references: [], symbolName: 'Foo', locals: {} } as unknown as TypescriptWalkerContext
-            )
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0007-000:symbolName}} = [x: number, y: number, z: number]
-            ",
-              "referenceName": "{{0007-000:symbolName}}",
-            }
-        `)
-    })
-
-    it('dict', () => {
-        expect(
-            walkTherefore($dict($string), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "interface {{0002-000:symbolName}} {
-                [k: string]: ( string ) | undefined
-            }
-            ",
-              "referenceName": "{{0002-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('ref', () => {
-        const foo = $dict($string)
-        expect(
-            walkTherefore($ref(foo), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0003-000:symbolName}} = {{0002-000:referenceName}}
-            ",
-              "referenceName": "{{0003-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
-        `)
+        const ctx = mockTypescriptContext()
+        const foo = $record($string)
+        expect(TypescriptFileOutput.define({ symbol: $ref(foo), context: ctx })).toMatchInlineSnapshot(
+            `
+          "export type {{3:symbolName}} = {{2:referenceName}}
+          interface {{2:symbolName}} {
+              [k: string]: (string | undefined)
+          }"
+        `,
+        )
         // test the stable uuid referencing
         expect(
-            walkTherefore($union([$ref(foo), $dict($ref(foo))]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
+            TypescriptFileOutput.define({ symbol: $union([$ref(foo), $record($ref(foo))]), context: ctx }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0007-000:symbolName}} = {{0002-000:referenceName}} | {
-                [k: string]: ( {{0002-000:referenceName}} ) | undefined
-            }
-            ",
-              "referenceName": "{{0007-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
-        `)
+              "export type {{8:symbolName}} = ({{2:referenceName}} | {
+                  [k: string]: ({{2:referenceName}} | undefined)
+              })
+              interface {{2:symbolName}} {
+                  [k: string]: (string | undefined)
+              }"
+            `)
     })
 
     it('union', () => {
-        expect(
-            walkTherefore($union([$string]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0002-000:symbolName}} = string
-            ",
-              "referenceName": "{{0002-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
-        `)
-        expect(
-            walkTherefore($union([$string, $string, $integer]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0006-000:symbolName}} = string | string | number
-            ",
-              "referenceName": "{{0006-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $union([$string]), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = (string)"`,
+        )
+        expect(TypescriptFileOutput.define({ symbol: $union([$string, $string, $integer]), context: ctx })).toMatchInlineSnapshot(
+            `"export type {{3:symbolName}} = (string | string | number)"`,
+        )
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('intersection', () => {
+        const ctx = mockTypescriptContext()
         expect(
-            walkTherefore($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
+            TypescriptFileOutput.define({
+                symbol: $intersection([$object({ foo: $string }), $object({ bar: $string })]),
+                context: ctx,
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{0005-000:symbolName}} = {
-                foo: string
-            } & {
-                bar: string
-            }
-            ",
-              "referenceName": "{{0005-000:symbolName}}",
-            }
+          "export type {{7:symbolName}} = ({
+              foo: string
+          } & {
+              bar: string
+          })"
         `)
         expect(
-            walkTherefore($intersection([$object({ foo: $string }), $object({ bar: $string })]), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
+            TypescriptFileOutput.define({
+                symbol: $intersection([$object({ foo: $string }), $object({ bar: $string })]),
+                context: ctx,
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "type {{00010-000:symbolName}} = {
-                foo: string
-            } & {
-                bar: string
-            }
-            ",
-              "referenceName": "{{00010-000:symbolName}}",
-            }
+          "export type {{14:symbolName}} = ({
+              foo: string
+          } & {
+              bar: string
+          })"
+        `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('object', () => {
-        expect(
-            walkTherefore($object({ foo: $string }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
-            {
-              "declaration": "interface {{0002-000:symbolName}} {
-                foo: string
-            }
-            ",
-              "referenceName": "{{0002-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }), context: ctx })).toMatchInlineSnapshot(`
+          "export interface {{1:symbolName}} {
+              foo: string
+          }"
         `)
         expect(
-            walkTherefore($object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
+            TypescriptFileOutput.define({
+                symbol: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
+                context: ctx,
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "interface {{0008-000:symbolName}} {
-                foo: string
-                bar: (number | null)
-                baz?: number
-            }
-            ",
-              "referenceName": "{{0008-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          "export interface {{8:symbolName}} {
+              foo: string
+              bar: (number | null)
+              baz?: (number | undefined)
+          }"
         `)
         expect(
-            walkTherefore($object({ foo: $string, bar: $string({ description: 'fooscription' }) }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
+            TypescriptFileOutput.define({
+                symbol: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
+                context: ctx,
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "interface {{00011-000:symbolName}} {
-                foo: string
-                /**
-                 * fooscription
-                 */
-                bar: string
-            }
-            ",
-              "referenceName": "{{00011-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          "export interface {{14:symbolName}} {
+              foo: string
+              /**
+               * fooscription
+               */
+              bar: string
+          }"
         `)
         expect(
-            walkTherefore(
-                $object(
+            TypescriptFileOutput.define({
+                symbol: $object(
                     {
                         foo: $string,
                         bar: $string({ description: 'fooscription' }),
                     },
 
-                    { default: { foo: 'bar', bar: 'foo' } }
+                    { default: { foo: 'bar', bar: 'foo' } },
                 ),
-
-                typeDefinitionVisitor,
-                {
-                    references: [],
-                    symbolName: 'Foo',
-                    locals: {},
-                } as unknown as TypescriptWalkerContext
-            )
+                context: ctx,
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "declaration": "/**
-             * @default { foo: 'bar', bar: 'foo' }
-             */
-            interface {{00014-000:symbolName}} {
-                foo: string
-                /**
-                 * fooscription
-                 */
-                bar: string
-            }
-            ",
-              "referenceName": "{{00014-000:symbolName}}",
-              "render": [Function],
-              "sourceSymbol": undefined,
-            }
+          "/**
+           * @default { foo: 'bar', bar: 'foo' }
+           */
+          export interface {{19:symbolName}} {
+              foo: string
+              /**
+               * fooscription
+               */
+              bar: string
+          }"
+        `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
+          {
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
+          }
         `)
     })
 
     it('other', () => {
-        expect(
-            walkTherefore($object({ foo: $string }, { indexSignature: $number }), typeDefinitionVisitor, {
-                references: [],
-                symbolName: 'Foo',
-                locals: {},
-            } as unknown as TypescriptWalkerContext)
-        ).toMatchInlineSnapshot(`
+        const ctx = mockTypescriptContext()
+        expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }), context: ctx })).toMatchInlineSnapshot(`
+              "export interface {{1:symbolName}} {
+                  foo: string
+              }"
+            `)
+        expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
-            "declaration": "interface {{0003-000:symbolName}} {
-              foo: string
-              [k: string]: number
-          }
-          ",
-            "referenceName": "{{0003-000:symbolName}}",
-            "render": [Function],
-            "sourceSymbol": undefined,
+            "locals": [],
+            "references": References {
+              "_data": {},
+              "fallbackStrategy": [Function],
+              "hardlinks": {},
+              "key2node": Map {},
+              "references": Map {},
+              "symbols": Map {},
+              "transform": {},
+              "type": "typescript",
+            },
           }
         `)
     })
 })
 
-describe('toTypescriptDefinition', () => {
+describe('TypescriptFileOutput.define', () => {
     // it('string', () => {
-    //     expect(toTypescriptDefinition('foo', $string()).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $string()).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = string
     //         ",
@@ -761,7 +1636,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('number', () => {
-    //     expect(toTypescriptDefinition('foo', $number())).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $number())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = number
     //         ",
@@ -771,7 +1646,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('integer', () => {
-    //     expect(toTypescriptDefinition('foo', $integer())).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $integer())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = number
     //         ",
@@ -781,7 +1656,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('boolean', () => {
-    //     expect(toTypescriptDefinition('foo', $boolean())).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $boolean())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = boolean
     //         ",
@@ -791,7 +1666,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('null', () => {
-    //     expect(toTypescriptDefinition('foo', $null())).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $null())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = null
     //         ",
@@ -801,7 +1676,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('unknown', () => {
-    //     expect(toTypescriptDefinition('foo', $unknown())).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $unknown())).toMatchInlineSnapshot(`
     //         {
     //           "declaration": "export type Foo = unknown
     //         ",
@@ -812,7 +1687,7 @@ describe('toTypescriptDefinition', () => {
 
     // it('enum', () => {
     //     expect(
-    //         toTypescriptDefinition('foo', $enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
+    //         TypescriptFileOutput.define('foo', $enum(['foo', 'bar', { foo: 'bar' }]), typeDefinitionVisitor, {
     //             references: [],
     //             symbolName: 'Foo',
     //         })
@@ -824,7 +1699,7 @@ describe('toTypescriptDefinition', () => {
     //         }
     //     `)
     //     expect(
-    //         toTypescriptDefinition('foo', $enum({ foo: 'bar', bar: 1, baz: true }), typeDefinitionVisitor, {
+    //         TypescriptFileOutput.define('foo', $enum({ foo: 'bar', bar: 1, baz: true }), typeDefinitionVisitor, {
     //             references: [],
     //             symbolName: 'Foo',
     //         })
@@ -841,7 +1716,7 @@ describe('toTypescriptDefinition', () => {
     //         }
     //     `)
     //     expect(
-    //         toTypescriptDefinition('foo', $enum({ foo: 'bar', bar: [1, 2, 3] }), typeDefinitionVisitor, {
+    //         TypescriptFileOutput.define('foo', $enum({ foo: 'bar', bar: [1, 2, 3] }), typeDefinitionVisitor, {
     //             references: [],
     //             symbolName: 'Foo',
     //         })
@@ -859,239 +1734,76 @@ describe('toTypescriptDefinition', () => {
     // })
 
     it('array', () => {
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($string) })).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0002-000:symbolName}} = (string)[]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0002-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0002-000:symbolName}}",
-                "uuid": "0002-000",
-              },
-              "subtrees": [],
-            }
-        `)
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($enum(['foo', 'bar', { foo: 'bar' }])) }))
-            .toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0004-000:symbolName}} = ('foo' | 'bar' | { foo: 'bar' })[]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0004-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0004-000:symbolName}}",
-                "uuid": "0004-000",
-              },
-              "subtrees": [],
-            }
-        `)
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $array($union([$string, $integer])) }))
-            .toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0008-000:symbolName}} = (string | number)[]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0008-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0008-000:symbolName}}",
-                "uuid": "0008-000",
-              },
-              "subtrees": [],
-            }
-        `)
+        expect(TypescriptFileOutput.define({ symbol: $array($string) })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = (string)[]"`,
+        )
+        expect(TypescriptFileOutput.define({ symbol: $array($enum(['foo', 'bar'])) })).toMatchInlineSnapshot(
+            `"export type {{4:symbolName}} = ('foo' | 'bar')[]"`,
+        )
+        expect(TypescriptFileOutput.define({ symbol: $array($union([$string, $integer])) })).toMatchInlineSnapshot(
+            `"export type {{8:symbolName}} = ((string | number))[]"`,
+        )
     })
 
     it('tuple', () => {
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $tuple([$string, $string, $integer]) }))
-            .toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0004-000:symbolName}} = [string, string, number]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0004-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0004-000:symbolName}}",
-                "uuid": "0004-000",
-              },
-              "subtrees": [],
-            }
-        `)
+        expect(TypescriptFileOutput.define({ symbol: $tuple([$string, $string, $integer]) })).toMatchInlineSnapshot(
+            `"export type {{1:symbolName}} = [string, string, number]"`,
+        )
     })
 
-    it('named tuple', () => {
-        expect(
-            toTypescriptDefinition({
-                sourceSymbol: 'foo',
-                schema: $tuple({
-                    foo: $string,
-                    boo: $integer,
-                }),
-            })
-        ).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0003-000:symbolName}} = [foo: string, boo: number]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0003-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0003-000:symbolName}}",
-                "uuid": "0003-000",
-              },
-              "subtrees": [],
-            }
-        `)
-        expect(
-            toTypescriptDefinition({
-                sourceSymbol: 'foo',
-                schema: $tuple({
-                    x: $number,
-                    y: $number,
-                    z: $number,
-                }),
-            })
-        ).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export type {{0007-000:symbolName}} = [x: number, y: number, z: number]
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0007-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0007-000:symbolName}}",
-                "uuid": "0007-000",
-              },
-              "subtrees": [],
-            }
-        `)
-    })
-
-    it('dict', () => {
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $dict($string) })).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{0002-000:symbolName}} {
-                [k: string]: ( string ) | undefined
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0002-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0002-000:symbolName}}",
-                "uuid": "0002-000",
-              },
-              "subtrees": [],
-            }
+    it('record', () => {
+        expect(TypescriptFileOutput.define({ symbol: $record($string) })).toMatchInlineSnapshot(`
+          "export interface {{2:symbolName}} {
+              [k: string]: (string | undefined)
+          }"
         `)
     })
 
     it('ref', () => {
-        const foo = $dict($string)
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ bar: $ref(foo) }) })).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{0004-000:symbolName}} {
-                bar: {{0002-000:referenceName}}
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0004-000:symbolName}}",
-                "references": [
-                  {
-                    "exportSymbol": false,
-                    "name": undefined,
-                    "reference": [
-                      {
-                        "children": [
-                          {
-                            "description": {},
-                            "type": "string",
-                            "uuid": "0001-000",
-                            "value": {},
-                          },
-                        ],
-                        "description": {},
-                        "type": "dict",
-                        "uuid": "0002-000",
-                        "value": {},
-                      },
-                    ],
-                    "referenceName": "{{0002-000:referenceName}}",
-                    "uuid": "0002-000",
-                  },
-                ],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0004-000:symbolName}}",
-                "uuid": "0004-000",
-              },
-              "subtrees": [],
-            }
+        const foo = $record($string)
+        expect(TypescriptFileOutput.define({ symbol: $object({ bar: $ref(foo) }) })).toMatchInlineSnapshot(`
+          "export interface {{4:symbolName}} {
+              bar: {{2:referenceName}}
+          }
+          interface {{2:symbolName}} {
+              [k: string]: (string | undefined)
+          }"
         `)
-        // expect(toTypescriptDefinition('foo', $ref({ foo }))).toMatchInlineSnapshot(`
+        // expect(TypescriptFileOutput.define('foo', $ref({ foo }))).toMatchInlineSnapshot(`
         //     {
-        //       "interface": {
-        //         "declaration": "export type Foo = {{0001-000}}
-        //     ",
-        //         "interfaceName": "Foo",
-        //         "meta": undefined,
-        //         "referenceName": "Foo",
-        //         "symbolName": "foo",
-        //         "uuid": undefined,
-        //       },
-        //       "references": [
-        //         {
-        //           "hash": "0001-000",
-        //           "name": "foo",
-        //         },
-        //       ],
+        //       "definition": {
+        //         "declaration": "export type {{0002-000:symbolName}} = {
+        //         [k: string]: (string) | undefined
         //     }
-        // `)
+        //     ",
+        //         "imports": [],
+        //         "isExported": true,
+        //         "locals": {},
+        //         "referenceName": "{{0002-000:symbolName}}",
+        //         "references": [],
+        //         "schema": {
+        //           "children": [
+        //             {
+        //               "type": "string",
+        //               "uuid": "0001-000",
+        //               "value": {},
+        //             },
+        //           ],
+        //           "isContainer": true,
+        //           "type": "dict",
+        //           "uuid": "0002-000",
+        //           "value": {},
+        //         },
+        //         "sourceSymbol": "foo",
+        //         "symbolName": "Foo",
+        //         "uniqueSymbolName": "{{0002-000:symbolName}}",
+        //         "uuid": "0002-000",
+        //       },
+        //       "subtrees": [],
+        //     }
+        //   `)
         // // test the stable uuid referencing
-        // expect(toTypescriptDefinition('foo', $union([$ref({ foo }), $dict($ref({ foo }))]))).toMatchInlineSnapshot(`
+        // expect(TypescriptFileOutput.define('foo', $union([$ref({ foo }), $record($ref({ foo }))]))).toMatchInlineSnapshot(`
         //     {
         //       "interface": {
         //         "declaration": "export type Foo = {{0001-000}} | {
@@ -1115,7 +1827,7 @@ describe('toTypescriptDefinition', () => {
     })
 
     // it('union', () => {
-    //     expect(toTypescriptDefinition('foo', $union([$string]))).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $union([$string]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
     //             "declaration": "export type Foo = string
@@ -1129,7 +1841,7 @@ describe('toTypescriptDefinition', () => {
     //           "references": [],
     //         }
     //     `)
-    //     expect(toTypescriptDefinition('foo', $union([$string, $string, $integer]))).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $union([$string, $string, $integer]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
     //             "declaration": "export type Foo = string | string | number
@@ -1146,7 +1858,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('intersection', () => {
-    //     expect(toTypescriptDefinition('foo', $intersection([$string]))).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $intersection([$string]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
     //             "declaration": "export type Foo = (string)
@@ -1160,7 +1872,7 @@ describe('toTypescriptDefinition', () => {
     //           "references": [],
     //         }
     //     `)
-    //     expect(toTypescriptDefinition('foo', $intersection([$string, $integer]))).toMatchInlineSnapshot(`
+    //     expect(TypescriptFileOutput.define('foo', $intersection([$string, $integer]))).toMatchInlineSnapshot(`
     //         {
     //           "interface": {
     //             "declaration": "export type Foo = (string & number)
@@ -1177,7 +1889,7 @@ describe('toTypescriptDefinition', () => {
     // })
 
     // it('union & intersection', () => {
-    //     expect(toTypescriptDefinition('foo', $union([$string, $intersection([$string, $integer]), $integer])))
+    //     expect(TypescriptFileOutput.define('foo', $union([$string, $intersection([$string, $integer]), $integer])))
     //         .toMatchInlineSnapshot(`
     //         {
     //           "interface": {
@@ -1195,119 +1907,53 @@ describe('toTypescriptDefinition', () => {
     // })
 
     it('object', () => {
-        expect(toTypescriptDefinition({ sourceSymbol: 'foo', schema: $object({ foo: $string }) })).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{0002-000:symbolName}} {
-                foo: string
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0002-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0002-000:symbolName}}",
-                "uuid": "0002-000",
-              },
-              "subtrees": [],
-            }
+        expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }) })).toMatchInlineSnapshot(`
+          "export interface {{1:symbolName}} {
+              foo: string
+          }"
         `)
         expect(
-            toTypescriptDefinition({
-                sourceSymbol: 'foo',
-                schema: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
-            })
+            TypescriptFileOutput.define({
+                symbol: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{0008-000:symbolName}} {
-                foo: string
-                bar: (number | null)
-                baz?: number
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{0008-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{0008-000:symbolName}}",
-                "uuid": "0008-000",
-              },
-              "subtrees": [],
-            }
+          "export interface {{8:symbolName}} {
+              foo: string
+              bar: (number | null)
+              baz?: (number | undefined)
+          }"
         `)
         expect(
-            toTypescriptDefinition({
-                sourceSymbol: 'foo',
-                schema: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
-            })
+            TypescriptFileOutput.define({
+                symbol: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{00011-000:symbolName}} {
-                foo: string
-                /**
-                 * fooscription
-                 */
-                bar: string
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{00011-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{00011-000:symbolName}}",
-                "uuid": "00011-000",
-              },
-              "subtrees": [],
-            }
+          "export interface {{14:symbolName}} {
+              foo: string
+              /**
+               * fooscription
+               */
+              bar: string
+          }"
         `)
         expect(
-            toTypescriptDefinition({
-                sourceSymbol: 'foo',
-                schema: $object({ foo: $enum(['foo', 'bar']) }),
-            })
+            TypescriptFileOutput.define({
+                symbol: $object({ foo: $enum(['foo', 'bar']) }),
+            }),
         ).toMatchInlineSnapshot(`
-            {
-              "definition": {
-                "declaration": "export interface {{00013-000:symbolName}} {
-                foo: 'foo' | 'bar'
-            }
-            ",
-                "imports": [],
-                "isExported": true,
-                "locals": {},
-                "referenceName": "{{00013-000:symbolName}}",
-                "references": [],
-                "schema": [Function],
-                "sourceSymbol": "foo",
-                "symbolName": "Foo",
-                "uniqueSymbolName": "{{00013-000:symbolName}}",
-                "uuid": "00013-000",
-              },
-              "subtrees": [],
-            }
+          "export interface {{19:symbolName}} {
+              foo: 'foo' | 'bar'
+          }"
         `)
     })
 })
 
 describe('getIndexSignatureType', () => {
     it('simple literal', () => {
-        forAll(alphaNumeric({ minLength: 1 }), (a) =>
-            expect(getIndexSignatureType(a)).toEqual({ type: `\`\${string}${a}\${string}\`` })
-        )
+        forAll(alphaNumeric({ minLength: 1 }), (a) => {
+            const type = `\`\${string}${a}\${string}\``
+            expect(getIndexSignatureType(a)).toEqual({ type })
+        })
     })
 
     it('simple union', () => {

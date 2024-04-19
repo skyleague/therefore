@@ -3,37 +3,42 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import cartItemSchema from './schemas/cart-item.schema.json' assert { type: 'json' }
+
 import AjvValidator from 'ajv'
-import { ValidationError } from 'ajv'
+import type { DefinedError } from 'ajv'
+
+import CartItemSchema from './schemas/cart-item.schema.json' with { type: 'json' }
 
 export interface CartItem {
     id: string
     name: string
     price: number
-    size?: Size
+    size?: Size | undefined
 }
 
 export const CartItem = {
     validate: new AjvValidator.default({
         strict: true,
-        strictTypes: true,
-        useDefaults: true,
         strictSchema: false,
+        strictTypes: true,
+        strictTuples: false,
+        useDefaults: true,
         logger: false,
         loopRequired: 5,
         loopEnum: 5,
+        multipleOfPrecision: 4,
         code: { esm: true },
-    }).compile<CartItem>(cartItemSchema),
-    schema: cartItemSchema,
+    }).compile<CartItem>(CartItemSchema),
+    schema: CartItemSchema,
     get errors() {
         return CartItem.validate.errors ?? undefined
     },
     is: (o: unknown): o is CartItem => CartItem.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!CartItem.validate(o)) {
-            throw new ValidationError(CartItem.errors ?? [])
+    parse: (o: unknown): { right: CartItem } | { left: DefinedError[] } => {
+        if (CartItem.is(o)) {
+            return { right: o }
         }
+        return { left: (CartItem.errors ?? []) as DefinedError[] }
     },
 } as const
 

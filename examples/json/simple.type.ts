@@ -3,13 +3,15 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as SimpleValidator } from './schemas/simple.schema.js'
 
 export type Simple = number | Simple[]
 
 export const Simple = {
-    validate: (await import('./schemas/simple.schema.js')).validate as ValidateFunction<Simple>,
+    validate: SimpleValidator as ValidateFunction<Simple>,
     get schema() {
         return Simple.validate.schema
     },
@@ -17,9 +19,10 @@ export const Simple = {
         return Simple.validate.errors ?? undefined
     },
     is: (o: unknown): o is Simple => Simple.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Simple.validate(o)) {
-            throw new ValidationError(Simple.errors ?? [])
+    parse: (o: unknown): { right: Simple } | { left: DefinedError[] } => {
+        if (Simple.is(o)) {
+            return { right: o }
         }
+        return { left: (Simple.errors ?? []) as DefinedError[] }
     },
 } as const

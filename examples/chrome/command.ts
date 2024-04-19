@@ -1,11 +1,10 @@
-import { $dict, $object, $string } from '../../src/index.js'
+import { $object, $record, $string } from '../../src/index.js'
 
-export const command = $object({
-    name: 'command',
-    properties: {
+export const command = $object(
+    {
         description: $string,
 
-        suggested_key: $dict($string, {
+        suggested_key: $record($string, {
             // patternProperties: {
             //     '^(default|mac|windows|linux|chromeos)$': {
             //         type: 'string'
@@ -14,4 +13,7 @@ export const command = $object({
             // }
         }),
     },
-})
+    {
+        name: 'command',
+    },
+)

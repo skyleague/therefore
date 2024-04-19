@@ -1,16 +1,10 @@
-import type { ThereforeNode } from '../../cst/cst.js'
-import { cstNode } from '../../cst/cst.js'
 import type { SchemaOptions } from '../base.js'
+import type { ConstType } from '../const/const.js'
+import { $const } from '../const/const.js'
+import type { EnumOptions } from '../enum/enum.js'
 
 /**
- * @category Primitives
- */
-export interface NullOptions {}
-
-export type NullType = ThereforeNode<'null', NullOptions>
-
-/**
- * Create a new `NullType` instance with the given options.
+ * Create a new `ConstType` instance with the given options.
  *
  * ### Example
  * ```ts
@@ -23,6 +17,6 @@ export type NullType = ThereforeNode<'null', NullOptions>
  *
  * @group Primitives
  */
-export function $null(options: SchemaOptions<NullOptions, boolean> = {}): NullType {
-    return cstNode('null', options)
+export function $null(options: SchemaOptions<EnumOptions> = {}): ConstType<null> {
+    return $const(null, options)
 }

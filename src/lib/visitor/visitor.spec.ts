@@ -1,60 +1,62 @@
 import { arbitrary } from './arbitrary/arbitrary.js'
 import { toJsonSchema } from './jsonschema/jsonschema.js'
 
-import { $boolean } from '../primitives/boolean/index.js'
-import { $array, $null, $object } from '../primitives/index.js'
-import { $integer } from '../primitives/integer/index.js'
-import { $number } from '../primitives/number/index.js'
-import { $string } from '../primitives/string/index.js'
-import { $unknown } from '../primitives/unknown/index.js'
+import { $array } from '../primitives/array/array.js'
+import { $boolean } from '../primitives/boolean/boolean.js'
+import { $integer } from '../primitives/integer/integer.js'
+import { $null } from '../primitives/null/null.js'
+import { $number } from '../primitives/number/number.js'
+import { $object } from '../primitives/object/object.js'
+import { $string } from '../primitives/string/string.js'
+import { $unknown } from '../primitives/unknown/unknown.js'
 
 import { forAll } from '@skyleague/axioms'
 import { it } from 'vitest'
 
-it('string', async () => {
+it('string', () => {
     const arb = $string()
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('number', async () => {
+it('number', () => {
     const arb = $number()
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('integer', async () => {
-    const arb = $integer({ maximum: 600 })
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+it('integer', () => {
+    const arb = $integer({ max: 600 })
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('boolean', async () => {
+it('boolean', () => {
     const arb = $boolean()
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('null', async () => {
+it('null', () => {
     const arb = $null()
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('unknown', async () => {
+it('unknown', () => {
     const arb = $unknown()
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('object', async () => {
-    const arb = $object({ foo: $string() }, { indexSignature: $unknown() })
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+it('object', () => {
+    const arb = $object({ foo: $string() })
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })
 
-it('array', async () => {
+it('array', () => {
     const arb = $array($unknown)
-    const val = toJsonSchema(arb, true)
-    forAll(await Promise.resolve(arbitrary(arb)), (x) => val.validator(x))
+    const val = toJsonSchema(arb, { compile: true })
+    forAll(arbitrary(arb), (x) => val.validator?.(x))
 })

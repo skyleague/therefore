@@ -1,11 +1,12 @@
-import { beforeEach, vi } from 'vitest'
+import { _resetId } from '../../src/lib/cst/id.js'
+import { GenericFileOutput } from '../../src/lib/output/generic.js'
+import { TypescriptFileOutput } from '../../src/lib/output/typescript.js'
+import { therefore } from '../../src/lib/primitives/therefore.js'
 
-vi.mock('uuid', () => ({ v4: mockUuid() }))
+import { beforeEach } from 'vitest'
 
-export function mockUuid(): () => string {
-    let value = 1
-    beforeEach(() => {
-        value = 1
-    })
-    return () => `000${(value++).toString()}-000`
-}
+beforeEach(() => {
+    _resetId()
+})
+
+therefore.generators = [GenericFileOutput, TypescriptFileOutput]

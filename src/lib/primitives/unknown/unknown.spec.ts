@@ -1,18 +1,25 @@
-import { $unknown } from './index.js'
+import { $unknown } from './unknown.js'
 
 import { expect, it } from 'vitest'
 
 it('function', () => {
-    expect($unknown).toMatchInlineSnapshot(`[Function]`)
+    expect($unknown).toMatchInlineSnapshot('[Function]')
 })
 
 it('simple', () => {
     expect($unknown()).toMatchInlineSnapshot(`
-        {
-          "description": {},
-          "type": "unknown",
-          "uuid": "0001-000",
-          "value": {},
-        }
+      UnknownType {
+        "attributes": {
+          "generic": {},
+          "typescript": {},
+        },
+        "definition": {},
+        "id": "1",
+        "isCommutative": true,
+        "options": {
+          "restrictToJson": false,
+        },
+        "type": "unknown",
+      }
     `)
 })

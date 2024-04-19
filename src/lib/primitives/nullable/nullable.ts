@@ -1,7 +1,6 @@
-import type { ThereforeNode, ThereforeExpr } from '../../cst/cst.js'
+import type { Node } from '../../cst/node.js'
 
-import { evaluate } from '@skyleague/axioms'
-import { v4 as uuid } from 'uuid'
+import { type ConstExpr, evaluate } from '@skyleague/axioms'
 
 /**
  * Create a new `ThereforeNode` instance with the given options.
@@ -17,14 +16,7 @@ import { v4 as uuid } from 'uuid'
  *
  * @group Modifiers
  */
-export function $nullable(literal: ThereforeExpr): ThereforeNode {
+export function $nullable<T extends Node>(literal: ConstExpr<T>): T {
     const subNode = evaluate(literal)
-    return {
-        ...subNode,
-        uuid: uuid(),
-        description: {
-            ...subNode.description,
-            nullable: true,
-        },
-    }
+    return subNode.nullable() as T
 }

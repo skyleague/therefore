@@ -1,12 +1,10 @@
 import { cartItem } from './item.schema.js'
 
-import { $object, $string, $ref, $array, $validator } from '../../src/index.js'
+import { $array, $object, $string } from '../../src/index.js'
 
-export const cart = $validator(
-    $object({
-        id: $string,
-        items: $array($ref(cartItem)),
-        createdAt: $string({ format: 'date-time' }),
-        updatedAt: $string({ format: 'date-time' }),
-    })
-)
+export const cart = $object({
+    id: $string,
+    items: $array(cartItem.reference()),
+    createdAt: $string().datetime(),
+    updatedAt: $string().datetime(),
+}).validator()

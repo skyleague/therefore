@@ -3,8 +3,10 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as SpaceObjectValidator } from './schemas/space-object.schema.js'
 
 export interface Asteroid {
     type: 'asteroid'
@@ -44,7 +46,7 @@ export interface Ship {
 export type SpaceObject = Asteroid | Planet | Ship
 
 export const SpaceObject = {
-    validate: (await import('./schemas/space-object.schema.js')).validate as ValidateFunction<SpaceObject>,
+    validate: SpaceObjectValidator as ValidateFunction<SpaceObject>,
     get schema() {
         return SpaceObject.validate.schema
     },
@@ -52,10 +54,11 @@ export const SpaceObject = {
         return SpaceObject.validate.errors ?? undefined
     },
     is: (o: unknown): o is SpaceObject => SpaceObject.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!SpaceObject.validate(o)) {
-            throw new ValidationError(SpaceObject.errors ?? [])
+    parse: (o: unknown): { right: SpaceObject } | { left: DefinedError[] } => {
+        if (SpaceObject.is(o)) {
+            return { right: o }
         }
+        return { left: (SpaceObject.errors ?? []) as DefinedError[] }
     },
 } as const
 

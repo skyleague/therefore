@@ -1,6 +1,6 @@
 import type { InferSchemaType, Schema } from './types.js'
 
-import { Comic } from '../../examples/xkcd/xkcd.type.js'
+import { Comic } from '../../examples/restclients/xkcd/xkcd.type.js'
 
 import { expect, it } from 'vitest'
 

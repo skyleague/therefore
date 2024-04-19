@@ -3,8 +3,11 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as ThemeValidator } from './schemas/theme.schema.js'
+import { validate as TypedocValidator } from './schemas/typedoc.schema.js'
 
 /**
  * Specify the npm plugins that should be loaded. Omit to load all installed plugins.
@@ -28,7 +31,7 @@ type Src = string | string[]
 export type Theme = 'default' | 'minimal' | string
 
 export const Theme = {
-    validate: (await import('./schemas/theme.schema.js')).validate as ValidateFunction<Theme>,
+    validate: ThemeValidator as ValidateFunction<Theme>,
     get schema() {
         return Theme.validate.schema
     },
@@ -36,10 +39,11 @@ export const Theme = {
         return Theme.validate.errors ?? undefined
     },
     is: (o: unknown): o is Theme => Theme.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Theme.validate(o)) {
-            throw new ValidationError(Theme.errors ?? [])
+    parse: (o: unknown): { right: Theme } | { left: DefinedError[] } => {
+        if (Theme.is(o)) {
+            return { right: o }
         }
+        return { left: (Theme.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -200,7 +204,7 @@ export interface Typedoc {
 }
 
 export const Typedoc = {
-    validate: (await import('./schemas/typedoc.schema.js')).validate as ValidateFunction<Typedoc>,
+    validate: TypedocValidator as ValidateFunction<Typedoc>,
     get schema() {
         return Typedoc.validate.schema
     },
@@ -208,9 +212,10 @@ export const Typedoc = {
         return Typedoc.validate.errors ?? undefined
     },
     is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Typedoc.validate(o)) {
-            throw new ValidationError(Typedoc.errors ?? [])
+    parse: (o: unknown): { right: Typedoc } | { left: DefinedError[] } => {
+        if (Typedoc.is(o)) {
+            return { right: o }
         }
+        return { left: (Typedoc.errors ?? []) as DefinedError[] }
     },
 } as const

@@ -3,22 +3,29 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
+
 import { ValidationError } from 'ajv'
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as DefaultsValidator } from './schemas/defaults.schema.js'
+import { validate as KeywordValidator } from './schemas/keyword.schema.js'
+import { validate as PersonValidator } from './schemas/person.schema.js'
+import { validate as SalesPersonValidator } from './schemas/sales-person.schema.js'
+import { validate as SelfReferenceValidator } from './schemas/self-reference.schema.js'
 
 export interface Defaults {
     /**
      * @default 42
      */
-    int?: number
+    int?: number | undefined
     /**
      * @default 'foobar'
      */
-    str?: string
+    str?: string | undefined
 }
 
 export const Defaults = {
-    validate: (await import('./schemas/defaults.schema.js')).validate as ValidateFunction<Defaults>,
+    validate: DefaultsValidator as ValidateFunction<Defaults>,
     get schema() {
         return Defaults.validate.schema
     },
@@ -31,14 +38,20 @@ export const Defaults = {
             throw new ValidationError(Defaults.errors ?? [])
         }
     },
+    parse: (o: unknown): { right: Defaults } | { left: DefinedError[] } => {
+        if (Defaults.is(o)) {
+            return { right: o }
+        }
+        return { left: (Defaults.errors ?? []) as DefinedError[] }
+    },
 } as const
 
 export interface Keyword {
-    foo?: [string, string, string, string, ...string[]]
+    foo?: [string, string, string, string, ...string[]] | undefined
 }
 
 export const Keyword = {
-    validate: (await import('./schemas/keyword.schema.js')).validate as ValidateFunction<Keyword>,
+    validate: KeywordValidator as ValidateFunction<Keyword>,
     get schema() {
         return Keyword.validate.schema
     },
@@ -50,6 +63,12 @@ export const Keyword = {
         if (!Keyword.validate(o)) {
             throw new ValidationError(Keyword.errors ?? [])
         }
+    },
+    parse: (o: unknown): { right: Keyword } | { left: DefinedError[] } => {
+        if (Keyword.is(o)) {
+            return { right: o }
+        }
+        return { left: (Keyword.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -63,7 +82,7 @@ export interface Person {
 }
 
 export const Person = {
-    validate: (await import('./schemas/person.schema.js')).validate as ValidateFunction<Person>,
+    validate: PersonValidator as ValidateFunction<Person>,
     get schema() {
         return Person.validate.schema
     },
@@ -71,10 +90,11 @@ export const Person = {
         return Person.validate.errors ?? undefined
     },
     is: (o: unknown): o is Person => Person.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Person.validate(o)) {
-            throw new ValidationError(Person.errors ?? [])
+    parse: (o: unknown): { right: Person } | { left: DefinedError[] } => {
+        if (Person.is(o)) {
+            return { right: o }
         }
+        return { left: (Person.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -90,7 +110,7 @@ export type SalesPerson = {
 }
 
 export const SalesPerson = {
-    validate: (await import('./schemas/sales-person.schema.js')).validate as ValidateFunction<SalesPerson>,
+    validate: SalesPersonValidator as ValidateFunction<SalesPerson>,
     get schema() {
         return SalesPerson.validate.schema
     },
@@ -98,20 +118,21 @@ export const SalesPerson = {
         return SalesPerson.validate.errors ?? undefined
     },
     is: (o: unknown): o is SalesPerson => SalesPerson.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!SalesPerson.validate(o)) {
-            throw new ValidationError(SalesPerson.errors ?? [])
+    parse: (o: unknown): { right: SalesPerson } | { left: DefinedError[] } => {
+        if (SalesPerson.is(o)) {
+            return { right: o }
         }
+        return { left: (SalesPerson.errors ?? []) as DefinedError[] }
     },
 } as const
 
 export interface SelfReference {
-    bar?: SelfReference
-    foo?: string
+    bar?: SelfReference | undefined
+    foo?: string | undefined
 }
 
 export const SelfReference = {
-    validate: (await import('./schemas/self-reference.schema.js')).validate as ValidateFunction<SelfReference>,
+    validate: SelfReferenceValidator as ValidateFunction<SelfReference>,
     get schema() {
         return SelfReference.validate.schema
     },
@@ -123,5 +144,11 @@ export const SelfReference = {
         if (!SelfReference.validate(o)) {
             throw new ValidationError(SelfReference.errors ?? [])
         }
+    },
+    parse: (o: unknown): { right: SelfReference } | { left: DefinedError[] } => {
+        if (SelfReference.is(o)) {
+            return { right: o }
+        }
+        return { left: (SelfReference.errors ?? []) as DefinedError[] }
     },
 } as const

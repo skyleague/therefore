@@ -1,26 +1,37 @@
-import type { TypescriptWalkerContext } from './typescript.js'
-import { toDeclaration } from './typescript.js'
+import { TypescriptFileOutput } from '../../output/typescript.js'
+import { $object } from '../../primitives/object/object.js'
+import { $string } from '../../primitives/string/string.js'
+import { $union } from '../../primitives/union/union.js'
+import { $unknown } from '../../primitives/unknown/unknown.js'
 
-import { $object, $string, $union, $unknown } from '../../primitives/index.js'
-
-import { forAll, string, tuple, alpha } from '@skyleague/axioms'
+import { alpha, forAll, string, tuple } from '@skyleague/axioms'
 import ts from 'typescript'
 import { it } from 'vitest'
 
 it('object declaration', () => {
-    forAll(tuple(string(), alpha({ minLength: 1 })), ([key, name]) => {
-        const declaration = toDeclaration($object({ [key]: $unknown() }), {
-            symbolName: name,
-        } as unknown as TypescriptWalkerContext)
-        return ts.transpileModule(declaration.render(), { reportDiagnostics: true }).diagnostics?.length === 0
-    })
+    forAll(
+        tuple(string(), alpha({ minLength: 1 })),
+        ([key, name]) => {
+            if (name.length === 0) {
+                throw new Error()
+            }
+            const declaration = TypescriptFileOutput.define({
+                symbol: $object({ [key]: $unknown() }, { name }),
+                render: true,
+            })
+            return ts.transpileModule(declaration, { reportDiagnostics: true }).diagnostics?.length === 0
+        },
+        { seed: 108703331931n },
+    )
 })
 
 it('type declaration', () => {
     forAll(alpha({ minLength: 1 }), (name) => {
-        const declaration = toDeclaration($union([$string(), $string()]), {
-            symbolName: name,
-        } as unknown as TypescriptWalkerContext)
-        return ts.transpileModule(declaration.render(), { reportDiagnostics: true }).diagnostics?.length === 0
+        const declaration = TypescriptFileOutput.define({
+            symbol: $union([$string(), $string()], { name }),
+            render: true,
+        })
+
+        return ts.transpileModule(declaration, { reportDiagnostics: true }).diagnostics?.length === 0
     })
 })

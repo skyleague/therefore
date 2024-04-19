@@ -1,0 +1,69 @@
+type Query {
+  droid(id: String!): Droid!
+  hero(input: HeroArgs!): Character!
+  human(id: String!): Human!
+}
+
+type Character {
+  """Which movies they appear in."""
+  appearsIn(id: String!): [Episode!]!
+
+  """The friends of the character, or an empty list if they have none."""
+  friends: [Character!]!
+
+  """The id of the character"""
+  id: String!
+
+  """The name of the character"""
+  name: String!
+}
+
+"""A mechanical creature in the Star Wars universe."""
+type Droid {
+  """Which movies they appear in."""
+  appearsIn(id: String!): [Episode!]!
+
+  """The friends of the character, or an empty list if they have none."""
+  friends: [Character!]!
+
+  """The id of the character"""
+  id: String!
+
+  """The name of the character"""
+  name: String!
+
+  """The primary function of the droid."""
+  primaryFunction: String!
+}
+
+"""One of the films in the Star Wars Trilogy"""
+enum Episode {
+  EMPIRE
+  JEDI
+  NEWHOPE
+}
+
+input HeroArgs {
+  """
+  If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode.
+  """
+  episode: Episode!
+}
+
+"""A humanoid creature in the Star Wars universe."""
+type Human {
+  """Which movies they appear in."""
+  appearsIn(id: String!): [Episode!]!
+
+  """The friends of the character, or an empty list if they have none."""
+  friends: [Character!]!
+
+  """The home planet of the human, or null if unknown."""
+  homePlanet: String
+
+  """The id of the character"""
+  id: String!
+
+  """The name of the character"""
+  name: String!
+}

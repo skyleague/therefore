@@ -1,1 +1,2 @@
-export { type RefOptions, type RefType, $ref } from './ref.js'
+export { $ref } from './ref.js'
+export { type RefOptions, RefType } from './type.js'

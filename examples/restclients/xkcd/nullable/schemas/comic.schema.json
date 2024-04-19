@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Comic",
+  "type": "object",
+  "properties": {
+    "alt": {
+      "type": "string",
+      "nullable": true
+    },
+    "day": {
+      "type": "string",
+      "nullable": true
+    },
+    "img": {
+      "type": "string",
+      "nullable": true
+    },
+    "link": {
+      "type": "string",
+      "nullable": true
+    },
+    "month": {
+      "type": "string",
+      "nullable": true
+    },
+    "news": {
+      "type": "string",
+      "nullable": true
+    },
+    "num": {
+      "type": "number",
+      "nullable": true
+    },
+    "safe_title": {
+      "type": "string",
+      "nullable": true
+    },
+    "title": {
+      "type": "string",
+      "nullable": true
+    },
+    "transcript": {
+      "type": "string",
+      "nullable": true
+    },
+    "year": {
+      "type": "string",
+      "nullable": true
+    }
+  },
+  "additionalProperties": true
+}

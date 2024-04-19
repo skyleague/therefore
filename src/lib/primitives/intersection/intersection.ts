@@ -1,14 +1,32 @@
-import type { ThereforeNode } from '../../cst/cst.js'
-import { cstNode } from '../../cst/cst.js'
+import { NodeTrait } from '../../cst/mixin.js'
+import type { Node } from '../../cst/node.js'
+import type { Intrinsic } from '../../cst/types.js'
 import type { SchemaOptions } from '../base.js'
 import type { ObjectType } from '../object/object.js'
-import type { RefType } from '../ref/ref.js'
 
-import { evaluate } from '@skyleague/axioms'
+import { type SimplifyOnce, type UnionToIntersection, evaluate } from '@skyleague/axioms'
 
-export interface IntersectionOptions {}
+export type IntersectionOptions = object
 
-export type IntersectionType = ThereforeNode<'intersection', IntersectionOptions, unknown, (ObjectType | RefType)[]>
+export class IntersectionType<const Elements extends Node[] = Node[]> extends NodeTrait {
+    public override type = 'intersection' as const
+    public override children: Node[]
+    public override isCommutative = false
+
+    public options: IntersectionOptions = {}
+
+    public declare infer: SimplifyOnce<UnionToIntersection<Elements[number]['infer']>>
+    public declare intrinsic: Intrinsic<Elements[number]>
+
+    public constructor(
+        intersection: Node[],
+        options: SchemaOptions<IntersectionOptions, UnionToIntersection<Elements[number]['infer']>>,
+    ) {
+        super(options)
+        this.options = options
+        this.children = intersection.map(evaluate)
+    }
+}
 
 /**
  * Create a new `IntersectionType` instance with the given options.
@@ -23,9 +41,9 @@ export type IntersectionType = ThereforeNode<'intersection', IntersectionOptions
  *
  * @group Primitives
  */
-export function $intersection(
-    intersection: (ObjectType | RefType)[],
-    options: SchemaOptions<IntersectionOptions> = {}
-): IntersectionType {
-    return cstNode('intersection', options, intersection.map(evaluate))
+export function $intersection<const Elements extends ((Node & { intrinsic: ObjectType }) | ObjectType)[]>(
+    intersection: Elements,
+    options: SchemaOptions<IntersectionOptions, UnionToIntersection<Elements[number]['infer']>> = {},
+): IntersectionType<Elements> {
+    return new IntersectionType(intersection, options)
 }

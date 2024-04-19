@@ -1,0 +1,20 @@
+interface IPerson {
+  name: String!
+}
+
+type Group {
+  description: String!
+  members: [User!]!
+  name: String!
+}
+
+type Query {
+  allUsers: [User!]!
+  me: User!
+  person: IPerson!
+}
+
+type User implements IPerson {
+  groups: [Group!]!
+  name: String!
+}

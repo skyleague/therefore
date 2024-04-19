@@ -1,15 +1,33 @@
-import type { ThereforeNode } from '../../cst/cst.js'
-import { cstNode } from '../../cst/cst.js'
+import { NodeTrait } from '../../cst/mixin.js'
 import type { SchemaOptions } from '../base.js'
+
+import type { UnknownGenerator } from '@skyleague/axioms'
 
 export interface UnknownOptions {
     /**
      * Restrict the unknown values to json values
      */
-    json: boolean
+    restrictToJson: boolean | undefined
+
+    arbitrary?: Partial<UnknownGenerator> | undefined
 }
 
-export type UnknownType = ThereforeNode<'unknown', UnknownOptions>
+export class UnknownType extends NodeTrait {
+    public override type = 'unknown' as const
+
+    public options: UnknownOptions
+
+    public constructor({ restrictToJson = false, ...options }: SchemaOptions<Partial<UnknownOptions>>) {
+        super(options)
+        this.options = { restrictToJson, ...options }
+    }
+
+    public arbitrary(options: Partial<UnknownGenerator>) {
+        this.options.arbitrary ??= {}
+        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        return this
+    }
+}
 
 /**
  * Create a new `RefType` instance with the given options.
@@ -25,6 +43,6 @@ export type UnknownType = ThereforeNode<'unknown', UnknownOptions>
  *
  * @group Primitives
  */
-export function $unknown(options: SchemaOptions<UnknownOptions> = {}): ThereforeNode<'unknown', UnknownOptions> {
-    return cstNode('unknown', options)
+export function $unknown(options: SchemaOptions<Partial<UnknownOptions>> = {}): UnknownType {
+    return new UnknownType(options)
 }

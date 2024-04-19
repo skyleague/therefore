@@ -1,18 +1,16 @@
 import * as commands from './commands/index.js'
 
-import packageJson from '../package.json' assert { type: 'json' }
+import { bin } from '../package.json' assert { type: 'json' }
 
 import type { CommandModule } from 'yargs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-export type { OpenapiV3 } from './lib/primitives/restclient/openapi.type.js'
+export type { OpenapiV3 } from './types/openapi.type.js'
 export * from './lib/visitor/index.js'
 export type { InferSchemaType, Schema } from './lib/types.js'
 export * from './lib/cst/index.js'
 export * from './lib/primitives/index.js'
-
-const { bin } = packageJson
 
 /**
  * @internal

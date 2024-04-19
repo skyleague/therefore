@@ -1,7 +1,7 @@
-import { $array, $number, $ref, $union, $validator } from '../../src/index.js'
-import type { ThereforeCst } from '../../src/lib/primitives/types.js'
+import { $number, $ref, $union } from '../../src/index.js'
+import type { Node } from '../../src/lib/cst/node.js'
 
-export const simple: ThereforeCst = $validator($union([$number, $array($ref(() => simple))]))
+export const simple: Node = $union([$number, $ref(() => simple).array()]).validator()
 
 export default {
     simple,

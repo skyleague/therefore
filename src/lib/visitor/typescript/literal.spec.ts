@@ -1,14 +1,14 @@
 import { objectProperty, toLiteral } from './literal.js'
 
-import { forAll, json, equal, string, tuple } from '@skyleague/axioms'
-import { expect, describe, it } from 'vitest'
+import { equal, forAll, json, string, tuple } from '@skyleague/axioms'
+import { describe, expect, it } from 'vitest'
 
 describe('objectProperty', () => {
     it('dot', () => {
-        expect(objectProperty('foo.bar')).toMatchInlineSnapshot(`"['foo.bar']"`)
+        expect(objectProperty('foo.bar')).toMatchInlineSnapshot(`"'foo.bar'"`)
     })
     it('dash', () => {
-        expect(objectProperty('foo-bar')).toMatchInlineSnapshot(`"['foo-bar']"`)
+        expect(objectProperty('foo-bar')).toMatchInlineSnapshot(`"'foo-bar'"`)
     })
 })
 
@@ -16,7 +16,7 @@ describe('toLiteral', () => {
     it('object', () => {
         expect(toLiteral({})).toMatchInlineSnapshot(`"{  }"`)
         expect(toLiteral({ foo: 'bar', baz: { boo: 1 }, boo: [123] })).toMatchInlineSnapshot(
-            `"{ foo: 'bar', baz: { boo: 1 }, boo: [123] }"`
+            `"{ foo: 'bar', baz: { boo: 1 }, boo: [123] }"`,
         )
     })
 
@@ -53,15 +53,17 @@ describe('toLiteral', () => {
     })
 
     it('other', () => {
-        expect(() => toLiteral(Symbol())).toThrowErrorMatchingInlineSnapshot(`[Error: not supported]`)
-        expect(() => toLiteral(() => 1)).toThrowErrorMatchingInlineSnapshot(`[Error: not supported]`)
+        expect(() => toLiteral(Symbol())).toThrowErrorMatchingInlineSnapshot('[Error: not supported]')
+        expect(() => toLiteral(() => 1)).toThrowErrorMatchingInlineSnapshot('[Error: not supported]')
     })
 
     it('json literals', () => {
+        // biome-ignore lint/security/noGlobalEval: it's a test, we're okay with eval here
         forAll(json(), (x) => equal(eval(`(${toLiteral(x)})`), x))
     })
 
     it('string literals', () => {
+        // biome-ignore lint/security/noGlobalEval: it's a test, we're okay with eval here
         forAll(tuple(string(), string()), ([key, value]) => equal(eval(`(${toLiteral({ [key]: value })})`), { [key]: value }))
     })
 })

@@ -1,7 +1,6 @@
-import type { ThereforeNode, ThereforeExpr } from '../../cst/cst.js'
+import type { Node } from '../../cst/node.js'
 
-import { evaluate, omitUndefined } from '@skyleague/axioms'
-import { v4 as uuid } from 'uuid'
+import { evaluate } from '@skyleague/axioms'
 
 /**
  * Create a new `ThereforeNode` instance with the given options.
@@ -18,14 +17,7 @@ import { v4 as uuid } from 'uuid'
  *
  * @group Modifiers
  */
-export function $optional(literal: ThereforeExpr, value: 'explicit' | 'implicit' = 'implicit'): ThereforeNode {
+export function $optional<T extends Node>(literal: T | (() => T)): T {
     const subNode = evaluate(literal)
-    return {
-        ...subNode,
-        uuid: uuid(),
-        description: omitUndefined({
-            ...subNode.description,
-            optional: value,
-        }),
-    }
+    return subNode.optional() as T
 }

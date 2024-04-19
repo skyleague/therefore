@@ -3,8 +3,10 @@
  * Do not manually touch this
  */
 /* eslint-disable */
-import type { ValidateFunction } from 'ajv'
-import { ValidationError } from 'ajv'
+
+import type { DefinedError, ValidateFunction } from 'ajv'
+
+import { validate as ExtensionValidator } from './schemas/extension.schema.js'
 
 interface Action {
     /**
@@ -30,12 +32,59 @@ interface Command {
     }
 }
 
+interface ExtensionContentScriptsArray {
+    /**
+     * Specifies which pages this content script will be injected into.
+     */
+    matches: [MatchPattern, ...MatchPattern[]]
+    /**
+     * Excludes pages that this content script would otherwise be injected into.
+     */
+    exclude_matches: MatchPattern[]
+    /**
+     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
+     */
+    css: Uri[]
+    /**
+     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
+     */
+    js: Scripts
+    /**
+     * Controls when the files in js are injected.
+     *
+     * @default 'document_idle'
+     */
+    run_at: 'document_start' | 'document_end' | 'document_idle'
+    /**
+     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
+     *
+     * @default false
+     */
+    all_frames: boolean
+    /**
+     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
+     */
+    include_globs: GlobPattern[]
+    /**
+     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
+     */
+    exclude_globs: GlobPattern[]
+    /**
+     * Whether to insert the content script on about:blank and about:srcdoc.
+     *
+     * @default false
+     */
+    match_about_blank: boolean
+}
+
 /**
  * This introduces some fairly strict policies that will make extensions more secure by default, and provides you with the ability to create and enforce rules governing the types of content that can be loaded and executed by your extensions and applications.
  *
  * @default `script-src 'self'; object-src 'self'`
  */
 type ContentSecurityPolicy = string
+
+type ExtensionVoicesArrayEventTypesArray = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
 
 /**
  * JSON schema for Google Chrome extension manifest files
@@ -269,13 +318,13 @@ export interface Extension {
          *
          * @default true
          */
-        chrome_style?: boolean
+        chrome_style?: boolean | undefined
         /**
          * If true, your extension's options page will be opened in a new tab rather than embedded in chrome://extensions. The default is false, and we recommend that you don't change it. This is only useful to delay the inevitable deprecation of the old options UI! It will be removed soon, so try not to use it. It will break.
          *
          * @default false
          */
-        open_in_tab?: boolean
+        open_in_tab?: boolean | undefined
     }
     /**
      * Permissions help to limit damage if your extension or app is compromised by malware. Some permissions are also displayed to users before installation, as detailed in Permission Warnings.
@@ -312,7 +361,7 @@ export interface Extension {
         /**
          * @default 'sandbox allow-scripts allow-forms'
          */
-        content_security_policy: ContentSecurityPolicy
+        content_security_policy?: ContentSecurityPolicy | undefined
     }
     /**
      * The short name is typically used where there is insufficient space to display the full name.
@@ -351,7 +400,7 @@ export interface Extension {
 }
 
 export const Extension = {
-    validate: (await import('./schemas/extension.schema.js')).validate as ValidateFunction<Extension>,
+    validate: ExtensionValidator as ValidateFunction<Extension>,
     get schema() {
         return Extension.validate.schema
     },
@@ -359,57 +408,13 @@ export const Extension = {
         return Extension.validate.errors ?? undefined
     },
     is: (o: unknown): o is Extension => Extension.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Extension.validate(o)) {
-            throw new ValidationError(Extension.errors ?? [])
+    parse: (o: unknown): { right: Extension } | { left: DefinedError[] } => {
+        if (Extension.is(o)) {
+            return { right: o }
         }
+        return { left: (Extension.errors ?? []) as DefinedError[] }
     },
 } as const
-
-interface ExtensionContentScriptsArray {
-    /**
-     * Specifies which pages this content script will be injected into.
-     */
-    matches: [MatchPattern, ...MatchPattern[]]
-    /**
-     * Excludes pages that this content script would otherwise be injected into.
-     */
-    exclude_matches: MatchPattern[]
-    /**
-     * The list of CSS files to be injected into matching pages. These are injected in the order they appear in this array, before any DOM is constructed or displayed for the page.
-     */
-    css: Uri[]
-    /**
-     * The list of JavaScript files to be injected into matching pages. These are injected in the order they appear in this array.
-     */
-    js: Scripts
-    /**
-     * Controls when the files in js are injected.
-     *
-     * @default 'document_idle'
-     */
-    run_at: 'document_start' | 'document_end' | 'document_idle'
-    /**
-     * Controls whether the content script runs in all frames of the matching page, or only the top frame.
-     *
-     * @default false
-     */
-    all_frames: boolean
-    /**
-     * Applied after matches to include only those URLs that also match this glob. Intended to emulate the @include Greasemonkey keyword.
-     */
-    include_globs: GlobPattern[]
-    /**
-     * Applied after matches to exclude URLs that match this glob. Intended to emulate the @exclude Greasemonkey keyword.
-     */
-    exclude_globs: GlobPattern[]
-    /**
-     * Whether to insert the content script on about:blank and about:srcdoc.
-     *
-     * @default false
-     */
-    match_about_blank: boolean
-}
 
 interface ExtensionFileBrowserHandlersArray {
     /**
@@ -426,6 +431,10 @@ interface ExtensionFileBrowserHandlersArray {
     file_filters: [string, ...string[]]
 }
 
+type GlobPattern = string
+
+type Icon = Uri
+
 interface ExtensionInputComponentsArray {
     name: string
     type: string
@@ -434,6 +443,20 @@ interface ExtensionInputComponentsArray {
     language: string
     layouts: string[]
 }
+
+type MatchPattern = string
+
+type MimeType = string
+
+type Page = Uri
+
+type Permissions = string[]
+
+type Scripts = [Uri, ...Uri[]]
+
+type Uri = string
+
+type VersionString = string
 
 interface ExtensionVoicesArray {
     /**
@@ -451,25 +474,5 @@ interface ExtensionVoicesArray {
     /**
      * Events sent to update the client on the progress of speech synthesis.
      */
-    event_types?: [ExtensionVoicesArrayEventTypesArray, ...ExtensionVoicesArrayEventTypesArray[]]
+    event_types?: [ExtensionVoicesArrayEventTypesArray, ...ExtensionVoicesArrayEventTypesArray[]] | undefined
 }
-
-type ExtensionVoicesArrayEventTypesArray = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
-
-type GlobPattern = string
-
-type Icon = Uri
-
-type MatchPattern = string
-
-type MimeType = string
-
-type Page = Uri
-
-type Permissions = string[]
-
-type Scripts = [Uri, ...Uri[]]
-
-type Uri = string
-
-type VersionString = string

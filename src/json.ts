@@ -4,42 +4,43 @@ export type SchemaVersion = 'http://json-schema.org/draft-07/schema#'
 
 export interface JsonHyperSchema {
     // https://tools.ietf.org/html/draft-handrews-json-schema-01#section-8.2
-    $id?: string
+    $id?: string | undefined
     // https://tools.ietf.org/html/draft-handrews-json-schema-01#section-8.3
-    $ref?: string
+    $ref?: string | undefined
     // https://tools.ietf.org/html/draft-handrews-json-schema-01#section-7
-    $schema?: SchemaVersion
+    $schema?: SchemaVersion | undefined
     // https://tools.ietf.org/html/draft-handrews-json-schema-01#section-9
-    $comment?: string
+    $comment?: string | undefined
     // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-9
-    definitions?: Record<string, JsonSchema | undefined>
-    $defs?: Record<string, JsonSchema | undefined>
+    definitions?: Record<string, JsonSchema | undefined> | undefined
+    $defs?: Record<string, JsonSchema | undefined> | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.1
 export interface JsonAnyInstance {
-    type?: JsonSchema7TypeName | JsonSchema7TypeName[]
-    enum?: unknown[]
-    const?: unknown
+    type?: JsonSchema7TypeName | JsonSchema7TypeName[] | undefined
+    enum?: unknown[] | undefined
+    const?: unknown | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.2
 export interface JsonNumericInstance {
-    multipleOf?: number
-    maximum?: number
-    exclusiveMaximum?: number
-    minimum?: number
-    exclusiveMinimum?: number
+    multipleOf?: number | undefined
+    maximum?: number | undefined
+    exclusiveMaximum?: number | undefined
+    minimum?: number | undefined
+    exclusiveMinimum?: number | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.3
 export interface JsonStringInstance {
-    maxLength?: number
-    minLength?: number
-    pattern?: string
+    maxLength?: number | undefined
+    minLength?: number | undefined
+    pattern?: string | undefined
 
     // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-7
     format?:
+        | undefined
         | 'date-time'
         | 'date'
         | 'email'
@@ -59,74 +60,78 @@ export interface JsonStringInstance {
         | 'uri'
 
     // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-8
-    contentMediaType?: string
-    contentEncoding?: string
+    contentMediaType?: string | undefined
+    contentEncoding?: string | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.4
 export interface JsonArrayInstance {
-    items?: JsonSchema | JsonSchema[]
-    additionalItems?: JsonSchema | false
-    maxItems?: number
-    minItems?: number
-    uniqueItems?: boolean
+    items?: JsonSchema | JsonSchema[] | undefined
+    additionalItems?: JsonSchema | false | undefined
+    maxItems?: number | undefined
+    minItems?: number | undefined
+    uniqueItems?: boolean | undefined
     /** @deprecated */
-    contains?: JsonSchema
+    contains?: JsonSchema | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.5
 export interface JsonObjectInstance {
     /** @deprecated */
-    maxProperties?: number
+    maxProperties?: number | undefined
     /** @deprecated */
-    minProperties?: number
-    required?: readonly string[]
-    properties?: Record<string, JsonSchema>
-    patternProperties?: Record<string, JsonSchema>
-    additionalProperties?: JsonSchema | boolean
-    dependencies?: Record<string, JsonSchema | readonly string[]>
+    minProperties?: number | undefined
+    required?: string[] | undefined
+    properties?: Record<string, JsonSchema> | undefined
+    patternProperties?: Record<string, JsonSchema> | undefined
+    additionalProperties?: JsonSchema | boolean | undefined
+    dependencies?: Record<string, JsonSchema | readonly string[]> | undefined
     /** @deprecated */
-    propertyNames?: JsonSchema
+    propertyNames?: JsonSchema | undefined
 
     // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.6
     /** @deprecated */
-    if?: JsonSchema
+    if?: JsonSchema | undefined
     /** @deprecated */
-    then?: JsonSchema
+    then?: JsonSchema | undefined
     /** @deprecated */
-    else?: JsonSchema
+    else?: JsonSchema | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-6.7
 export interface JsonBooleanLogic {
-    allOf?: readonly JsonSchema[]
-    anyOf?: readonly JsonSchema[]
-    oneOf?: readonly JsonSchema[]
+    allOf?: JsonSchema[] | undefined
+    anyOf?: JsonSchema[] | undefined
+    oneOf?: JsonSchema[] | undefined
     /** @deprecated */
-    not?: JsonSchema
+    not?: JsonSchema | undefined
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-10
-export interface JsonAnnotations {
-    title?: string
-    description?: string
-    default?: unknown
+export interface JsonAnnotations<T = unknown> {
+    title?: string | undefined
+    description?: string | undefined
+    default?: unknown | undefined
     /** 2019-09 draft */
-    deprecated?: boolean
+    deprecated?: boolean | undefined
     /** @deprecated */
-    readonly?: boolean
+    readonly?: boolean | undefined
     /** @deprecated */
-    writeonly?: boolean
-    examples?: unknown[]
+    writeonly?: boolean | undefined
+    examples?: T[] | undefined
     /** @experimental */
-    nullable?: boolean
+    nullable?: boolean | undefined
 }
 
 export interface JsonDefs {
-    $defs?: Record<string, JsonSchema | undefined>
+    $defs?: Record<string, JsonSchema | undefined> | undefined
 }
 
-export type JsonSchema = JsonAnnotations &
+export interface ThereforeExtension {
+    'x-arbitrary'?: unknown
+}
+
+export type JsonSchema<T = unknown> = JsonAnnotations<T> &
     JsonAnyInstance &
     JsonArrayInstance &
     JsonBooleanLogic &
@@ -134,4 +139,5 @@ export type JsonSchema = JsonAnnotations &
     JsonHyperSchema &
     JsonNumericInstance &
     JsonObjectInstance &
-    JsonStringInstance
+    JsonStringInstance &
+    ThereforeExtension

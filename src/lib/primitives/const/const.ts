@@ -1,8 +1,25 @@
+import type { JsonValue } from '@skyleague/axioms/types'
+import type { NodeTrait } from '../../cst/mixin.js'
+import { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
-import type { EnumOptions, EnumType } from '../enum/index.js'
-import { $enum } from '../enum/index.js'
 
-import type { Json } from '@skyleague/axioms'
+export type ConstOptions = object
+
+export class ConstType<T = unknown> extends Node {
+    public override type = 'const' as const
+    public options: ConstOptions = {}
+    public const: unknown
+
+    public declare infer: T
+
+    public constructor(value: unknown, options: SchemaOptions<ConstOptions>) {
+        super(options)
+        this.options = options
+        this.const = value
+    }
+}
+
+export interface ConstTyp extends Node, NodeTrait {}
 
 /**
  * Create a new `EnumType` instance with the given options.
@@ -18,6 +35,6 @@ import type { Json } from '@skyleague/axioms'
  *
  * @group Primitives
  */
-export function $const<T extends Json>(value: T, options: SchemaOptions<EnumOptions> = {}): EnumType {
-    return $enum<T>([value], options)
+export function $const<T extends JsonValue>(value: T, options: SchemaOptions<ConstOptions> = {}): ConstType<T> {
+    return new ConstType(value, options)
 }

@@ -1,10 +1,29 @@
 import { isAlphaNumeric, isDigits } from '@skyleague/axioms'
 
+export function isValidIdentifier(x: string): boolean {
+    // biome-ignore lint/suspicious/noMisleadingCharacterClass: taken from mdn
+    return /[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*/u.test(x)
+}
+
+export function accessProperty(x: string): string {
+    if (isValidIdentifier(x)) {
+        return `.${x}`
+    }
+    return `[${stringLiteral(x)}]`
+}
+
 export function objectProperty(x: string) {
     if (x.includes('.') || x.includes('-') || x.includes(' ')) {
-        return `[${stringLiteral(x, { allowBacktick: true })}]`
+        return stringLiteral(x, { allowBacktick: true })
     }
     return x
+}
+
+export function asString(x: string): string {
+    if (x.includes('${')) {
+        return `\`${x}\``
+    }
+    return stringLiteral(x)
 }
 
 export function stringLiteral(x: string, { allowBacktick = false }: { allowBacktick?: boolean } = {}): string {
@@ -19,7 +38,7 @@ export function stringLiteral(x: string, { allowBacktick = false }: { allowBackt
 }
 
 export function toLiteral(obj: unknown): string {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: this is a generic walker
     const unsupported = (_: any) => {
         throw new Error('not supported')
     }
@@ -27,17 +46,18 @@ export function toLiteral(obj: unknown): string {
         object: (n: Record<string, unknown> | unknown[] | null): string => {
             if (Array.isArray(n)) {
                 return `[${n.map((v) => walker[typeof v](v)).join(', ')}]`
-            } else if (n === null) {
-                return 'null'
-            } else {
-                return `{ ${Object.entries(n)
-                    .map(([k, v]) =>
-                        isAlphaNumeric(k) && k.length > 0 && !isDigits(k[0]!)
-                            ? `${k}: ${walker[typeof v](v)}`
-                            : `${stringLiteral(k)}: ${walker[typeof v](v)}`
-                    )
-                    .join(', ')} }`
             }
+            if (n === null) {
+                return 'null'
+            }
+            return `{ ${Object.entries(n)
+                .map(([k, v]) =>
+                    // biome-ignore lint/style/noNonNullAssertion: length is checked explicitly
+                    isAlphaNumeric(k) && k.length > 0 && !isDigits(k[0]!)
+                        ? `${k}: ${walker[typeof v](v)}`
+                        : `${stringLiteral(k)}: ${walker[typeof v](v)}`,
+                )
+                .join(', ')} }`
         },
         number: (n: number) => `${n}`,
         bigint: (n: bigint) => `${n}`,

@@ -1,6 +1,7 @@
-import type { ThereforeNode } from '../../cst/cst.js'
-import { cstNode } from '../../cst/cst.js'
+import { NodeTrait } from '../../cst/mixin.js'
 import type { SchemaOptions } from '../base.js'
+
+import type { IntegerGenerator } from '@skyleague/axioms'
 
 export interface IntegerOptions {
     /**
@@ -13,7 +14,7 @@ export interface IntegerOptions {
      *  - input: 10 -> 10 / 0.2 = 50 (validates)
      *  - input: 10.5 -> 10.5 / 0.2 = 52.5 (invalid)
      */
-    multipleOf?: number
+    multipleOf?: number | undefined
 
     /**
      * A number is valid if the value is lower than or equal to the parameter.
@@ -24,7 +25,8 @@ export interface IntegerOptions {
      *  - input: 1 (validates)
      *  - input: 2 (invalid)
      */
-    maximum?: number
+    max?: number | undefined
+    maxInclusive: boolean
 
     /**
      * A number is valid if the value is greater than or equal to the parameter.
@@ -35,10 +37,81 @@ export interface IntegerOptions {
      *  - input: 0 (invalid)
      *  - input: 1 (validates)
      */
-    minimum?: number
+    min?: number | undefined
+    minInclusive: boolean
+
+    arbitrary?: Partial<IntegerGenerator> | undefined
 }
 
-export type IntegerType = ThereforeNode<'integer', IntegerOptions>
+export class IntegerType extends NodeTrait {
+    public override type = 'integer' as const
+
+    public options: IntegerOptions
+    public declare infer: number
+
+    public constructor({ minInclusive = true, maxInclusive = true, ...options }: SchemaOptions<Partial<IntegerOptions>>) {
+        super(options)
+        this.options = {
+            minInclusive,
+            maxInclusive,
+            ...options,
+        }
+    }
+
+    public arbitrary(options: Partial<IntegerGenerator>) {
+        this.options.arbitrary ??= {}
+        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        return this
+    }
+
+    public gt(value: number) {
+        this.options.min = value
+        this.options.minInclusive = false
+        return this
+    }
+
+    public gte(value: number) {
+        this.options.min = value
+        this.options.minInclusive = true
+        return this
+    }
+
+    public lt(value: number) {
+        this.options.max = value
+        this.options.maxInclusive = false
+        return this
+    }
+
+    public lte(value: number) {
+        this.options.max = value
+        this.options.maxInclusive = true
+        return this
+    }
+
+    public positive() {
+        this.options.min = 0
+        this.options.minInclusive = false
+        return this
+    }
+
+    public nonnegative() {
+        this.options.min = 0
+        this.options.minInclusive = true
+        return this
+    }
+
+    public negative() {
+        this.options.max = 0
+        this.options.maxInclusive = false
+        return this
+    }
+
+    public nonpositive() {
+        this.options.max = 0
+        this.options.maxInclusive = true
+        return this
+    }
+}
 
 /**
  * Create a new `IntegerType` instance with the given options.
@@ -56,6 +129,6 @@ export type IntegerType = ThereforeNode<'integer', IntegerOptions>
  *
  * @group Primitives
  */
-export function $integer(options: SchemaOptions<IntegerOptions, number> = {}): IntegerType {
-    return cstNode('integer', options)
+export function $integer(options: SchemaOptions<Partial<IntegerOptions>, number> = {}): IntegerType {
+    return new IntegerType(options)
 }

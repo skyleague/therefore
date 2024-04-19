@@ -1,29 +1,56 @@
-import { toJSDoc } from './jsdoc.js'
+import { JSDoc } from './jsdoc.js'
 import { stringLiteral, toLiteral } from './literal.js'
 
-import type { TypescriptDefinition } from '../../../commands/generate/types.js'
-import { renderTemplate } from '../../../common/template/index.js'
-import { defaultAjvConfig } from '../../ajv/defaults.js'
-import { isNamedCstNodeArray } from '../../cst/cst.js'
+import type { ThereforeNodeDefinition } from '../../cst/cst.js'
+import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
+import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import { isNamedArray } from '../../guard.js'
-import type { MetaDescription, ThereforeMeta } from '../../primitives/base.js'
-import type { DictType, ObjectType, RefType, UnionType } from '../../primitives/index.js'
-import { $ref } from '../../primitives/index.js'
-import type { CustomType, ThereforeCst } from '../../primitives/types.js'
+import { References } from '../../output/references.js'
+import { setDefaultNames } from '../../output/typescript.js'
+import type { EnumType } from '../../primitives/enum/enum.js'
+import { $ref } from '../../primitives/ref/ref.js'
 import { createWriter } from '../../writer.js'
 
-import { entriesOf, evaluate, groupBy, isAlphaNumeric, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
-import camelCase from 'camelcase'
+import { entriesOf, groupBy, isAlphaNumeric, isDefined, keysOf, mapValues, second, valuesOf } from '@skyleague/axioms'
+import camelcase from 'camelcase'
 
 export interface TypescriptWalkerContext {
-    symbolName: string
-    references: TypescriptDefinition['references']
-    locals: NonNullable<TypescriptDefinition['locals']>
+    symbol?: Node | undefined
+    references: References<'typescript'>
+    locals: Node[]
     exportKeyword: string | undefined
     property: string | undefined
-    sourceSymbol: string | undefined
+    render: (node: Node, ctx?: Partial<TypescriptWalkerContext>) => string
+    declare: (declType: string, node: Node) => string
+    reference: (node: Node) => string
+    value: (node: Node) => string
+}
+
+export function buildContext({
+    symbol,
+    references = new References('typescript'),
+    locals = [],
+    exportSymbol,
+}: {
+    symbol?: Node
+    references?: References<'typescript'>
+    locals?: Node[]
+    exportSymbol: boolean
+}): TypescriptWalkerContext {
+    const context: TypescriptWalkerContext = {
+        symbol,
+        references,
+        locals,
+        exportKeyword: exportSymbol ? 'export ' : '',
+        property: undefined,
+        render: (node, ctx: Partial<TypescriptWalkerContext> = {}) =>
+            walkTherefore(node, typescriptVisitor, { ...context, ...ctx }),
+        declare: (declType: string, node) => asDeclaration(declType, node, { exportSymbol, references }),
+        reference: (node) => references.reference(node, 'referenceName'),
+        value: (node) => references.reference(node, 'referenceName', { tag: 'value' }),
+    } satisfies TypescriptWalkerContext
+    return context
 }
 
 export function escapeProperty(prop: string): string {
@@ -33,113 +60,12 @@ export function escapeProperty(prop: string): string {
     return stringLiteral(prop)
 }
 
-export function optional(meta: MetaDescription): string {
-    return meta.optional !== undefined ? '?' : ''
+export function optional(node: Node): string {
+    return hasOptionalPrimitive(node) ? '?' : ''
 }
 
-export function readonly(meta: MetaDescription): string {
+export function readonly(meta: ThereforeNodeDefinition): string {
     return meta.readonly === true ? 'readonly ' : ''
-}
-
-export function writeThereforeSchema({
-    uuid,
-    schemaReference,
-    validatorFile,
-    description,
-}: {
-    uuid: string
-    schemaReference: string
-    validatorFile: string | undefined
-    description: MetaDescription & ThereforeMeta
-}): string {
-    const writer = createWriter()
-    const isCompiled = validatorFile !== undefined
-    return writer
-        .write(`export const {{${uuid}:symbolName}} = `)
-        .inlineBlock(() => {
-            writer.writeLine(
-                isCompiled
-                    ? `validate: (await import('${validatorFile}')).validate as ValidateFunction<{{${uuid}:symbolName}}>,`
-                    : `validate: new AjvValidator.default(${JSON.stringify({
-                          ...defaultAjvConfig,
-                          ...description.ajvOptions,
-                      })}).compile<{{${uuid}:symbolName}}>(${schemaReference}),`
-            )
-
-            writer.writeLine(
-                isCompiled ? `get schema() { return {{${uuid}:symbolName}}.validate.schema},` : `schema: ${schemaReference},`
-            )
-            writer.writeLine(`get errors() { return {{${uuid}:symbolName}}.validate.errors ?? undefined },`)
-            writer.writeLine(`is: (o: unknown): o is {{${uuid}:symbolName}} => {{${uuid}:symbolName}}.validate(o) === true,`)
-            if (description.validator?.enabled === true && description.validator.assert) {
-                writer
-                    // the full assertion syntax is not yet supported on properties
-                    // https://github.com/microsoft/TypeScript/issues/34523
-                    // .write(`assert: (o: unknown): asserts o is {{${uuid}:symbolName}} => `)
-                    .write(`assert: (o: unknown) => `)
-                    .inlineBlock(() => {
-                        writer.write(`if (!{{${uuid}:symbolName}}.validate(o))`).block(() => {
-                            writer.writeLine(`throw new ValidationError({{${uuid}:symbolName}}.errors ?? [])`)
-                        })
-                    })
-                    .write(',')
-            }
-        })
-        .write(' as const\n')
-        .toString()
-}
-
-interface TypeDefinition {
-    declaration: string
-    referenceName: string
-}
-export const typeDefinitionVisitor: ThereforeVisitor<TypeDefinition, TypescriptWalkerContext> = {
-    object: (obj, context) => toDeclaration(obj, context),
-    dict: (obj, context) => toDeclaration(obj, context),
-    union: (obj, context) => toDeclaration(obj, context),
-    ref: (obj, context) => toDeclaration(obj, context),
-    enum: (obj, context) => {
-        const { children } = obj
-        if (isNamedArray(children)) {
-            const exportString = context.exportKeyword ?? ''
-            const writer = createWriter()
-            let referenceName = `{{${obj.uuid}:symbolName}}`
-            if (!children.some(([, v]) => typeof v === 'object')) {
-                writer.write(`${exportString}enum {{${obj.uuid}:symbolName}} `).block(() => {
-                    for (const [childName, value] of children) {
-                        writer.writeLine(`${childName} = ${toLiteral(value)},`)
-                    }
-                })
-            } else {
-                writer
-                    .write(`${exportString}const {{${obj.uuid}:symbolName}}Enum = `)
-                    .inlineBlock(() => {
-                        for (const [childName, value] of children) {
-                            writer.writeLine(`${childName}: ${toLiteral(value)},`)
-                        }
-                    })
-                    .write(' as const')
-                    .writeLine(`${exportString}type {{${obj.uuid}:symbolName}} = typeof {{${obj.uuid}:symbolName}}Enum`)
-                referenceName = `keyof typeof {{${obj.uuid}:symbolName}}`
-            }
-            const declaration = writer.writeLine('').toString()
-            return {
-                declaration,
-                referenceName,
-            }
-        }
-        return typeDefinitionVisitor.default(obj, context)
-    },
-    custom: (obj, context) => toDeclaration(obj, context),
-    default: (obj, context: TypescriptWalkerContext): TypeDefinition => {
-        const { symbolName, exportKeyword: exportSymbol } = context
-        return {
-            declaration: `${toJSDoc({ key: symbolName, meta: obj.description }) ?? ''}${exportSymbol ?? ''}type {{${
-                obj.uuid
-            }:symbolName}} = ${walkTherefore(obj, typescriptVisitor, context)}\n`,
-            referenceName: `{{${obj.uuid}:symbolName}}`,
-        }
-    },
 }
 
 export function getIndexSignatureType(indexPattern: string) {
@@ -161,45 +87,88 @@ export function getIndexSignatureType(indexPattern: string) {
     return { type: 'string' }
 }
 
+export const toPrimitive = (node: Node, type: string) => {
+    const hasOptional = hasOptionalPrimitive(node) && type !== 'undefined'
+    const hasNullable = hasNullablePrimitive(node) && type !== 'null'
+    if (hasOptional && hasNullable) {
+        return `(${type} | null | undefined)`
+    }
+    if (hasOptional) {
+        return `(${type} | undefined)`
+    }
+    if (hasNullable) {
+        return `(${type} | null)`
+    }
+    return type
+}
+
+// @todo a bit more heuristic here
+const isSmall = (t: Node) => {
+    if (t.type === 'enum' && (t as EnumType).values.length > 4) {
+        return false
+    }
+    if (t.children === undefined) {
+        return true
+    }
+    if (t.type === 'object' && t.children.length < 3) {
+        return true
+    }
+    if (t.type === 'union' && t.children.length < 4) {
+        return true
+    }
+    if (t.type === 'ref') {
+        return true
+    }
+    return false
+}
 export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext> = {
-    integer: () => 'number',
+    integer: (node) => toPrimitive(node, 'number'),
+    number: (node) => toPrimitive(node, 'number'),
+    string: (node) => toPrimitive(node, 'string'),
+    boolean: (node) => toPrimitive(node, 'boolean'),
     unknown: () => 'unknown',
-    enum: ({ children }) => children.map((v) => toLiteral(v)).join(' | '),
-    union: ({ children }, context) =>
-        children.map((v) => walkTherefore<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' | '),
-    intersection: ({ children }, context) =>
-        children.map((v) => walkTherefore<string, TypescriptWalkerContext>(v, typescriptVisitor, context)).join(' & '),
-    object: ({ children, value }, context) => {
+    const: (node) => {
+        return toPrimitive(node, toLiteral(node.const))
+    },
+    enum: (node) => {
+        const { values, isNamed } = node
+        return toPrimitive(node, (isNamed ? values.map(second) : values).map((v) => toLiteral(v)).join(' | '))
+    },
+    union: (node, context) => {
+        const { children } = node
+        return toPrimitive(node, `(${children.map((v) => context.render(v)).join(' | ')})`)
+    },
+    intersection: (node, context) => {
+        const { children } = node
+        return toPrimitive(node, `(${children.map((v) => context.render(v)).join(' & ')})`)
+    },
+    object: (node, context) => {
+        const { shape, patternProperties, recordType } = node
         const writer = createWriter()
         writer.block(() => {
-            for (const property of children) {
-                const { name, description } = property
-                const child = walkTherefore(property, typescriptVisitor, { ...context, property: name })
-                const jsdoc = toJSDoc({ key: name, meta: description })
-                const nestedChild = description.nullable ? `(${child} | null)` : child
-                writer.writeLine(
-                    `${jsdoc ?? ''}${readonly(description)}${escapeProperty(name)}${optional(description)}: ${
-                        description.optional === 'explicit' ? `(${nestedChild} | undefined)` : nestedChild
-                    }`
-                )
+            for (const [name, property] of Object.entries(shape)) {
+                const { definition, output } = property
+                if (output?.find((t) => t.type === 'typescript')?.content !== false) {
+                    const child = context.render(property, { property: name })
+                    const jsdoc = JSDoc.from(property)
+                    writer.writeLine(
+                        `${jsdoc ?? ''}${readonly(definition)}${escapeProperty(name)}${optional(property)}: ${child}`,
+                    )
+                }
             }
             const indices: [string, string][] = []
-            const indexSignature = value.indexSignature
-            const commonIndex = `[k: string]`
-            if (indexSignature !== undefined) {
-                // writer.writeLine(`[k: string]: ${walkCst(indexSignature, typescriptVisitor, context)}`)
-                indices.push([commonIndex, walkTherefore(indexSignature, typescriptVisitor, context)])
+            const commonIndex = '[k: string]'
+            if (recordType !== undefined) {
+                indices.push([commonIndex, context.render(recordType.optional())])
             }
-            const indexPatterns = value.indexPatterns
-            if (indexPatterns !== undefined) {
-                for (const [pattern, node] of Object.entries(indexPatterns)) {
-                    // writer.writeLine(`[k: ${getIndexSignatureType(pattern)}]: ${walkCst(node, typescriptVisitor, context)}`)
+            if (patternProperties !== undefined) {
+                for (const [pattern, patternNode] of Object.entries(patternProperties)) {
                     const mappedType = getIndexSignatureType(pattern)
                     if ('type' in mappedType) {
-                        indices.push([`[k: ${mappedType.type}]`, walkTherefore(node, typescriptVisitor, context)])
+                        indices.push([`[k: ${mappedType.type}]`, context.render(patternNode)])
                     } else {
                         for (const name of mappedType.names) {
-                            indices.push([name, walkTherefore(node, typescriptVisitor, context)])
+                            indices.push([name, context.render(patternNode)])
                         }
                     }
                 }
@@ -207,7 +176,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
             if (indices.length > 0) {
                 const grouped = mapValues(
                     groupBy(indices, ([key]) => key),
-                    (values): string[] | undefined => values.map(([, v]) => v)
+                    (values): string[] | undefined => values.map(([, v]) => v),
                 )
                 const common = grouped[commonIndex]
                 if (keysOf(grouped).length > 1 && common !== undefined) {
@@ -226,234 +195,84 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
                 }
             }
         })
-        return writer.toString()
+        return toPrimitive(node, writer.toString())
     },
-    array: (obj, context) => {
-        // @todo a bit more heuristic here
-        const isSmall = (t: ThereforeCst) =>
-            (t.type !== 'object' || t.children.length < 3) &&
-            (t.type !== 'union' || t.children.length < 4) &&
-            ((t.type === 'enum' && t.children.length < 4) || t.type !== 'enum')
-
+    array: (node, context) => {
         let localReference: string | undefined = undefined
-        const [items] = obj.children as [ThereforeCst]
-        if (!isSmall(items)) {
-            const { locals } = context
-            if (locals[items.uuid] === undefined) {
-                const sourceSymbol = `${context.symbolName}${
-                    context.property !== undefined
-                        ? camelCase(context.property, {
-                              pascalCase: true,
-                              preserveConsecutiveUppercase: true,
-                          })
-                        : ''
-                }${camelCase(obj.type, { pascalCase: true, preserveConsecutiveUppercase: true })}`
-                const { definition: local } = toTypescriptDefinition({
-                    sourceSymbol,
-                    schema: items,
-                    exportSymbol: false,
-                    locals,
-                })
-                locals[local.uuid] = local
-            }
-            localReference = walkTherefore(
-                $ref(context.property !== undefined ? [context.property, items] : items),
-                typescriptVisitor,
-                context
-            )
+        const element = node.element
+        if (!isSmall(element)) {
+            const symbolName = camelcase([context.property, node.type].filter(isDefined).join('_'))
+            element.name = symbolName
+            element.transform ??= {}
+            element.transform.symbolName = (name) =>
+                `${context.symbol !== undefined ? context.references.reference(context.symbol, 'symbolName') : ''}${name}`
+
+            setDefaultNames(element)
+            const local = $ref(element)
+            localReference = context.render(local, context)
         }
 
-        const itemsTs = localReference ?? walkTherefore<string, TypescriptWalkerContext>(items, typescriptVisitor, context)
-        const { minItems, maxItems } = obj.value
+        const itemsTs = localReference ?? context.render(element)
+        const { minItems, maxItems } = node.options
         if (minItems !== undefined && minItems > 0 && maxItems === undefined) {
-            return `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`
-        } else if (minItems !== undefined && minItems > 0 && maxItems !== undefined && maxItems >= minItems) {
-            return ` [${`${itemsTs}, `.repeat(minItems)}${`(${itemsTs})?, `.repeat(maxItems - minItems)}]`
-        } else if (maxItems !== undefined && maxItems >= 0) {
-            return ` [${`(${itemsTs})?, `.repeat(maxItems)}]`
+            return toPrimitive(node, `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`)
         }
-        return `(${itemsTs})[]`
-    },
-    tuple: ({ children }, context) => {
-        // for named tuples
-        if (isNamedCstNodeArray(children)) {
-            return `[${children
-                .map((c) => [c, walkTherefore(c, typescriptVisitor, context)] as const)
-                .map(([child, ts]) => `${child.name}${optional(child.description)}: ${ts}`)
-                .join(', ')}]`
+        if (minItems !== undefined && minItems > 0 && maxItems !== undefined && maxItems >= minItems) {
+            return toPrimitive(node, ` [${`${itemsTs}, `.repeat(minItems)}${`(${itemsTs})?, `.repeat(maxItems - minItems)}]`)
         }
-        return `[${children.map((c) => walkTherefore(c, typescriptVisitor, context)).join(', ')}]`
-    },
-    dict: ({ children }, context) => {
-        const [items] = children
-        const writer = createWriter()
-        writer.inlineBlock(() => {
-            writer.writeLine(`[k: string]: ( ${walkTherefore(items, typescriptVisitor, context)} ) | undefined`)
-        })
-
-        return writer.toString()
-    },
-    ref: ({ children: unevaluatedReference, value }, { references }) => {
-        const reference = evaluate(unevaluatedReference[0])
-
-        const uuid = reference.uuid
-        if (references.find((d) => d.uuid === uuid) === undefined) {
-            const referenceName =
-                reference.name !== undefined
-                    ? camelCase(reference.name, { pascalCase: true, preserveConsecutiveUppercase: true })
-                    : `{{${uuid}:referenceName}}`
-
-            references.push({
-                reference: [reference],
-                name: reference.name,
-                referenceName,
-                uuid: uuid,
-                exportSymbol: value.exportSymbol === true,
-            })
+        if (maxItems !== undefined && maxItems >= 0) {
+            return toPrimitive(node, ` [${`(${itemsTs})?, `.repeat(maxItems)}]`)
         }
-        return `{{${uuid}:referenceName}}`
+        return toPrimitive(node, `(${itemsTs})[]`)
     },
-    custom: (obj, _context): string => obj.value.typescript?.declaration ?? '',
-    default: (obj, _context): string => obj.type,
+    tuple: (node, context) => {
+        const {
+            elements,
+            options: { rest },
+        } = node
+        const restString = rest !== undefined ? [`...${context.render(rest)}`] : []
+        return toPrimitive(node, `[${[...elements.map((c) => context.render(c)), ...restString].join(', ')}]`)
+    },
+    ref: (node, { reference, locals }) => {
+        const {
+            children: [ref],
+        } = node
+
+        // this reference was not exported on its own, which means we'll have to hoist it in
+        if ((ref.sourcePath === undefined && locals.find((l) => l.id === ref.id)) === undefined) {
+            locals.push(ref)
+        }
+        return toPrimitive(node, reference(ref))
+    },
+    default: (node, context): string => {
+        const child = node.children?.[0]
+        if (node.isCommutative && child !== undefined) {
+            return context.render(child)
+        }
+        console.error(node)
+        throw new Error('should not be called')
+    },
 }
 
 export interface TypescriptSubtree {
-    node: ThereforeCst
+    node: Node
     fileSuffix?: string
     filePath?: string
 }
 
-export function sanitizeTypescriptTypeName(symbol: string): string {
-    return symbol.replace(/[^a-zA-Z0-9]/g, ' ')
-}
+export function asDeclaration(
+    declType: string,
+    obj: Node,
+    { exportSymbol, references }: { exportSymbol: boolean; references: References<'typescript'> },
+) {
+    const exportString = exportSymbol ? 'export ' : ''
+    const writer = createWriter()
+    writer
+        .write(JSDoc.fromNode(obj) ?? '')
+        .write(exportString)
+        .write(declType)
+        .write(' ')
+        .write(references.reference(obj, 'symbolName'))
 
-export function toTypescriptDefinition({
-    sourceSymbol,
-    symbolName,
-    schema,
-    fileHash = '',
-    exportSymbol = true,
-    locals = {},
-}: {
-    sourceSymbol: string
-    symbolName?: string
-    schema: ThereforeCst & { uuid: string }
-    fileHash?: string
-    exportSymbol?: boolean
-    locals?: TypescriptDefinition['locals']
-}): { definition: TypescriptDefinition; subtrees: TypescriptSubtree[] } {
-    // allow propagation and deduplication
-    locals ??= {}
-    const references: TypescriptDefinition['references'] = []
-
-    const readableSymbolName = camelCase(sanitizeTypescriptTypeName(symbolName ?? sourceSymbol), {
-        pascalCase: true,
-        preserveConsecutiveUppercase: true,
-    })
-
-    const context = {
-        symbolName: readableSymbolName,
-        references,
-        locals,
-        exportKeyword: exportSymbol ? 'export ' : '',
-        sourceSymbol,
-        property: undefined,
-    }
-    const declaration = walkTherefore(schema, typeDefinitionVisitor, context)
-
-    let allSubtrees: TypescriptSubtree[] = []
-    let imports: string[] = []
-    if (schema.type === 'custom') {
-        imports = schema.value.typescript?.imports ?? []
-        allSubtrees = schema.children.map((c) => ({
-            node: c,
-        }))
-        // make the references transitive
-        for (const child of schema.children) {
-            walkTherefore($ref(child, { validator: child.description.validator }), typescriptVisitor, context)
-        }
-    } else if (schema.description.validator?.enabled === true) {
-        if (schema.description.validator.assert) {
-            imports.push(`import { ValidationError } from 'ajv'`)
-        }
-        if (schema.description.validator.compile === false) {
-            imports.push(`import AjvValidator from 'ajv'`)
-        } else {
-            imports.push(`import type { ValidateFunction } from 'ajv'`)
-        }
-    }
-
-    const groupedTrees = groupBy(allSubtrees, (node) => node.node.uuid)
-
-    const subtrees = valuesOf(groupedTrees).map((xs) => {
-        let prev = xs[0]!
-        for (const x of xs.slice(1)) {
-            if (x.node.description.validator?.enabled) {
-                const { assert = false, compile = true } = prev.node.description.validator ?? {}
-                prev.node.description.validator = {
-                    enabled: true,
-                    assert: assert || x.node.description.validator.enabled,
-                    compile: (compile || x.node.description.validator.compile) ?? true,
-                }
-            }
-            prev = x
-        }
-        return xs[0]!
-    })
-
-    return {
-        definition: {
-            imports,
-            references,
-            sourceSymbol,
-            symbolName: readableSymbolName,
-            uuid: schema.uuid,
-            declaration: declaration.declaration,
-            referenceName: declaration.referenceName,
-            uniqueSymbolName: `{{${schema.uuid}:symbolName}}${fileHash}`,
-            isExported: exportSymbol,
-            schema: () => schema,
-            locals,
-        },
-        subtrees,
-    }
-}
-
-export interface DeclarationOutput {
-    declaration: string
-    referenceName: string
-    sourceSymbol: string | undefined
-    render: () => string
-}
-
-export function decltype(obj: CustomType | DictType | ObjectType | RefType | UnionType) {
-    if (obj.type === 'dict' || obj.type === 'object') {
-        return { declType: 'interface' }
-    }
-    if (obj.type === 'custom') {
-        const { declType, operator } = obj.value.typescript ?? {}
-        return { declType, operator }
-    }
-    return { declType: 'type', operator: '= ' }
-}
-
-export function toDeclaration(
-    obj: CustomType | DictType | ObjectType | RefType | UnionType,
-    context: TypescriptWalkerContext
-): DeclarationOutput {
-    const { symbolName, exportKeyword, sourceSymbol } = context
-    const exportString = exportKeyword ?? ''
-    const { declType = '', operator = '' } = decltype(obj)
-    const declaration = `${toJSDoc({ key: symbolName, meta: obj.description }) ?? ''}${exportString}${declType} {{${
-        obj.uuid
-    }:symbolName}} ${operator}${walkTherefore(obj, typescriptVisitor, context)}\n`
-    return {
-        declaration,
-        referenceName: `{{${obj.uuid}:symbolName}}`,
-        sourceSymbol,
-        render: () =>
-            renderTemplate(declaration, {
-                [`${obj.uuid}:symbolName`]: symbolName,
-            }),
-    }
+    return writer.toString()
 }

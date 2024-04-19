@@ -1,18 +1,51 @@
-import { $null } from './index.js'
+import { $null } from './null.js'
 
-import { expect, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
+import type { ConstType } from '../const/const.js'
 
-it('function', () => {
-    expect($null).toMatchInlineSnapshot(`[Function]`)
+import { arbitraryContext, collect, forAll, repeat, take, xoroshiro128plus } from '@skyleague/axioms'
+import type { Equal, Expect } from 'type-testing'
+import { expect, expectTypeOf, it } from 'vitest'
+
+it('value', () => {
+    forAll(arbitrary($null()), (x) => {
+        expect(x).toBeNull()
+    })
 })
 
-it('simple', () => {
-    expect($null()).toMatchInlineSnapshot(`
-        {
-          "description": {},
-          "type": "null",
-          "uuid": "0001-000",
-          "value": {},
-        }
+it('types', () => {
+    const schema = $null()
+    expectTypeOf(schema.infer).toEqualTypeOf<null>()
+
+    type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ConstType<null>>>
+
+    expectTypeOf(schema.definition.default).toEqualTypeOf<null | undefined>()
+    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<null[] | undefined>()
+})
+
+it('random sample', () => {
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary($null())
+    expect(
+        collect(
+            take(
+                repeat(() => arb.sample(ctx)),
+                10,
+            ),
+        ),
+    ).toMatchInlineSnapshot(`
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ]
     `)
 })

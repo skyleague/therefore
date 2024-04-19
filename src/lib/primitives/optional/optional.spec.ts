@@ -1,31 +1,41 @@
-import { $optional } from './index.js'
+import { $optional } from './optional.js'
 
-import { $string } from '../index.js'
+import { $string } from '../string/string.js'
 
 import { expect, it } from 'vitest'
 
 it('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`
-        {
-          "description": {
-            "optional": "implicit",
-          },
-          "type": "string",
-          "uuid": "0002-000",
-          "value": {},
-        }
+      StringType {
+        "attributes": {
+          "generic": {},
+          "typescript": {},
+        },
+        "definition": {
+          "optional": true,
+        },
+        "id": "2",
+        "isCommutative": true,
+        "options": {},
+        "type": "string",
+      }
     `)
 })
 
 it('string expanded', () => {
     expect($optional($string())).toMatchInlineSnapshot(`
-        {
-          "description": {
-            "optional": "implicit",
-          },
-          "type": "string",
-          "uuid": "0002-000",
-          "value": {},
-        }
+      StringType {
+        "attributes": {
+          "generic": {},
+          "typescript": {},
+        },
+        "definition": {
+          "optional": true,
+        },
+        "id": "2",
+        "isCommutative": true,
+        "options": {},
+        "type": "string",
+      }
     `)
 })

@@ -1,7 +1,7 @@
-import type { Operation } from './openapi.type.js'
-import { methodName } from './restclient.js'
+import type { Operation } from '../../../types/openapi.type.js'
+import { methodName } from './builder.js'
 
-import { expect, describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('method name', () => {
     it('name from operation id', () => {
@@ -30,13 +30,13 @@ describe('method name', () => {
 
     it('use suffix if last part is parameterized', () => {
         expect(methodName('/users/{userId}/events/{eventId}', 'post', {} as Operation)).toMatchInlineSnapshot(
-            `"createUserEventByEventId"`
+            `"createUserEventByEventId"`,
         )
     })
 
     it('use action instead of method type', () => {
         expect(methodName('/users/{userId}/events/{eventId}:terminate', 'post', {} as Operation)).toMatchInlineSnapshot(
-            `"terminateUserEvent"`
+            `"terminateUserEvent"`,
         )
     })
 
@@ -47,7 +47,7 @@ describe('method name', () => {
 
     it('two following parameters', () => {
         expect(methodName('/api/projects/{id}{.format}', 'post', {} as Operation)).toMatchInlineSnapshot(
-            `"createApiProjectByFormat"`
+            `"createApiProjectByFormat"`,
         )
     })
 })

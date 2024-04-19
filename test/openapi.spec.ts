@@ -1,13 +1,11 @@
-import { compileOutputFiles } from '../src/commands/generate/generate.js'
+import { compileOutput } from '../src/commands/generate/generate.js'
 
 import { expect, it } from 'vitest'
 
 it('output generation', async () => {
     expect(
-        await compileOutputFiles(['src/lib/primitives/restclient/openapi.schema.ts'], {
-            outputFileRename: (file: string) => file.replace('.ts', '.type.ts'),
+        await compileOutput(['src/types/openapi.schema.ts'], {
             cwd: process.cwd(),
-            compile: true,
-        })
+        }),
     ).toMatchSnapshot()
 })
