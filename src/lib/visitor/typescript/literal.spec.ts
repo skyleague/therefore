@@ -45,7 +45,7 @@ describe('toLiteral', () => {
     })
 
     it('undefined', () => {
-        expect(toLiteral(undefined)).toMatchInlineSnapshot(`"null"`)
+        expect(toLiteral(undefined)).toMatchInlineSnapshot(`"undefined"`)
     })
 
     it('null', () => {

@@ -63,7 +63,7 @@ export function toLiteral(obj: unknown): string {
         bigint: (n: bigint) => `${n}`,
         string: (n: string) => stringLiteral(n, { allowBacktick: true }),
         boolean: (n: boolean) => n.toString(),
-        undefined: (_: undefined) => 'null',
+        undefined: (_: undefined) => 'undefined',
         symbol: unsupported,
         function: unsupported,
     }
