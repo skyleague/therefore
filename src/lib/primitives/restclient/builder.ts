@@ -10,7 +10,21 @@ import { asString, objectProperty } from '../../visitor/typescript/literal.js'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript.js'
 import { createWriter } from '../../writer.js'
 
-import { type NoUndefinedFields, entriesOf, identity, isDefined, keysOf, memoize, omitUndefined, pick } from '@skyleague/axioms'
+import {
+    type NoUndefinedFields,
+    collect,
+    entriesOf,
+    enumerate,
+    groupBy,
+    identity,
+    isDefined,
+    keysOf,
+    memoize,
+    omitUndefined,
+    pick,
+    unique,
+    valuesOf,
+} from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import type CodeBlockWriter from 'code-block-writer'
 import { capitalize, singularize } from 'inflection'
@@ -290,9 +304,14 @@ export class RestClientBuilder {
                         requestValidationStr = `this.validateRequestBody(${value(request.schema)}, ${request.name})`
                     }
                 }
-                const parameters: Parameter[] = [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
-                    .map((parameter) => jsonPointer({ schema: this.openapi, ptr: parameter }) as Parameter | undefined)
-                    .filter(isDefined)
+                const parameters: Parameter[] = collect(
+                    unique(
+                        [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
+                            .map((parameter) => jsonPointer({ schema: this.openapi, ptr: parameter }) as Parameter | undefined)
+                            .filter(isDefined),
+                        (a, b) => a.name === b.name && a.in === b.in,
+                    ),
+                )
 
                 let clientDecl = 'this.client'
                 const authMethods: string[] = []
@@ -312,6 +331,22 @@ export class RestClientBuilder {
                         )
                     }
                     clientDecl = `this.buildClient(${hasAuthParameters ? 'auth' : ''})`
+                }
+
+                // check if there are implicit path parameters
+                const ids = path
+                    .split('/')
+                    .map((x) => x.match(/{(.*?)}/)?.[1])
+                    .filter(isDefined)
+                for (const id of ids) {
+                    const found = parameters.find((p) => p.in === 'path' && p.name === id)
+                    if (found === undefined) {
+                        parameters.push({
+                            in: 'path',
+                            name: id,
+                            required: true,
+                        })
+                    }
                 }
 
                 const pathParameters = this.asPathParameters(parameters)
@@ -442,12 +477,14 @@ export class RestClientBuilder {
                             queryParameters.length > 0 ||
                             headerParameters.length > 0 ||
                             (this.options.explicitContentNegotiation && hasResponse)
+                        const hasSyntaxSugarMethod = ['get', 'delete', 'post', 'put', 'patch'].includes(httpMethod)
                         writer
                             .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                             .conditionalWrite(hasResponse, 'return this.awaitResponse(')
                             .conditionalWrite(!hasResponse, 'return ')
-                            .write(`${clientDecl}.${httpMethod}(${asString(urlPath)}`)
-                        if (hasInputObj || hasResponse) {
+                            .conditionalWrite(hasSyntaxSugarMethod, `${clientDecl}.${httpMethod}(${asString(urlPath)}`)
+                            .conditionalWrite(!hasSyntaxSugarMethod, `${clientDecl}(${asString(urlPath)}`)
+                        if (hasInputObj || hasResponse || !hasSyntaxSugarMethod) {
                             writer
                                 .write(', ')
                                 .inlineBlock(() => {
@@ -480,6 +517,9 @@ export class RestClientBuilder {
                                     )
                                     if (hasResponse && responses.responseType !== undefined) {
                                         writer.write(`responseType: '${responses.responseType}',`)
+                                    }
+                                    if (!hasSyntaxSugarMethod) {
+                                        writer.write(`method: '${httpMethod.toUpperCase()}',`)
                                     }
                                 })
                                 .write(')')
@@ -1040,6 +1080,24 @@ export class RestClientBuilder {
             })
             .filter(isDefined)
             .sort((a, b) => a.method.localeCompare(b.method))
+
+        // deduplicate methods by operation first
+        const _groupedByOperation = valuesOf(groupBy(pathItems, (x) => x.method))
+            .filter((x) => x.length > 1)
+            .map((x) => {
+                for (const item of x) {
+                    item.method = camelCase(`${item.httpMethod}_${item.method}`)
+                }
+                return x
+            })
+        const _groupedByNumber = valuesOf(groupBy(pathItems, (x) => x.method))
+            .filter((x) => x.length > 1)
+            .map((x) => {
+                for (const [i, item] of enumerate(x)) {
+                    item.method = `${item.method}${i}`
+                }
+                return x
+            })
         return pathItems
     }
 }
