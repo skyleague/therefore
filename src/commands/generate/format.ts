@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { Biome, Distribution } from '@biomejs/js-api'
-import { mapTry, tryAsValue } from '@skyleague/axioms'
+import { mapTry, memoize, tryAsValue } from '@skyleague/axioms'
 import type { ThereforeOutputType } from '../../lib/output/types.js'
 
 // biome-ignore lint/suspicious/noExplicitAny: it's a third-party library
@@ -14,7 +14,7 @@ export async function maybeLoadPrettier() {
     }
 }
 
-const biome = await (async () => {
+const biome = memoize(async () => {
     const local = await Biome.create({
         distribution: Distribution.NODE,
     })
@@ -32,7 +32,7 @@ const biome = await (async () => {
     }
 
     return local
-})()
+})
 
 export async function formatFile({
     prettier,
@@ -52,8 +52,9 @@ export async function formatFile({
             parser: type,
         })
     }
+    const formatter = await biome()
     const formatted = mapTry(input, () => {
-        const formatted = biome.formatContent(input, {
+        const formatted = formatter.formatContent(input, {
             // this virual path might ignore the file alltogether
             // filePath: file,
             filePath: `src/${path.dirname(file)}.${file.split('.').pop()}`,
