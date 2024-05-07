@@ -22,8 +22,8 @@ it('types', () => {
     expectTypeOf(schema.infer).toEqualTypeOf<'foobar'>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ConstType<'foobar'>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<'foobar' | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<'foobar'[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<'foobar' | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<'foobar'[] | undefined>()
 })
 
 it('random sample', () => {

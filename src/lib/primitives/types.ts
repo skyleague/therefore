@@ -12,6 +12,7 @@ import type { StringType } from './string/string.js'
 import type { TupleType } from './tuple/tuple.js'
 import type { UnionType } from './union/union.js'
 import type { UnknownType } from './unknown/unknown.js'
+import type { ValidatorType } from './validator/validator.js'
 
 export type ThereforeSchema =
     | ArrayType
@@ -29,3 +30,4 @@ export type ThereforeSchema =
     | UnionType
     | UnknownType
     | GraphqlFieldType
+    | ValidatorType

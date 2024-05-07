@@ -10,24 +10,24 @@ function escapeComment(x: string) {
 export class JSDoc {
     public static fromNode(node: Node) {
         return JSDoc.from({
-            key: node.attributes.typescript.symbolName ?? node.name,
-            definition: {
-                title: node.definition.jsonschema?.title,
-                examples: node.definition.jsonschema?.examples,
-                description: node.definition.description,
-                default: node.definition.default,
-                readonly: node.definition.readonly,
-                deprecated: node.definition.deprecated,
+            key: node._attributes.typescript.symbolName ?? node._name,
+            _definition: {
+                title: node._definition.jsonschema?.title,
+                examples: node._definition.jsonschema?.examples,
+                description: node._definition.description,
+                default: node._definition.default,
+                readonly: node._definition.readonly,
+                deprecated: node._definition.deprecated,
             },
         })
     }
 
     public static from({
         key,
-        definition,
+        _definition: definition,
     }: {
         key?: string
-        definition: {
+        _definition: {
             title?: string | undefined
             summary?: string | undefined
             description?: string | undefined

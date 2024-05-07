@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 
-import AjvValidator from 'ajv'
+import { Ajv } from 'ajv'
 import type { DefinedError } from 'ajv'
 
 import CartItemSchema from './schemas/cart-item.schema.json' with { type: 'json' }
@@ -17,7 +17,7 @@ export interface CartItem {
 }
 
 export const CartItem = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,

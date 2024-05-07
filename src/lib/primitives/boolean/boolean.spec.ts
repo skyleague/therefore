@@ -18,8 +18,8 @@ it('types', () => {
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, BooleanType>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<boolean | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<boolean[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<boolean | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<boolean[] | undefined>()
 })
 
 it('types - optional', () => {
@@ -27,18 +27,18 @@ it('types - optional', () => {
     expectTypeOf(schema.infer).toEqualTypeOf<boolean | undefined>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, InferWith<BooleanType, undefined>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<boolean | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<boolean[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<boolean | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<boolean[] | undefined>()
 })
 
 it('example', () => {
     expect($boolean({ jsonschema: { examples: [true, false] } })).toMatchInlineSnapshot(`
       BooleanType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               true,
@@ -46,10 +46,10 @@ it('example', () => {
             ],
           },
         },
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "boolean",
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "boolean",
       }
     `)
     // @ts-expect-error
@@ -59,17 +59,17 @@ it('example', () => {
 it('default', () => {
     expect($boolean({ default: true })).toMatchInlineSnapshot(`
       BooleanType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {
+        "_definition": {
           "default": true,
         },
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "boolean",
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "boolean",
       }
     `)
     // @ts-expect-error

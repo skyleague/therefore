@@ -1,18 +1,21 @@
-import type { RefOptions } from './type.js'
-import { RefType } from './type.js'
-
+import { type ConstExpr, isFunction, isObject } from '@skyleague/axioms'
+import { toJSONSchema } from '@typeschema/main'
+import type { Infer, Schema as TypeSchema } from '@typeschema/main'
+import type { JsonSchema } from '../../../json.js'
+import { isNode } from '../../cst/cst.js'
 import type { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import type { Schema } from '../../types.js'
 import type { SchemaOptions } from '../base.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
+import { therefore } from '../therefore.js'
+import type { ZodSchema, ZodSchemaAsNode } from '../zod/type.js'
+import { $zod } from '../zod/zod.js'
+import type { RefOptions } from './type.js'
+import { RefType } from './type.js'
 
-import { type ConstExpr, isFunction, isObject } from '@skyleague/axioms'
-import { toJSONSchema } from '@typeschema/all'
-import type { Infer, Schema as TypeSchema } from '@typeschema/all'
-import type { JsonSchema } from '../../../json.js'
-import { isNode } from '../../cst/cst.js'
+export const cache = new WeakMap()
 
 /**
  * Create a new `RefType` instance with the given options.
@@ -36,25 +39,30 @@ export function $ref<const Reference extends Node>(
     reference: ConstExpr<Reference>,
     options?: SchemaOptions<RefOptions, Reference['infer']>,
 ): RefType<Intrinsic<Reference>>
+export function $ref<T extends ZodSchema>(reference: T, options?: SchemaOptions<RefOptions>): ZodSchemaAsNode<T>
 export function $ref<T extends TypeSchema>(
     reference: T,
     options?: SchemaOptions<RefOptions>,
 ): Promise<RefType<NodeTrait & { infer: Infer<T> }>>
-export function $ref<const Reference extends Node>(
+export function $ref<const Reference extends Node, T extends ZodSchema>(
     reference: ConstExpr<Reference> | Schema<unknown> | TypeSchema,
     options: SchemaOptions<RefOptions, Reference['infer']> = {},
-): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> {
+): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> | ZodSchemaAsNode<T> {
     if (isObject(reference)) {
         if ('is' in reference && isFunction(reference.is)) {
             return $jsonschema(reference.schema as JsonSchema, options) as RefType<Intrinsic<Reference>>
         }
         if (!isNode(reference)) {
+            if ('_def' in reference) {
+                // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+                return $zod(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
+            }
             // biome-ignore lint/suspicious/noExplicitAny: just roll with it
-            return toJSONSchema(reference).then((schema) => $jsonschema(schema as any, options)) as Promise<
+            return toJSONSchema(reference as never).then((schema) => $jsonschema(schema as any, options)) as Promise<
                 RefType<NodeTrait & { infer: unknown }>
             >
         }
     }
 
-    return RefType.from(reference as ConstExpr<Reference>, options)
+    return RefType._from(reference as ConstExpr<Reference>, options)
 }

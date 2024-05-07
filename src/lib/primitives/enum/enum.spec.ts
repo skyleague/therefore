@@ -29,32 +29,34 @@ it('types', () => {
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, EnumType<['foo', 'bar']>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<'foo' | 'bar' | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<('foo' | 'bar')[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<'foo' | 'bar' | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<('foo' | 'bar')[] | undefined>()
 
     const schemaNative = $enum({ foo: 'fooz', bar: 'baz' })
     expectTypeOf(schemaNative.infer).toEqualTypeOf<'fooz' | 'baz'>()
 
-    type _test_native_intrinsic = Expect<Equal<Intrinsic<typeof schemaNative>, NativeEnumType<('fooz' | 'baz')[]>>>
+    type _test_native_intrinsic = Expect<
+        Equal<Intrinsic<typeof schemaNative>, NativeEnumType<{ readonly foo: 'fooz'; readonly bar: 'baz' }>>
+    >
 
-    expectTypeOf(schemaNative.definition.default).toEqualTypeOf<'fooz' | 'baz' | undefined>()
-    expectTypeOf(schemaNative.definition.jsonschema?.examples).toEqualTypeOf<('fooz' | 'baz')[] | undefined>()
+    expectTypeOf(schemaNative._definition.default).toEqualTypeOf<'fooz' | 'baz' | undefined>()
+    expectTypeOf(schemaNative._definition.jsonschema?.examples).toEqualTypeOf<('fooz' | 'baz')[] | undefined>()
 })
 
 it('values', () => {
     expect($enum(['1', '2', '3', '4'])).toMatchInlineSnapshot(`
       EnumType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "isNamed": false,
-        "options": {},
-        "type": "enum",
-        "values": [
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_isNamed": false,
+        "_options": {},
+        "_type": "enum",
+        "enum": [
           "1",
           "2",
           "3",
@@ -72,26 +74,20 @@ it('named', () => {
         }),
     ).toMatchInlineSnapshot(`
       NativeEnumType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "isNamed": true,
-        "options": {},
-        "type": "enum",
-        "values": [
-          [
-            "foo",
-            "bar",
-          ],
-          [
-            "woo",
-            "baz",
-          ],
-        ],
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_isNamed": true,
+        "_options": {},
+        "_type": "enum",
+        "enum": {
+          "foo": "bar",
+          "woo": "baz",
+        },
       }
     `)
 })

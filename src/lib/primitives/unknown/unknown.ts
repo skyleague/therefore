@@ -13,18 +13,18 @@ export interface UnknownOptions {
 }
 
 export class UnknownType extends NodeTrait {
-    public override type = 'unknown' as const
+    public override _type = 'unknown' as const
 
-    public options: UnknownOptions
+    public _options: UnknownOptions
 
     public constructor({ restrictToJson = false, ...options }: SchemaOptions<Partial<UnknownOptions>>) {
         super(options)
-        this.options = { restrictToJson, ...options }
+        this._options = { restrictToJson, ...options }
     }
 
     public arbitrary(options: Partial<UnknownGenerator>) {
-        this.options.arbitrary ??= {}
-        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        this._options.arbitrary ??= {}
+        this._options.arbitrary = { ...this._options.arbitrary, ...options }
         return this
     }
 }

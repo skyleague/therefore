@@ -11,40 +11,40 @@ it('function', () => {
 it('expand', () => {
     expect($record($string)).toMatchInlineSnapshot(`
       RecordType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "1",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {},
-        "id": "2",
-        "isCommutative": false,
-        "options": {},
-        "recordType": StringType {
-          "attributes": {
+        "_definition": {},
+        "_id": "2",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
+        "element": StringType {
+          "_attributes": {
             "generic": {},
             "typescript": {},
           },
-          "definition": {},
-          "id": "1",
-          "isCommutative": true,
-          "options": {},
-          "type": "string",
+          "_definition": {},
+          "_id": "1",
+          "_isCommutative": true,
+          "_options": {},
+          "_type": "string",
         },
         "shape": {},
-        "type": "object",
       }
     `)
 })
@@ -52,24 +52,24 @@ it('expand', () => {
 it('example', () => {
     expect($record($string).jsonschema({ examples: [{ foo: 'bar' }] })).toMatchInlineSnapshot(`
       RecordType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "1",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               {
@@ -78,22 +78,22 @@ it('example', () => {
             ],
           },
         },
-        "id": "2",
-        "isCommutative": false,
-        "options": {},
-        "recordType": StringType {
-          "attributes": {
+        "_id": "2",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
+        "element": StringType {
+          "_attributes": {
             "generic": {},
             "typescript": {},
           },
-          "definition": {},
-          "id": "1",
-          "isCommutative": true,
-          "options": {},
-          "type": "string",
+          "_definition": {},
+          "_id": "1",
+          "_isCommutative": true,
+          "_options": {},
+          "_type": "string",
         },
         "shape": {},
-        "type": "object",
       }
     `)
     // @ts-expect-error
@@ -103,44 +103,44 @@ it('example', () => {
 it('default', () => {
     expect($record($string, { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
       RecordType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "1",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "default": {
             "foo": "bar",
           },
         },
-        "id": "2",
-        "isCommutative": false,
-        "options": {},
-        "recordType": StringType {
-          "attributes": {
+        "_id": "2",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
+        "element": StringType {
+          "_attributes": {
             "generic": {},
             "typescript": {},
           },
-          "definition": {},
-          "id": "1",
-          "isCommutative": true,
-          "options": {},
-          "type": "string",
+          "_definition": {},
+          "_id": "1",
+          "_isCommutative": true,
+          "_options": {},
+          "_type": "string",
         },
         "shape": {},
-        "type": "object",
       }
     `)
 

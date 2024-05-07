@@ -18,8 +18,8 @@ import { toLiteral } from '../../visitor/typescript/literal.js'
 export function ajvOptions(node?: Node): Options {
     return structuredClone({
         ...defaultAjvConfig,
-        ...(node?.definition.validator?.coerce ? { coerceTypes: true } : {}),
-        ...node?.definition.validator?.ajv,
+        ...(node?._definition.validator?.coerce ? { coerceTypes: true } : {}),
+        ...node?._definition.validator?.ajv,
     })
 }
 
@@ -29,26 +29,26 @@ export interface ValidatorOptions {
      *
      * @defaultvalue false
      */
-    assert?: boolean | undefined
+    assert: boolean
 
     /**
      * Toggles whether a parse function should be generated.
      *
      * @defaultvalue true
      */
-    parse?: boolean | undefined
+    parse: boolean
 
     /**
      * Whether the validator should be compiled.
      *
      * @defaultValue undefined
      */
-    compile?: boolean | undefined
+    compile: boolean
 
     /**
      * Whether to coerce the input to the schema.
      */
-    coerce?: boolean | undefined
+    coerce: boolean
 
     /**
      *
@@ -61,12 +61,10 @@ export interface ValidatorOptions {
 }
 
 export class ValidatorType<T extends Node = Node> extends Node {
-    public override type = 'validator' as const
-    public override children: [Node]
+    public override _type = 'validator' as const
+    public override _children: [Node]
 
-    public assert: boolean
-    public compile: boolean
-    public parse: boolean
+    public _options: ValidatorOptions
     public formats: string[] | undefined = []
     public declare infer: T['infer']
     public declare intrinsic: Intrinsic<T>
@@ -74,45 +72,48 @@ export class ValidatorType<T extends Node = Node> extends Node {
     public constructor(node: ConstExpr<T>) {
         super({})
         const evaluatedNode = evaluate(node)
-        const { assert = false, compile = true, parse = true } = evaluatedNode.definition.validator ?? {}
-        this.assert = assert
-        this.compile = compile
-        this.parse = parse
-        this.children = [evaluatedNode]
-        this.connections = [evaluatedNode]
+
+        this._options = { assert: false, compile: true, parse: true, coerce: false, ...evaluatedNode._definition.validator }
+        this._children = [evaluatedNode]
+        this._connections = [evaluatedNode]
     }
 
-    public override hooks: Partial<Hooks> = {
+    public override _hooks: Partial<Hooks> = {
         onLoad: [
             () => {
-                this.name ??= this.children[0].name
+                this._name ??= this._children[0]._name
             },
         ],
         onExport: [
             (n) => {
-                const schemaName = decamelize(n.name, { separator: '-' })
+                const schemaName = decamelize(n._name, { separator: '-' })
 
-                n.attributes.typescript.schemaPath = path.join(
-                    path.dirname(n.sourcePath),
-                    `./schemas/${schemaName}.schema.js${this.compile ? '' : 'on'}`,
+                n._attributes.typescript.schemaPath = path.join(
+                    path.dirname(n._sourcePath),
+                    `./schemas/${schemaName}.schema.js${this._options.compile ? '' : 'on'}`,
                 )
             },
         ],
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
-                definition: ({ attributes: { typescript } }, { value, reference, references }) => {
+                definition: ({ _attributes: { typescript } }, { value, reference, references }) => {
                     // be a little cheeky to not mark duplicates in our detection
-                    const child = this.children[0]
+                    const child = this._children[0]
                     const symbolName = references.reference(child, 'symbolName')
-                    this.attributes.typescript.symbolName = symbolName
-                    this.attributes.typescript.referenceName = reference(this)
+                    this._attributes.typescript.symbolName = symbolName
+                    this._attributes.typescript.referenceName = reference(this)
+
+                    const symbolPath = typescript.path
+                    if (symbolPath === undefined) {
+                        throw new Error('path is undefined, node was not properly initialized.')
+                    }
 
                     const writer = createWriter()
-                    const schemaPath = path.relative(path.dirname(typescript.path), typescript.schemaPath ?? '.')
+                    const schemaPath = path.relative(path.dirname(symbolPath), typescript.schemaPath ?? '.')
 
                     const validatorReference = moduleSymbol(`./${schemaPath}`, 'validate', {
                         alias: 'validate',
@@ -126,7 +127,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     return writer
                         .write(`export const ${symbolName} = `)
                         .inlineBlock(() => {
-                            if (this.compile) {
+                            if (this._options.compile) {
                                 writer
                                     .writeLine(
                                         `validate: ${value(validatorReference())} as ${reference(
@@ -135,9 +136,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                     )
                                     .writeLine(`get schema() { return ${symbolName}.validate.schema},`)
                             } else {
-                                const ajvCompile = `new ${value(ajvSymbols.AjvValidator())}.default(${JSON.stringify(
-                                    ajvOptions(child),
-                                )})`
+                                const ajvCompile = `new ${value(ajvSymbols.AjvValidator())}(${JSON.stringify(ajvOptions(child))})`
                                 const compile = `.compile<${symbolName}>(${value(schemaReference())})`
 
                                 if (this.formats !== undefined && this.formats.length > 0) {
@@ -155,7 +154,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
 
                             writer.writeLine(`get errors() { return ${symbolName}.validate.errors ?? undefined },`)
                             writer.writeLine(`is: (o: unknown): o is ${symbolName} => ${symbolName}.validate(o) === true,`)
-                            if (this.assert) {
+                            if (this._options.assert) {
                                 writer
                                     // the full assertion syntax is not yet supported on properties
                                     // https://github.com/microsoft/TypeScript/issues/34523
@@ -170,7 +169,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                     })
                                     .write(',')
                             }
-                            if (this.parse) {
+                            if (this._options.parse) {
                                 const definedErrorReference = reference(ajvSymbols.DefinedError())
                                 writer
                                     .writeLine(
@@ -193,16 +192,16 @@ export class ValidatorType<T extends Node = Node> extends Node {
             },
             {
                 type: 'file',
-                subtype: () => (this.compile ? 'typescript' : 'json'),
+                subtype: () => (this._options.compile ? 'typescript' : 'json'),
                 targetPath: () => {
-                    if (this.attributes.typescript.schemaPath === undefined) {
+                    if (this._attributes.typescript.schemaPath === undefined) {
                         throw new Error('schemaPath is undefined, node was not properly initialized.')
                     }
-                    return this.attributes.typescript.schemaPath
+                    return this._attributes.typescript.schemaPath
                 },
                 content: (_, { references }) => {
-                    const jsonschema = toJsonSchema(this.children[0], {
-                        compile: this.compile,
+                    const jsonschema = toJsonSchema(this._children[0], {
+                        compile: this._options.compile,
                         references,
                         formats: this.formats !== undefined,
                     })
@@ -219,7 +218,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         fs.rmSync(targetFolder, { force: true, recursive: true })
                     }
                 },
-                prettify: () => !this.compile,
+                prettify: () => !this._options.compile,
             },
         ]
     }
@@ -242,6 +241,6 @@ export class ValidatorType<T extends Node = Node> extends Node {
  *
  * @group Modifiers
  */
-export function $validator<T extends Node>(node: T, options: ValidatorOptions = {}): T {
+export function $validator<T extends Node>(node: T, options: Partial<ValidatorOptions> = {}): T {
     return node.validator(options)
 }

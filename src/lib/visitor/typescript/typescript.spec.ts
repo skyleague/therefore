@@ -388,40 +388,40 @@ describe('typescriptVisitor', () => {
           {
             "locals": [
               RecordType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {},
-                "id": "2",
-                "isCommutative": false,
-                "options": {},
-                "recordType": StringType {
-                  "attributes": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": false,
+                "_options": {},
+                "_type": "object",
+                "element": StringType {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_options": {},
+                  "_type": "string",
                 },
                 "shape": {},
-                "type": "object",
               },
             ],
             "references": References {
@@ -434,112 +434,112 @@ describe('typescriptVisitor', () => {
               "hardlinks": {},
               "key2node": Map {
                 "2:symbolName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:aliasName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:referenceName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "references": Map {
@@ -551,40 +551,40 @@ describe('typescriptVisitor', () => {
               },
               "symbols": Map {
                 "2" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "transform": {
@@ -607,40 +607,40 @@ describe('typescriptVisitor', () => {
           {
             "locals": [
               RecordType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {},
-                "id": "2",
-                "isCommutative": false,
-                "options": {},
-                "recordType": StringType {
-                  "attributes": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": false,
+                "_options": {},
+                "_type": "object",
+                "element": StringType {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_options": {},
+                  "_type": "string",
                 },
                 "shape": {},
-                "type": "object",
               },
             ],
             "references": References {
@@ -653,112 +653,112 @@ describe('typescriptVisitor', () => {
               "hardlinks": {},
               "key2node": Map {
                 "2:symbolName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:aliasName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:referenceName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "references": Map {
@@ -770,40 +770,40 @@ describe('typescriptVisitor', () => {
               },
               "symbols": Map {
                 "2" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "transform": {
@@ -820,47 +820,47 @@ describe('typescriptVisitor', () => {
     it('ref - named', () => {
         const ctx = mockTypescriptContext()
         const foo = $record($string)
-        foo.name = 'foo-bar'
+        foo._name = 'foo-bar'
         expect(ctx.render($ref(foo))).toEqual('{{2:referenceName}}')
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [
               RecordType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {},
-                "id": "2",
-                "isCommutative": false,
-                "name": "foo-bar",
-                "options": {},
-                "recordType": StringType {
-                  "attributes": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "foo-bar",
+                "_options": {},
+                "_type": "object",
+                "element": StringType {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_options": {},
+                  "_type": "string",
                 },
                 "shape": {},
-                "type": "object",
               },
             ],
             "references": References {
@@ -873,115 +873,115 @@ describe('typescriptVisitor', () => {
               "hardlinks": {},
               "key2node": Map {
                 "2:symbolName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "name": "foo-bar",
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_name": "foo-bar",
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:aliasName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "name": "foo-bar",
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_name": "foo-bar",
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
                 "2:referenceName" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "name": "foo-bar",
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_name": "foo-bar",
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "references": Map {
@@ -993,41 +993,41 @@ describe('typescriptVisitor', () => {
               },
               "symbols": Map {
                 "2" => RecordType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     StringType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "definition": {},
-                      "id": "1",
-                      "isCommutative": true,
-                      "options": {},
-                      "type": "string",
+                      "_definition": {},
+                      "_id": "1",
+                      "_isCommutative": true,
+                      "_options": {},
+                      "_type": "string",
                     },
                   ],
-                  "definition": {},
-                  "id": "2",
-                  "isCommutative": false,
-                  "name": "foo-bar",
-                  "options": {},
-                  "recordType": StringType {
-                    "attributes": {
+                  "_definition": {},
+                  "_id": "2",
+                  "_isCommutative": false,
+                  "_name": "foo-bar",
+                  "_options": {},
+                  "_type": "object",
+                  "element": StringType {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
                   },
                   "shape": {},
-                  "type": "object",
                 },
               },
               "transform": {
@@ -1490,7 +1490,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "export type {{7:symbolName}} = ({
+          "export type {{5:symbolName}} = ({
               foo: string
           } & {
               bar: string
@@ -1502,7 +1502,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "export type {{14:symbolName}} = ({
+          "export type {{10:symbolName}} = ({
               foo: string
           } & {
               bar: string
@@ -1538,7 +1538,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "export interface {{8:symbolName}} {
+          "export interface {{7:symbolName}} {
               foo: string
               bar: (number | null)
               baz?: (number | undefined)
@@ -1550,7 +1550,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "export interface {{14:symbolName}} {
+          "export interface {{10:symbolName}} {
               foo: string
               /**
                * fooscription
@@ -1574,7 +1574,7 @@ describe('toTypeDefinition', () => {
           "/**
            * @default { foo: 'bar', bar: 'foo' }
            */
-          export interface {{19:symbolName}} {
+          export interface {{13:symbolName}} {
               foo: string
               /**
                * fooscription
@@ -1917,7 +1917,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
             }),
         ).toMatchInlineSnapshot(`
-          "export interface {{8:symbolName}} {
+          "export interface {{7:symbolName}} {
               foo: string
               bar: (number | null)
               baz?: (number | undefined)
@@ -1928,7 +1928,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
             }),
         ).toMatchInlineSnapshot(`
-          "export interface {{14:symbolName}} {
+          "export interface {{10:symbolName}} {
               foo: string
               /**
                * fooscription
@@ -1941,7 +1941,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $enum(['foo', 'bar']) }),
             }),
         ).toMatchInlineSnapshot(`
-          "export interface {{19:symbolName}} {
+          "export interface {{13:symbolName}} {
               foo: 'foo' | 'bar'
           }"
         `)

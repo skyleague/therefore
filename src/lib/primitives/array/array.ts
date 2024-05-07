@@ -23,45 +23,45 @@ export interface ArrayOptions {
 }
 
 export class ArrayType<Element extends Node = Node> extends Node {
-    public override children: [Node]
-    public override type = 'array' as const
+    public override _children: [Node]
+    public override _type = 'array' as const
 
-    public options: ArrayOptions = {}
-    public element: Node
+    public _options: ArrayOptions = {}
+    public element: Element
 
     public declare infer: Element['infer'][]
 
-    public override isCommutative = false
+    public override _isCommutative = false
     public constructor(items: ConstExpr<Element>, options: SchemaOptions<ArrayOptions, Element['infer']>) {
         super(options)
         this.element = evaluate(items)
-        this.children = [this.element]
-        this.options = options
+        this._children = [this.element]
+        this._options = options
     }
 
     public arbitrary(options: Partial<ArrayGenerator<Element['infer'], number>>) {
-        this.options.arbitrary ??= {}
-        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        this._options.arbitrary ??= {}
+        this._options.arbitrary = { ...this._options.arbitrary, ...options }
         return this
     }
 
     public minItems(minItems: number) {
-        this.options.minItems = minItems
+        this._options.minItems = minItems
         return this
     }
 
     public nonempty() {
-        this.options.minItems = 1
+        this._options.minItems = 1
         return this
     }
 
     public maxItems(maxItems: number) {
-        this.options.maxItems = maxItems
+        this._options.maxItems = maxItems
         return this
     }
 
     public set() {
-        this.options.set = true
+        this._options.set = true
         return this
     }
 }

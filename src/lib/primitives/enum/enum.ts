@@ -4,27 +4,25 @@ import { toLiteral } from '../../visitor/typescript/literal.js'
 import { createWriter } from '../../writer.js'
 import type { SchemaOptions } from '../base.js'
 
-import { entriesOf } from '@skyleague/axioms'
-
 export type EnumOptions = object
 
 abstract class _EnumType extends NodeTrait {
-    public override type = 'enum' as const
-    public options: EnumOptions = {}
+    public override _type = 'enum' as const
+    public _options: EnumOptions = {}
 }
 
 export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
-    public isNamed = false as const
-    public values: Values
-
+    public _isNamed = false as const
+    public enum: Values
     public declare infer: Values[number]
+
     public constructor(values: Values, options: SchemaOptions<EnumOptions, Values[number]>) {
         super(options)
-        this.options = options
-        this.values = values
+        this._options = options
+        this.enum = values
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
@@ -36,37 +34,37 @@ export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
     }
 }
 
-export class NativeEnumType<Values extends unknown[] = string[]> extends _EnumType {
-    public isNamed = true as const
-    public values: [string, Values[number]][]
+export class NativeEnumType<Enum extends Record<string, string> = Record<string, string>> extends _EnumType {
+    public _isNamed = true as const
+    public enum: Enum
 
-    public declare infer: Values[number]
-    public constructor(values: [string, Values[number]][], options: SchemaOptions<EnumOptions, Values[number]>) {
+    public declare infer: Enum[keyof Enum]
+    public constructor(values: Enum, options: SchemaOptions<EnumOptions, Enum[keyof Enum]>) {
         super(options)
-        this.options = options
-        this.values = values
+        this._options = options
+        this.enum = values
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
                 definition: (_, context) => {
-                    const { values: vals } = this
+                    const { enum: vals } = this
                     const { exportKeyword = '', references } = context
                     const writer = createWriter()
                     const symbolName = references.reference(this, 'symbolName')
                     writer
                         .write(`${exportKeyword}const ${symbolName} = `)
                         .inlineBlock(() => {
-                            for (const [childName, value] of vals) {
+                            for (const [childName, value] of Object.entries(vals)) {
                                 writer.writeLine(`${childName}: ${toLiteral(value)},`)
                             }
                         })
                         .write(' as const')
                         .writeLine(`${exportKeyword}type ${symbolName} = typeof ${symbolName}`)
                     // @todo check this
-                    this.attributes.typescript.referenceName = `keyof typeof ${symbolName}`
+                    this._attributes.typescript.referenceName = `keyof typeof ${symbolName}`
                     return writer.writeLine('').toString()
                 },
             },
@@ -97,10 +95,10 @@ export function $enum<const Values extends string[]>(
 export function $enum<const Values extends Record<string, string>>(
     values: Values,
     options?: SchemaOptions<EnumOptions, Values[keyof Values]>,
-): NativeEnumType<Values[keyof Values][]>
+): NativeEnumType<Values>
 export function $enum<const Values extends string[]>(
     values: Record<string, Values[number]> | Values,
     options: SchemaOptions<EnumOptions, Values[number]> = {},
-): EnumType<Values> | NativeEnumType<Values> {
-    return Array.isArray(values) ? new EnumType(values, options) : new NativeEnumType(entriesOf(values), options)
+): EnumType<Values> | NativeEnumType<Record<string, string>> {
+    return Array.isArray(values) ? new EnumType(values, options) : new NativeEnumType(values, options)
 }

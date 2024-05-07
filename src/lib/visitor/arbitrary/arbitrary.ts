@@ -3,7 +3,7 @@ import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import { $jsonschema } from '../../primitives/jsonschema/jsonschema.js'
+import { $jsonschema, type JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import type { Schema } from '../../types.js'
 import { loadNode } from '../prepass/prepass.js'
 
@@ -12,12 +12,17 @@ import {
     domain,
     allOf,
     array,
+    base64,
     boolean,
     constant,
     date,
     datetime,
+    dependentArbitrary,
+    email,
     float,
     integer,
+    ipv4,
+    ipv6,
     json,
     memoize,
     memoizeArbitrary,
@@ -28,13 +33,14 @@ import {
     optional,
     set,
     string,
-    toISO8601Date,
     tuple,
+    ulidArbitrary,
     unknown,
+    uri,
+    uuidv4Arbitrary,
 } from '@skyleague/axioms'
 import { expand } from 'regex-to-strings'
-
-import { randomUUID } from 'node:crypto'
+import type { RecordType } from '../../primitives/record/record.js'
 
 export interface ArbitraryContext {
     references: Map<string, () => Arbitrary<unknown>>
@@ -69,48 +75,47 @@ export function buildContext(): ArbitraryContext {
 
 export const regexArbitrary = (regex: string | RegExp): Arbitrary<string> => {
     const it = expand(regex).getIterator()
-    return {
-        value: (): Tree<string> => ({
-            value: next(it).right as string,
-            children: [],
-        }),
-    }
+    return dependentArbitrary(() => ({
+        value: next(it).right as string,
+        children: [],
+    }))
 }
 
 export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryContext> = {
-    string: ({ options }) => {
+    string: ({ _options: options }) => {
         if (options.format === 'date') {
             return date()
         }
         if (options.format === 'date-time') {
-            return datetime().map((x) => toISO8601Date(x, { format: 'date-time' }))
+            return datetime().map((x) => x.toISOString())
         }
         if (options.format === 'time') {
-            return datetime().map((x) => toISO8601Date(x, { format: 'date-time' }).split('T')[1])
+            return datetime().map((x) => x.toISOString().split('T')[1])
         }
         if (options.format === 'hostname') {
             return domain()
         }
         if (options.format === 'email') {
-            return regexArbitrary(
-                /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
-            )
+            return email()
         }
         if (options.format === 'uuid') {
-            return constant(randomUUID())
+            return uuidv4Arbitrary()
         }
         if (options.format === 'uri') {
-            return regexArbitrary(
-                /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i,
-            )
+            return uri()
         }
         if (options.format === 'ipv4') {
-            return regexArbitrary(/^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/)
+            return ipv4()
         }
         if (options.format === 'ipv6') {
-            return regexArbitrary(
-                /^((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))$/i,
-            )
+            return ipv6()
+        }
+        if (options.format === 'base64') {
+            return base64({ minLength: options.minLength, maxLength: options.maxLength })
+        }
+
+        if (options.format === 'ulid') {
+            return ulidArbitrary()
         }
 
         const { minLength, maxLength, ...restArbitrary } = options.arbitrary ?? {}
@@ -124,7 +129,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         })
     },
 
-    number: ({ options }) => {
+    number: ({ _options: options }) => {
         const { min, max, minInclusive, maxInclusive, ...restArbitrary } = options.arbitrary ?? {}
 
         return float({
@@ -141,7 +146,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
             return x
         })
     },
-    integer: ({ options }) => {
+    integer: ({ _options: options }) => {
         const { min, max, minInclusive, maxInclusive, ...restArbitrary } = options.arbitrary ?? {}
         return integer({
             minInclusive: minInclusive ?? options.minInclusive,
@@ -158,31 +163,33 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         })
     },
     boolean: () => boolean(),
-    unknown: ({ options }) => {
+    unknown: ({ _options: options }) => {
         const { ...restArbitrary } = options.arbitrary ?? {}
-        return options.restrictToJson ? json(restArbitrary) : unknown(restArbitrary)
+        return options.restrictToJson ? json({ size: 'xs', ...restArbitrary }) : unknown({ size: 'xs', ...restArbitrary })
     },
     const: ({ const: value }) => {
         return constant(structuredClone(value))
     },
-    enum: ({ values, isNamed }) => {
+    enum: ({ enum: values, _isNamed: isNamed }) => {
         if (values.length === 1) {
             return isNamed ? constant(values[0]?.[1]) : constant(values[0])
         }
-        return oneOf(...(isNamed ? values.map(([, c]) => c) : values).map((c) => constant(c)))
+        return oneOf(...(isNamed ? Object.values(values) : values).map((c) => constant(c)))
     },
-    union: ({ children }, context) => oneOf(...children.map((c) => context.arbitrary(c))),
+    union: ({ _children }, context) => oneOf(..._children.map((c) => context.arbitrary(c))),
 
-    intersection: ({ children }, context) => {
-        const schemas = children.map((c) => context.arbitrary(c))
+    intersection: ({ _children }, context) => {
+        const schemas = _children.map((c) => context.arbitrary(c))
         return allOf(...(schemas as unknown as Arbitrary<Record<PropertyKey, unknown>>[]))
     },
-    object: ({ shape, recordType, patternProperties, options }, context) => {
+    object: (obj, context) => {
+        const { shape, _options: options } = obj
         const { size } = options.arbitrary ?? {}
-        const recordArbitrary = recordType !== undefined ? context.arbitrary(recordType) : undefined
+        const { element } = obj as RecordType
+        const { patternProperties } = obj as JSONObjectType
+        const recordArbitrary = element !== undefined ? context.arbitrary(element) : undefined
 
         const propertyArbitraries = Object.entries(shape).map(([name, c]) => [name, context.arbitrary(c)] as const)
-
         const composite = recordArbitrary
             ? array(string({ size }), { size }).chain((recordKeys) => {
                   return object(Object.fromEntries([...recordKeys.map((k) => [k, recordArbitrary]), ...propertyArbitraries]))
@@ -216,9 +223,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         }
         return composite
     },
-    array: ({ children, options }, context) => {
+    array: ({ _children: [items], _options: options }, context) => {
         const { minLength, maxLength, ...restArbitrary } = options.arbitrary ?? {}
-        const [items] = children
         const child = context.arbitrary(items)
         if (options.set === true) {
             return set(child, {
@@ -233,7 +239,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
             ...restArbitrary,
         })
     },
-    tuple: ({ elements, options: { rest } }, context) => {
+    tuple: ({ items: elements, _options: { rest } }, context) => {
         const tupleArbitrary = tuple(...elements.map((c) => context.arbitrary(c)))
         if (rest !== undefined) {
             return tuple(tupleArbitrary, array(context.arbitrary(rest))).map(([xs, ys]) => {
@@ -244,9 +250,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         return tupleArbitrary
     },
 
-    ref: ({ children }, context) => {
-        const [reference] = children
-        const uuid = reference.id
+    ref: ({ _children: [reference] }, context) => {
+        const uuid = reference._id
         if (!context.references.has(uuid)) {
             const child = memoize(() => {
                 return context.arbitrary(reference)
@@ -258,9 +263,9 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         return memoizeArbitrary(context.references.get(uuid)!)
     },
     default: (node, context) => {
-        if (node.isCommutative) {
+        if (node._isCommutative) {
             // in this case we just ignore the node completely and skip directly to the wrapped node
-            const child = node.children?.[0]
+            const child = node._children?.[0]
             if (child !== undefined) {
                 return context.arbitrary(child)
             }

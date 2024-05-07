@@ -20,31 +20,31 @@ export class TupleType<
     const Elements extends [Node, ...Node[]] = [Node, ...Node[]],
     Rest extends Node | undefined = undefined,
 > extends NodeTrait {
-    public override type = 'tuple' as const
-    public declare children: Node[]
-    public override isCommutative = false
+    public override _type = 'tuple' as const
+    public declare _children: Node[]
+    public override _isCommutative = false
 
-    public options: TupleOptions<Rest> = {}
+    public _options: TupleOptions<Rest> = {}
+    public items: Node[]
 
-    public elements: Omit<Node, 'name'>[]
     public declare infer: Rest extends { infer: unknown }
         ? [...TupleToInfer<Elements>, ...Rest['infer'][]]
         : TupleToInfer<Elements>
 
     public constructor(elements: ConstExprTuple<Elements>, options: SchemaOptions<TupleOptions<Rest>, TupleToInfer<Elements>>) {
         super(options)
-        this.options = options
-        this.elements = elements.map(evaluate)
-        this.children = [...this.elements]
+        this._options = options
+        this.items = elements.map(evaluate)
+        this._children = [...this.items]
         if (options.rest) {
-            this.children.push(evaluate(options.rest))
+            this._children.push(evaluate(options.rest))
         }
     }
 
     public rest<T extends Node>(rest: ConstExpr<T>): TupleType<Elements, T> {
-        const clone = Node.clone(this) as unknown as TupleType<Elements, T>
-        clone.options.rest = evaluate(rest)
-        clone.children = [...this.elements, this.options.rest] as unknown as typeof this.children
+        const clone = Node._clone(this) as unknown as TupleType<Elements, T>
+        clone._options.rest = evaluate(rest)
+        clone._children = [...this.items, this._options.rest] as unknown as typeof this._children
         return clone
     }
 }

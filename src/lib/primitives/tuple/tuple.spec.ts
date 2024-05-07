@@ -31,41 +31,41 @@ it('types', () => {
 it('expand', () => {
     expect($tuple([$string])).toMatchInlineSnapshot(`
       TupleType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {},
-        "elements": [
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "tuple",
+        "items": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
-        "type": "tuple",
       }
     `)
 })
@@ -73,24 +73,24 @@ it('expand', () => {
 it('example', () => {
     expect($tuple([$string]).jsonschema({ examples: [['bar']] })).toMatchInlineSnapshot(`
       TupleType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               [
@@ -99,23 +99,23 @@ it('example', () => {
             ],
           },
         },
-        "elements": [
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "tuple",
+        "items": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
-        "type": "tuple",
       }
     `)
 
@@ -126,45 +126,45 @@ it('example', () => {
 it('default', () => {
     expect($tuple([$string], { default: ['bar'] })).toMatchInlineSnapshot(`
       TupleType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "default": [
             "bar",
           ],
         },
-        "elements": [
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "tuple",
+        "items": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
-        "type": "tuple",
       }
     `)
 

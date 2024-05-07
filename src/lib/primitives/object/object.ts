@@ -56,30 +56,28 @@ export interface ObjectOptions {
 }
 
 export class ObjectType<Shape extends Record<string, Node> = Record<string, Node>> extends NodeTrait {
-    public override type = 'object' as const
-    public declare children: Node[]
-
-    public options: ObjectOptions
+    public override _type = 'object' as const
+    public declare _children: Node[]
+    public _options: ObjectOptions
 
     public shape!: {
         [K in keyof Shape]: Shape[K]
     }
 
-    public declare recordType?: Node | undefined
-    public declare patternProperties?: Record<string, Node> | undefined
-    public override isCommutative = false
-
+    protected declare element?: Node | undefined
+    protected declare patternProperties?: Record<string, Node> | undefined
+    public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
 
     public constructor(shape: ObjectShape<Shape>, options: SchemaOptions<ObjectOptions, ShapeToInfer<Shape>>) {
         super(options)
-        this.options = options
-        this.from({ shape })
+        this._options = options
+        this._from({ shape })
     }
 
     public strict(strict = true): this {
-        const clone = ObjectType.clone(this)
-        clone.options.strict = strict
+        const clone = ObjectType._clone(this)
+        clone._options.strict = strict
         return clone
     }
 
@@ -88,8 +86,8 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     }
 
     public extend<Extra extends Record<string, Node>>(extra: ObjectShape<Extra>): ObjectType<Simplify<Shape & Extra>> {
-        const clone = ObjectType.clone(this)
-        clone.from({
+        const clone = ObjectType._clone(this)
+        clone._from({
             shape: {
                 ...this.shape,
                 ...extra,
@@ -103,14 +101,14 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     }
 
     public pick<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Pick<Shape, Key>>> {
-        const clone = ObjectType.clone(this)
-        clone.from({ shape: pick(this.shape, properties) as unknown as Shape })
+        const clone = ObjectType._clone(this)
+        clone._from({ shape: pick(this.shape, properties) as unknown as Shape })
         return clone as unknown as ObjectType<Simplify<Pick<Shape, Key>>>
     }
 
     public omit<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Omit<Shape, Key>>> {
-        const clone = ObjectType.clone(this)
-        clone.from({ shape: omit(this.shape, properties) as unknown as Shape })
+        const clone = ObjectType._clone(this)
+        clone._from({ shape: omit(this.shape, properties) as unknown as Shape })
         return clone as unknown as ObjectType<Simplify<Omit<Shape, Key>>>
     }
 
@@ -120,7 +118,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 properties.length === 0 || properties.includes(property) ? p.optional() : p,
             ) as Record<string, Node>,
             {
-                ...this.options,
+                ...this._options,
             },
         ) as unknown as ObjectType<ShapeToPartial<Shape, Keys>>
     }
@@ -129,24 +127,24 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         return new ObjectType(
             mapValues(this.shape, (p, property) => {
                 if (properties.length === 0 || properties.includes(property)) {
-                    const clone = Node.clone(this)
-                    clone.definition.optional = false
+                    const clone = Node._clone(this)
+                    clone._definition.optional = false
                     return clone
                 }
                 return p
             }) as Record<string, Node>,
             {
-                ...this.options,
+                ...this._options,
             },
         ) as unknown as ObjectType<ShapeToRequired<Shape, Keys>>
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
                 definition: (node, context) => {
-                    if (node.type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node)) {
+                    if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node)) {
                         return `${context.declare('interface', node)} ${context.render(node)}`
                     }
                     return `${context.declare('type', node)} = ${context.render(node)}`
@@ -155,32 +153,30 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         ]
     }
 
-    protected from({
-        shape,
-        recordType,
-        patternProperties,
+    public _from({
+        shape = this.shape,
+        recordType = this.element,
+        patternProperties = this.patternProperties,
     }: {
-        shape: ObjectShape<Shape>
+        shape?: ObjectShape<Shape>
         recordType?: ThereforeExpr | undefined
         patternProperties?: Record<string, ThereforeExpr> | undefined
     }) {
-        this.shape = mapValues(shape, (node, name) => {
-            const evaluated = ObjectType.clone(evaluate(node as ConstExpr<Shape[string]>))
-            evaluated.name ??= name.toString()
-            return evaluated
+        this.shape = mapValues(shape, (node) => {
+            return evaluate(node as ConstExpr<Shape[string]>)
         }) as unknown as typeof this.shape
 
         if (recordType) {
-            this.recordType = evaluate(recordType)
+            this.element = evaluate(recordType)
         }
         if (patternProperties) {
             this.patternProperties = mapValues(patternProperties, (x) => evaluate(x))
         }
 
-        this.children = [
+        this._children = [
             ...Object.values<Node>(this.shape),
             ...Object.values(this.patternProperties ?? {}),
-            ...(this.recordType !== undefined ? [this.recordType] : []),
+            ...(this.element !== undefined ? [this.element] : []),
         ]
     }
 }

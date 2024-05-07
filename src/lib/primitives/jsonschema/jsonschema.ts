@@ -48,16 +48,16 @@ export function annotateNode<N extends Node>(node: N, doc: JsonAnnotations & { o
     // properly propagate the name
     // if it contains ascii
     if (context.name !== undefined && /[a-zA-Z]+/.test(context.name)) {
-        node.name = context.name
+        node._name = context.name
     }
 
     const jsonschema = omitUndefined(pick(doc, jsonschemaKeys))
     if (Object.entries(jsonschema).length > 0) {
-        node.definition.jsonschema ??= {}
-        Object.assign(node.definition.jsonschema, jsonschema)
+        node._definition.jsonschema ??= {}
+        Object.assign(node._definition.jsonschema, jsonschema)
     }
     const definition = omitUndefined(pick(doc, jsonDefinitionKeys))
-    Object.assign(node.definition, definition)
+    Object.assign(node._definition, definition)
     return node
 }
 
@@ -114,6 +114,9 @@ export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonOb
 }
 
 export class JSONObjectType extends ObjectType {
+    public declare patternProperties: Record<string, Node> | undefined
+    public declare element?: Node | undefined
+
     public constructor(
         {
             shape,
@@ -127,7 +130,7 @@ export class JSONObjectType extends ObjectType {
         options: SchemaOptions<ObjectOptions, Record<string, Node>> = {},
     ) {
         super({}, options)
-        this.from({ shape, recordType, patternProperties })
+        this._from({ shape, recordType, patternProperties })
     }
 }
 
@@ -142,6 +145,7 @@ export const fromFormat: Record<Exclude<JsonSchema['format'], undefined> | 'ulid
     uri: 'uri',
     ulid: 'ulid',
     uuid: 'uuid',
+    duration: 'duration',
 }
 
 type JsonSchemaWalker = Record<
@@ -191,7 +195,7 @@ const schemaWalker: JsonSchemaWalker = {
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([name, schema]) => {
                     if (node.required?.includes(name.toString()) !== true) {
-                        schema.definition.optional = true
+                        schema._definition.optional = true
                     }
                     return [name, schema]
                 }),
@@ -272,7 +276,10 @@ const schemaWalker: JsonSchemaWalker = {
                 minLength: node.minLength,
                 maxLength: node.maxLength,
                 regex: node.pattern,
-                format: node.format !== undefined ? fromFormat[node.format] : undefined,
+                format:
+                    (node.format !== undefined ? fromFormat[node.format] : undefined) ?? node.contentEncoding === 'base64'
+                        ? 'base64'
+                        : undefined,
 
                 arbitrary: (node as { 'x-arbitrary'?: StringOptions['arbitrary'] })['x-arbitrary'],
             }),
@@ -300,8 +307,8 @@ interface JsonSchemaContext {
     strict: boolean
     references: Map<string, () => Node>
     document: object
-    cache: Map<string, () => Node>
-    exportAllSymbols: boolean
+    // cache: Map<string, () => Node>
+    // exportAllSymbols: boolean
     name?: string | undefined
     allowIntersection?: boolean
     optionalNullable: boolean
@@ -325,8 +332,6 @@ export function buildContext({
     const {
         references = new Map<string, () => Node>(),
         document = node,
-        cache = new Map<string, () => Node>(),
-        exportAllSymbols = false,
         strict = false,
         allowIntersection = true,
         optionalNullable = false,
@@ -336,8 +341,6 @@ export function buildContext({
     const context: JsonSchemaContext = {
         references,
         document,
-        cache,
-        exportAllSymbols,
         strict,
         allowIntersection,
         optionalNullable,
@@ -521,9 +524,9 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
                 context: { ...options, connections, references, document },
             })
             const node = context.render(schema, { name })
-            node.definition = { ...node.definition, ...pick(options, definitionKeys) }
+            node._definition = { ...node._definition, ...pick(options, definitionKeys) }
             if (options.exportAllSymbols === true) {
-                node.connections = connections
+                node._connections = connections
             }
             return node
         }),
@@ -532,10 +535,10 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
     // biome-ignore lint/style/noNonNullAssertion: we know that the reference exists since we set it the statement above
     let value = references.get('#')!()
 
-    if (dereference && value.type === 'ref' && value.children?.[0] !== undefined) {
-        const oldConnections = value.connections ?? []
-        value = evaluate(value.children[0])
-        value.connections = oldConnections
+    if (dereference && value._type === 'ref' && value._children?.[0] !== undefined) {
+        const oldConnections = value._connections ?? []
+        value = evaluate(value._children[0])
+        value._connections = oldConnections
     }
     return loadNode(value) as ThereforeSchema
 }

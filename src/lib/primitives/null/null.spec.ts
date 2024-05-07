@@ -20,8 +20,8 @@ it('types', () => {
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ConstType<null>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<null | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<null[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<null | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<null[] | undefined>()
 })
 
 it('random sample', () => {

@@ -7,11 +7,11 @@ export function hasOptionalPrimitive(obj: Node, seen = new WeakSet()): boolean {
     }
     seen.add(obj)
     return (
-        (obj.definition.optional === true ||
-            (obj.isCommutative &&
-                obj.children?.some((c) => {
+        (obj._definition.optional === true ||
+            (obj._isCommutative &&
+                obj._children?.some((c) => {
                     if (isNode(c)) {
-                        return c.definition.optional === true || hasOptionalPrimitive(c, seen)
+                        return c._definition.optional === true || hasOptionalPrimitive(c, seen)
                     }
                     return false
                 }))) ??
@@ -25,11 +25,11 @@ export function hasNullablePrimitive(obj: Node, seen = new WeakSet()): boolean {
     }
     seen.add(obj)
     return (
-        (obj.definition.nullable === true ||
-            (obj.isCommutative &&
-                obj.children?.some((c) => {
+        (obj._definition.nullable === true ||
+            (obj._isCommutative &&
+                obj._children?.some((c) => {
                     if (isNode(c)) {
-                        return c.definition.nullable === true || hasOptionalPrimitive(c, seen)
+                        return c._definition.nullable === true || hasOptionalPrimitive(c, seen)
                     }
                     return false
                 }))) ??

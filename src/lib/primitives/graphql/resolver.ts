@@ -14,6 +14,6 @@ export function $resolver(root: ObjectType, fieldName: string, options: SchemaOp
     const { args, type } = options
     const field = $field({ type, args })
     root.shape[fieldName] = field
-    root.children.push(field)
+    root._children.push(field)
     return field
 }

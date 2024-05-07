@@ -10,7 +10,7 @@ export abstract class NodeTrait extends Node {
     }
 
     public reference(options: SchemaOptions<RefOptions> = {}): RefType {
-        return RefType.from(this, options)
+        return RefType._from(this, options)
     }
 }
 

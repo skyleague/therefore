@@ -28,7 +28,7 @@ export class GenericFileOutput {
     }
 
     public static fromSymbol({ symbol, output }: { symbol: SourceNode; output: ThereforeOutput }) {
-        const generators = (symbol.output ?? []).filter((o): o is GenericOutput => o.type === 'file')
+        const generators = (symbol._output ?? []).filter((o): o is GenericOutput => o.type === 'file')
 
         for (const generator of generators) {
             const targetPath = generator.targetPath(symbol)
@@ -52,7 +52,7 @@ export class GenericFileOutput {
             this.content = { output, content: output.content(output, { references: this.references }) }
         } else {
             throw new Error(
-                `Cannot add multiple symbols to a single file ${targetPath}. Symbol name ${symbol.name} is being defined by multiple sources`,
+                `Cannot add multiple symbols to a single file ${targetPath}. Symbol name ${symbol._name} is being defined by multiple sources`,
             )
         }
     }

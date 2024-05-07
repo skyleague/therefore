@@ -15,8 +15,9 @@ export interface FieldOptions {
 }
 
 export class GraphqlFieldType extends NodeTrait {
-    public override children: Node[]
-    public override type = 'graphql:field' as const
+    public override _children: Node[]
+    public override _type = 'graphql:field' as const
+    public override _canReference: false = false
     public args: ObjectType | Record<string, RefType> | undefined
     public returnType: Node
 
@@ -24,8 +25,8 @@ export class GraphqlFieldType extends NodeTrait {
         super(options)
         this.args = args
         this.returnType = type
-        this.children = [...this.argsChildren().map(([, child]) => child), this.returnType]
-        this.connections = [...this.argsChildren().map(([, child]) => child), this.returnType]
+        this._children = [...this.argsChildren().map(([, child]) => child), this.returnType]
+        this._connections = [...this.argsChildren().map(([, child]) => child), this.returnType]
     }
 
     public argsChildren = memoize(() => {
@@ -38,23 +39,23 @@ export class GraphqlFieldType extends NodeTrait {
             : []
     })
 
-    public override hooks: Partial<Hooks> = {
+    public override _hooks: Partial<Hooks> = {
         onLoad: [
             () => {
                 for (const [, arg] of this.argsChildren()) {
-                    arg.transform ??= {}
-                    arg.transform.symbolName ??= (name) => {
+                    arg._transform ??= {}
+                    arg._transform.symbolName ??= (name) => {
                         return `${name}Args`
                     }
                 }
-                this.returnType.transform ??= {}
-                this.returnType.transform.symbolName ??= (name) => {
+                this.returnType._transform ??= {}
+                this.returnType._transform.symbolName ??= (name) => {
                     return `${name}Type`
                 }
             },
         ],
     }
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',

@@ -16,11 +16,12 @@ import { $null } from '../../primitives/null/null.js'
 import { ajvOptions } from '../../primitives/validator/validator.js'
 
 import type { RelaxedPartial } from '@skyleague/axioms'
-import { omitUndefined, second } from '@skyleague/axioms'
+import { isObject, omitUndefined } from '@skyleague/axioms'
 import type { Options as AjvOptions, Schema } from 'ajv'
-import Ajv from 'ajv'
+import { Ajv } from 'ajv'
 import addFormats, { type FormatName } from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
+import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import type { StringFormat } from '../../primitives/string/string.js'
 
 export interface JsonSchemaWalkerContext {
@@ -64,19 +65,19 @@ export function annotate(schema: JsonSchema, node: Node): JsonAnnotations {
     const hasType = schema.type !== undefined
 
     return {
-        title: node.definition.jsonschema?.title,
-        writeonly: node.definition.jsonschema?.writeonly,
-        examples: node.definition.jsonschema?.examples,
+        title: node._definition.jsonschema?.title,
+        writeonly: node._definition.jsonschema?.writeonly,
+        examples: node._definition.jsonschema?.examples,
 
-        description: node.definition.description,
-        default: node.definition.default,
-        readonly: node.definition.readonly,
-        deprecated: node.definition.deprecated,
-        nullable: hasType ? node.definition.nullable : undefined,
+        description: node._definition.description,
+        default: node._definition.default,
+        readonly: node._definition.readonly,
+        deprecated: node._definition.deprecated,
+        nullable: hasType ? node._definition.nullable : undefined,
     }
 }
 
-export const toFormat: Record<StringFormat, JsonSchema['format'] | 'ulid' | 'uuid'> = {
+export const toFormat: Record<StringFormat, JsonSchema['format'] | 'ulid' | 'uuid' | 'duration'> = {
     'date-time': 'date-time',
     date: 'date',
     time: 'time',
@@ -87,10 +88,12 @@ export const toFormat: Record<StringFormat, JsonSchema['format'] | 'ulid' | 'uui
     uri: 'uri',
     ulid: 'ulid',
     uuid: 'uuid',
+    duration: 'duration',
+    base64: undefined,
 }
 
-export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, JsonSchemaWalkerContext> = {
-    string: ({ options }, { formats }) => {
+export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerContext> = {
+    string: ({ _options: options }, { formats }) => {
         const format = options.format ? (toFormat[options.format] as JsonSchema['format']) : undefined
         if (format !== undefined) {
             formats.add(format)
@@ -101,17 +104,18 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             maxLength: options.maxLength,
             pattern: typeof options.regex !== 'string' ? options.regex?.source : options.regex,
             format: format,
+            contentEncoding: options.format === 'base64' ? 'base64' : undefined,
             'x-arbitrary': options.arbitrary,
         }
     },
-    number: ({ options }) => ({
+    number: ({ _options: options }) => ({
         type: 'number',
         multipleOf: options.multipleOf,
         ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
         ...(options.maxInclusive ? { maximum: options.max } : { exclusiveMaximum: options.max }),
         'x-arbitrary': options.arbitrary,
     }),
-    integer: ({ options }) => ({
+    integer: ({ _options: options }) => ({
         type: 'integer',
         multipleOf: options.multipleOf,
         ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
@@ -121,7 +125,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
     boolean: () => ({
         type: 'boolean',
     }),
-    unknown: ({ options }) => ({ 'x-arbitrary': options.arbitrary }),
+    unknown: ({ _options: options }) => ({ 'x-arbitrary': options.arbitrary }),
     const: (node) => {
         if (node.const === null) {
             return {
@@ -129,7 +133,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             }
         }
         // we need to extend the set
-        if (node.definition.nullable) {
+        if (node._definition.nullable) {
             return {
                 enum: [node.const, null],
             }
@@ -139,32 +143,37 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
         }
     },
     enum: (node) => {
-        const values = node.isNamed ? node.values.map(second) : node.values
-        if (node.definition.nullable) {
+        const values = node._isNamed ? Object.values(node.enum) : node.enum
+        if (node._definition.nullable) {
             return {
                 enum: [...values, null],
+            }
+        }
+        if (node.enum.length === 1) {
+            return {
+                const: values[0],
             }
         }
         return {
             enum: values,
         }
     },
-    union: ({ children, definition }, context) => {
-        if (definition.nullable === true && children.find((c) => c instanceof ConstType && c.const === null) === undefined) {
+    union: ({ _children, _definition }, context) => {
+        if (_definition.nullable === true && _children.find((c) => c instanceof ConstType && c.const === null) === undefined) {
             return {
-                anyOf: [...children, $null()].map((u) => context.render(u)),
+                anyOf: [..._children, $null()].map((u) => context.render(u)),
             }
         }
         return {
-            anyOf: children.map((u) => context.render(u)),
+            anyOf: _children.map((u) => context.render(u)),
         }
     },
-    intersection: ({ children, definition }, context) => {
-        if (definition.nullable === true) {
+    intersection: ({ _children, _definition }, context) => {
+        if (_definition.nullable === true) {
             return {
                 anyOf: [
                     {
-                        allOf: children.map((u) => context.render(u)),
+                        allOf: _children.map((u) => context.render(u)),
                     },
                     {
                         type: 'null',
@@ -173,20 +182,18 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             }
         }
         return {
-            allOf: children.map((u) => {
+            allOf: _children.map((u) => {
                 return context.render(u)
             }),
         }
     },
-    object: (
-        { shape, options, recordType, patternProperties: childPatternProperties },
-        context,
-    ): JsonAnyInstance & JsonObjectInstance & ThereforeExtension => {
+    object: (obj, context): JsonAnyInstance & JsonObjectInstance & ThereforeExtension => {
+        const { shape, _options: options, element: recordType, patternProperties: childPatternProperties } = obj as JSONObjectType
         const properties: NonNullable<JsonSchema['properties']> = {}
         const required: string[] = []
         for (const [name, child] of Object.entries(shape)) {
             properties[name] = context.render(child)
-            const defaultIsInferred = child.definition.default !== undefined && context.ajv.useDefaults === true
+            const defaultIsInferred = child._definition.default !== undefined && context.ajv.useDefaults === true
             if (!(defaultIsInferred || hasOptionalPrimitive(child))) {
                 required.push(name)
             }
@@ -204,12 +211,13 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             type: 'object' as const,
             properties: Object.keys(shape).length > 0 ? properties : undefined,
             required: required.length > 0 ? required.sort((a, b) => a.localeCompare(b)) : undefined,
-            additionalProperties,
+            additionalProperties:
+                isObject(additionalProperties) && Object.keys(additionalProperties).length === 0 ? true : additionalProperties,
             patternProperties,
             'x-arbitrary': options.arbitrary,
         } satisfies JsonSchema
     },
-    array: ({ options, element }, context): JsonArrayInstance & JsonAnyInstance & ThereforeExtension => {
+    array: ({ _options: options, element }, context): JsonArrayInstance & JsonAnyInstance & ThereforeExtension => {
         return {
             type: 'array' as const,
             items: context.render(element),
@@ -219,7 +227,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             'x-arbitrary': options.arbitrary,
         }
     },
-    tuple: ({ elements, options: { rest } }, context): JsonArrayInstance & JsonAnyInstance => {
+    tuple: ({ items: elements, _options: { rest } }, context): JsonArrayInstance & JsonAnyInstance => {
         return {
             type: 'array',
             items: elements.map((c) => context.render(c)),
@@ -227,14 +235,15 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             minItems: elements.length,
         }
     },
-    ref: ({ children: [reference], definition }, context) => {
+    ref: ({ _children: [reference], _definition }, context) => {
         const { definitions, entry, references } = context
 
-        const uuid = reference.id
+        const uuid = reference._id
 
         if (
             entry !== undefined &&
-            (uuid === entry.id || (reference.isCommutative && reference.children?.find((c) => c.id === entry.id) !== undefined))
+            (uuid === entry._id ||
+                (reference._isCommutative && reference._children?.find((c) => c._id === entry._id) !== undefined))
         ) {
             // we referenced the root of the schema
             return { $ref: '#' }
@@ -247,15 +256,15 @@ export const jsonSchemaVisitor: ThereforeVisitor<RelaxedPartial<JsonSchema>, Jso
             // node.title = symbolName
             definitions[symbolName] = node
         }
-        if (definition.nullable) {
+        if (_definition.nullable) {
             // https://github.com/OAI/OpenAPI-Specification/issues/1368
             return { oneOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
         }
         return { $ref: `#/$defs/${symbolName}` }
     },
     default: (node, context) => {
-        const child = node.children?.[0]
-        if (node.isCommutative && child !== undefined) {
+        const child = node._children?.[0]
+        if (node._isCommutative && child !== undefined) {
             return context.render(child)
         }
         console.error(node)
@@ -282,7 +291,7 @@ export function toJsonSchema(
         definition.$defs = context.definitions
     }
     if (compile) {
-        const ajv = new Ajv.default(context.ajv)
+        const ajv = new Ajv(context.ajv)
         if (context.formats.size > 0 && formats) {
             addFormats.default(ajv, { formats: [...context.formats] as FormatName[] })
         }

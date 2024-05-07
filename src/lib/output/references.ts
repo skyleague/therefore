@@ -27,7 +27,7 @@ export class References<Type extends 'typescript' | 'generic'> {
 
     public from<T extends 'typescript' | 'generic'>(references: References<T>): void {
         for (const symbol of references.symbols.values()) {
-            for (const ref of references.references.get(symbol.id) ?? []) {
+            for (const ref of references.references.get(symbol._id) ?? []) {
                 if (referenceTypes.includes(ref as ReferenceType)) {
                     this.reference(symbol, ref as ReferenceType)
                 }
@@ -44,7 +44,7 @@ export class References<Type extends 'typescript' | 'generic'> {
     }
 
     public hardlink(node: Node, type: ReferenceType, { tag }: { tag?: string } = {}): string {
-        const key = `SYMB_${node.attributes[this.type][type]}_${sha256(node.id).slice(6)}_${type.toUpperCase()}_${tag}`
+        const key = `SYMB_${node._attributes[this.type][type]}_${sha256(node._id).slice(6)}_${type.toUpperCase()}_${tag}`
         this.hardlinks[key] = this.reference(node, type)
         return key
     }
@@ -52,14 +52,14 @@ export class References<Type extends 'typescript' | 'generic'> {
     public reference(node: Node, type: ReferenceType, { tag, fallback }: { tag?: string; fallback?: ReferenceType } = {}) {
         fallback ??= type === 'referenceName' ? 'aliasName' : 'symbolName'
 
-        if (!this.symbols.has(node.id)) {
-            this.symbols.set(node.id, node)
+        if (!this.symbols.has(node._id)) {
+            this.symbols.set(node._id, node)
         }
-        if (!this.references.has(node.id)) {
-            this.references.set(node.id, new Set())
+        if (!this.references.has(node._id)) {
+            this.references.set(node._id, new Set())
         }
         // biome-ignore lint/style/noNonNullAssertion: the value was just set above
-        const reference = this.references.get(node.id)!
+        const reference = this.references.get(node._id)!
         reference.add(type)
         if (tag !== undefined) {
             reference.add(tag)
@@ -71,22 +71,22 @@ export class References<Type extends 'typescript' | 'generic'> {
 
         this.key2node.set(key, node)
         this._data[key] ??= () => {
-            const value = node.attributes[this.type][type] ?? fallbackKey
+            const value = node._attributes[this.type][type] ?? fallbackKey
             if (value === undefined) {
                 throw new Error(`Reference ${key} not found`)
             }
-            const transform = node.transform?.[type]
+            const transform = node._transform?.[type]
             if (transform !== undefined) {
                 return transform(value)
             }
             return value
         }
         this.transform[key] ??= (transformer) => {
-            const name = node.attributes[this.type][type]
+            const name = node._attributes[this.type][type]
             if (name === undefined) {
                 throw new Error(`Reference ${key} not found`)
             }
-            node.attributes[this.type][type] = transformer(name)
+            node._attributes[this.type][type] = transformer(name)
         }
 
         return `{{${key}}}`
@@ -113,7 +113,7 @@ export class References<Type extends 'typescript' | 'generic'> {
     }
 
     public key(node: Node, type: ReferenceType) {
-        return `${node.id}:${type}`
+        return `${node._id}:${type}`
     }
 
     public data() {

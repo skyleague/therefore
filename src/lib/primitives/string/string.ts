@@ -3,7 +3,20 @@ import type { SchemaOptions } from '../base.js'
 
 import type { StringConstraints } from '@skyleague/axioms'
 
-export const supportedFormats = ['date-time', 'date', 'time', 'email', 'hostname', 'ipv4', 'ipv6', 'uri', 'ulid', 'uuid'] as const
+export const supportedFormats = [
+    'date-time',
+    'date',
+    'time',
+    'email',
+    'hostname',
+    'ipv4',
+    'ipv6',
+    'uri',
+    'ulid',
+    'uuid',
+    'base64',
+    'duration',
+] as const
 
 export type StringFormat = (typeof supportedFormats)[number]
 export interface StringOptions {
@@ -28,86 +41,96 @@ export interface StringOptions {
 }
 
 export class StringType extends NodeTrait {
-    public override type = 'string' as const
+    public override _type = 'string' as const
 
-    public options: StringOptions = {}
+    public _options: StringOptions = {}
 
     public declare infer: string
 
     public constructor(options: SchemaOptions<StringOptions, string>) {
         super(options)
-        this.options = options
+        this._options = options
     }
 
     public arbitrary(options: Partial<StringConstraints>) {
-        this.options.arbitrary ??= {}
-        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        this._options.arbitrary ??= {}
+        this._options.arbitrary = { ...this._options.arbitrary, ...options }
         return this
     }
 
     public minLength(minLength: number) {
-        this.options.minLength = minLength
+        this._options.minLength = minLength
         return this
     }
 
     public maxLength(maxLength: number) {
-        this.options.maxLength = maxLength
+        this._options.maxLength = maxLength
         return this
     }
 
     public datetime() {
-        this.options.format = 'date-time'
+        this._options.format = 'date-time'
         return this
     }
 
     public date() {
-        this.options.format = 'date'
+        this._options.format = 'date'
         return this
     }
 
     public time() {
-        this.options.format = 'time'
+        this._options.format = 'time'
         return this
     }
 
     public email() {
-        this.options.format = 'email'
+        this._options.format = 'email'
         return this
     }
 
     public hostname() {
-        this.options.format = 'hostname'
+        this._options.format = 'hostname'
         return this
     }
 
     public ipv4() {
-        this.options.format = 'ipv4'
+        this._options.format = 'ipv4'
         return this
     }
 
     public ipv6() {
-        this.options.format = 'ipv6'
+        this._options.format = 'ipv6'
         return this
     }
 
     public uri() {
-        this.options.format = 'uri'
+        this._options.format = 'uri'
         return this
     }
 
     public uuid() {
-        this.options.format = 'uuid'
+        this._options.format = 'uuid'
+        return this
+    }
+
+    public base64() {
+        this._options.format = 'base64'
+        return this
+    }
+
+    public duration() {
+        this._options.format = 'duration'
         return this
     }
 
     public ulid() {
-        this.options.format = 'ulid'
-        this.options.regex = /^[0-9A-HJKMNP-TV-Z]{26}$/
+        this._options.format = 'ulid'
+        this._options.regex = /^[0-9A-HJKMNP-TV-Z]{26}$/
         return this
     }
 
     public regex(pattern: RegExp | string) {
-        this.options.regex = pattern
+        this._options.regex = pattern
         return this
     }
 }

@@ -6,19 +6,15 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
-import { validate as ValidatedUserValidator } from './schemas/validated-user.schema.js'
+import { validate as ValidatedUserValidator } from './schemas/user-schema.schema.js'
 
-export interface UserSchema {
-    email: string
-    id: number
-    username: string
+export interface Attributes {
+    [k: string]: string | undefined
 }
 
-export interface ValidatedUser {
-    email: string
-    id: number
-    username: string
-}
+export type Email = string
+
+export type Users = ValidatedUser[]
 
 export const ValidatedUser = {
     validate: ValidatedUserValidator as ValidateFunction<ValidatedUser>,
@@ -36,3 +32,10 @@ export const ValidatedUser = {
         return { left: (ValidatedUser.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface ValidatedUser {
+    id: number
+    username: string
+    email: Email
+    attributes: Attributes
+}

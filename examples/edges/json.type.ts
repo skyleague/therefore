@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 
-import AjvValidator from 'ajv'
+import { Ajv } from 'ajv'
 import type { DefinedError } from 'ajv'
 
 import ValidatorSchema from './schemas/validator.schema.json' with { type: 'json' }
@@ -14,7 +14,7 @@ export interface Validator {
 }
 
 export const Validator = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,

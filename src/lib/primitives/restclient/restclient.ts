@@ -60,27 +60,28 @@ export interface RestClientOptions {
 }
 
 export class RestclientType extends Node {
-    public override type = 'restclient' as const
-    public override children: Node[]
+    public override _type = 'restclient' as const
+    public override _children: Node[]
 
-    public options: RestClientOptions = {}
+    public _options: RestClientOptions = {}
 
-    public builder: RestClientBuilder
+    public _builder: RestClientBuilder
+    public override _canReference: false = false
 
     private constructor(builder: RestClientBuilder, options: SchemaOptions<RestClientOptions>) {
         super({
             ...options,
             description: builder.openapi.info.description,
         })
-        this.options = options
-        this.builder = builder
+        this._options = options
+        this._builder = builder
 
-        this.definition.jsonschema ??= {
+        this._definition.jsonschema ??= {
             title: builder.openapi.info.title,
         }
 
-        this.children = builder.children
-        this.connections = builder.children
+        this._children = builder.children
+        this._connections = builder.children
     }
 
     public static async from(definition: OpenapiV3, options: SchemaOptions<RestClientOptions>) {
@@ -88,38 +89,38 @@ export class RestclientType extends Node {
     }
 
     public targetPath(sourcePath: string) {
-        if (this.options.filename !== undefined) {
+        if (this._options.filename !== undefined) {
             const dir = path.dirname(sourcePath)
-            return path.join(dir, this.options.filename)
+            return path.join(dir, this._options.filename)
         }
         return replaceExtension(sourcePath, '.client.ts')
     }
 
-    public override hooks: Hooks = {
+    public override _hooks: Hooks = {
         onExport: [
             (node) => {
-                const newSourcePath = this.targetPath(node.sourcePath)
-                for (const child of this.builder.children) {
-                    child.sourcePath = newSourcePath
+                const newSourcePath = this.targetPath(node._sourcePath)
+                for (const child of this._builder.children) {
+                    child._sourcePath = newSourcePath
                 }
-                node.sourcePath = newSourcePath
+                node._sourcePath = newSourcePath
 
-                if (this.options.useEither !== false) {
+                if (this._options.useEither !== false) {
                     const instance = EitherHelper.from(newSourcePath)
-                    node.children?.push(instance)
-                    node.connections?.push(instance)
+                    node._children?.push(instance)
+                    node._connections?.push(instance)
                 }
             },
         ],
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
-                targetPath: ({ sourcePath }) => sourcePath,
+                targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 type: 'typescript',
                 definition: (node, context) => {
-                    return this.builder.definition(node, context)
+                    return this._builder.definition(node, context)
                 },
             },
         ]

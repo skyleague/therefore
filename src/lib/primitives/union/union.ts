@@ -22,17 +22,20 @@ export type TupleElements<Elements extends [...ConstExpr<Node>[]]> = _TupleEleme
 }>
 
 export class UnionType<const Elements extends [...Node[]] = Node[]> extends NodeTrait {
-    public override type = 'union' as const
-    public override children: Node[]
-
-    public options: UnionOptions = {}
+    public override _type = 'union' as const
+    public override _children: Node[]
+    public _options: UnionOptions = {}
     public declare infer: ToInfer<Elements>[number]
     public declare intrinsic: Intrinsic<Elements[number]>
 
     public constructor(union: ConstExprTuple<Elements>, options: SchemaOptions<UnionOptions, ToInfer<Elements>[number]>) {
         super(options)
-        this.options = options
-        this.children = union.map((x) => evaluate(x)) as unknown as Node[]
+        this._options = options
+        this._children = union.map((x) => evaluate(x)) as unknown as Node[]
+    }
+
+    public get options() {
+        return this._children
     }
 }
 

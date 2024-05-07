@@ -94,11 +94,15 @@ export const stringInstance = $intersection([
                 'uuid',
                 // adds regex
                 // 'ulid',
+                // 'duration',
             ]),
         }),
         $object({
             // restrict this greatly
             pattern: $const('[a-zA-Z0-9]{2,10}'),
+        }),
+        $object({
+            contentEncoding: $const('base64'),
         }),
     ]),
     $ref(jsonAnnotations),
@@ -208,7 +212,8 @@ export const alternativeType = $intersection([
     $object({
         type: $array($enum(['null', 'boolean', 'object', 'array', 'number', 'string']))
             .set()
-            .minItems(1),
+            .minItems(1)
+            .arbitrary({ maxLength: 2 }),
     }),
     $ref(jsonAnnotations),
 ])
@@ -230,7 +235,6 @@ export const jsonSchema: Node = $union([
     $ref(integerInstance),
     $ref(numberInstance),
     $ref(stringInstance),
-    // // null type is not a thing currentlyq
     $ref(nullInstance),
     $ref(objectInstance),
     $ref(arrayInstance),

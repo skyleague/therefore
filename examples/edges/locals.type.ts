@@ -5,10 +5,10 @@
 /* eslint-disable */
 
 export interface Days {
-    days: DaysDays[]
+    days: Days2[]
 }
 
-type DaysDays = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+type Days2 = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 
 type Local = string
 

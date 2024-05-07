@@ -100,14 +100,7 @@ export const Person = {
 
 export type SalesPerson = {
     sales: number
-} & {
-    /**
-     * The person's first name.
-     */
-    firstName: string
-    lastName: string
-    age: number
-}
+} & Person
 
 export const SalesPerson = {
     validate: SalesPersonValidator as ValidateFunction<SalesPerson>,

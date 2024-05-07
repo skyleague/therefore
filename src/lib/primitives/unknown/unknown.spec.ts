@@ -9,17 +9,17 @@ it('function', () => {
 it('simple', () => {
     expect($unknown()).toMatchInlineSnapshot(`
       UnknownType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "options": {
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {
           "restrictToJson": false,
         },
-        "type": "unknown",
+        "_type": "unknown",
       }
     `)
 })

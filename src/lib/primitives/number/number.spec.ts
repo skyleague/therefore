@@ -18,8 +18,8 @@ it('types', () => {
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, NumberType>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<number | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<number[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<number | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<number[] | undefined>()
 })
 
 it('multipleOf', () => {

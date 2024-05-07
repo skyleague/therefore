@@ -3,26 +3,26 @@ import { Node } from './node.js'
 
 export type ModuleOptions = {
     alias?: string
-    transform?: Node['transform']
+    transform?: Node['_transform']
 }
 
 export class ModuleNode extends Node {
-    public override type = 'module' as const
+    public override _type = 'module' as const
 
     public constructor(module: string, symbol: string, { alias, transform }: ModuleOptions = {}) {
         super({})
-        this.sourcePath = module
-        this.attributes.typescript.symbolName = symbol
-        this.attributes.typescript.isModule = true
-        this.attributes.typescript.path = module
+        this._sourcePath = module
+        this._attributes.typescript.symbolName = symbol
+        this._attributes.typescript.isModule = true
+        this._attributes.typescript.path = module
         if (alias !== undefined) {
-            this.attributes.typescript.aliasName = alias
+            this._attributes.typescript.aliasName = alias
         }
 
-        this.transform = transform
+        this._transform = transform
     }
 
-    public override get output() {
+    public override get _output() {
         return []
     }
 }
@@ -44,7 +44,7 @@ export const ajvSymbols = {
     ValidationError: moduleSymbol('ajv', 'ValidationError'),
     DefinedError: moduleSymbol('ajv', 'DefinedError'),
     ValidateFunction: moduleSymbol('ajv', 'ValidateFunction'),
-    AjvValidator: moduleSymbol('ajv', 'default', { alias: 'AjvValidator' }),
+    AjvValidator: moduleSymbol('ajv', 'Ajv'),
 }
 
 export const ajvFormatsSymbols = {

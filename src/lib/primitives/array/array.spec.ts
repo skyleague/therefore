@@ -25,39 +25,39 @@ import { expect, expectTypeOf, it } from 'vitest'
 it('simple', () => {
     expect($array($boolean())).toMatchInlineSnapshot(`
       NodeTrait {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           BooleanType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "1",
-            "isCommutative": true,
-            "options": {},
-            "type": "boolean",
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "boolean",
           },
         ],
-        "definition": {},
+        "_definition": {},
+        "_id": "2",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "array",
         "element": BooleanType {
-          "attributes": {
+          "_attributes": {
             "generic": {},
             "typescript": {},
           },
-          "definition": {},
-          "id": "1",
-          "isCommutative": true,
-          "options": {},
-          "type": "boolean",
+          "_definition": {},
+          "_id": "1",
+          "_isCommutative": true,
+          "_options": {},
+          "_type": "boolean",
         },
-        "id": "2",
-        "isCommutative": false,
-        "options": {},
-        "type": "array",
       }
     `)
 })
@@ -65,39 +65,39 @@ it('simple', () => {
 it('simple unexpanded', () => {
     expect($array($boolean)).toMatchInlineSnapshot(`
       NodeTrait {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           BooleanType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "boolean",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "boolean",
           },
         ],
-        "definition": {},
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "array",
         "element": BooleanType {
-          "attributes": {
+          "_attributes": {
             "generic": {},
             "typescript": {},
           },
-          "definition": {},
-          "id": "2",
-          "isCommutative": true,
-          "options": {},
-          "type": "boolean",
+          "_definition": {},
+          "_id": "2",
+          "_isCommutative": true,
+          "_options": {},
+          "_type": "boolean",
         },
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
-        "type": "array",
       }
     `)
 })
@@ -107,8 +107,8 @@ it('types', () => {
     expectTypeOf(schema.infer).toEqualTypeOf<string[]>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ArrayType<StringType>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<string[] | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<string[][] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<string[] | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<string[][] | undefined>()
 })
 
 it('minItems', () => {

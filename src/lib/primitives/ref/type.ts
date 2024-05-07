@@ -9,41 +9,45 @@ import { type ConstExpr, evaluate } from '@skyleague/axioms'
 export type RefOptions = object
 
 export class RefType<Reference extends Node = Node> extends Node {
-    public override type = 'ref' as const
-    public override children: [Node]
+    public override _type = 'ref' as const
+    public override _children: [Node]
 
-    public options: RefOptions = {}
+    public _options: RefOptions = {}
     public declare infer: Reference['infer']
     public declare intrinsic: Intrinsic<Reference>
 
     public constructor(reference: ConstExpr<Reference>, options: SchemaOptions<RefOptions, Reference['infer']>) {
         super(options)
-        this.options = options
+        this._options = options
 
         // we are lying to typescript here, but it's fine
         // there expression will be evaluated in the prepass, and errors hard if it's not
-        this.children = [reference as Node]
+        this._children = [reference as Node]
     }
 
-    public override hooks = {
+    public override _hooks = {
         onLoad: [
             (self: Node): void => {
-                self.children = self.children?.map(evaluate) as [Node]
+                self._children = self._children?.map(evaluate) as [Node]
             },
         ],
         onGenerate: [
-            ({ children }: Node): void => {
+            ({ _children: children }: Node): void => {
                 const [reference] = children ?? []
-                if (reference !== undefined && reference.sourcePath === undefined) {
+                if (reference !== undefined && reference._sourcePath === undefined) {
                     // this reference was not exported on its own
                     // so we just call it local if has no name
-                    reference.name ??= 'local'
+                    reference._name ??= 'local'
                 }
             },
         ],
     }
 
-    public static from<Reference extends Node>(
+    public get item(): Node {
+        return this._children[0] as Reference
+    }
+
+    public static _from<Reference extends Node>(
         ref: ConstExpr<Reference>,
         options: SchemaOptions<RefOptions>,
     ): RefType<Intrinsic<Reference>> {

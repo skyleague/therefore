@@ -7,17 +7,17 @@ import { expect, it } from 'vitest'
 it('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`
       StringType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {
+        "_definition": {
           "optional": true,
         },
-        "id": "2",
-        "isCommutative": true,
-        "options": {},
-        "type": "string",
+        "_id": "2",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "string",
       }
     `)
 })
@@ -25,17 +25,17 @@ it('string', () => {
 it('string expanded', () => {
     expect($optional($string())).toMatchInlineSnapshot(`
       StringType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {
+        "_definition": {
           "optional": true,
         },
-        "id": "2",
-        "isCommutative": true,
-        "options": {},
-        "type": "string",
+        "_id": "2",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "string",
       }
     `)
 })

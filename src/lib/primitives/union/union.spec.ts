@@ -30,28 +30,28 @@ it('types', () => {
 it('expand', () => {
     expect($union([$string])).toMatchInlineSnapshot(`
       UnionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "union",
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "union",
       }
     `)
 })
@@ -59,34 +59,34 @@ it('expand', () => {
 it('example', () => {
     expect($union([$string], { jsonschema: { examples: ['bar'] } })).toMatchInlineSnapshot(`
       UnionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               "bar",
             ],
           },
         },
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "union",
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "union",
       }
     `)
 })
@@ -94,30 +94,30 @@ it('example', () => {
 it('default', () => {
     expect($union([$string], { default: 'bar' })).toMatchInlineSnapshot(`
       UnionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "2",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {
+        "_definition": {
           "default": "bar",
         },
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "union",
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "union",
       }
     `)
 })

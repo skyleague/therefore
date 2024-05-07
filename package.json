@@ -34,11 +34,12 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@biomejs/js-api": "^0.5.0",
-    "@biomejs/wasm-nodejs": "^1.7.0",
-    "@skyleague/axioms": "4.0.0",
-    "@typeschema/all": "^0.13.9",
+    "@biomejs/js-api": "^0.6.0",
+    "@biomejs/wasm-nodejs": "1.7.3",
+    "@skyleague/axioms": "4.3.1",
+    "@typeschema/main": "^0.13.9",
     "@urql/introspection": "^1.0.3",
+    "ajv": "^8.13.0",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
     "code-block-writer": "^13.0.1",
@@ -49,7 +50,6 @@
     "js-yaml": "^4.1.0",
     "jsonpointer": "^5.0.1",
     "make-synchronous": "^1.0.0",
-    "nock": "^13.5.4",
     "regex-to-strings": "^2.1.0",
     "swagger2openapi": "^7.0.8",
     "yargs": "^17.7.2"
@@ -58,19 +58,19 @@
     "@skyleague/node-standards": "^7.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.32",
-    "ajv": "^8.12.0",
+    "ajv": "^8.13.0",
     "got": "^14.2.1",
-    "tsx": "^4.7.2",
+    "json-schema-to-zod": "^2.1.0",
+    "nock": "^13.5.4",
+    "tsx": "^4.9.3",
     "type-testing": "^0.2.0",
     "typescript": "^5.4.5",
-    "zod": "^3.23.4",
+    "zod": "^3.23.6",
     "zod-to-json-schema": "^3.23.0"
   },
   "peerDependencies": {
-    "ajv": "^8.12.0",
-    "ajv-formats": "^3.0.1",
     "got": "^14.2.1",
-    "tsx": "^4.7.2"
+    "tsx": "^4.9.3"
   },
   "engines": {
     "node": ">=20"

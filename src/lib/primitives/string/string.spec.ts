@@ -16,17 +16,17 @@ it('pattern', () => {
         }),
     ).toMatchInlineSnapshot(`
       StringType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "options": {
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {
           "regex": /foo/,
         },
-        "type": "string",
+        "_type": "string",
       }
     `)
 })
@@ -38,17 +38,17 @@ it('format', () => {
         }),
     ).toMatchInlineSnapshot(`
       StringType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "options": {
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {
           "format": "date",
         },
-        "type": "string",
+        "_type": "string",
       }
     `)
 })
@@ -62,19 +62,19 @@ it('all', () => {
         }),
     ).toMatchInlineSnapshot(`
       StringType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "definition": {},
-        "id": "1",
-        "isCommutative": true,
-        "options": {
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {
           "maxLength": 2,
           "minLength": 2,
           "regex": /foo/,
         },
-        "type": "string",
+        "_type": "string",
       }
     `)
 })
@@ -181,16 +181,16 @@ it('random sample - datetime', () => {
         ),
     ).toMatchInlineSnapshot(`
       [
-        "2120-10-18T16:27:55Z",
-        "2043-12-16T06:04:41Z",
-        "2099-01-10T12:51:38Z",
-        "1979-12-16T13:45:18Z",
-        "2190-07-31T00:32:52Z",
-        "1980-05-25T14:21:03Z",
-        "1991-09-25T08:09:16Z",
-        "2077-01-18T19:43:49Z",
-        "2019-05-01T09:57:56Z",
-        "2010-10-08T15:17:06Z",
+        "2120-10-18T16:27:55.000Z",
+        "2043-12-16T06:04:41.000Z",
+        "2099-01-10T12:51:38.000Z",
+        "1979-12-16T13:45:18.000Z",
+        "2190-07-31T00:32:52.000Z",
+        "1980-05-25T14:21:03.000Z",
+        "1991-09-25T08:09:16.000Z",
+        "2077-01-18T19:43:49.000Z",
+        "2019-05-01T09:57:56.000Z",
+        "2010-10-08T15:17:06.000Z",
       ]
     `)
 })

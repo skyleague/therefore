@@ -4,7 +4,7 @@ import { array, boolean, forAll, json, object, string, tuple } from '@skyleague/
 import { expect, it } from 'vitest'
 
 it('description', () => {
-    expect(JSDoc.from({ key: 'foo', definition: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', _definition: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
              */
@@ -13,7 +13,7 @@ it('description', () => {
 })
 
 it('summary', () => {
-    expect(JSDoc.from({ key: 'foo', definition: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', _definition: { summary: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * lorum ipsum
              */
@@ -22,11 +22,11 @@ it('summary', () => {
 })
 
 it('examples', () => {
-    expect(JSDoc.from({ key: 'foo', definition: { examples: [] } })).toMatchInlineSnapshot('undefined')
+    expect(JSDoc.from({ key: 'foo', _definition: { examples: [] } })).toMatchInlineSnapshot('undefined')
     expect(
         JSDoc.from({
             key: 'foo',
-            definition: {
+            _definition: {
                 examples: ['lorum ipsum', 'dolor sit amet'],
             },
         }),
@@ -40,13 +40,13 @@ it('examples', () => {
 })
 
 it('default', () => {
-    expect(JSDoc.from({ key: 'foo', definition: { default: [] } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', _definition: { default: [] } })).toMatchInlineSnapshot(`
             "/**
              * @default []
              */
             "
         `)
-    expect(JSDoc.from({ key: 'foo', definition: { default: 'lorum ipsum' } })).toMatchInlineSnapshot(`
+    expect(JSDoc.from({ key: 'foo', _definition: { default: 'lorum ipsum' } })).toMatchInlineSnapshot(`
             "/**
              * @default 'lorum ipsum'
              */
@@ -58,7 +58,7 @@ it('combined', () => {
     expect(
         JSDoc.from({
             key: 'foo',
-            definition: {
+            _definition: {
                 description: 'lorum ipsum',
                 default: 'dolor sit amet',
                 examples: ['lorum ipsum', 'dolor sit amet'],
@@ -94,6 +94,6 @@ it('jsdoc is always valid javascript', () => {
         ),
         ([key, { description, title, default: def, examples, readonly, deprecated }]) =>
             // biome-ignore lint/security/noGlobalEval: it's a test, we're okay with eval here
-            eval(JSDoc.from({ key, definition: { description, title, default: def, examples, readonly, deprecated } }) ?? ''),
+            eval(JSDoc.from({ key, _definition: { description, title, default: def, examples, readonly, deprecated } }) ?? ''),
     )
 })

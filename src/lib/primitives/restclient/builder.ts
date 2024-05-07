@@ -148,14 +148,15 @@ export interface AsPathItem {
 }
 
 export class EitherHelper extends Node {
-    public override type = 'restclient:either' as const
-    public override name = 'restclient:either'
+    public override _type = 'restclient:either' as const
+    public override _name = 'restclient:either'
+    public override _canReference: false = false
 
-    public override get output(): TypescriptOutput[] {
+    public override get _output(): TypescriptOutput[] {
         return [
             {
                 type: 'typescript' as const,
-                targetPath: ({ sourcePath }) => sourcePath,
+                targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
                     const IncomingHttpHeaders = reference(httpSymbols.IncomingHttpHeaders())
 
@@ -190,7 +191,7 @@ export class EitherHelper extends Node {
         }
         const instance = new EitherHelper({})
         EitherHelper._cache.set(path, instance)
-        instance.sourcePath = path
+        instance._sourcePath = path
         return instance
     }
 }
@@ -400,7 +401,7 @@ export class RestClientBuilder {
                         : ''
 
                 writer.write('\n')
-                const jsdoc = JSDoc.from({ definition: operation })
+                const jsdoc = JSDoc.from({ _definition: operation })
                 if (jsdoc !== undefined) {
                     writer.write(jsdoc)
                 }
@@ -780,7 +781,7 @@ export class RestClientBuilder {
                 exportAllSymbols: true,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
-            if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore.type)) {
+            if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore._type)) {
                 const validator = this.asValidator(therefore, { assert: !this.options.useEither })
                 return {
                     schema: validator,
@@ -795,7 +796,7 @@ export class RestClientBuilder {
                 mimeType: jsonMimeType,
                 name: 'body',
                 type: 'body',
-                definition: () => therefore.type.replace('integer', 'number'),
+                definition: () => therefore._type.replace('integer', 'number'),
             }
         }
 
@@ -918,9 +919,9 @@ export class RestClientBuilder {
     }
 
     private asValidator(node: Node, { assert = false }: { assert?: boolean } = {}): Node {
-        node.definition.validator ??= { assert }
-        node.definition.validator.assert ||= assert
-        node.definition.validator.compile = this.options.compile
+        node._definition.validator ??= { assert }
+        node._definition.validator.assert ||= assert
+        node._definition.validator.compile = this.options.compile
         return node
     }
 

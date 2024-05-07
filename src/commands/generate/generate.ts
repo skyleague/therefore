@@ -10,7 +10,8 @@ import type { ThereforeOutput } from '../../lib/output/types.js'
 import { TypescriptFileOutput } from '../../lib/output/typescript.js'
 import { $ref } from '../../lib/primitives/ref/ref.js'
 import { therefore } from '../../lib/primitives/therefore.js'
-import { generateNode } from '../../lib/visitor/prepass/prepass.js'
+import { ValidatorType } from '../../lib/primitives/validator/validator.js'
+import { autoRef, generateNode } from '../../lib/visitor/prepass/prepass.js'
 import { type Prettier, maybeLoadPrettier } from './format.js'
 import { expandGlobs } from './glob.js'
 
@@ -33,22 +34,22 @@ export function loadNodes({
     sourcePath: string
     seen?: Set<string>
 }): Node[] {
-    if (seen.has(node.id)) {
+    if (seen.has(node._id)) {
         return []
     }
 
     const evaluated = therefore.exportSymbol({ symbol: node, sourcePath, sourceSymbol })
 
-    seen.add(evaluated.id)
+    seen.add(evaluated._id)
 
     // DFS on hypergraph
     const nodes: Node[] = []
-    for (const connection of evaluated.connections ?? []) {
+    for (const connection of evaluated._connections ?? []) {
         nodes.push(
             ...loadNodes({
                 sourceSymbol: undefined,
                 node: connection,
-                sourcePath: evaluated.sourcePath,
+                sourcePath: evaluated._sourcePath,
                 seen,
             }),
         )
@@ -87,7 +88,7 @@ export async function scanModule({
         exports.push(...evaluated)
     }
 
-    console.log(` - found ${[...new Set(exports.map((e) => e.name))].join(', ')}`)
+    console.log(` - found ${[...new Set(exports.map((e) => e._name))].join(', ')}`)
 
     return exports
 }
@@ -108,9 +109,9 @@ export async function scanModules({ files, basePath }: { files: string[]; basePa
     ).flat()
 
     for (const node of moduleNodes) {
-        if (node.sourcePath !== undefined) {
-            modules[node.sourcePath] ??= []
-            modules[node.sourcePath]?.push(node)
+        if (node._sourcePath !== undefined) {
+            modules[node._sourcePath] ??= []
+            modules[node._sourcePath]?.push(node)
         }
     }
 
@@ -118,15 +119,29 @@ export async function scanModules({ files, basePath }: { files: string[]; basePa
 }
 
 export function compileModuleExports(modules: ThereforeModules): ThereforeOutput {
+    const symbols = Object.values(modules).flatMap((symbols) =>
+        symbols.map((s) => {
+            if (s instanceof ValidatorType) {
+                return s._children[0]
+            }
+            return s
+        }),
+    )
+    const allSymbols = new WeakSet(symbols)
+
+    for (const symbol of symbols) {
+        autoRef(symbol, allSymbols)
+    }
+
     const output: ThereforeOutput = {}
     for (const [_, symbols] of Object.entries(modules)) {
         for (const symbol of symbols) {
-            const hasSourcePath = (node: Node): node is SourceNode => 'sourcePath' in node
+            const hasSourcePath = (node: Node): node is SourceNode => '_sourcePath' in node
             if (!hasSourcePath(symbol)) {
                 throw new Error('Can only load symbols that have a well defined export path')
             }
-
             generateNode(symbol)
+
             for (const generator of therefore.generators) {
                 generator.fromSymbol({ symbol, output })
             }
@@ -137,6 +152,7 @@ export function compileModuleExports(modules: ThereforeModules): ThereforeOutput
 
 export async function compileOutput(entries: string[], { cwd, prettier = undefined }: { cwd: string; prettier?: Prettier }) {
     therefore.generators = [GenericFileOutput, TypescriptFileOutput]
+    therefore.zodCache = new WeakMap()
 
     const modules = await scanModules({ files: entries, basePath: cwd })
 

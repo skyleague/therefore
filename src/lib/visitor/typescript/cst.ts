@@ -10,7 +10,7 @@ export function defaultTypescriptOutput(_: Node, typescript?: Partial<Typescript
     return {
         type: 'typescript',
         onExport: [...(onExport ?? [])],
-        targetPath: ({ sourcePath }) => {
+        targetPath: ({ _sourcePath: sourcePath }) => {
             return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
         },
         definition: (self, context) => {

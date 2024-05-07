@@ -28,7 +28,7 @@ export interface TypescriptAttributes {
     symbolName: string
     aliasName?: string
     isModule?: boolean
-    path: string
+    path?: string
 
     schemaPath?: string
 }
@@ -100,7 +100,7 @@ export interface ThereforeNodeDefinition<T = unknown> {
      */
     deprecated?: boolean | undefined
 
-    validator?: ValidatorOptions | undefined
+    validator?: Partial<ValidatorOptions> | undefined
 }
 
 /**
@@ -112,5 +112,5 @@ export interface ThereforeNodeDefinition<T = unknown> {
  * @group Guards
  */
 export function isNode(x: unknown): x is Node {
-    return isObject(x) && 'type' in x && 'id' in x
+    return isObject(x) && '_type' in x && '_id' in x
 }

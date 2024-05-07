@@ -49,8 +49,8 @@ it('types - modifiers', () => {
         >
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         { foo?: string | undefined; bar: boolean | null }[] | undefined
     >()
 })
@@ -58,56 +58,54 @@ it('types - modifiers', () => {
 it('expand', () => {
     expect($intersection([$object({ foo: $string })])).toMatchInlineSnapshot(`
       IntersectionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "1",
-            "isCommutative": false,
-            "options": {},
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {
               "foo": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           },
         ],
-        "definition": {},
-        "id": "4",
-        "isCommutative": false,
-        "options": {},
-        "type": "intersection",
+        "_definition": {},
+        "_id": "3",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "intersection",
       }
     `)
 })
@@ -115,52 +113,50 @@ it('expand', () => {
 it('example', () => {
     expect($intersection([$object({ foo: $string })]).jsonschema({ examples: [{ foo: 'bar' }] })).toMatchInlineSnapshot(`
       IntersectionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "1",
-            "isCommutative": false,
-            "options": {},
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {
               "foo": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           },
         ],
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               {
@@ -169,10 +165,10 @@ it('example', () => {
             ],
           },
         },
-        "id": "4",
-        "isCommutative": false,
-        "options": {},
-        "type": "intersection",
+        "_id": "3",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "intersection",
       }
     `)
 })
@@ -180,60 +176,58 @@ it('example', () => {
 it('default', () => {
     expect($intersection([$object({ foo: $string })], { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
       IntersectionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "1",
-            "isCommutative": false,
-            "options": {},
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {
               "foo": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           },
         ],
-        "definition": {
+        "_definition": {
           "default": {
             "foo": "bar",
           },
         },
-        "id": "4",
-        "isCommutative": false,
-        "options": {},
-        "type": "intersection",
+        "_id": "3",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "intersection",
       }
     `)
 })
@@ -245,91 +239,87 @@ it('object intersection', () => {
         }),
     ).toMatchInlineSnapshot(`
       IntersectionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "1",
-            "isCommutative": false,
-            "options": {},
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {
               "foo": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "3",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           },
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "6",
-                "isCommutative": true,
-                "name": "bar",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "4",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "4",
-            "isCommutative": false,
-            "options": {},
+            "_definition": {},
+            "_id": "3",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {
               "bar": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "6",
-                "isCommutative": true,
-                "name": "bar",
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "4",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           },
         ],
-        "definition": {
+        "_definition": {
           "jsonschema": {
             "examples": [
               {
@@ -339,10 +329,10 @@ it('object intersection', () => {
             ],
           },
         },
-        "id": "7",
-        "isCommutative": false,
-        "options": {},
-        "type": "intersection",
+        "_id": "5",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "intersection",
       }
     `)
 })
@@ -352,126 +342,122 @@ it('reference intersection', () => {
     expect(
         $intersection([$object({ foo: $string }), $ref(ref)]).jsonschema({ examples: [{ foo: 'bar', bar: 'foo' }] }),
     ).toMatchInlineSnapshot(`
-          IntersectionType {
-            "attributes": {
+      IntersectionType {
+        "_attributes": {
+          "generic": {},
+          "typescript": {},
+        },
+        "_children": [
+          ObjectType {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
-              ObjectType {
-                "attributes": {
+            "_children": [
+              StringType {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
-                  StringType {
-                    "attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "foo",
-                    "options": {},
-                    "type": "string",
-                  },
-                ],
-                "definition": {},
-                "id": "1",
-                "isCommutative": false,
-                "options": {},
-                "shape": {
-                  "foo": StringType {
-                    "attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "foo",
-                    "options": {},
-                    "type": "string",
-                  },
-                },
-                "type": "object",
-              },
-              NodeTrait {
-                "attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "children": [
-                  ObjectType {
-                    "attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "children": [
-                      StringType {
-                        "attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "definition": {},
-                        "id": "3",
-                        "isCommutative": true,
-                        "name": "bar",
-                        "options": {},
-                        "type": "string",
-                      },
-                    ],
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": false,
-                    "options": {},
-                    "shape": {
-                      "bar": StringType {
-                        "attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "definition": {},
-                        "id": "3",
-                        "isCommutative": true,
-                        "name": "bar",
-                        "options": {},
-                        "type": "string",
-                      },
-                    },
-                    "type": "object",
-                  },
-                ],
-                "definition": {},
-                "hooks": {
-                  "onGenerate": [
-                    [Function],
-                  ],
-                  "onLoad": [
-                    [Function],
-                  ],
-                },
-                "id": "4",
-                "isCommutative": true,
-                "options": {},
-                "type": "ref",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {
-              "jsonschema": {
-                "examples": [
-                  {
-                    "bar": "foo",
-                    "foo": "bar",
-                  },
-                ],
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
+            "shape": {
+              "foo": StringType {
+                "_attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             },
-            "id": "5",
-            "isCommutative": false,
-            "options": {},
-            "type": "intersection",
-          }
-        `)
+          },
+          NodeTrait {
+            "_attributes": {
+              "generic": {},
+              "typescript": {},
+            },
+            "_children": [
+              ObjectType {
+                "_attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "_children": [
+                  StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "2",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
+                  },
+                ],
+                "_definition": {},
+                "_id": "1",
+                "_isCommutative": false,
+                "_options": {},
+                "_type": "object",
+                "shape": {
+                  "bar": StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "2",
+                    "_isCommutative": true,
+                    "_options": {},
+                    "_type": "string",
+                  },
+                },
+              },
+            ],
+            "_definition": {},
+            "_hooks": {
+              "onGenerate": [
+                [Function],
+              ],
+              "onLoad": [
+                [Function],
+              ],
+            },
+            "_id": "3",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "ref",
+          },
+        ],
+        "_definition": {
+          "jsonschema": {
+            "examples": [
+              {
+                "bar": "foo",
+                "foo": "bar",
+              },
+            ],
+          },
+        },
+        "_id": "4",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "intersection",
+      }
+    `)
 })

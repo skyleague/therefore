@@ -27,17 +27,17 @@ export interface Hooks {
 }
 
 export class Node {
-    public id: string = id()
-    public type!: string
+    public _id: string = id()
+    public _type!: string
 
-    public declare children?: Node[] | undefined
-    public declare connections?: Node[] | undefined
-
-    public declare hooks?: Hooks | undefined
-    public get output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public declare _children?: Node[] | undefined
+    public declare _connections?: Node[] | undefined
+    public declare _canReference?: boolean | undefined
+    public declare _hooks?: Hooks | undefined
+    public get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return undefined
     }
-    public declare transform?:
+    public declare _transform?:
         | {
               symbolName?: (name: string) => string
               referenceName?: (name: string) => string
@@ -45,10 +45,10 @@ export class Node {
           }
         | undefined
 
-    public declare name?: string | undefined
-    public declare sourcePath?: string | undefined
+    public declare _name?: string | undefined
+    public declare _sourcePath?: string | undefined
 
-    public attributes: {
+    public _attributes: {
         typescript: TypescriptAttributes
         generic: GenericAttributes
     } = {
@@ -56,9 +56,9 @@ export class Node {
         generic: {} as GenericAttributes,
     }
 
-    public definition: ThereforeNodeDefinition<this['infer']> = {}
+    public _definition: ThereforeNodeDefinition<this['infer']> = {}
 
-    public isCommutative = true
+    public _isCommutative = true
 
     public declare infer: unknown
 
@@ -66,7 +66,7 @@ export class Node {
         for (const key of Object.keys(definition) as (keyof ThereforeNodeDefinition)[]) {
             if (definitionKeys.includes(key)) {
                 if (definition[key] !== undefined) {
-                    ;(this.definition[key] as ThereforeNodeDefinition<this['infer']>) = definition[
+                    ;(this._definition[key] as ThereforeNodeDefinition<this['infer']>) = definition[
                         key
                     ] as ThereforeNodeDefinition<this['infer']>
 
@@ -77,53 +77,53 @@ export class Node {
             }
         }
         if (definition.name !== undefined) {
-            this.name = definition.name
+            this._name = definition.name
             // biome-ignore lint/performance/noDelete: we need to delete the name from the definition
             delete definition.name
         }
     }
 
     public describe(description: string): this {
-        this.definition.description = description
+        this._definition.description = description
         return this
     }
 
     public nullable(): AsNullable<this> {
-        const clone = Node.clone(this)
-        clone.definition.nullable = true
+        const clone = Node._clone(this)
+        clone._definition.nullable = true
         return clone as AsNullable<this>
     }
 
     public optional(): AsOptional<this> {
-        const clone = Node.clone(this)
-        clone.definition.optional = true
+        const clone = Node._clone(this)
+        clone._definition.optional = true
         return clone as AsOptional<this>
     }
 
     public default(value: this['infer']): this {
-        this.definition.default = value
+        this._definition.default = value
         return this
     }
 
     public jsonschema(schema: JsonSchema<this['infer']>): this {
-        this.definition.jsonschema = { ...this.definition.jsonschema, ...schema }
+        this._definition.jsonschema = { ...this._definition.jsonschema, ...schema }
         return this
     }
 
-    public validator(validator: ValidatorOptions = {}): this {
-        this.definition.validator = { ...this.definition.validator, ...validator }
+    public validator(validator: Partial<ValidatorOptions> = {}): this {
+        this._definition.validator = { ...this._definition.validator, ...validator }
         return this
     }
 
-    protected static clone<T extends Node>(obj: T) {
+    protected static _clone<T extends Node>(obj: T) {
         const clone = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj) as T
-        clone.id = id()
+        clone._id = id()
         // on clone we erase the validator options, as we don't want to copy that over to the new instance
-        clone.definition = omit({ ...clone.definition }, ['validator'])
-        clone.attributes = structuredClone(clone.attributes)
+        clone._definition = omit({ ...clone._definition }, ['validator'])
+        clone._attributes = structuredClone(clone._attributes)
         return clone
     }
 }
 
-export type SourceNode = SetNonNullable<SetRequired<Node, 'sourcePath'>, 'sourcePath'>
-export type NameNode = SetNonNullable<SetRequired<Node, 'name'>, 'name'>
+export type SourceNode = SetNonNullable<SetRequired<Node, '_sourcePath'>, '_sourcePath'>
+export type NameNode = SetNonNullable<SetRequired<Node, '_name'>, '_name'>

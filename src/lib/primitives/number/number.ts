@@ -44,14 +44,14 @@ export interface NumberOptions {
 }
 
 export class NumberType extends NodeTrait {
-    public override type = 'number' as const
-    public options: NumberOptions
+    public override _type = 'number' as const
+    public _options: NumberOptions
 
     public declare infer: number
 
     public constructor({ minInclusive = true, maxInclusive = true, ...options }: SchemaOptions<Partial<NumberOptions>>) {
         super(options)
-        this.options = {
+        this._options = {
             minInclusive,
             maxInclusive,
             ...options,
@@ -59,56 +59,61 @@ export class NumberType extends NodeTrait {
     }
 
     public arbitrary(options: Partial<FloatGenerator>) {
-        this.options.arbitrary ??= {}
-        this.options.arbitrary = { ...this.options.arbitrary, ...options }
+        this._options.arbitrary ??= {}
+        this._options.arbitrary = { ...this._options.arbitrary, ...options }
         return this
     }
 
     public gt(value: number) {
-        this.options.min = value
-        this.options.minInclusive = false
+        this._options.min = value
+        this._options.minInclusive = false
         return this
     }
 
     public gte(value: number) {
-        this.options.min = value
-        this.options.minInclusive = true
+        this._options.min = value
+        this._options.minInclusive = true
         return this
     }
 
     public lt(value: number) {
-        this.options.max = value
-        this.options.maxInclusive = false
+        this._options.max = value
+        this._options.maxInclusive = false
         return this
     }
 
     public lte(value: number) {
-        this.options.max = value
-        this.options.maxInclusive = true
+        this._options.max = value
+        this._options.maxInclusive = true
         return this
     }
 
     public positive() {
-        this.options.min = 0
-        this.options.minInclusive = false
+        this._options.min = 0
+        this._options.minInclusive = false
         return this
     }
 
     public nonnegative() {
-        this.options.min = 0
-        this.options.minInclusive = true
+        this._options.min = 0
+        this._options.minInclusive = true
         return this
     }
 
     public negative() {
-        this.options.max = 0
-        this.options.maxInclusive = false
+        this._options.max = 0
+        this._options.maxInclusive = false
         return this
     }
 
     public nonpositive() {
-        this.options.max = 0
-        this.options.maxInclusive = true
+        this._options.max = 0
+        this._options.maxInclusive = true
+        return this
+    }
+
+    public multipleOf(value: number) {
+        this._options.multipleOf = value
         return this
     }
 }

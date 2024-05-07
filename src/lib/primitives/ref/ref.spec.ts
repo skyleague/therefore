@@ -42,50 +42,50 @@ it('types', () => {
 it('expand', () => {
     expect($ref(foo)).toMatchInlineSnapshot(`
       NodeTrait {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           RecordType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "1",
-                "isCommutative": true,
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "1",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {},
-            "id": "2",
-            "isCommutative": false,
-            "options": {},
-            "recordType": StringType {
-              "attributes": {
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
+            "element": StringType {
+              "_attributes": {
                 "generic": {},
                 "typescript": {},
               },
-              "definition": {},
-              "id": "1",
-              "isCommutative": true,
-              "options": {},
-              "type": "string",
+              "_definition": {},
+              "_id": "1",
+              "_isCommutative": true,
+              "_options": {},
+              "_type": "string",
             },
             "shape": {},
-            "type": "object",
           },
         ],
-        "definition": {},
-        "hooks": {
+        "_definition": {},
+        "_hooks": {
           "onGenerate": [
             [Function],
           ],
@@ -93,10 +93,10 @@ it('expand', () => {
             [Function],
           ],
         },
-        "id": "1",
-        "isCommutative": true,
-        "options": {},
-        "type": "ref",
+        "_id": "1",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "ref",
       }
     `)
 })
@@ -105,38 +105,38 @@ it('self reference', () => {
     const json: Node = $union([$string, $array($ref(() => json)), $ref(() => json)])
     expect(json).toMatchInlineSnapshot(`
       UnionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "5",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "5",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
           NodeTrait {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   [Function],
                 ],
-                "definition": {},
-                "hooks": {
+                "_definition": {},
+                "_hooks": {
                   "onGenerate": [
                     [Function],
                   ],
@@ -144,23 +144,27 @@ it('self reference', () => {
                     [Function],
                   ],
                 },
-                "id": "1",
-                "isCommutative": true,
-                "options": {},
-                "type": "ref",
+                "_id": "1",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "ref",
               },
             ],
-            "definition": {},
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "array",
             "element": NodeTrait {
-              "attributes": {
+              "_attributes": {
                 "generic": {},
                 "typescript": {},
               },
-              "children": [
+              "_children": [
                 [Function],
               ],
-              "definition": {},
-              "hooks": {
+              "_definition": {},
+              "_hooks": {
                 "onGenerate": [
                   [Function],
                 ],
@@ -168,26 +172,22 @@ it('self reference', () => {
                   [Function],
                 ],
               },
-              "id": "1",
-              "isCommutative": true,
-              "options": {},
-              "type": "ref",
+              "_id": "1",
+              "_isCommutative": true,
+              "_options": {},
+              "_type": "ref",
             },
-            "id": "2",
-            "isCommutative": false,
-            "options": {},
-            "type": "array",
           },
           NodeTrait {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               [Function],
             ],
-            "definition": {},
-            "hooks": {
+            "_definition": {},
+            "_hooks": {
               "onGenerate": [
                 [Function],
               ],
@@ -195,17 +195,17 @@ it('self reference', () => {
                 [Function],
               ],
             },
-            "id": "3",
-            "isCommutative": true,
-            "options": {},
-            "type": "ref",
+            "_id": "3",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "ref",
           },
         ],
-        "definition": {},
-        "id": "4",
-        "isCommutative": true,
-        "options": {},
-        "type": "union",
+        "_definition": {},
+        "_id": "4",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "union",
       }
     `)
 })
@@ -215,25 +215,25 @@ it('uuid reference', () => {
     const json = $ref(value)
     expect(json).toMatchInlineSnapshot(`
       NodeTrait {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "1",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {},
-        "hooks": {
+        "_definition": {},
+        "_hooks": {
           "onGenerate": [
             [Function],
           ],
@@ -241,10 +241,10 @@ it('uuid reference', () => {
             [Function],
           ],
         },
-        "id": "2",
-        "isCommutative": true,
-        "options": {},
-        "type": "ref",
+        "_id": "2",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "ref",
       }
     `)
 })
@@ -253,40 +253,40 @@ it('description ', () => {
     const json: Node = $union([$string, $array($ref(() => json, { description: 'foo array', name: 'json' }))])
     expect(json).toMatchInlineSnapshot(`
       UnionType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "4",
-            "isCommutative": true,
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "4",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
           NodeTrait {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   [Function],
                 ],
-                "definition": {
+                "_definition": {
                   "description": "foo array",
                 },
-                "hooks": {
+                "_hooks": {
                   "onGenerate": [
                     [Function],
                   ],
@@ -294,26 +294,30 @@ it('description ', () => {
                     [Function],
                   ],
                 },
-                "id": "1",
-                "isCommutative": true,
-                "name": "json",
-                "options": {},
-                "type": "ref",
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "json",
+                "_options": {},
+                "_type": "ref",
               },
             ],
-            "definition": {},
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "array",
             "element": NodeTrait {
-              "attributes": {
+              "_attributes": {
                 "generic": {},
                 "typescript": {},
               },
-              "children": [
+              "_children": [
                 [Function],
               ],
-              "definition": {
+              "_definition": {
                 "description": "foo array",
               },
-              "hooks": {
+              "_hooks": {
                 "onGenerate": [
                   [Function],
                 ],
@@ -321,23 +325,19 @@ it('description ', () => {
                   [Function],
                 ],
               },
-              "id": "1",
-              "isCommutative": true,
-              "name": "json",
-              "options": {},
-              "type": "ref",
+              "_id": "1",
+              "_isCommutative": true,
+              "_name": "json",
+              "_options": {},
+              "_type": "ref",
             },
-            "id": "2",
-            "isCommutative": false,
-            "options": {},
-            "type": "array",
           },
         ],
-        "definition": {},
-        "id": "3",
-        "isCommutative": true,
-        "options": {},
-        "type": "union",
+        "_definition": {},
+        "_id": "3",
+        "_isCommutative": true,
+        "_options": {},
+        "_type": "union",
       }
     `)
 })

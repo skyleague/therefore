@@ -6,6 +6,14 @@
 
 import type { Days, Ref1 } from './locals.type.js'
 
+export interface AutorefDays {
+    ref: Days
+}
+
+export interface AutorefOther {
+    ref: Ref1
+}
+
 export type Other = Ref1
 
 export type RefDays = Days

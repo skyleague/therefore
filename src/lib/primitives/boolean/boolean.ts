@@ -4,15 +4,15 @@ import type { SchemaOptions } from '../base.js'
 export type BooleanOptions = object
 
 export class BooleanType extends NodeTrait {
-    public override type = 'boolean' as const
+    public override _type = 'boolean' as const
 
-    public options: BooleanOptions = {}
+    public _options: BooleanOptions = {}
 
     public declare infer: boolean
 
     public constructor(options: SchemaOptions<BooleanOptions>) {
         super(options)
-        this.options = options
+        this._options = options
     }
 }
 

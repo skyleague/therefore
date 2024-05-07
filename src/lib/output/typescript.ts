@@ -28,14 +28,14 @@ export function sanitizeTypescriptTypeName(symbol: string): string {
 }
 
 export const setDefaultNames = (self: Node) => {
-    if (self.name !== undefined) {
-        const readableSymbolName = camelcase(sanitizeTypescriptTypeName(self.name), {
+    if (self._name !== undefined) {
+        const readableSymbolName = camelcase(sanitizeTypescriptTypeName(self._name), {
             pascalCase: true,
             preserveConsecutiveUppercase: true,
         })
         //  we lied to the compiler in the definition
-        self.attributes.typescript.symbolName ??= readableSymbolName
-        self.attributes.generic.symbolName ??= readableSymbolName
+        self._attributes.typescript.symbolName ??= readableSymbolName
+        self._attributes.generic.symbolName ??= readableSymbolName
     }
 }
 
@@ -47,7 +47,7 @@ export class TypescriptFileOutput {
     public content: (readonly [Node, string])[] = []
     public references = new References('typescript', {
         fallbackStrategy: (node, type) => {
-            if (type === 'referenceName' && node.attributes.typescript.path !== this.path) {
+            if (type === 'referenceName' && node._attributes.typescript.path !== this.path) {
                 return 'aliasName'
             }
             return 'symbolName'
@@ -59,10 +59,10 @@ export class TypescriptFileOutput {
         onExport: [
             (self) => {
                 // propagate entry export name
-                if (self.connections !== undefined && self.isCommutative) {
-                    for (const connection of self.connections) {
-                        if (connection.name === undefined) {
-                            connection.name = self.name
+                if (self._connections !== undefined && self._isCommutative) {
+                    for (const connection of self._connections) {
+                        if (connection._name === undefined) {
+                            connection._name = self._name
                         }
                     }
                 }
@@ -142,7 +142,7 @@ export class TypescriptFileOutput {
 
     private static tsGenerators(symbol: Node): DefinedTypescriptOutput[] {
         return (
-            (symbol.output ?? [defaultTypescriptOutput(symbol)])
+            (symbol._output ?? [defaultTypescriptOutput(symbol)])
                 .filter((o): o is TypescriptOutput => o.type === 'typescript')
                 // load in the defaults
                 .map((o) => defaultTypescriptOutput(symbol, o))
@@ -161,13 +161,13 @@ export class TypescriptFileOutput {
         exportSymbol?: boolean
         context?: TypescriptWalkerContext
     }) {
-        if (this.seen.has(symbol.id)) {
+        if (this.seen.has(symbol._id)) {
             return
         }
-        this.seen.add(symbol.id)
+        this.seen.add(symbol._id)
 
         // set the target location of the symbol
-        symbol.attributes.typescript.path = this.path
+        symbol._attributes.typescript.path = this.path
 
         for (const hook of output.onExport ?? []) {
             hook(symbol)
@@ -192,7 +192,7 @@ export class TypescriptFileOutput {
             .filter((records) => records.length > 1)
 
         const unmappedDuplicates = duplicates.map((records) =>
-            records.filter(([name]) => this.references.key2node.get(name)?.attributes.typescript.aliasName === undefined),
+            records.filter(([name]) => this.references.key2node.get(name)?._attributes.typescript.aliasName === undefined),
         )
 
         const suffixes = unmappedDuplicates.flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
@@ -234,32 +234,36 @@ export class TypescriptFileOutput {
         for (const symbol of this.references.symbols.values()) {
             // first check if we referenced the symbol in the first place
             if (
-                this.references.references.get(symbol.id)?.has('referenceName') !== true ||
-                symbol.attributes.typescript.path === this.path ||
-                symbol.sourcePath === undefined
+                this.references.references.get(symbol._id)?.has('referenceName') !== true ||
+                symbol._attributes.typescript.path === this.path ||
+                symbol._sourcePath === undefined
             ) {
                 continue
             }
 
+            const symbolPath = symbol._attributes.typescript.path
+            if (symbolPath === undefined) {
+                console.error('No path found for symbol', symbol._name)
+                continue
+            }
+
             let importPath =
-                symbol.attributes.typescript.isModule === true
-                    ? symbol.attributes.typescript.path
-                    : path.relative(path.dirname(this.path), symbol.attributes.typescript.path)
-            if (symbol.attributes.typescript.isModule !== true && !importPath.startsWith('../')) {
+                symbol._attributes.typescript.isModule === true ? symbolPath : path.relative(path.dirname(this.path), symbolPath)
+            if (symbol._attributes.typescript.isModule !== true && !importPath.startsWith('../')) {
                 importPath = `./${importPath}`
             }
             const reference = this.references.reference(symbol, 'symbolName')
-            if (this.references.references.get(symbol.id)?.has('value')) {
+            if (this.references.references.get(symbol._id)?.has('value')) {
                 dependencies[importPath] ??= []
                 dependencies[importPath]?.push(reference)
             } else {
                 typeDependencies[importPath] ??= []
                 typeDependencies[importPath]?.push(reference)
             }
-            if (symbol.attributes.typescript.aliasName !== undefined) {
+            if (symbol._attributes.typescript.aliasName !== undefined) {
                 alias[reference] =
-                    symbol.transform?.aliasName?.(symbol.attributes.typescript.aliasName) ??
-                    symbol.attributes.typescript.aliasName
+                    symbol._transform?.aliasName?.(symbol._attributes.typescript.aliasName) ??
+                    symbol._attributes.typescript.aliasName
             }
         }
         const data = this.references.resolveData(this.references.data())
@@ -330,7 +334,7 @@ export class TypescriptFileOutput {
         }
         contents.newLineIfLastNot()
 
-        for (const [, line] of this.content.sort((a, z) => (a[0].name ?? '').localeCompare(z[0].name ?? ''))) {
+        for (const [, line] of this.content.sort((a, z) => (a[0]._name ?? '').localeCompare(z[0]._name ?? ''))) {
             contents.writeLine(line).newLine()
         }
 

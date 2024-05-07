@@ -1,21 +1,22 @@
+import type { Simplify, UnionToIntersection } from '@skyleague/axioms/types'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import type { SchemaOptions } from '../base.js'
 import type { ObjectType } from '../object/object.js'
 
-import { type SimplifyOnce, type UnionToIntersection, evaluate } from '@skyleague/axioms'
+import { evaluate } from '@skyleague/axioms'
 
 export type IntersectionOptions = object
 
 export class IntersectionType<const Elements extends Node[] = Node[]> extends NodeTrait {
-    public override type = 'intersection' as const
-    public override children: Node[]
-    public override isCommutative = false
+    public override _type = 'intersection' as const
+    public override _children: Node[]
+    public override _isCommutative = false
 
-    public options: IntersectionOptions = {}
+    public _options: IntersectionOptions = {}
 
-    public declare infer: SimplifyOnce<UnionToIntersection<Elements[number]['infer']>>
+    public declare infer: Simplify<UnionToIntersection<Elements[number]['infer']>>
     public declare intrinsic: Intrinsic<Elements[number]>
 
     public constructor(
@@ -23,8 +24,8 @@ export class IntersectionType<const Elements extends Node[] = Node[]> extends No
         options: SchemaOptions<IntersectionOptions, UnionToIntersection<Elements[number]['infer']>>,
     ) {
         super(options)
-        this.options = options
-        this.children = intersection.map(evaluate)
+        this._options = options
+        this._children = intersection.map(evaluate)
     }
 }
 

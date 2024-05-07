@@ -20,8 +20,8 @@ it('types', () => {
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo: string }>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ObjectType<{ foo: StringType }>>>
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<{ foo: string } | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<{ foo: string }[] | undefined>()
+    expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo: string } | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<{ foo: string }[] | undefined>()
 })
 
 it('types - modifiers', () => {
@@ -31,8 +31,8 @@ it('types - modifiers', () => {
         Equal<Intrinsic<typeof schema>, ObjectType<{ foo: AsOptional<StringType>; bar: AsNullable<BooleanType> }>>
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         { foo?: string | undefined; bar: boolean | null }[] | undefined
     >()
 })
@@ -50,14 +50,14 @@ it('types - partials', () => {
         >
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<
         | {
               foo?: string | undefined
               bar?: boolean | undefined
           }
         | undefined
     >()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo?: string | undefined
               bar?: boolean | undefined
@@ -79,14 +79,14 @@ it('types - partials - by name', () => {
         >
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<
         | {
               foo?: string | undefined
               bar: boolean
           }
         | undefined
     >()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo?: string | undefined
               bar: boolean
@@ -108,14 +108,14 @@ it('types - required', () => {
         >
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
           }
         | undefined
     >()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -137,14 +137,14 @@ it('types - required - by name', () => {
         >
     >
 
-    expectTypeOf(schema.definition.default).toEqualTypeOf<
+    expectTypeOf(schema._definition.default).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
           }
         | undefined
     >()
-    expectTypeOf(schema.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -168,7 +168,7 @@ it('types - extends', () => {
         >
     >
 
-    expectTypeOf(other.definition.default).toEqualTypeOf<
+    expectTypeOf(other._definition.default).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -176,7 +176,7 @@ it('types - extends', () => {
           }
         | undefined
     >()
-    expectTypeOf(other.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(other._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -202,7 +202,7 @@ it('types - merge', () => {
         >
     >
 
-    expectTypeOf(other.definition.default).toEqualTypeOf<
+    expectTypeOf(other._definition.default).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -210,7 +210,7 @@ it('types - merge', () => {
           }
         | undefined
     >()
-    expectTypeOf(other.definition.jsonschema?.examples).toEqualTypeOf<
+    expectTypeOf(other._definition.jsonschema?.examples).toEqualTypeOf<
         | {
               foo: string
               bar: boolean
@@ -223,88 +223,84 @@ it('types - merge', () => {
 it('expand', () => {
     expect($object({ foo: $string })).toMatchInlineSnapshot(`
       ObjectType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "3",
-            "isCommutative": true,
-            "name": "foo",
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         ],
-        "definition": {},
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
+        "_definition": {},
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
         "shape": {
           "foo": StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {},
-            "id": "3",
-            "isCommutative": true,
-            "name": "foo",
-            "options": {},
-            "type": "string",
+            "_definition": {},
+            "_id": "2",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         },
-        "type": "object",
       }
     `)
     expect($object({ foo: $object({}) })).toMatchInlineSnapshot(`
       ObjectType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [],
-            "definition": {},
-            "id": "6",
-            "isCommutative": false,
-            "name": "foo",
-            "options": {},
+            "_children": [],
+            "_definition": {},
+            "_id": "3",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {},
-            "type": "object",
           },
         ],
-        "definition": {},
-        "id": "5",
-        "isCommutative": false,
-        "options": {},
+        "_definition": {},
+        "_id": "4",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
         "shape": {
           "foo": ObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [],
-            "definition": {},
-            "id": "6",
-            "isCommutative": false,
-            "name": "foo",
-            "options": {},
+            "_children": [],
+            "_definition": {},
+            "_id": "3",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "shape": {},
-            "type": "object",
           },
         },
-        "type": "object",
       }
     `)
 })
@@ -312,12 +308,12 @@ it('expand', () => {
 it('example', () => {
     expect($object({}, { jsonschema: { examples: [{ foo: 'bar' }] } })).toMatchInlineSnapshot(`
       ObjectType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [],
-        "definition": {
+        "_children": [],
+        "_definition": {
           "jsonschema": {
             "examples": [
               {
@@ -326,11 +322,11 @@ it('example', () => {
             ],
           },
         },
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
         "shape": {},
-        "type": "object",
       }
     `)
 
@@ -341,21 +337,21 @@ it('example', () => {
 it('default', () => {
     expect($object({}, { default: { foo: 'bar' } })).toMatchInlineSnapshot(`
       ObjectType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [],
-        "definition": {
+        "_children": [],
+        "_definition": {
           "default": {
             "foo": "bar",
           },
         },
-        "id": "1",
-        "isCommutative": false,
-        "options": {},
+        "_id": "1",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
         "shape": {},
-        "type": "object",
       }
     `)
 
@@ -391,159 +387,153 @@ it('complex', () => {
         ),
     ).toMatchInlineSnapshot(`
       ObjectType {
-        "attributes": {
+        "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "children": [
+        "_children": [
           NodeTrait {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "2",
-                "isCommutative": true,
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "The IDs of extensions or apps that are allowed to connect. If left empty or unspecified, no extensions or apps can connect.",
             },
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {
+              "minItems": 1,
+            },
+            "_type": "array",
             "element": StringType {
-              "attributes": {
+              "_attributes": {
                 "generic": {},
                 "typescript": {},
               },
-              "definition": {},
-              "id": "2",
-              "isCommutative": true,
-              "options": {},
-              "type": "string",
+              "_definition": {},
+              "_id": "2",
+              "_isCommutative": true,
+              "_options": {},
+              "_type": "string",
             },
-            "id": "6",
-            "isCommutative": false,
-            "name": "ids",
-            "options": {
-              "minItems": 1,
-            },
-            "type": "array",
           },
           StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {
+            "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
             },
-            "id": "7",
-            "isCommutative": true,
-            "name": "matches",
-            "options": {},
-            "type": "string",
+            "_id": "3",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
           BooleanType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {
+            "_definition": {
               "default": false,
               "description": "Indicates that the extension would like to make use of the TLS channel ID of the web page connecting to it. The web page must also opt to send the TLS channel ID to the extension via setting includeTlsChannelId to true in runtime.connect's connectInfo or runtime.sendMessage's options.",
             },
-            "id": "8",
-            "isCommutative": true,
-            "name": "booleans",
-            "options": {},
-            "type": "boolean",
+            "_id": "4",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "boolean",
           },
         ],
-        "definition": {
+        "_definition": {
           "description": "Declares which extensions, apps, and web pages can connect to your extension via runtime.connect and runtime.sendMessage.",
         },
-        "id": "5",
-        "isCommutative": false,
-        "options": {},
+        "_id": "5",
+        "_isCommutative": false,
+        "_options": {},
+        "_type": "object",
         "shape": {
           "booleans": BooleanType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {
+            "_definition": {
               "default": false,
               "description": "Indicates that the extension would like to make use of the TLS channel ID of the web page connecting to it. The web page must also opt to send the TLS channel ID to the extension via setting includeTlsChannelId to true in runtime.connect's connectInfo or runtime.sendMessage's options.",
             },
-            "id": "8",
-            "isCommutative": true,
-            "name": "booleans",
-            "options": {},
-            "type": "boolean",
+            "_id": "4",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "boolean",
           },
           "ids": NodeTrait {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "2",
-                "isCommutative": true,
-                "options": {},
-                "type": "string",
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "The IDs of extensions or apps that are allowed to connect. If left empty or unspecified, no extensions or apps can connect.",
             },
+            "_id": "1",
+            "_isCommutative": false,
+            "_options": {
+              "minItems": 1,
+            },
+            "_type": "array",
             "element": StringType {
-              "attributes": {
+              "_attributes": {
                 "generic": {},
                 "typescript": {},
               },
-              "definition": {},
-              "id": "2",
-              "isCommutative": true,
-              "options": {},
-              "type": "string",
+              "_definition": {},
+              "_id": "2",
+              "_isCommutative": true,
+              "_options": {},
+              "_type": "string",
             },
-            "id": "6",
-            "isCommutative": false,
-            "name": "ids",
-            "options": {
-              "minItems": 1,
-            },
-            "type": "array",
           },
           "matches": StringType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "definition": {
+            "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
             },
-            "id": "7",
-            "isCommutative": true,
-            "name": "matches",
-            "options": {},
-            "type": "string",
+            "_id": "3",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
           },
         },
-        "type": "object",
       }
     `)
 })

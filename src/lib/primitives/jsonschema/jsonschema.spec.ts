@@ -38,122 +38,122 @@ describe('person', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               IntegerType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "Age in years which must be equal to or greater than zero.",
                   "optional": true,
                 },
-                "id": "5",
-                "isCommutative": true,
-                "name": "age",
-                "options": {
+                "_id": "3",
+                "_isCommutative": true,
+                "_name": "age",
+                "_options": {
                   "maxInclusive": true,
                   "min": 0,
                   "minInclusive": true,
                 },
-                "type": "integer",
+                "_type": "integer",
               },
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "The person's first name.",
                   "optional": true,
                 },
-                "id": "6",
-                "isCommutative": true,
-                "name": "firstName",
-                "options": {},
-                "type": "string",
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "firstName",
+                "_options": {},
+                "_type": "string",
               },
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "The person's last name.",
                   "optional": true,
                 },
-                "id": "7",
-                "isCommutative": true,
-                "name": "lastName",
-                "options": {},
-                "type": "string",
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "lastName",
+                "_options": {},
+                "_type": "string",
               },
             ],
-            "definition": {
+            "_definition": {
               "jsonschema": {
                 "title": "Person",
               },
             },
-            "id": "4",
-            "isCommutative": false,
+            "_id": "4",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "age": IntegerType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "Age in years which must be equal to or greater than zero.",
                   "optional": true,
                 },
-                "id": "5",
-                "isCommutative": true,
-                "name": "age",
-                "options": {
+                "_id": "3",
+                "_isCommutative": true,
+                "_name": "age",
+                "_options": {
                   "maxInclusive": true,
                   "min": 0,
                   "minInclusive": true,
                 },
-                "type": "integer",
+                "_type": "integer",
               },
               "firstName": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "The person's first name.",
                   "optional": true,
                 },
-                "id": "6",
-                "isCommutative": true,
-                "name": "firstName",
-                "options": {},
-                "type": "string",
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "firstName",
+                "_options": {},
+                "_type": "string",
               },
               "lastName": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "description": "The person's last name.",
                   "optional": true,
                 },
-                "id": "7",
-                "isCommutative": true,
-                "name": "lastName",
-                "options": {},
-                "type": "string",
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "lastName",
+                "_options": {},
+                "_type": "string",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -232,93 +232,93 @@ describe('coordinates', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "4",
-                "isCommutative": true,
-                "name": "latitude",
-                "options": {
+                "_definition": {},
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "latitude",
+                "_options": {
                   "max": 90,
                   "maxInclusive": true,
                   "min": -90,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
               NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "5",
-                "isCommutative": true,
-                "name": "longitude",
-                "options": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "longitude",
+                "_options": {
                   "max": 180,
                   "maxInclusive": true,
                   "min": -180,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "A geographical coordinate.",
               "jsonschema": {
                 "title": "Longitude and Latitude Values",
               },
             },
-            "id": "3",
-            "isCommutative": false,
+            "_id": "3",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "latitude": NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "4",
-                "isCommutative": true,
-                "name": "latitude",
-                "options": {
+                "_definition": {},
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "latitude",
+                "_options": {
                   "max": 90,
                   "maxInclusive": true,
                   "min": -90,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
               "longitude": NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "5",
-                "isCommutative": true,
-                "name": "longitude",
-                "options": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "longitude",
+                "_options": {
                   "max": 180,
                   "maxInclusive": true,
                   "min": -180,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -407,138 +407,138 @@ describe('array', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "fruits",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "fruits",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "fruits",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "fruits",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "fruits",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "6",
-                "isCommutative": false,
-                "name": "fruits",
-                "options": {},
-                "type": "array",
               },
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   NodeTrait {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "children": [
+                    "_children": [
                       JSONObjectType {
-                        "attributes": {
+                        "_attributes": {
                           "generic": {},
                           "typescript": {},
                         },
-                        "children": [
+                        "_children": [
                           BooleanType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "Do I like this vegetable?",
                             },
-                            "id": "11",
-                            "isCommutative": true,
-                            "name": "veggieLike",
-                            "options": {},
-                            "type": "boolean",
+                            "_id": "7",
+                            "_isCommutative": true,
+                            "_name": "veggieLike",
+                            "_options": {},
+                            "_type": "boolean",
                           },
                           StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "The name of the vegetable.",
                             },
-                            "id": "12",
-                            "isCommutative": true,
-                            "name": "veggieName",
-                            "options": {},
-                            "type": "string",
+                            "_id": "6",
+                            "_isCommutative": true,
+                            "_name": "veggieName",
+                            "_options": {},
+                            "_type": "string",
                           },
                         ],
-                        "definition": {},
-                        "id": "10",
-                        "isCommutative": false,
-                        "name": "veggie",
-                        "options": {},
+                        "_definition": {},
+                        "_id": "8",
+                        "_isCommutative": false,
+                        "_name": "veggie",
+                        "_options": {},
+                        "_type": "object",
                         "shape": {
                           "veggieLike": BooleanType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "Do I like this vegetable?",
                             },
-                            "id": "11",
-                            "isCommutative": true,
-                            "name": "veggieLike",
-                            "options": {},
-                            "type": "boolean",
+                            "_id": "7",
+                            "_isCommutative": true,
+                            "_name": "veggieLike",
+                            "_options": {},
+                            "_type": "boolean",
                           },
                           "veggieName": StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "The name of the vegetable.",
                             },
-                            "id": "12",
-                            "isCommutative": true,
-                            "name": "veggieName",
-                            "options": {},
-                            "type": "string",
+                            "_id": "6",
+                            "_isCommutative": true,
+                            "_name": "veggieName",
+                            "_options": {},
+                            "_type": "string",
                           },
                         },
-                        "type": "object",
                       },
                     ],
-                    "definition": {},
-                    "hooks": {
+                    "_definition": {},
+                    "_hooks": {
                       "onGenerate": [
                         [Function],
                       ],
@@ -546,97 +546,102 @@ describe('array', () => {
                         [Function],
                       ],
                     },
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "vegetables",
-                    "options": {},
-                    "type": "ref",
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "vegetables",
+                    "_options": {},
+                    "_type": "ref",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "4",
+                "_isCommutative": false,
+                "_name": "vegetables",
+                "_options": {},
+                "_type": "array",
                 "element": NodeTrait {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     JSONObjectType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "children": [
+                      "_children": [
                         BooleanType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "Do I like this vegetable?",
                           },
-                          "id": "11",
-                          "isCommutative": true,
-                          "name": "veggieLike",
-                          "options": {},
-                          "type": "boolean",
+                          "_id": "7",
+                          "_isCommutative": true,
+                          "_name": "veggieLike",
+                          "_options": {},
+                          "_type": "boolean",
                         },
                         StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "The name of the vegetable.",
                           },
-                          "id": "12",
-                          "isCommutative": true,
-                          "name": "veggieName",
-                          "options": {},
-                          "type": "string",
+                          "_id": "6",
+                          "_isCommutative": true,
+                          "_name": "veggieName",
+                          "_options": {},
+                          "_type": "string",
                         },
                       ],
-                      "definition": {},
-                      "id": "10",
-                      "isCommutative": false,
-                      "name": "veggie",
-                      "options": {},
+                      "_definition": {},
+                      "_id": "8",
+                      "_isCommutative": false,
+                      "_name": "veggie",
+                      "_options": {},
+                      "_type": "object",
                       "shape": {
                         "veggieLike": BooleanType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "Do I like this vegetable?",
                           },
-                          "id": "11",
-                          "isCommutative": true,
-                          "name": "veggieLike",
-                          "options": {},
-                          "type": "boolean",
+                          "_id": "7",
+                          "_isCommutative": true,
+                          "_name": "veggieLike",
+                          "_options": {},
+                          "_type": "boolean",
                         },
                         "veggieName": StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "The name of the vegetable.",
                           },
-                          "id": "12",
-                          "isCommutative": true,
-                          "name": "veggieName",
-                          "options": {},
-                          "type": "string",
+                          "_id": "6",
+                          "_isCommutative": true,
+                          "_name": "veggieName",
+                          "_options": {},
+                          "_type": "string",
                         },
                       },
-                      "type": "object",
                     },
                   ],
-                  "definition": {},
-                  "hooks": {
+                  "_definition": {},
+                  "_hooks": {
                     "onGenerate": [
                       [Function],
                     ],
@@ -644,154 +649,150 @@ describe('array', () => {
                       [Function],
                     ],
                   },
-                  "id": "3",
-                  "isCommutative": true,
-                  "name": "vegetables",
-                  "options": {},
-                  "type": "ref",
+                  "_id": "3",
+                  "_isCommutative": true,
+                  "_name": "vegetables",
+                  "_options": {},
+                  "_type": "ref",
                 },
-                "id": "7",
-                "isCommutative": false,
-                "name": "vegetables",
-                "options": {},
-                "type": "array",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "A representation of a person, company, organization, or place",
             },
-            "id": "5",
-            "isCommutative": false,
+            "_id": "5",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "fruits": NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "fruits",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "fruits",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "fruits",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "fruits",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "fruits",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "6",
-                "isCommutative": false,
-                "name": "fruits",
-                "options": {},
-                "type": "array",
               },
               "vegetables": NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   NodeTrait {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "children": [
+                    "_children": [
                       JSONObjectType {
-                        "attributes": {
+                        "_attributes": {
                           "generic": {},
                           "typescript": {},
                         },
-                        "children": [
+                        "_children": [
                           BooleanType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "Do I like this vegetable?",
                             },
-                            "id": "11",
-                            "isCommutative": true,
-                            "name": "veggieLike",
-                            "options": {},
-                            "type": "boolean",
+                            "_id": "7",
+                            "_isCommutative": true,
+                            "_name": "veggieLike",
+                            "_options": {},
+                            "_type": "boolean",
                           },
                           StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "The name of the vegetable.",
                             },
-                            "id": "12",
-                            "isCommutative": true,
-                            "name": "veggieName",
-                            "options": {},
-                            "type": "string",
+                            "_id": "6",
+                            "_isCommutative": true,
+                            "_name": "veggieName",
+                            "_options": {},
+                            "_type": "string",
                           },
                         ],
-                        "definition": {},
-                        "id": "10",
-                        "isCommutative": false,
-                        "name": "veggie",
-                        "options": {},
+                        "_definition": {},
+                        "_id": "8",
+                        "_isCommutative": false,
+                        "_name": "veggie",
+                        "_options": {},
+                        "_type": "object",
                         "shape": {
                           "veggieLike": BooleanType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "Do I like this vegetable?",
                             },
-                            "id": "11",
-                            "isCommutative": true,
-                            "name": "veggieLike",
-                            "options": {},
-                            "type": "boolean",
+                            "_id": "7",
+                            "_isCommutative": true,
+                            "_name": "veggieLike",
+                            "_options": {},
+                            "_type": "boolean",
                           },
                           "veggieName": StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "description": "The name of the vegetable.",
                             },
-                            "id": "12",
-                            "isCommutative": true,
-                            "name": "veggieName",
-                            "options": {},
-                            "type": "string",
+                            "_id": "6",
+                            "_isCommutative": true,
+                            "_name": "veggieName",
+                            "_options": {},
+                            "_type": "string",
                           },
                         },
-                        "type": "object",
                       },
                     ],
-                    "definition": {},
-                    "hooks": {
+                    "_definition": {},
+                    "_hooks": {
                       "onGenerate": [
                         [Function],
                       ],
@@ -799,97 +800,102 @@ describe('array', () => {
                         [Function],
                       ],
                     },
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "vegetables",
-                    "options": {},
-                    "type": "ref",
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "vegetables",
+                    "_options": {},
+                    "_type": "ref",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "4",
+                "_isCommutative": false,
+                "_name": "vegetables",
+                "_options": {},
+                "_type": "array",
                 "element": NodeTrait {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     JSONObjectType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "children": [
+                      "_children": [
                         BooleanType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "Do I like this vegetable?",
                           },
-                          "id": "11",
-                          "isCommutative": true,
-                          "name": "veggieLike",
-                          "options": {},
-                          "type": "boolean",
+                          "_id": "7",
+                          "_isCommutative": true,
+                          "_name": "veggieLike",
+                          "_options": {},
+                          "_type": "boolean",
                         },
                         StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "The name of the vegetable.",
                           },
-                          "id": "12",
-                          "isCommutative": true,
-                          "name": "veggieName",
-                          "options": {},
-                          "type": "string",
+                          "_id": "6",
+                          "_isCommutative": true,
+                          "_name": "veggieName",
+                          "_options": {},
+                          "_type": "string",
                         },
                       ],
-                      "definition": {},
-                      "id": "10",
-                      "isCommutative": false,
-                      "name": "veggie",
-                      "options": {},
+                      "_definition": {},
+                      "_id": "8",
+                      "_isCommutative": false,
+                      "_name": "veggie",
+                      "_options": {},
+                      "_type": "object",
                       "shape": {
                         "veggieLike": BooleanType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "Do I like this vegetable?",
                           },
-                          "id": "11",
-                          "isCommutative": true,
-                          "name": "veggieLike",
-                          "options": {},
-                          "type": "boolean",
+                          "_id": "7",
+                          "_isCommutative": true,
+                          "_name": "veggieLike",
+                          "_options": {},
+                          "_type": "boolean",
                         },
                         "veggieName": StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "description": "The name of the vegetable.",
                           },
-                          "id": "12",
-                          "isCommutative": true,
-                          "name": "veggieName",
-                          "options": {},
-                          "type": "string",
+                          "_id": "6",
+                          "_isCommutative": true,
+                          "_name": "veggieName",
+                          "_options": {},
+                          "_type": "string",
                         },
                       },
-                      "type": "object",
                     },
                   ],
-                  "definition": {},
-                  "hooks": {
+                  "_definition": {},
+                  "_hooks": {
                     "onGenerate": [
                       [Function],
                     ],
@@ -897,20 +903,14 @@ describe('array', () => {
                       [Function],
                     ],
                   },
-                  "id": "3",
-                  "isCommutative": true,
-                  "name": "vegetables",
-                  "options": {},
-                  "type": "ref",
+                  "_id": "3",
+                  "_isCommutative": true,
+                  "_name": "vegetables",
+                  "_options": {},
+                  "_type": "ref",
                 },
-                "id": "7",
-                "isCommutative": false,
-                "name": "vegetables",
-                "options": {},
-                "type": "array",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -930,7 +930,7 @@ describe('array', () => {
               },
               "vegetables": {
                 "items": {
-                  "$ref": "#/$defs/{{10:symbolName}}",
+                  "$ref": "#/$defs/{{8:symbolName}}",
                 },
                 "type": "array",
               },
@@ -947,9 +947,9 @@ describe('array', () => {
            */
           export interface {{5:symbolName}} {
               fruits?: ((string)[] | undefined)
-              vegetables?: (({{10:referenceName}})[] | undefined)
+              vegetables?: (({{8:referenceName}})[] | undefined)
           }
-          interface {{10:symbolName}} {
+          interface {{8:symbolName}} {
               /**
                * Do I like this vegetable?
                */
@@ -1023,272 +1023,272 @@ describe('object with nullable property', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "fruits",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "fruits",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "fruits",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "fruits",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "fruits",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "9",
-                "isCommutative": false,
-                "name": "fruits",
-                "options": {},
-                "type": "array",
               },
               UnionType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "5",
-                    "isCommutative": true,
-                    "name": "store",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "5",
+                    "_isCommutative": true,
+                    "_name": "store",
+                    "_options": {},
+                    "_type": "string",
                   },
                   NumberType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "6",
-                    "isCommutative": true,
-                    "name": "store",
-                    "options": {
+                    "_definition": {},
+                    "_id": "6",
+                    "_isCommutative": true,
+                    "_name": "store",
+                    "_options": {
                       "maxInclusive": true,
                       "minInclusive": true,
                     },
-                    "type": "number",
+                    "_type": "number",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "10",
-                "isCommutative": true,
-                "name": "store",
-                "options": {},
-                "type": "union",
+                "_id": "7",
+                "_isCommutative": true,
+                "_name": "store",
+                "_options": {},
+                "_type": "union",
               },
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "vegetables",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "vegetables",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "4",
+                "_isCommutative": false,
+                "_name": "vegetables",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "3",
-                  "isCommutative": true,
-                  "name": "vegetables",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "3",
+                  "_isCommutative": true,
+                  "_name": "vegetables",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "11",
-                "isCommutative": false,
-                "name": "vegetables",
-                "options": {},
-                "type": "array",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "An object with nullable properties",
             },
-            "id": "8",
-            "isCommutative": false,
+            "_id": "8",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "fruits": NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "fruits",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "fruits",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "fruits",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "fruits",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "fruits",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "9",
-                "isCommutative": false,
-                "name": "fruits",
-                "options": {},
-                "type": "array",
               },
               "store": UnionType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "5",
-                    "isCommutative": true,
-                    "name": "store",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "5",
+                    "_isCommutative": true,
+                    "_name": "store",
+                    "_options": {},
+                    "_type": "string",
                   },
                   NumberType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "6",
-                    "isCommutative": true,
-                    "name": "store",
-                    "options": {
+                    "_definition": {},
+                    "_id": "6",
+                    "_isCommutative": true,
+                    "_name": "store",
+                    "_options": {
                       "maxInclusive": true,
                       "minInclusive": true,
                     },
-                    "type": "number",
+                    "_type": "number",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "10",
-                "isCommutative": true,
-                "name": "store",
-                "options": {},
-                "type": "union",
+                "_id": "7",
+                "_isCommutative": true,
+                "_name": "store",
+                "_options": {},
+                "_type": "union",
               },
               "vegetables": NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   StringType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "vegetables",
-                    "options": {},
-                    "type": "string",
+                    "_definition": {},
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "vegetables",
+                    "_options": {},
+                    "_type": "string",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "optional": true,
                 },
+                "_id": "4",
+                "_isCommutative": false,
+                "_name": "vegetables",
+                "_options": {},
+                "_type": "array",
                 "element": StringType {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "definition": {},
-                  "id": "3",
-                  "isCommutative": true,
-                  "name": "vegetables",
-                  "options": {},
-                  "type": "string",
+                  "_definition": {},
+                  "_id": "3",
+                  "_isCommutative": true,
+                  "_name": "vegetables",
+                  "_options": {},
+                  "_type": "string",
                 },
-                "id": "11",
-                "isCommutative": false,
-                "name": "vegetables",
-                "options": {},
-                "type": "array",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -1363,170 +1363,170 @@ describe('make optional properties nullable', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "7",
-                "isCommutative": true,
-                "name": "bar",
-                "options": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "bar",
+                "_options": {
                   "maxInclusive": true,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
               StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "8",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "foo",
+                "_options": {},
+                "_type": "string",
               },
               UnionType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   BooleanType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "foobar",
-                    "options": {},
-                    "type": "boolean",
+                    "_definition": {},
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "foobar",
+                    "_options": {},
+                    "_type": "boolean",
                   },
                   NumberType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "4",
-                    "isCommutative": true,
-                    "name": "foobar",
-                    "options": {
+                    "_definition": {},
+                    "_id": "4",
+                    "_isCommutative": true,
+                    "_name": "foobar",
+                    "_options": {
                       "maxInclusive": true,
                       "minInclusive": true,
                     },
-                    "type": "number",
+                    "_type": "number",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "9",
-                "isCommutative": true,
-                "name": "foobar",
-                "options": {},
-                "type": "union",
+                "_id": "5",
+                "_isCommutative": true,
+                "_name": "foobar",
+                "_options": {},
+                "_type": "union",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "An object with optional properties",
             },
-            "id": "6",
-            "isCommutative": false,
+            "_id": "6",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "bar": NumberType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {},
-                "id": "7",
-                "isCommutative": true,
-                "name": "bar",
-                "options": {
+                "_definition": {},
+                "_id": "2",
+                "_isCommutative": true,
+                "_name": "bar",
+                "_options": {
                   "maxInclusive": true,
                   "minInclusive": true,
                 },
-                "type": "number",
+                "_type": "number",
               },
               "foo": StringType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "8",
-                "isCommutative": true,
-                "name": "foo",
-                "options": {},
-                "type": "string",
+                "_id": "1",
+                "_isCommutative": true,
+                "_name": "foo",
+                "_options": {},
+                "_type": "string",
               },
               "foobar": UnionType {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   BooleanType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "3",
-                    "isCommutative": true,
-                    "name": "foobar",
-                    "options": {},
-                    "type": "boolean",
+                    "_definition": {},
+                    "_id": "3",
+                    "_isCommutative": true,
+                    "_name": "foobar",
+                    "_options": {},
+                    "_type": "boolean",
                   },
                   NumberType {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "definition": {},
-                    "id": "4",
-                    "isCommutative": true,
-                    "name": "foobar",
-                    "options": {
+                    "_definition": {},
+                    "_id": "4",
+                    "_isCommutative": true,
+                    "_name": "foobar",
+                    "_options": {
                       "maxInclusive": true,
                       "minInclusive": true,
                     },
-                    "type": "number",
+                    "_type": "number",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "nullable": true,
                   "optional": true,
                 },
-                "id": "9",
-                "isCommutative": true,
-                "name": "foobar",
-                "options": {},
-                "type": "union",
+                "_id": "5",
+                "_isCommutative": true,
+                "_name": "foobar",
+                "_options": {},
+                "_type": "union",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -1608,72 +1608,72 @@ describe('nullable array', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           JSONObjectType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "children": [
+            "_children": [
               NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   NodeTrait {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "children": [
+                    "_children": [
                       JSONObjectType {
-                        "attributes": {
+                        "_attributes": {
                           "generic": {},
                           "typescript": {},
                         },
-                        "children": [
+                        "_children": [
                           StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "nullable": true,
                               "optional": true,
                             },
-                            "id": "7",
-                            "isCommutative": true,
-                            "name": "bar",
-                            "options": {},
-                            "type": "string",
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_name": "bar",
+                            "_options": {},
+                            "_type": "string",
                           },
                         ],
-                        "definition": {},
-                        "id": "6",
-                        "isCommutative": false,
-                        "name": "Foo",
-                        "options": {},
+                        "_definition": {},
+                        "_id": "5",
+                        "_isCommutative": false,
+                        "_name": "Foo",
+                        "_options": {},
+                        "_type": "object",
                         "shape": {
                           "bar": StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "nullable": true,
                               "optional": true,
                             },
-                            "id": "7",
-                            "isCommutative": true,
-                            "name": "bar",
-                            "options": {},
-                            "type": "string",
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_name": "bar",
+                            "_options": {},
+                            "_type": "string",
                           },
                         },
-                        "type": "object",
                       },
                     ],
-                    "definition": {},
-                    "hooks": {
+                    "_definition": {},
+                    "_hooks": {
                       "onGenerate": [
                         [Function],
                       ],
@@ -1681,14 +1681,14 @@ describe('nullable array', () => {
                         [Function],
                       ],
                     },
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "foo",
-                    "options": {},
-                    "type": "ref",
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "foo",
+                    "_options": {},
+                    "_type": "ref",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "jsonschema": {
                     "examples": [
                       {
@@ -1699,61 +1699,66 @@ describe('nullable array', () => {
                   "nullable": true,
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "foo",
+                "_options": {},
+                "_type": "array",
                 "element": NodeTrait {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     JSONObjectType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "children": [
+                      "_children": [
                         StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "nullable": true,
                             "optional": true,
                           },
-                          "id": "7",
-                          "isCommutative": true,
-                          "name": "bar",
-                          "options": {},
-                          "type": "string",
+                          "_id": "4",
+                          "_isCommutative": true,
+                          "_name": "bar",
+                          "_options": {},
+                          "_type": "string",
                         },
                       ],
-                      "definition": {},
-                      "id": "6",
-                      "isCommutative": false,
-                      "name": "Foo",
-                      "options": {},
+                      "_definition": {},
+                      "_id": "5",
+                      "_isCommutative": false,
+                      "_name": "Foo",
+                      "_options": {},
+                      "_type": "object",
                       "shape": {
                         "bar": StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "nullable": true,
                             "optional": true,
                           },
-                          "id": "7",
-                          "isCommutative": true,
-                          "name": "bar",
-                          "options": {},
-                          "type": "string",
+                          "_id": "4",
+                          "_isCommutative": true,
+                          "_name": "bar",
+                          "_options": {},
+                          "_type": "string",
                         },
                       },
-                      "type": "object",
                     },
                   ],
-                  "definition": {},
-                  "hooks": {
+                  "_definition": {},
+                  "_hooks": {
                     "onGenerate": [
                       [Function],
                     ],
@@ -1761,88 +1766,84 @@ describe('nullable array', () => {
                       [Function],
                     ],
                   },
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "foo",
-                  "options": {},
-                  "type": "ref",
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "foo",
+                  "_options": {},
+                  "_type": "ref",
                 },
-                "id": "4",
-                "isCommutative": false,
-                "name": "foo",
-                "options": {},
-                "type": "array",
               },
             ],
-            "definition": {
+            "_definition": {
               "description": "An object with a nullable array that has a ref",
             },
-            "id": "3",
-            "isCommutative": false,
+            "_id": "3",
+            "_isCommutative": false,
+            "_options": {},
+            "_type": "object",
             "loaded": true,
-            "options": {},
             "shape": {
               "foo": NodeTrait {
-                "attributes": {
+                "_attributes": {
                   "generic": {},
                   "typescript": {},
                 },
-                "children": [
+                "_children": [
                   NodeTrait {
-                    "attributes": {
+                    "_attributes": {
                       "generic": {},
                       "typescript": {},
                     },
-                    "children": [
+                    "_children": [
                       JSONObjectType {
-                        "attributes": {
+                        "_attributes": {
                           "generic": {},
                           "typescript": {},
                         },
-                        "children": [
+                        "_children": [
                           StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "nullable": true,
                               "optional": true,
                             },
-                            "id": "7",
-                            "isCommutative": true,
-                            "name": "bar",
-                            "options": {},
-                            "type": "string",
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_name": "bar",
+                            "_options": {},
+                            "_type": "string",
                           },
                         ],
-                        "definition": {},
-                        "id": "6",
-                        "isCommutative": false,
-                        "name": "Foo",
-                        "options": {},
+                        "_definition": {},
+                        "_id": "5",
+                        "_isCommutative": false,
+                        "_name": "Foo",
+                        "_options": {},
+                        "_type": "object",
                         "shape": {
                           "bar": StringType {
-                            "attributes": {
+                            "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
-                            "definition": {
+                            "_definition": {
                               "nullable": true,
                               "optional": true,
                             },
-                            "id": "7",
-                            "isCommutative": true,
-                            "name": "bar",
-                            "options": {},
-                            "type": "string",
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_name": "bar",
+                            "_options": {},
+                            "_type": "string",
                           },
                         },
-                        "type": "object",
                       },
                     ],
-                    "definition": {},
-                    "hooks": {
+                    "_definition": {},
+                    "_hooks": {
                       "onGenerate": [
                         [Function],
                       ],
@@ -1850,14 +1851,14 @@ describe('nullable array', () => {
                         [Function],
                       ],
                     },
-                    "id": "1",
-                    "isCommutative": true,
-                    "name": "foo",
-                    "options": {},
-                    "type": "ref",
+                    "_id": "1",
+                    "_isCommutative": true,
+                    "_name": "foo",
+                    "_options": {},
+                    "_type": "ref",
                   },
                 ],
-                "definition": {
+                "_definition": {
                   "jsonschema": {
                     "examples": [
                       {
@@ -1868,61 +1869,66 @@ describe('nullable array', () => {
                   "nullable": true,
                   "optional": true,
                 },
+                "_id": "2",
+                "_isCommutative": false,
+                "_name": "foo",
+                "_options": {},
+                "_type": "array",
                 "element": NodeTrait {
-                  "attributes": {
+                  "_attributes": {
                     "generic": {},
                     "typescript": {},
                   },
-                  "children": [
+                  "_children": [
                     JSONObjectType {
-                      "attributes": {
+                      "_attributes": {
                         "generic": {},
                         "typescript": {},
                       },
-                      "children": [
+                      "_children": [
                         StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "nullable": true,
                             "optional": true,
                           },
-                          "id": "7",
-                          "isCommutative": true,
-                          "name": "bar",
-                          "options": {},
-                          "type": "string",
+                          "_id": "4",
+                          "_isCommutative": true,
+                          "_name": "bar",
+                          "_options": {},
+                          "_type": "string",
                         },
                       ],
-                      "definition": {},
-                      "id": "6",
-                      "isCommutative": false,
-                      "name": "Foo",
-                      "options": {},
+                      "_definition": {},
+                      "_id": "5",
+                      "_isCommutative": false,
+                      "_name": "Foo",
+                      "_options": {},
+                      "_type": "object",
                       "shape": {
                         "bar": StringType {
-                          "attributes": {
+                          "_attributes": {
                             "generic": {},
                             "typescript": {},
                           },
-                          "definition": {
+                          "_definition": {
                             "nullable": true,
                             "optional": true,
                           },
-                          "id": "7",
-                          "isCommutative": true,
-                          "name": "bar",
-                          "options": {},
-                          "type": "string",
+                          "_id": "4",
+                          "_isCommutative": true,
+                          "_name": "bar",
+                          "_options": {},
+                          "_type": "string",
                         },
                       },
-                      "type": "object",
                     },
                   ],
-                  "definition": {},
-                  "hooks": {
+                  "_definition": {},
+                  "_hooks": {
                     "onGenerate": [
                       [Function],
                     ],
@@ -1930,20 +1936,14 @@ describe('nullable array', () => {
                       [Function],
                     ],
                   },
-                  "id": "1",
-                  "isCommutative": true,
-                  "name": "foo",
-                  "options": {},
-                  "type": "ref",
+                  "_id": "1",
+                  "_isCommutative": true,
+                  "_name": "foo",
+                  "_options": {},
+                  "_type": "ref",
                 },
-                "id": "4",
-                "isCommutative": false,
-                "name": "foo",
-                "options": {},
-                "type": "array",
               },
             },
-            "type": "object",
           }
         `)
     })
@@ -1962,7 +1962,7 @@ describe('nullable array', () => {
                   },
                 ],
                 "items": {
-                  "$ref": "#/$defs/{{6:symbolName}}",
+                  "$ref": "#/$defs/{{5:symbolName}}",
                 },
                 "nullable": true,
                 "type": "array",
@@ -1979,9 +1979,9 @@ describe('nullable array', () => {
            * An object with a nullable array that has a ref
            */
           export interface {{3:symbolName}} {
-              foo?: (({{6:referenceName}})[] | null | undefined)
+              foo?: (({{5:referenceName}})[] | null | undefined)
           }
-          interface {{6:symbolName}} {
+          interface {{5:symbolName}} {
               bar?: (string | null | undefined)
           }"
         `)
@@ -1995,21 +1995,21 @@ describe('const', () => {
     it('definition', () => {
         expect(therefore()).toMatchInlineSnapshot(`
           ConstType {
-            "attributes": {
+            "_attributes": {
               "generic": {},
               "typescript": {},
             },
-            "const": {},
-            "definition": {
+            "_definition": {
               "jsonschema": {
                 "title": "  ",
               },
             },
-            "id": "1",
-            "isCommutative": true,
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "const",
+            "const": {},
             "loaded": true,
-            "options": {},
-            "type": "const",
           }
         `)
     })

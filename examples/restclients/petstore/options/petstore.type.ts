@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 
-import { ValidationError, default as AjvValidator } from 'ajv'
+import { Ajv, ValidationError } from 'ajv'
 import type { DefinedError } from 'ajv'
 import addFormats from 'ajv-formats'
 import type { FormatName } from 'ajv-formats'
@@ -28,7 +28,7 @@ export interface ApiResponse {
 }
 
 export const ApiResponse = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -66,7 +66,7 @@ export interface Category {
 export type CreateUsersWithListInputRequest = User[]
 
 export const CreateUsersWithListInputRequest = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -99,7 +99,7 @@ export const CreateUsersWithListInputRequest = {
 export type FindPetsByStatusResponse = Pet[]
 
 export const FindPetsByStatusResponse = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -132,7 +132,7 @@ export const FindPetsByStatusResponse = {
 export type FindPetsByTagsResponse = Pet[]
 
 export const FindPetsByTagsResponse = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -167,7 +167,7 @@ export interface GetInventoryResponse {
 }
 
 export const GetInventoryResponse = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -200,7 +200,7 @@ export const GetInventoryResponse = {
 export type LoginUserResponse = string
 
 export const LoginUserResponse = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -245,7 +245,7 @@ export interface Order {
 export const Order = {
     validate: addFormats
         .default(
-            new AjvValidator.default({
+            new Ajv({
                 strict: true,
                 strictSchema: false,
                 strictTypes: true,
@@ -291,7 +291,7 @@ export interface Pet {
 }
 
 export const Pet = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,
@@ -341,7 +341,7 @@ export interface User {
 }
 
 export const User = {
-    validate: new AjvValidator.default({
+    validate: new Ajv({
         strict: true,
         strictSchema: false,
         strictTypes: true,

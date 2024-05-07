@@ -176,6 +176,9 @@ export type StringInstance = {
     | {
           pattern: '[a-zA-Z0-9]{2,10}'
       }
+    | {
+          contentEncoding: 'base64'
+      }
 ) &
     JsonAnnotations
 

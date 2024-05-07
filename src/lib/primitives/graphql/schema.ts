@@ -1,13 +1,3 @@
-import { GraphqlFieldType } from './field.js'
-
-import { replaceExtension } from '../../../common/template/path.js'
-import { type GenericOutput, type TypescriptOutput, isNode } from '../../cst/cst.js'
-import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
-import { Node } from '../../cst/node.js'
-import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
-import type { References } from '../../output/references.js'
-import type { ObjectType } from '../object/object.js'
-
 import { type ConstExpr, all, isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
 import { minifyIntrospectionQuery } from '@urql/introspection'
 import {
@@ -33,10 +23,18 @@ import {
     lexicographicSortSchema,
     printSchema,
 } from 'graphql'
+import { replaceExtension } from '../../../common/template/path.js'
+import { type GenericOutput, type TypescriptOutput, isNode } from '../../cst/cst.js'
+import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
+import { Node } from '../../cst/node.js'
+import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
+import type { References } from '../../output/references.js'
+import type { ObjectType } from '../object/object.js'
+import { GraphqlFieldType } from './field.js'
 
 export function annotate(node: Node) {
     return {
-        description: node.definition.description,
+        description: node._definition.description,
     }
 }
 
@@ -82,14 +80,14 @@ export const graphqlVisitor: ThereforeVisitor<GraphQLOutputType & GraphQLInputTy
     // null: () => new GraphQLScalarType('null'),
     // unknown: () => ({}),
     enum: (node, { references }) => {
-        if (node.isNamed) {
+        if (node._isNamed) {
             return new GraphQLEnumType({
                 name: references.hardlink(node, 'symbolName'),
-                values: Object.fromEntries(node.values.map(([name, value]) => [name, { value }] as const)),
+                values: Object.fromEntries(Object.entries(node.enum).map(([name, value]) => [name, { value }] as const)),
                 ...annotate(node),
             })
         }
-        const values = node.values
+        const values = node.enum
         if (all(values, isString)) {
             return new GraphQLEnumType({
                 name: references.hardlink(node, 'symbolName'),
@@ -114,12 +112,12 @@ export const graphqlVisitor: ThereforeVisitor<GraphQLOutputType & GraphQLInputTy
 export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>, GraphqlWalkerContext> = {
     ...graphqlVisitor,
     union: (node, context) => {
-        const { children } = node
-        if (children.every((c) => c.type === 'object')) {
+        const { _children } = node
+        if (_children.every((c) => c._type === 'object')) {
             return new GraphQLUnionType({
                 name: context.references.hardlink(node, 'symbolName', { tag: 'output' }),
                 types: () =>
-                    children.map((child) => graphqlOutputVisitor.object?.(child as ObjectType, context) as GraphQLObjectType),
+                    _children.map((child) => graphqlOutputVisitor.object?.(child as ObjectType, context) as GraphQLObjectType),
                 ...annotate(node),
             })
         }
@@ -140,12 +138,12 @@ export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>
     //         ),
     //     }
     // },
-    ref: ({ children: [ref] }, { cache, output }) => {
-        const cacheType = ref.type in graphqlOutputVisitor && !(ref.type in graphqlVisitor) ? cache.output : cache.common
-        if (cacheType[ref.id] === undefined) {
-            cacheType[ref.id] = output(ref)
+    ref: ({ _children: [ref] }, { cache, output }) => {
+        const cacheType = ref._type in graphqlOutputVisitor && !(ref._type in graphqlVisitor) ? cache.output : cache.common
+        if (cacheType[ref._id] === undefined) {
+            cacheType[ref._id] = output(ref)
         }
-        return cacheType[ref.id] as GraphQLOutputType
+        return cacheType[ref._id] as GraphQLOutputType
     },
     object: (obj, context) => {
         const { shape } = obj
@@ -165,10 +163,7 @@ export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>
             ...annotate(obj),
         })
     },
-    array: (obj, context) => {
-        const {
-            children: [element],
-        } = obj
+    array: ({ _children: [element] }, context) => {
         return new GraphQLList(context.output(element))
     },
     // tuple: ({ children }, context) => {
@@ -183,12 +178,12 @@ export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>
 
 export const graphqlInputVisitor: ThereforeVisitor<GraphQLInputType, GraphqlWalkerContext> = {
     ...graphqlVisitor,
-    ref: ({ children: [ref] }, { cache, input }) => {
-        const cacheType = ref.type in graphqlInputVisitor && !(ref.type in graphqlVisitor) ? cache.input : cache.common
-        if (cacheType[ref.id] === undefined) {
-            cacheType[ref.id] = input(ref)
+    ref: ({ _children: [ref] }, { cache, input }) => {
+        const cacheType = ref._type in graphqlInputVisitor && !(ref._type in graphqlVisitor) ? cache.input : cache.common
+        if (cacheType[ref._id] === undefined) {
+            cacheType[ref._id] = input(ref)
         }
-        return cacheType[ref.id] as GraphQLInputType
+        return cacheType[ref._id] as GraphQLInputType
     },
     object: (obj, context) => {
         const { shape } = obj
@@ -205,10 +200,7 @@ export const graphqlInputVisitor: ThereforeVisitor<GraphQLInputType, GraphqlWalk
             ...annotate(obj),
         })
     },
-    array: (obj, context) => {
-        const {
-            children: [element],
-        } = obj
+    array: ({ _children: [element] }, context) => {
         return new GraphQLList(context.input(element))
     },
     // tuple: ({ children }, context) => {
@@ -226,7 +218,7 @@ export function toGraphqlField(field: GraphqlFieldType, ctx: GraphqlWalkerContex
     }
     return omitUndefined({
         type: ctx.output(field.returnType),
-        description: field.definition.description,
+        description: field._definition.description,
         args,
     })
 }
@@ -238,19 +230,20 @@ export interface GraphqlSchemaOptions {
 }
 
 export class GraphQLSchemaType extends Node {
-    public override type = 'graphql:schema' as const
-    public override children: GraphqlFieldType[]
+    public override _type = 'graphql:schema' as const
+    public override _children: GraphqlFieldType[]
+    public override _canReference: false = false
+    public _genericReferences: References<'generic'> | undefined = undefined
 
     public query: Record<string, GraphqlFieldType> = {}
     public mutation: Record<string, GraphqlFieldType> | undefined
     public subscription: Record<string, GraphqlFieldType> | undefined
 
-    public genericReferences: References<'generic'> | undefined = undefined
     public schema = memoize(() => {
-        if (this.genericReferences === undefined) {
+        if (this._genericReferences === undefined) {
             throw new Error('references must be provided')
         }
-        const context = buildContext({ references: this.genericReferences })
+        const context = buildContext({ references: this._genericReferences })
 
         const graphqlSchema = lexicographicSortSchema(
             new GraphQLSchema({
@@ -275,7 +268,7 @@ export class GraphQLSchemaType extends Node {
             }),
         )
         const graphqlFile = printSchema(graphqlSchema)
-        const introspection = this.genericReferences.render(
+        const introspection = this._genericReferences.render(
             JSON.stringify(minifyIntrospectionQuery(introspectionFromSchema(graphqlSchema))),
         )
         return { graphqlFile, introspection }
@@ -286,21 +279,21 @@ export class GraphQLSchemaType extends Node {
         this.query = query
         this.mutation = mutation
         this.subscription = subscription
-        this.children = [...Object.values(query)]
+        this._children = [...Object.values(query)]
     }
 
-    public override get output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'file',
                 subtype: 'graphql',
-                targetPath: ({ sourcePath }) => {
+                targetPath: ({ _sourcePath: sourcePath }) => {
                     return replaceExtension(sourcePath, '.graphql')
                 },
                 // not yet supported
                 prettify: () => false,
                 content: (_, { references }) => {
-                    this.genericReferences = references
+                    this._genericReferences = references
                     const { graphqlFile } = this.schema()
                     return graphqlFile
                 },
@@ -309,8 +302,8 @@ export class GraphQLSchemaType extends Node {
                 type: 'typescript',
                 definition: (node, context) => {
                     // biome-ignore lint/style/noNonNullAssertion: is set on evaluation in the other output
-                    context.references.from(this.genericReferences!)
-                    node.attributes.typescript.symbolName = 'introspection'
+                    context.references.from(this._genericReferences!)
+                    node._attributes.typescript.symbolName = 'introspection'
                     const { introspection } = this.schema()
                     return `${context.declare('const', node)} = ${introspection} as const`
                 },

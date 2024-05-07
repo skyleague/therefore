@@ -6,15 +6,15 @@ import type { SchemaOptions } from '../base.js'
 export type ConstOptions = object
 
 export class ConstType<T = unknown> extends Node {
-    public override type = 'const' as const
-    public options: ConstOptions = {}
+    public override _type = 'const' as const
+    public _options: ConstOptions = {}
     public const: unknown
 
     public declare infer: T
 
     public constructor(value: unknown, options: SchemaOptions<ConstOptions>) {
         super(options)
-        this.options = options
+        this._options = options
         this.const = value
     }
 }
