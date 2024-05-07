@@ -39,11 +39,11 @@ export class GenericFileOutput {
             if (!(outputGenerator instanceof GenericFileOutput)) {
                 throw new Error('Expected GenericFileOutput, got something else')
             }
-            outputGenerator.addSymbol({ symbol, output: generator })
+            outputGenerator.addSymbol({ symbol, output: generator, targetPath })
         }
     }
 
-    public addSymbol({ symbol, output }: { symbol: Node; output: GenericOutput }) {
+    public addSymbol({ symbol, output, targetPath }: { symbol: Node; output: GenericOutput; targetPath: string }) {
         for (const hook of output.onExport ?? []) {
             hook(symbol)
         }
@@ -51,7 +51,9 @@ export class GenericFileOutput {
         if (this.content === undefined) {
             this.content = { output, content: output.content(output, { references: this.references }) }
         } else {
-            throw new Error('Cannot add multiple symbols to a single file')
+            throw new Error(
+                `Cannot add multiple symbols to a single file ${targetPath}. Symbol name ${symbol.name} is being defined by multiple sources`,
+            )
         }
     }
 

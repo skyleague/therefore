@@ -37,6 +37,7 @@
     "@biomejs/js-api": "^0.5.0",
     "@biomejs/wasm-nodejs": "^1.7.0",
     "@skyleague/axioms": "4.0.0",
+    "@typeschema/all": "^0.13.9",
     "@urql/introspection": "^1.0.3",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
@@ -61,7 +62,9 @@
     "got": "^14.2.1",
     "tsx": "^4.7.2",
     "type-testing": "^0.2.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zod": "^3.23.4",
+    "zod-to-json-schema": "^3.23.0"
   },
   "peerDependencies": {
     "ajv": "^8.12.0",

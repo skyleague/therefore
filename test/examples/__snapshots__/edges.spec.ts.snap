@@ -266,9 +266,13 @@ type Local = string
 
 type Local2 = string
 
-export type Ref1 = Local
+type Local3 = string
 
-export type Ref2 = Local2
+export type Ref1 = Local2
+
+export type Ref2 = Local3
+
+export type Unevaluated = Local
 ",
   },
 }

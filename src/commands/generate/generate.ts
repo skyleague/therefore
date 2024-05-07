@@ -1,17 +1,18 @@
-import { type Prettier, maybeLoadPrettier } from './format.js'
-import { expandGlobs } from './glob.js'
-
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { isFailure, mapTry } from '@skyleague/axioms'
+import type { Schema } from '@typeschema/main'
 import { isNode } from '../../lib/cst/cst.js'
 import type { Node, SourceNode } from '../../lib/cst/node.js'
 import { GenericFileOutput } from '../../lib/output/generic.js'
 import type { ThereforeOutput } from '../../lib/output/types.js'
 import { TypescriptFileOutput } from '../../lib/output/typescript.js'
+import { $ref } from '../../lib/primitives/ref/ref.js'
 import { therefore } from '../../lib/primitives/therefore.js'
 import { generateNode } from '../../lib/visitor/prepass/prepass.js'
-
-import fs from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { type Prettier, maybeLoadPrettier } from './format.js'
+import { expandGlobs } from './glob.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function requireModule(module: string): Promise<Record<string, Node | unknown>> {
@@ -66,19 +67,22 @@ export async function scanModule({
     entry: string
     sourcePath: string
     basePath: string
-    require?: (module: string) => Promise<Record<string, Node | unknown>>
+    require?: (module: string) => Promise<Record<string, Node | Schema | unknown>>
 }) {
     const module = await require(entry)
 
     const exports: Node[] = []
 
     for (const [nodeName, nodePromise] of Object.entries(module)) {
-        const node = await nodePromise
+        let node = await nodePromise
 
         if (!isNode(node)) {
-            continue
+            node = await mapTry(node, (x) => $ref(x as Schema))
+            if (isFailure(node)) {
+                continue
+            }
         }
-        const evaluated = loadNodes({ sourceSymbol: nodeName, node, sourcePath })
+        const evaluated = loadNodes({ sourceSymbol: nodeName, node: node as Node, sourcePath })
 
         exports.push(...evaluated)
     }

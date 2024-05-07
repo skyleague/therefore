@@ -8,8 +8,11 @@ import type { Schema } from '../../types.js'
 import type { SchemaOptions } from '../base.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
 
-import { type ConstExpr, isFunction } from '@skyleague/axioms'
+import { type ConstExpr, isFunction, isObject } from '@skyleague/axioms'
+import { toJSONSchema } from '@typeschema/all'
+import type { Infer, Schema as TypeSchema } from '@typeschema/all'
 import type { JsonSchema } from '../../../json.js'
+import { isNode } from '../../cst/cst.js'
 
 /**
  * Create a new `RefType` instance with the given options.
@@ -33,12 +36,25 @@ export function $ref<const Reference extends Node>(
     reference: ConstExpr<Reference>,
     options?: SchemaOptions<RefOptions, Reference['infer']>,
 ): RefType<Intrinsic<Reference>>
+export function $ref<T extends TypeSchema>(
+    reference: T,
+    options?: SchemaOptions<RefOptions>,
+): Promise<RefType<NodeTrait & { infer: Infer<T> }>>
 export function $ref<const Reference extends Node>(
-    reference: ConstExpr<Reference> | Schema<unknown>,
+    reference: ConstExpr<Reference> | Schema<unknown> | TypeSchema,
     options: SchemaOptions<RefOptions, Reference['infer']> = {},
-): RefType<Intrinsic<Reference>> {
-    if ('is' in reference && isFunction(reference.is)) {
-        return $jsonschema(reference.schema as JsonSchema, options) as RefType<Intrinsic<Reference>>
+): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> {
+    if (isObject(reference)) {
+        if ('is' in reference && isFunction(reference.is)) {
+            return $jsonschema(reference.schema as JsonSchema, options) as RefType<Intrinsic<Reference>>
+        }
+        if (!isNode(reference)) {
+            // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+            return toJSONSchema(reference).then((schema) => $jsonschema(schema as any, options)) as Promise<
+                RefType<NodeTrait & { infer: unknown }>
+            >
+        }
     }
+
     return RefType.from(reference as ConstExpr<Reference>, options)
 }
