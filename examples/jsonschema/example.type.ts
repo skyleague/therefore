@@ -9,6 +9,7 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as DefaultsValidator } from './schemas/defaults.schema.js'
 import { validate as KeywordValidator } from './schemas/keyword.schema.js'
+import { validate as NamedValidator } from './schemas/named.schema.js'
 import { validate as PersonValidator } from './schemas/person.schema.js'
 import { validate as SalesPersonValidator } from './schemas/sales-person.schema.js'
 import { validate as SelfReferenceValidator } from './schemas/self-reference.schema.js'
@@ -69,6 +70,32 @@ export const Keyword = {
             return { right: o }
         }
         return { left: (Keyword.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface Named {
+    foo?: [string, ...string[]] | undefined
+}
+
+export const Named = {
+    validate: NamedValidator as ValidateFunction<Named>,
+    get schema() {
+        return Named.validate.schema
+    },
+    get errors() {
+        return Named.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Named => Named.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Named.validate(o)) {
+            throw new ValidationError(Named.errors ?? [])
+        }
+    },
+    parse: (o: unknown): { right: Named } | { left: DefinedError[] } => {
+        if (Named.is(o)) {
+            return { right: o }
+        }
+        return { left: (Named.errors ?? []) as DefinedError[] }
     },
 } as const
 

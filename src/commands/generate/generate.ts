@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { isFailure, mapTry } from '@skyleague/axioms'
+import { isFailure, isFunction, mapTry } from '@skyleague/axioms'
 import type { Schema } from '@typeschema/main'
 import { isNode } from '../../lib/cst/cst.js'
 import type { Node, SourceNode } from '../../lib/cst/node.js'
@@ -77,6 +77,9 @@ export async function scanModule({
     for (const [nodeName, nodePromise] of Object.entries(module)) {
         let node = await nodePromise
 
+        if (isFunction(node)) {
+            node = await node()
+        }
         if (!isNode(node)) {
             node = await mapTry(node, (x) => $ref(x as Schema))
             if (isFailure(node)) {

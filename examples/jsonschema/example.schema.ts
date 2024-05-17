@@ -36,3 +36,10 @@ export const keyword = $jsonschema({
         foo: { type: 'array', items: { type: 'string', minLength: 1 }, minItems: 4 },
     },
 }).validator({ assert: true })
+
+export const named = async () =>
+    $jsonschema({
+        properties: {
+            foo: { type: 'array', items: { type: 'string', minLength: 1 }, minItems: 1 },
+        },
+    }).validator({ assert: true })

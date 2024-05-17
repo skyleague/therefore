@@ -433,20 +433,21 @@ export function walkJsonschema({
             : 'unknown'
 
     const value = visitor[validType](child, context)
+    const maybeIntersection = (x: Node) => {
+        if (value instanceof UnknownType) {
+            return x
+        }
+        if (value instanceof ObjectType && value._children.length === 0) {
+            return x
+        }
+        return $intersection([value, x] as ObjectType[])
+    }
 
     if (child.anyOf !== undefined) {
-        return annotateNode(
-            $union([...(value instanceof UnknownType ? [] : [value]), ...child.anyOf.map((c) => context.render(c))]),
-            child,
-            context,
-        )
+        return annotateNode(maybeIntersection($union(child.anyOf.map((c) => context.render(c)))), child, context)
     }
     if (child.oneOf !== undefined) {
-        return annotateNode(
-            $union([...(value instanceof UnknownType ? [] : [value]), ...child.oneOf.map((c) => context.render(c))]),
-            child,
-            context,
-        )
+        return annotateNode(maybeIntersection($union(child.oneOf.map((c) => context.render(c)))), child, context)
     }
 
     const validAllOf = child.allOf?.filter((c) => c.properties !== undefined || c.type === 'object' || c.$ref !== undefined) ?? []

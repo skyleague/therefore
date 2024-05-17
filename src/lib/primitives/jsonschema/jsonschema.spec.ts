@@ -2039,3 +2039,125 @@ describe('const', () => {
         })
     })
 })
+
+describe('edge cases', () => {
+    it('correctly handles oneOf', () => {
+        const schema: JsonSchema = {
+            type: 'object',
+            oneOf: [
+                {
+                    required: ['OrgId'],
+                    properties: {
+                        OrgId: {
+                            type: 'string',
+                        },
+                    },
+                },
+                {
+                    required: ['PrvtId'],
+                    properties: {
+                        PrvtId: {
+                            type: 'string',
+                        },
+                    },
+                },
+            ],
+        }
+
+        const therefore = () => $jsonschema(schema)
+        expect(therefore()).toMatchInlineSnapshot(`
+          UnionType {
+            "_attributes": {
+              "generic": {},
+              "typescript": {},
+            },
+            "_children": [
+              JSONObjectType {
+                "_attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "_children": [
+                  StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "2",
+                    "_isCommutative": true,
+                    "_name": "OrgId",
+                    "_options": {},
+                    "_type": "string",
+                  },
+                ],
+                "_definition": {},
+                "_id": "3",
+                "_isCommutative": false,
+                "_options": {},
+                "_type": "object",
+                "shape": {
+                  "OrgId": StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "2",
+                    "_isCommutative": true,
+                    "_name": "OrgId",
+                    "_options": {},
+                    "_type": "string",
+                  },
+                },
+              },
+              JSONObjectType {
+                "_attributes": {
+                  "generic": {},
+                  "typescript": {},
+                },
+                "_children": [
+                  StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "4",
+                    "_isCommutative": true,
+                    "_name": "PrvtId",
+                    "_options": {},
+                    "_type": "string",
+                  },
+                ],
+                "_definition": {},
+                "_id": "5",
+                "_isCommutative": false,
+                "_options": {},
+                "_type": "object",
+                "shape": {
+                  "PrvtId": StringType {
+                    "_attributes": {
+                      "generic": {},
+                      "typescript": {},
+                    },
+                    "_definition": {},
+                    "_id": "4",
+                    "_isCommutative": true,
+                    "_name": "PrvtId",
+                    "_options": {},
+                    "_type": "string",
+                  },
+                },
+              },
+            ],
+            "_definition": {},
+            "_id": "6",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "union",
+            "loaded": true,
+          }
+        `)
+    })
+})

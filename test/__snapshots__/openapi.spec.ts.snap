@@ -181,20 +181,20 @@ export type Header = {
 } & ExampleXORExamples &
     SchemaXORContent
 
-export type HTTPSecurityScheme =
-    | {
-          bearerFormat?: string | undefined
-          description?: string | undefined
-          scheme: string
-          type: 'http'
-          [k: \`x-\${string}\`]: unknown
-      }
+export type HTTPSecurityScheme = {
+    bearerFormat?: string | undefined
+    description?: string | undefined
+    scheme: string
+    type: 'http'
+    [k: \`x-\${string}\`]: unknown
+} & (
     | {
           scheme?: string | undefined
       }
     | {
           scheme?: unknown
       }
+)
 
 export interface ImplicitOAuthFlow {
     authorizationUrl: string
