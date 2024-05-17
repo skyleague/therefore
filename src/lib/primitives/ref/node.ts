@@ -1,0 +1,21 @@
+import type { Node } from '../../cst/node.js'
+import type { ArrayType } from '../array/array.js'
+import type { BooleanType } from '../boolean/boolean.js'
+import type { NumberType } from '../number/number.js'
+import type { ObjectType } from '../object/object.js'
+import type { StringType } from '../string/string.js'
+import type { UnknownType } from '../unknown/unknown.js'
+
+type AsObject<T> = T extends Record<string, Node> ? ObjectType<T> : UnknownType
+export type SchemaAsNode<T> = T extends string
+    ? StringType
+    : T extends number
+      ? NumberType
+      : T extends boolean
+        ? BooleanType
+        : T extends (infer U)[]
+          ? ArrayType<SchemaAsNode<U>>
+          : // biome-ignore lint/suspicious/noExplicitAny: we need greedy matching
+            T extends Record<string, any>
+            ? AsObject<{ [K in keyof T]?: SchemaAsNode<T[K]> }>
+            : UnknownType

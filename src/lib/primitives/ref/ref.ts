@@ -12,6 +12,7 @@ import { $jsonschema } from '../jsonschema/jsonschema.js'
 import { therefore } from '../therefore.js'
 import type { ZodSchema, ZodSchemaAsNode } from '../zod/type.js'
 import { $zod } from '../zod/zod.js'
+import type { SchemaAsNode } from './node.js'
 import type { RefOptions } from './type.js'
 import { RefType } from './type.js'
 
@@ -34,7 +35,7 @@ export const cache = new WeakMap()
  * @group Primitives
  */
 
-export function $ref<T>(reference: Schema<T>, options?: SchemaOptions<RefOptions>): RefType<NodeTrait & { infer: T }>
+export function $ref<T>(reference: Schema<T>, options?: SchemaOptions<RefOptions>): SchemaAsNode<T>
 export function $ref<const Reference extends Node>(
     reference: ConstExpr<Reference>,
     options?: SchemaOptions<RefOptions, Reference['infer']>,
@@ -47,10 +48,10 @@ export function $ref<T extends TypeSchema>(
 export function $ref<const Reference extends Node, T extends ZodSchema>(
     reference: ConstExpr<Reference> | Schema<unknown> | TypeSchema,
     options: SchemaOptions<RefOptions, Reference['infer']> = {},
-): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> | ZodSchemaAsNode<T> {
+): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> | ZodSchemaAsNode<T> | SchemaAsNode<T> {
     if (isObject(reference)) {
         if ('is' in reference && isFunction(reference.is)) {
-            return $jsonschema(reference.schema as JsonSchema, options) as RefType<Intrinsic<Reference>>
+            return $jsonschema(reference.schema as JsonSchema, options) as unknown as SchemaAsNode<T>
         }
         if (!isNode(reference)) {
             if ('_def' in reference) {

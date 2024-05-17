@@ -99,7 +99,7 @@ export interface ComplexParamsRequest {
     listOfModels?: ModelWithString[] | null | undefined
     listOfStrings?: string[] | null | undefined
     name: string | null
-    parameters: {} | ModelWithString | ModelWithEnum | ModelWithArray | ModelWithDictionary
+    parameters: ModelWithString | ModelWithEnum | ModelWithArray | ModelWithDictionary
     type: 'Monkey' | 'Horse' | 'Bird'
     user?:
         | {
@@ -439,7 +439,7 @@ export const NonAsciiResponse = {
  */
 export type NonAsciiString = string
 
-export type PostServiceWithEmptyTagRequest = {} | ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
+export type PostServiceWithEmptyTagRequest = ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
 
 export const PostServiceWithEmptyTagRequest = {
     validate: PostServiceWithEmptyTagRequestValidator as ValidateFunction<PostServiceWithEmptyTagRequest>,

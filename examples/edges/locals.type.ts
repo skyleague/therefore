@@ -14,10 +14,8 @@ type Local = string
 
 type Local2 = string
 
-type Local3 = string
-
 export type Ref1 = Local
 
 export type Ref2 = Local2
 
-export type Unevaluated = Local3
+export type Unevaluated = string
