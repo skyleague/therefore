@@ -80,7 +80,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(Pet, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -110,7 +110,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(User, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -137,7 +137,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(CreateUsersWithListInputRequest, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -427,7 +427,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(Order, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -466,7 +466,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(Pet, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -521,7 +521,7 @@ export class PetStore {
     > {
         const _body = this.validateRequestBody(User, body)
         if ('left' in _body) {
-            return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)
+            return Promise.resolve(_body)
         }
 
         return this.awaitResponse(
@@ -571,11 +571,12 @@ export class PetStore {
         if ('left' in _body) {
             return {
                 statusCode: undefined,
+                status: undefined,
                 headers: undefined,
                 left: body,
                 validationErrors: _body.left,
                 where: 'request:body',
-            } as const
+            } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>
         }
         return _body
     }
@@ -585,11 +586,22 @@ export class PetStore {
         S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>,
     >(response: CancelableRequest<Response<I>>, schemas: S) {
         const result = await response
+        const status =
+            result.statusCode < 200
+                ? 'informational'
+                : result.statusCode < 300
+                  ? 'success'
+                  : result.statusCode < 400
+                    ? 'redirection'
+                    : result.statusCode < 500
+                      ? 'client-error'
+                      : 'server-error'
         const validator = schemas[result.statusCode] ?? schemas.default
         const body = validator?.parse?.(result.body)
         if (result.statusCode < 200 || result.statusCode >= 300) {
             return {
                 statusCode: result.statusCode.toString(),
+                status,
                 headers: result.headers,
                 left: body !== undefined && 'right' in body ? body.right : result.body,
                 validationErrors: body !== undefined && 'left' in body ? body.left : undefined,
@@ -599,13 +611,14 @@ export class PetStore {
         if (body === undefined || 'left' in body) {
             return {
                 statusCode: result.statusCode.toString(),
+                status,
                 headers: result.headers,
                 left: result.body,
                 validationErrors: body?.left,
                 where: 'response:body',
             }
         }
-        return { statusCode: result.statusCode.toString(), headers: result.headers, right: result.body }
+        return { statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
     }
 
     protected buildPetstoreAuthClient(client: Got) {
@@ -642,13 +655,26 @@ export class PetStore {
     }
 }
 
+export type Status<Major> = Major extends string
+    ? Major extends `1${number}`
+        ? 'informational'
+        : Major extends `2${number}`
+          ? 'success'
+          : Major extends `3${number}`
+            ? 'redirection'
+            : Major extends `4${number}`
+              ? 'client-error'
+              : 'server-error'
+    : undefined
 export interface SuccessResponse<StatusCode extends string, T> {
     statusCode: StatusCode
+    status: Status<StatusCode>
     headers: IncomingHttpHeaders
     right: T
 }
 export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = IncomingHttpHeaders> {
     statusCode: StatusCode
+    status: Status<StatusCode>
     headers: Headers
     validationErrors: DefinedError[] | undefined
     left: T

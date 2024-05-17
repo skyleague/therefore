@@ -1,4 +1,3 @@
-import { PetStore, type StatusCode } from '../../../examples/restclients/petstore/petstore.client.js'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
@@ -19,6 +18,12 @@ import type { IncomingHttpHeaders } from 'node:http'
 import type { DefinedError } from 'ajv'
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
+import {
+    type FailureResponse,
+    PetStore,
+    type StatusCode,
+    type SuccessResponse,
+} from '../../../examples/restclients/petstore/petstore.client.js'
 import { $nockClient } from '../../../src/lib/primitives/restclient/mock.js'
 
 const prefixUrl = 'http://www.example.com'
@@ -89,6 +94,43 @@ describe('methods', () => {
                 }
             }
 
+            if (result.status === 'informational') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+            if (result.status === 'success') {
+                expectTypeOf(result).toEqualTypeOf<
+                    SuccessResponse<'200', Pet> | FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>
+                >()
+            }
+            if (result.status === 'client-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
+                    | FailureResponse<
+                          `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                          string,
+                          'response:statuscode',
+                          IncomingHttpHeaders
+                      >
+                >()
+            }
+            if (result.status === 'server-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+
             expect(result.statusCode).toEqual('200')
             expect(eitherToError(result)).toEqual(pet)
 
@@ -114,6 +156,7 @@ describe('methods', () => {
                 const result = await client.addPet({ body: pet })
                 expect(result).toEqual({
                     statusCode: '405',
+                    status: 'client-error',
                     left: JSON.parse(response),
                     headers: {},
                     validationErrors: undefined,
@@ -133,6 +176,7 @@ describe('methods', () => {
             const result = await client.addPet({ body: pet })
             expect(result).toEqual({
                 statusCode: '405',
+                status: 'client-error',
                 left: response,
                 headers: {},
                 validationErrors: undefined,
@@ -218,6 +262,42 @@ describe('methods', () => {
                 }
             }
 
+            if (result.status === 'informational') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+            if (result.status === 'success') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders> | SuccessResponse<'200', User>
+                >()
+            }
+            if (result.status === 'client-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+            if (result.status === 'server-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+
             if ('right' in result) {
                 expect(result.right).toEqual(user)
                 expectTypeOf(result.right).toEqualTypeOf<User>()
@@ -237,6 +317,7 @@ describe('methods', () => {
             expect(result.statusCode).toEqual('200')
             expect(result).toEqual({
                 statusCode: '200',
+                status: 'success',
                 left: '',
                 headers: {},
                 validationErrors: undefined,
@@ -260,6 +341,7 @@ describe('methods', () => {
             expect(result.statusCode).toEqual('200')
             expect(result).toEqual({
                 statusCode: '200',
+                status: 'success',
                 left: '',
                 headers: {},
                 validationErrors: undefined,
@@ -307,6 +389,41 @@ describe('methods', () => {
                     expectTypeOf(result.where).toEqualTypeOf<'response:statuscode'>()
                 }
             }
+
+            if (result.status === 'informational') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
+            if (result.status === 'success') {
+                expectTypeOf(result).toEqualTypeOf<FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>>()
+            }
+            if (result.status === 'client-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    | FailureResponse<
+                          `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                          string,
+                          'response:statuscode',
+                          IncomingHttpHeaders
+                      >
+                    | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
+                >()
+            }
+            if (result.status === 'server-error') {
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        string,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
+                >()
+            }
         })
     })
 
@@ -322,6 +439,7 @@ describe('methods', () => {
             expect(result.statusCode).toEqual('200')
             expect(result).toEqual({
                 statusCode: '200',
+                status: 'success',
                 left: '',
                 headers: {},
                 validationErrors: undefined,
@@ -417,6 +535,46 @@ describe('methods', () => {
                 expectTypeOf(result.validationErrors).toEqualTypeOf<DefinedError[] | undefined>()
                 expectTypeOf(result.where).toEqualTypeOf<'response:statuscode'>()
             }
+        }
+
+        if (result.status === 'informational') {
+            expectTypeOf(result).toEqualTypeOf<
+                FailureResponse<
+                    `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                    string,
+                    'response:statuscode',
+                    IncomingHttpHeaders
+                >
+            >()
+        }
+        if (result.status === 'success') {
+            expectTypeOf(result).toEqualTypeOf<
+                SuccessResponse<'200', Pet> | FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>
+            >()
+        }
+        if (result.status === 'client-error') {
+            expectTypeOf(result).toEqualTypeOf<
+                | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
+                | FailureResponse<
+                      `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                      string,
+                      'response:statuscode',
+                      IncomingHttpHeaders
+                  >
+                | FailureResponse<'400', unknown, 'response:statuscode'>
+                | FailureResponse<'404', unknown, 'response:statuscode'>
+                | FailureResponse<'405', unknown, 'response:statuscode'>
+            >()
+        }
+        if (result.status === 'server-error') {
+            expectTypeOf(result).toEqualTypeOf<
+                FailureResponse<
+                    `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                    string,
+                    'response:statuscode',
+                    IncomingHttpHeaders
+                >
+            >()
         }
 
         expect(eitherToError(result)).toEqual(updatedPet)

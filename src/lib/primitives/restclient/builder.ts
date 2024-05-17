@@ -11,7 +11,6 @@ import type { TypescriptWalkerContext } from '../../visitor/typescript/typescrip
 import { createWriter } from '../../writer.js'
 
 import {
-    type NoUndefinedFields,
     collect,
     entriesOf,
     enumerate,
@@ -163,10 +162,14 @@ export class EitherHelper extends Node {
                     return (
                         createWriter()
                             .writeLine(
-                                `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; headers: ${IncomingHttpHeaders}; right: T }`,
+                                "export type Status<Major> = Major extends string ? Major extends `1${number}`? 'informational': Major extends `2${number}` ? 'success' : Major extends `3${number}` ? 'redirection' : Major extends `4${number}` ? 'client-error' : 'server-error' : undefined",
+                            )
+                            .writeLine(
+                                `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeaders}; right: T }`,
                             )
                             .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = ${IncomingHttpHeaders}> {
                     statusCode: StatusCode
+                    status: Status<StatusCode>
                     headers: Headers
                     validationErrors: DefinedError[] | undefined
                     left: T
@@ -198,7 +201,7 @@ export class EitherHelper extends Node {
 
 export class RestClientBuilder {
     public openapi: OpenapiV3
-    public options: NoUndefinedFields<Omit<RestClientOptions, 'filename'>>
+    public options: Omit<RestClientOptions, 'filename'>
     public references = new Map<string, () => Node>()
     public connections: Node[] = []
     public pathItems: AsPathItem[]
@@ -296,9 +299,7 @@ export class RestClientBuilder {
                         requestValidationStr = createWriter()
                             .writeLine(`const _body = this.validateRequestBody(${value(request.schema)}, ${request.name})`)
                             .writeLine("if ('left' in _body) {")
-                            .writeLine(
-                                "return Promise.resolve(_body satisfies FailureResponse<undefined, unknown, 'request:body', undefined>)",
-                            )
+                            .writeLine('return Promise.resolve(_body)')
                             .writeLine('}')
                             .toString()
                     } else {
@@ -592,22 +593,25 @@ export class RestClientBuilder {
                 .block(() => {
                     writer
                         .writeLine('const result = await response')
+                        .writeLine(
+                            "const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'",
+                        )
                         .writeLine('const validator = schemas[result.statusCode] ?? schemas.default')
                         .writeLine('const body = validator?.parse?.(result.body)')
                         .writeLine(' if (result.statusCode < 200 || result.statusCode >= 300) ')
                         .block(() => {
                             writer.writeLine(
-                                "return {statusCode: result.statusCode.toString(), headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } ",
+                                "return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } ",
                             )
                         })
                         .writeLine("if (body === undefined || 'left' in body)")
                         .block(() => {
                             writer.writeLine(
-                                "return {statusCode: result.statusCode.toString(), headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }",
+                                "return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }",
                             )
                         })
                         .writeLine(
-                            'return {statusCode: result.statusCode.toString(), headers: result.headers, right: result.body }',
+                            'return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }',
                         )
                 })
                 .toString()
@@ -646,7 +650,7 @@ export class RestClientBuilder {
                     writer.writeLine('const _body = parser.parse(body)')
                     writer.writeLine("if ('left' in _body)").block(() => {
                         writer.writeLine(
-                            "return {statusCode: undefined, headers: undefined, left: body, validationErrors: _body.left, where: 'request:body' } as const",
+                            "return {statusCode: undefined, status: undefined, headers: undefined, left: body, validationErrors: _body.left, where: 'request:body' } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>",
                         )
                     })
                     writer.writeLine('return _body')
@@ -921,7 +925,9 @@ export class RestClientBuilder {
     private asValidator(node: Node, { assert = false }: { assert?: boolean } = {}): Node {
         node._definition.validator ??= { assert }
         node._definition.validator.assert ||= assert
-        node._definition.validator.compile = this.options.compile
+        if (this.options.compile !== undefined) {
+            node._definition.validator.compile = this.options.compile
+        }
         return node
     }
 
