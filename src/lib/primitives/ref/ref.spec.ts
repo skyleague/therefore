@@ -203,7 +203,7 @@ it('self reference', () => {
         ],
         "_definition": {},
         "_id": "4",
-        "_isCommutative": true,
+        "_isCommutative": false,
         "_options": {},
         "_type": "union",
       }
@@ -335,7 +335,7 @@ it('description ', () => {
         ],
         "_definition": {},
         "_id": "3",
-        "_isCommutative": true,
+        "_isCommutative": false,
         "_options": {},
         "_type": "union",
       }

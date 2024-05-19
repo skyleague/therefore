@@ -1,6 +1,9 @@
 import { toLiteral } from './literal.js'
 
+import { omitUndefined } from '@skyleague/axioms'
 import type { Node } from '../../cst/node.js'
+import { NullableType } from '../../primitives/nullable/nullable.js'
+import { OptionalType } from '../../primitives/optional/optional.js'
 
 function escapeComment(x: string) {
     return x.replaceAll(/\*\//g, '* /')
@@ -9,17 +12,26 @@ function escapeComment(x: string) {
 // biome-ignore lint/complexity/noStaticOnlyClass: this is a utility class
 export class JSDoc {
     public static fromNode(node: Node) {
-        return JSDoc.from({
-            key: node._attributes.typescript.symbolName ?? node._name,
-            _definition: {
-                title: node._definition.jsonschema?.title,
-                examples: node._definition.jsonschema?.examples,
-                description: node._definition.description,
-                default: node._definition.default,
-                readonly: node._definition.readonly,
-                deprecated: node._definition.deprecated,
-            },
+        const toDefinition = (value: Node) => ({
+            key: value._attributes.typescript.symbolName ?? value._name,
+            _definition: omitUndefined({
+                title: value._definition.jsonschema?.title,
+                examples: value._definition.jsonschema?.examples,
+                description: value._definition.description,
+                default: value._definition.default,
+                readonly: value._definition.readonly,
+                deprecated: value._definition.deprecated,
+            }),
         })
+        const definition = toDefinition(node)
+        let field = node
+        while (field instanceof OptionalType || field instanceof NullableType) {
+            field = field.unwrap()
+            const fieldDefinition = toDefinition(field)
+            definition.key ??= fieldDefinition.key
+            definition._definition = { ...fieldDefinition._definition, ...definition._definition }
+        }
+        return JSDoc.from(definition)
     }
 
     public static from({

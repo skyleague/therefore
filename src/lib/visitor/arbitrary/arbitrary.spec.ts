@@ -89,11 +89,17 @@ it('object - with index', () => {
 })
 
 it('optional - primitive', () => {
-    forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
+    forAll(
+        arbitrary<{ foo?: string | undefined }>($object({ foo: $optional($string()) })),
+        (x) => isString(x.foo) || x.foo === undefined,
+    )
 })
 
 it('union with enum and supertype', () => {
-    forAll(arbitrary<{ foo?: string }>($object({ foo: $optional($string()) })), (x) => isString(x.foo) || x.foo === undefined)
+    forAll(
+        arbitrary<{ foo?: string | undefined }>($object({ foo: $optional($string()) })),
+        (x) => isString(x.foo) || x.foo === undefined,
+    )
 })
 
 it('format - date', () => {

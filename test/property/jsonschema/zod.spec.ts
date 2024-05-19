@@ -208,7 +208,6 @@ it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
             tests: 200,
             depth: 'm',
             shrinks: 400,
-            timeout: false,
         },
     )
 })

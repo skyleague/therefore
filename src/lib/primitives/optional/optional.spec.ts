@@ -6,36 +6,56 @@ import { expect, it } from 'vitest'
 
 it('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`
-      StringType {
+      NodeTrait {
         "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "_definition": {
-          "optional": true,
-        },
+        "_children": [
+          StringType {
+            "_attributes": {
+              "generic": {},
+              "typescript": {},
+            },
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
+          },
+        ],
+        "_definition": {},
         "_id": "2",
         "_isCommutative": true,
-        "_options": {},
-        "_type": "string",
+        "_type": "optional",
       }
     `)
 })
 
 it('string expanded', () => {
     expect($optional($string())).toMatchInlineSnapshot(`
-      StringType {
+      NodeTrait {
         "_attributes": {
           "generic": {},
           "typescript": {},
         },
-        "_definition": {
-          "optional": true,
-        },
+        "_children": [
+          StringType {
+            "_attributes": {
+              "generic": {},
+              "typescript": {},
+            },
+            "_definition": {},
+            "_id": "1",
+            "_isCommutative": true,
+            "_options": {},
+            "_type": "string",
+          },
+        ],
+        "_definition": {},
         "_id": "2",
         "_isCommutative": true,
-        "_options": {},
-        "_type": "string",
+        "_type": "optional",
       }
     `)
 })

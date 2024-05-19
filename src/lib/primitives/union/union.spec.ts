@@ -49,7 +49,7 @@ it('expand', () => {
         ],
         "_definition": {},
         "_id": "1",
-        "_isCommutative": true,
+        "_isCommutative": false,
         "_options": {},
         "_type": "union",
       }
@@ -84,7 +84,7 @@ it('example', () => {
           },
         },
         "_id": "1",
-        "_isCommutative": true,
+        "_isCommutative": false,
         "_options": {},
         "_type": "union",
       }
@@ -115,7 +115,7 @@ it('default', () => {
           "default": "bar",
         },
         "_id": "1",
-        "_isCommutative": true,
+        "_isCommutative": false,
         "_options": {},
         "_type": "union",
       }

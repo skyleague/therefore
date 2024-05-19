@@ -1,12 +1,13 @@
 import type { BooleanType } from './boolean.js'
 import { $boolean } from './boolean.js'
 
-import type { InferWith, Intrinsic } from '../../cst/types.js'
+import type { Intrinsic } from '../../cst/types.js'
 import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 
 import { arbitraryContext, collect, forAll, repeat, take, xoroshiro128plus } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { OptionalType } from '../optional/optional.js'
 
 it('function', () => {
     expect($boolean).toMatchInlineSnapshot('[Function]')
@@ -25,10 +26,10 @@ it('types', () => {
 it('types - optional', () => {
     const schema = $boolean().optional()
     expectTypeOf(schema.infer).toEqualTypeOf<boolean | undefined>()
-    type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, InferWith<BooleanType, undefined>>>
+    type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, OptionalType<BooleanType>>>
 
     expectTypeOf(schema._definition.default).toEqualTypeOf<boolean | undefined>()
-    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<boolean[] | undefined>()
+    expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<(boolean | undefined)[] | undefined>()
 })
 
 it('example', () => {

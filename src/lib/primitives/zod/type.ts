@@ -1,10 +1,11 @@
-import type { AsNullable, AsOptional } from '../../cst/types.js'
 import type { ArrayType } from '../array/array.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import type { ConstType } from '../const/const.js'
 import type { IntersectionType } from '../intersection/intersection.js'
+import type { NullableType } from '../nullable/nullable.js'
 import type { NumberType } from '../number/number.js'
 import type { ObjectType } from '../object/object.js'
+import type { OptionalType } from '../optional/optional.js'
 import type { RecordType } from '../record/record.js'
 import type { StringType } from '../string/string.js'
 import type { TupleType } from '../tuple/tuple.js'
@@ -47,11 +48,11 @@ export type ZodSchemaAsNode<T extends ZodSchema> = T['_def']['typeName'] extends
                               ? ConstType<Value>
                               : T extends { _def: { typeName: 'ZodOptional'; innerType: infer Schema } }
                                 ? Schema extends ZodSchema
-                                    ? AsOptional<ZodSchemaAsNode<Schema>>
+                                    ? OptionalType<ZodSchemaAsNode<Schema>>
                                     : never
                                 : T extends { _def: { typeName: 'ZodNullable'; innerType: infer Schema } }
                                   ? Schema extends ZodSchema
-                                      ? AsNullable<ZodSchemaAsNode<Schema>>
+                                      ? NullableType<ZodSchemaAsNode<Schema>>
                                       : never
                                   : T['_def']['typeName'] extends 'ZodDefault'
                                     ? BooleanType //

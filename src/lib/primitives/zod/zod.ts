@@ -8,8 +8,10 @@ import { $enum } from '../enum/enum.js'
 import { $integer } from '../integer/integer.js'
 import { $intersection } from '../intersection/intersection.js'
 import { $null } from '../null/null.js'
+import { $nullable } from '../nullable/nullable.js'
 import { $number, type NumberType } from '../number/number.js'
 import { $object } from '../object/object.js'
+import { $optional } from '../optional/optional.js'
 import { $record, type RecordType } from '../record/record.js'
 import { $string, type StringType } from '../string/string.js'
 import { $tuple, type TupleType } from '../tuple/tuple.js'
@@ -306,10 +308,10 @@ export const zodVisitor: {
         throw new Error('Function not implemented.')
     },
     ZodOptional: (node, ctx) => {
-        return ctx.render(node._def.innerType as ZodFirstPartySchemaTypes).optional()
+        return $optional(ctx.render(node._def.innerType as ZodFirstPartySchemaTypes))
     },
     ZodNullable: (node, ctx) => {
-        return ctx.render(node._def.innerType as ZodFirstPartySchemaTypes).nullable()
+        return $nullable(ctx.render(node._def.innerType as ZodFirstPartySchemaTypes))
     },
     ZodDefault: (node, ctx) => {
         const value = ctx.render(node._def.innerType as ZodFirstPartySchemaTypes)

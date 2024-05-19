@@ -1,3 +1,8 @@
+import { isObject, omitUndefined } from '@skyleague/axioms'
+import type { Options as AjvOptions, Schema } from 'ajv'
+import { Ajv } from 'ajv'
+import addFormats, { type FormatName } from 'ajv-formats'
+import standaloneCode from 'ajv/dist/standalone/index.js'
 import type {
     JsonAnnotations,
     JsonAnyInstance,
@@ -6,31 +11,24 @@ import type {
     JsonSchema,
     ThereforeExtension,
 } from '../../../json.js'
-import { hasOptionalPrimitive } from '../../cst/graph.js'
+import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
 import { References } from '../../output/references.js'
-import { ConstType } from '../../primitives/const/const.js'
-import { $null } from '../../primitives/null/null.js'
-import { ajvOptions } from '../../primitives/validator/validator.js'
-
-import type { RelaxedPartial } from '@skyleague/axioms'
-import { isObject, omitUndefined } from '@skyleague/axioms'
-import type { Options as AjvOptions, Schema } from 'ajv'
-import { Ajv } from 'ajv'
-import addFormats, { type FormatName } from 'ajv-formats'
-import standaloneCode from 'ajv/dist/standalone/index.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import type { StringFormat } from '../../primitives/string/string.js'
+import { ajvOptions } from '../../primitives/validator/validator.js'
 
 export interface JsonSchemaWalkerContext {
     ajv: AjvOptions
     entry?: Node | undefined
+    branch: Node | undefined
+    current: Node | undefined
     definitions: NonNullable<JsonSchema['definitions']>
     references: References<'generic'>
     formats: Set<string>
-    transform: (node: Node, schema: RelaxedPartial<JsonSchema>) => JsonSchema
+    transform: (node: Node, schema: Partial<JsonSchema>) => JsonSchema
     render: (node: Node) => JsonSchema
 }
 
@@ -46,22 +44,37 @@ export function buildContext(
         ajv,
         definitions: {},
         entry: obj,
+        branch: obj,
+        current: obj,
         references,
         formats: new Set(),
         transform: (node, schema): JsonSchema => {
             const { type, ...other } = schema
             return omitUndefined({
                 type,
-                ...annotate(schema, node),
+                ...annotate(schema, node, context.branch),
                 ...other,
             })
         },
-        render: (node) => walkTherefore(node, jsonSchemaVisitor, context),
+        render: (node) => {
+            const previous = context?.current
+            const branch = context.branch
+            if (previous?._isCommutative === false) {
+                context.branch = node
+            }
+
+            context.current = node
+            const value = walkTherefore(node, jsonSchemaVisitor, context)
+            context.current = previous
+            context.branch = branch
+
+            return value
+        },
     }
     return context
 }
 
-export function annotate(schema: JsonSchema, node: Node): JsonAnnotations {
+export function annotate(schema: JsonSchema, node: Node, branch: Node | undefined): JsonAnnotations {
     const hasType = schema.type !== undefined
 
     return {
@@ -73,7 +86,7 @@ export function annotate(schema: JsonSchema, node: Node): JsonAnnotations {
         default: node._definition.default,
         readonly: node._definition.readonly,
         deprecated: node._definition.deprecated,
-        nullable: hasType ? node._definition.nullable : undefined,
+        nullable: hasType && branch !== undefined ? (hasNullablePrimitive(branch) ? true : undefined) : undefined,
     }
 }
 
@@ -126,14 +139,14 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         type: 'boolean',
     }),
     unknown: ({ _options: options }) => ({ 'x-arbitrary': options.arbitrary }),
-    const: (node) => {
+    const: (node, { branch }) => {
         if (node.const === null) {
             return {
                 type: 'null',
             }
         }
         // we need to extend the set
-        if (node._definition.nullable) {
+        if (branch !== undefined && hasNullablePrimitive(branch)) {
             return {
                 enum: [node.const, null],
             }
@@ -142,9 +155,9 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             const: node.const,
         }
     },
-    enum: (node) => {
+    enum: (node, { branch }) => {
         const values = node._isNamed ? Object.values(node.enum) : node.enum
-        if (node._definition.nullable) {
+        if (branch !== undefined && hasNullablePrimitive(branch) && values.findIndex((v) => v === null) === -1) {
             return {
                 enum: [...values, null],
             }
@@ -158,18 +171,23 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             enum: values,
         }
     },
-    union: ({ _children, _definition }, context) => {
-        if (_definition.nullable === true && _children.find((c) => c instanceof ConstType && c.const === null) === undefined) {
+    union: ({ _children }, context) => {
+        const children = _children.map((u) => context.render(u))
+        if (
+            context.branch !== undefined &&
+            hasNullablePrimitive(context.branch) &&
+            children.find((c) => c.type === 'null') === undefined
+        ) {
             return {
-                anyOf: [..._children, $null()].map((u) => context.render(u)),
+                anyOf: [...children, { type: 'null' }],
             }
         }
         return {
-            anyOf: _children.map((u) => context.render(u)),
+            anyOf: children,
         }
     },
-    intersection: ({ _children, _definition }, context) => {
-        if (_definition.nullable === true) {
+    intersection: ({ _children }, context) => {
+        if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
             return {
                 anyOf: [
                     {
@@ -256,7 +274,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             // node.title = symbolName
             definitions[symbolName] = node
         }
-        if (_definition.nullable) {
+        if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
             // https://github.com/OAI/OpenAPI-Specification/issues/1368
             return { oneOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
         }
