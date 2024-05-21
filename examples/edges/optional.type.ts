@@ -4,7 +4,7 @@
  */
 /* eslint-disable */
 
-export type MadeOptionalRef = string | undefined
+export type MadeOptionalRef = Original | undefined
 
 export type OptionalString = string | undefined
 

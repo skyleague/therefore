@@ -311,9 +311,9 @@ describe('typescriptVisitor', () => {
         const ctx = mockTypescriptContext()
         expect(ctx.render($tuple([$string, $string, $integer]).rest($string))).toEqual('[string, string, number, ...string]')
 
-        expect(ctx.render($tuple([$string]).optional().rest($integer))).toEqual('([string, ...number] | undefined)')
-        expect(ctx.render($tuple([$string]).nullable().rest($integer))).toEqual('([string, ...number] | null)')
-        expect(ctx.render($tuple([$string]).optional().nullable().rest($integer))).toEqual(
+        expect(ctx.render($tuple([$string]).rest($integer).optional())).toEqual('([string, ...number] | undefined)')
+        expect(ctx.render($tuple([$string]).rest($integer).nullable())).toEqual('([string, ...number] | null)')
+        expect(ctx.render($tuple([$string]).rest($integer).optional().nullable())).toEqual(
             '([string, ...number] | null | undefined)',
         )
 
@@ -1448,13 +1448,13 @@ describe('toTypeDefinition', () => {
         expect(
             TypescriptFileOutput.define({ symbol: $union([$ref(foo), $record($ref(foo))]), context: ctx }),
         ).toMatchInlineSnapshot(`
-              "export type {{8:symbolName}} = ({{2:referenceName}} | {
-                  [k: string]: ({{2:referenceName}} | undefined)
-              })
-              interface {{2:symbolName}} {
-                  [k: string]: (string | undefined)
-              }"
-            `)
+          "export type {{8:symbolName}} = ({{2:referenceName}} | {
+              [k: string]: ({{2:referenceName}} | undefined)
+          })
+          interface {{2:symbolName}} {
+              [k: string]: (string | undefined)
+          }"
+        `)
     })
 
     it('union', () => {

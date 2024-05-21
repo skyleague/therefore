@@ -1,13 +1,6 @@
 import type { ThereforeNodeDefinition } from '../cst/cst.js'
 
-export const descriptionKeys = [
-    'name',
-    'description',
-    'optional',
-    'nullable',
-    'default',
-    'readonly',
-] satisfies readonly (keyof SchemaOptions<unknown>)[]
+export const descriptionKeys = ['name', 'description', 'default', 'readonly'] satisfies readonly (keyof SchemaOptions<unknown>)[]
 
 export interface ThereforeMeta {
     name?: string

@@ -1,38 +1,34 @@
-import { isNode } from './cst.js'
+import { NullableType } from '../primitives/nullable/nullable.js'
+import { OptionalType } from '../primitives/optional/optional.js'
 import type { Node } from './node.js'
 
-export function hasOptionalPrimitive(obj: Node, seen = new WeakSet()): boolean {
-    if (seen.has(obj)) {
+export function hasOptionalPrimitive(node: Node, seen = new WeakSet()): boolean {
+    if (seen.has(node)) {
         return false
     }
-    seen.add(obj)
-    return (
-        (obj._definition.optional === true ||
-            (obj._isCommutative &&
-                obj._children?.some((c) => {
-                    if (isNode(c)) {
-                        return c._definition.optional === true || hasOptionalPrimitive(c, seen)
-                    }
-                    return false
-                }))) ??
-        false
-    )
+    seen.add(node)
+
+    if (node instanceof OptionalType) {
+        return true
+    }
+
+    if (!node._isCommutative) {
+        return false
+    }
+    return node._children?.some((c) => hasOptionalPrimitive(c, seen)) ?? false
 }
 
-export function hasNullablePrimitive(obj: Node, seen = new WeakSet()): boolean {
-    if (seen.has(obj)) {
+export function hasNullablePrimitive(node: Node, seen = new WeakSet()): boolean {
+    if (seen.has(node)) {
         return false
     }
-    seen.add(obj)
-    return (
-        (obj._definition.nullable === true ||
-            (obj._isCommutative &&
-                obj._children?.some((c) => {
-                    if (isNode(c)) {
-                        return c._definition.nullable === true || hasOptionalPrimitive(c, seen)
-                    }
-                    return false
-                }))) ??
-        false
-    )
+    seen.add(node)
+    if (node instanceof NullableType) {
+        return true
+    }
+
+    if (!node._isCommutative) {
+        return false
+    }
+    return node._children?.some((c) => hasNullablePrimitive(c, seen)) ?? false
 }

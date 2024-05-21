@@ -1,15 +1,15 @@
-import type { ObjectType } from './object.js'
-import { $object } from './object.js'
-
-import type { AsNullable, AsOptional, AsRequired, Intrinsic } from '../../cst/types.js'
+import type { Equal, Expect } from 'type-testing'
+import { expect, expectTypeOf, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
 import { $array } from '../array/array.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import { $boolean } from '../boolean/boolean.js'
+import type { NullableType } from '../nullable/nullable.js'
+import type { OptionalType } from '../optional/optional.js'
 import type { StringType } from '../string/string.js'
 import { $string } from '../string/string.js'
-
-import type { Equal, Expect } from 'type-testing'
-import { expect, expectTypeOf, it } from 'vitest'
+import type { ObjectType } from './object.js'
+import { $object } from './object.js'
 
 it('function', () => {
     expect($object).toMatchInlineSnapshot('[Function]')
@@ -28,7 +28,7 @@ it('types - modifiers', () => {
     const schema = $object({ foo: $string().optional(), bar: $boolean().nullable() })
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null }>()
     type _test_intrinsic = Expect<
-        Equal<Intrinsic<typeof schema>, ObjectType<{ foo: AsOptional<StringType>; bar: AsNullable<BooleanType> }>>
+        Equal<Intrinsic<typeof schema>, ObjectType<{ foo: OptionalType<StringType>; bar: NullableType<BooleanType> }>>
     >
 
     expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
@@ -44,8 +44,8 @@ it('types - partials', () => {
         Equal<
             Intrinsic<typeof schema>,
             ObjectType<{
-                foo: AsOptional<StringType>
-                bar: AsOptional<BooleanType>
+                foo: OptionalType<StringType>
+                bar: OptionalType<BooleanType>
             }>
         >
     >
@@ -73,7 +73,7 @@ it('types - partials - by name', () => {
         Equal<
             Intrinsic<typeof schema>,
             ObjectType<{
-                foo: AsOptional<StringType>
+                foo: OptionalType<StringType>
                 bar: BooleanType
             }>
         >
@@ -102,8 +102,8 @@ it('types - required', () => {
         Equal<
             Intrinsic<typeof schema>,
             ObjectType<{
-                foo: AsRequired<AsOptional<StringType>>
-                bar: AsRequired<BooleanType>
+                foo: StringType
+                bar: BooleanType
             }>
         >
     >
@@ -131,7 +131,7 @@ it('types - required - by name', () => {
         Equal<
             Intrinsic<typeof schema>,
             ObjectType<{
-                foo: AsRequired<AsOptional<StringType>>
+                foo: StringType
                 bar: BooleanType
             }>
         >

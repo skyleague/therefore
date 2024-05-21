@@ -107,6 +107,10 @@ export function normalize(schema: JSONSchema.JsonSchema): JSONSchema.JsonSchema 
             schema.const = undefined
         }
     }
+    // we don't store this information
+    if (schema.nullable === false) {
+        schema.nullable = undefined
+    }
 
     if ('type' in schema) {
         // we always prefill a default strictness

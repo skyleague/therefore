@@ -58,28 +58,6 @@ export interface ThereforeNodeDefinition<T = unknown> {
     description?: string | undefined
 
     /**
-     * Mark the property as optional (either defined, or not present).
-     *
-     * @example
-     *
-     *      $string({optional: true})
-     *
-     * @see {@link $optional} for a helper function.
-     */
-    optional?: boolean | undefined
-
-    /**
-     * Mark the property as nullable (either defined or null, but present).
-     *
-     * @example
-     *
-     *      $string({nullable: true})
-     *
-     * @see {@link $nullable} for a helper function.
-     */
-    nullable?: boolean | undefined
-
-    /**
      * Specifies the default value that is used when no value is found during validation (dependend on validation options).
      */
     default?: T | undefined

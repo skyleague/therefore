@@ -1,4 +1,4 @@
-import { type ConstExpr, all, isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
+import { all, isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
 import { minifyIntrospectionQuery } from '@urql/introspection'
 import {
     GraphQLBoolean,
@@ -39,6 +39,8 @@ export function annotate(node: Node) {
 }
 
 export interface GraphqlWalkerContext {
+    branch: Node | undefined
+    current: Node | undefined
     cache: {
         input: Record<string, GraphQLInputType>
         output: Record<string, GraphQLOutputType>
@@ -50,18 +52,50 @@ export interface GraphqlWalkerContext {
     transform: (obj: Node, schema: GraphQLOutputType) => GraphQLOutputType
 }
 
-export function buildContext({ references }: { references: References<'generic'> }): GraphqlWalkerContext {
+export function buildContext(obj: Node | undefined, { references }: { references: References<'generic'> }): GraphqlWalkerContext {
     const context: GraphqlWalkerContext = {
+        branch: obj,
+        current: obj,
         cache: {
             input: {},
             output: {},
             common: {},
         },
         references,
-        output: (node: Node) => walkTherefore(node, graphqlOutputVisitor, context),
-        input: (node: Node) => walkTherefore(node, graphqlInputVisitor, context),
-        transform: (node, schema) => {
-            if (!(hasNullablePrimitive(node) || hasOptionalPrimitive(node))) {
+        output: (node: Node) => {
+            const previous = context?.current
+            const branch = context.branch
+
+            context.current = node
+
+            if (previous?._isCommutative !== true) {
+                context.branch = node
+            }
+
+            const value = walkTherefore(node, graphqlOutputVisitor, context)
+
+            context.current = previous
+            context.branch = branch
+            return value
+        },
+        input: (node: Node) => {
+            const previous = context?.current
+            const branch = context.branch
+
+            context.current = node
+
+            if (previous?._isCommutative !== true) {
+                context.branch = node
+            }
+
+            const value = walkTherefore(node, graphqlInputVisitor, context)
+
+            context.current = previous
+            context.branch = branch
+            return value
+        },
+        transform: (_, schema) => {
+            if (context.branch === undefined || !(hasNullablePrimitive(context.branch) || hasOptionalPrimitive(context.branch))) {
                 if (isNullableType(schema)) {
                     return new GraphQLNonNull(schema)
                 }
@@ -109,8 +143,10 @@ export const graphqlVisitor: ThereforeVisitor<GraphQLOutputType & GraphQLInputTy
     },
 }
 
-export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>, GraphqlWalkerContext> = {
+export const graphqlOutputVisitor: ThereforeVisitor<GraphQLOutputType, GraphqlWalkerContext> = {
     ...graphqlVisitor,
+    nullable: ({ _children: [node] }, context) => context.output(node),
+    optional: ({ _children: [node] }, context) => context.output(node),
     union: (node, context) => {
         const { _children } = node
         if (_children.every((c) => c._type === 'object')) {
@@ -178,6 +214,8 @@ export const graphqlOutputVisitor: ThereforeVisitor<ConstExpr<GraphQLOutputType>
 
 export const graphqlInputVisitor: ThereforeVisitor<GraphQLInputType, GraphqlWalkerContext> = {
     ...graphqlVisitor,
+    nullable: ({ _children: [node] }, context) => context.input(node),
+    optional: ({ _children: [node] }, context) => context.input(node),
     ref: ({ _children: [ref] }, { cache, input }) => {
         const cacheType = ref._type in graphqlInputVisitor && !(ref._type in graphqlVisitor) ? cache.input : cache.common
         if (cacheType[ref._id] === undefined) {
@@ -243,7 +281,7 @@ export class GraphQLSchemaType extends Node {
         if (this._genericReferences === undefined) {
             throw new Error('references must be provided')
         }
-        const context = buildContext({ references: this._genericReferences })
+        const context = buildContext(undefined, { references: this._genericReferences })
 
         const graphqlSchema = lexicographicSortSchema(
             new GraphQLSchema({

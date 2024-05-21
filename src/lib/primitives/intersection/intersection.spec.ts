@@ -1,6 +1,6 @@
 import { $intersection } from './intersection.js'
 
-import type { AsNullable, AsOptional, Intrinsic } from '../../cst/types.js'
+import type { Intrinsic } from '../../cst/types.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import { $boolean } from '../boolean/boolean.js'
 import type { ObjectType } from '../object/object.js'
@@ -11,6 +11,8 @@ import { $string } from '../string/string.js'
 
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { NullableType } from '../nullable/nullable.js'
+import type { OptionalType } from '../optional/optional.js'
 
 it('function', () => {
     expect($intersection).toMatchInlineSnapshot('[Function]')
@@ -43,8 +45,8 @@ it('types - modifiers', () => {
         Equal<
             Intrinsic<typeof schema>,
             ObjectType<{
-                foo: AsOptional<StringType>
-                bar: AsNullable<BooleanType>
+                foo: OptionalType<StringType>
+                bar: NullableType<BooleanType>
             }>
         >
     >

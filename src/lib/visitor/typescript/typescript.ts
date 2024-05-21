@@ -15,6 +15,8 @@ import { createWriter } from '../../writer.js'
 import { entriesOf, groupBy, isAlphaNumeric, isDefined, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
 import camelcase from 'camelcase'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
+import { NullableType } from '../../primitives/nullable/nullable.js'
+import { OptionalType } from '../../primitives/optional/optional.js'
 import type { RecordType } from '../../primitives/record/record.js'
 
 export interface TypescriptWalkerContext {
@@ -89,21 +91,6 @@ export function getIndexSignatureType(indexPattern: string) {
     return { type: 'string' }
 }
 
-export const toPrimitive = (node: Node, type: string) => {
-    const hasOptional = hasOptionalPrimitive(node) && type !== 'undefined'
-    const hasNullable = hasNullablePrimitive(node) && type !== 'null'
-    if (hasOptional && hasNullable) {
-        return `(${type} | null | undefined)`
-    }
-    if (hasOptional) {
-        return `(${type} | undefined)`
-    }
-    if (hasNullable) {
-        return `(${type} | null)`
-    }
-    return type
-}
-
 // @todo a bit more heuristic here
 const isSmall = (t: Node) => {
     if (t._type === 'enum' && (t as EnumType).enum.length > 4) {
@@ -123,26 +110,58 @@ const isSmall = (t: Node) => {
     }
     return false
 }
+
+export const toMaybePrimitive = (node: OptionalType | NullableType, context: TypescriptWalkerContext) => {
+    let field: Node = node
+    while (field instanceof OptionalType || field instanceof NullableType) {
+        field = field.unwrap()
+    }
+
+    const type = context.render(field, { property: context.property })
+    if (type === 'unknown') {
+        return type
+    }
+
+    const hasOptional = hasOptionalPrimitive(node) && type !== 'undefined'
+    const hasNullable = hasNullablePrimitive(node) && type !== 'null'
+    if (hasOptional && hasNullable) {
+        return `(${type} | null | undefined)`
+    }
+    if (hasOptional) {
+        return `(${type} | undefined)`
+    }
+    if (hasNullable) {
+        return `(${type} | null)`
+    }
+    return type
+}
+
 export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext> = {
-    integer: (node) => toPrimitive(node, 'number'),
-    number: (node) => toPrimitive(node, 'number'),
-    string: (node) => toPrimitive(node, 'string'),
-    boolean: (node) => toPrimitive(node, 'boolean'),
+    optional: (node, context) => {
+        return toMaybePrimitive(node, context)
+    },
+    nullable: (node, context) => {
+        return toMaybePrimitive(node, context)
+    },
+    integer: () => 'number',
+    number: () => 'number',
+    string: () => 'string',
+    boolean: () => 'boolean',
     unknown: () => 'unknown',
     const: (node) => {
-        return toPrimitive(node, toLiteral(node.const))
+        return toLiteral(node.const)
     },
     enum: (node) => {
         const { enum: values, _isNamed } = node
-        return toPrimitive(node, (_isNamed ? Object.values(values) : values).map((v) => toLiteral(v)).join(' | '))
+        return (_isNamed ? Object.values(values) : values).map((v) => toLiteral(v)).join(' | ')
     },
     union: (node, context) => {
         const { _children } = node
-        return toPrimitive(node, `(${_children.map((v) => context.render(v)).join(' | ')})`)
+        return `(${_children.map((v) => context.render(v)).join(' | ')})`
     },
     intersection: (node, context) => {
         const { _children } = node
-        return toPrimitive(node, `(${_children.map((v) => context.render(v)).join(' & ')})`)
+        return `(${_children.map((v) => context.render(v)).join(' & ')})`
     },
     object: (node, context) => {
         const { shape } = node
@@ -154,7 +173,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
                 const { _definition, _output } = property
                 if (_output?.find((t) => t.type === 'typescript')?.content !== false) {
                     const child = context.render(property, { property: name })
-                    const jsdoc = JSDoc.from(property)
+                    const jsdoc = JSDoc.fromNode(property)
                     writer.writeLine(
                         `${jsdoc ?? ''}${readonly(_definition)}${escapeProperty(name)}${optional(property)}: ${child}`,
                     )
@@ -163,7 +182,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
             const indices: [string, string][] = []
             const commonIndex = '[k: string]'
             if (element !== undefined) {
-                indices.push([commonIndex, context.render(element.optional())])
+                indices.push([commonIndex, context.render(new OptionalType(element))])
             }
             if (patternProperties !== undefined) {
                 for (const [pattern, patternNode] of Object.entries(patternProperties)) {
@@ -199,7 +218,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
                 }
             }
         })
-        return toPrimitive(node, writer.toString())
+        return writer.toString()
     },
     array: (node, context) => {
         let localReference: string | undefined = undefined
@@ -207,10 +226,10 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
         if (!isSmall(element)) {
             if (element._name === undefined) {
                 const symbolName = camelcase([context.property, node._type].filter(isDefined).join('_'))
+                const symbolRef = context.symbol !== undefined ? context.references.reference(context.symbol, 'symbolName') : ''
                 element._name = symbolName
                 element._transform ??= {}
-                element._transform.symbolName = (name) =>
-                    `${context.symbol !== undefined ? context.references.reference(context.symbol, 'symbolName') : ''}${name}`
+                element._transform.symbolName = (name) => `${symbolRef}${name}`
 
                 setDefaultNames(element)
             }
@@ -221,15 +240,15 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
         const itemsTs = localReference ?? context.render(element)
         const { minItems, maxItems } = node._options
         if (minItems !== undefined && minItems > 0 && maxItems === undefined) {
-            return toPrimitive(node, `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`)
+            return `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`
         }
         if (minItems !== undefined && minItems > 0 && maxItems !== undefined && maxItems >= minItems) {
-            return toPrimitive(node, ` [${`${itemsTs}, `.repeat(minItems)}${`(${itemsTs})?, `.repeat(maxItems - minItems)}]`)
+            return ` [${`${itemsTs}, `.repeat(minItems)}${`(${itemsTs})?, `.repeat(maxItems - minItems)}]`
         }
         if (maxItems !== undefined && maxItems >= 0) {
-            return toPrimitive(node, ` [${`(${itemsTs})?, `.repeat(maxItems)}]`)
+            return ` [${`(${itemsTs})?, `.repeat(maxItems)}]`
         }
-        return toPrimitive(node, `(${itemsTs})[]`)
+        return `(${itemsTs})[]`
     },
     tuple: (node, context) => {
         const {
@@ -237,7 +256,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
             _options: { rest },
         } = node
         const restString = rest !== undefined ? [`...${context.render(rest)}`] : []
-        return toPrimitive(node, `[${[...elements.map((c) => context.render(c)), ...restString].join(', ')}]`)
+        return `[${[...elements.map((c) => context.render(c)), ...restString].join(', ')}]`
     },
     ref: (node, { reference, locals }) => {
         const {
@@ -248,7 +267,7 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
         if ((ref._sourcePath === undefined && locals.find((l) => l._id === ref._id)) === undefined) {
             locals.push(ref)
         }
-        return toPrimitive(node, reference(ref))
+        return reference(ref)
     },
     default: (node, context): string => {
         const child = node._children?.[0]

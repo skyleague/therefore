@@ -76,7 +76,6 @@ it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
             tests: 200,
             depth: 'm',
             shrinks: 400,
-            timeout: false,
         },
     )
 })
@@ -110,7 +109,6 @@ it('value to literal', () => {
             tests: 1000,
             depth: 'm',
             shrinks: 400,
-            timeout: false,
         },
     )
 })

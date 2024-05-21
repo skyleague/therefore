@@ -24,6 +24,7 @@ export type TupleElements<Elements extends [...ConstExpr<Node>[]]> = _TupleEleme
 export class UnionType<const Elements extends [...Node[]] = Node[]> extends NodeTrait {
     public override _type = 'union' as const
     public override _children: Node[]
+    public override _isCommutative = false
     public _options: UnionOptions = {}
     public declare infer: ToInfer<Elements>[number]
     public declare intrinsic: Intrinsic<Elements[number]>

@@ -737,58 +737,68 @@ describe('toJsonSchema', () => {
                             "typescript": {},
                           },
                           "_children": [
-                            RecordType {
+                            NodeTrait {
                               "_attributes": {
                                 "generic": {},
                                 "typescript": {},
                               },
                               "_children": [
-                                StringType {
+                                RecordType {
                                   "_attributes": {
                                     "generic": {},
                                     "typescript": {},
                                   },
+                                  "_children": [
+                                    StringType {
+                                      "_attributes": {
+                                        "generic": {},
+                                        "typescript": {},
+                                      },
+                                      "_definition": {},
+                                      "_id": "1",
+                                      "_isCommutative": true,
+                                      "_options": {},
+                                      "_type": "string",
+                                    },
+                                  ],
                                   "_definition": {},
-                                  "_id": "1",
-                                  "_isCommutative": true,
+                                  "_id": "2",
+                                  "_isCommutative": false,
                                   "_options": {},
-                                  "_type": "string",
+                                  "_type": "object",
+                                  "element": StringType {
+                                    "_attributes": {
+                                      "generic": {},
+                                      "typescript": {},
+                                    },
+                                    "_definition": {},
+                                    "_id": "1",
+                                    "_isCommutative": true,
+                                    "_options": {},
+                                    "_type": "string",
+                                  },
+                                  "shape": {},
                                 },
                               ],
                               "_definition": {},
-                              "_id": "2",
-                              "_isCommutative": false,
-                              "_options": {},
-                              "_type": "object",
-                              "element": StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "1",
-                                "_isCommutative": true,
-                                "_options": {},
-                                "_type": "string",
+                              "_hooks": {
+                                "onGenerate": [
+                                  [Function],
+                                ],
+                                "onLoad": [
+                                  [Function],
+                                ],
                               },
-                              "shape": {},
+                              "_id": "4",
+                              "_isCommutative": true,
+                              "_options": {},
+                              "_type": "ref",
                             },
                           ],
-                          "_definition": {
-                            "nullable": true,
-                          },
-                          "_hooks": {
-                            "onGenerate": [
-                              [Function],
-                            ],
-                            "onLoad": [
-                              [Function],
-                            ],
-                          },
+                          "_definition": {},
                           "_id": "5",
                           "_isCommutative": true,
-                          "_options": {},
-                          "_type": "ref",
+                          "_type": "nullable",
                         },
                       ],
                       "_definition": {},
@@ -802,65 +812,75 @@ describe('toJsonSchema', () => {
                           "typescript": {},
                         },
                         "_children": [
-                          RecordType {
+                          NodeTrait {
                             "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
                             "_children": [
-                              StringType {
+                              RecordType {
                                 "_attributes": {
                                   "generic": {},
                                   "typescript": {},
                                 },
+                                "_children": [
+                                  StringType {
+                                    "_attributes": {
+                                      "generic": {},
+                                      "typescript": {},
+                                    },
+                                    "_definition": {},
+                                    "_id": "1",
+                                    "_isCommutative": true,
+                                    "_options": {},
+                                    "_type": "string",
+                                  },
+                                ],
                                 "_definition": {},
-                                "_id": "1",
-                                "_isCommutative": true,
+                                "_id": "2",
+                                "_isCommutative": false,
                                 "_options": {},
-                                "_type": "string",
+                                "_type": "object",
+                                "element": StringType {
+                                  "_attributes": {
+                                    "generic": {},
+                                    "typescript": {},
+                                  },
+                                  "_definition": {},
+                                  "_id": "1",
+                                  "_isCommutative": true,
+                                  "_options": {},
+                                  "_type": "string",
+                                },
+                                "shape": {},
                               },
                             ],
                             "_definition": {},
-                            "_id": "2",
-                            "_isCommutative": false,
-                            "_options": {},
-                            "_type": "object",
-                            "element": StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "1",
-                              "_isCommutative": true,
-                              "_options": {},
-                              "_type": "string",
+                            "_hooks": {
+                              "onGenerate": [
+                                [Function],
+                              ],
+                              "onLoad": [
+                                [Function],
+                              ],
                             },
-                            "shape": {},
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_options": {},
+                            "_type": "ref",
                           },
                         ],
-                        "_definition": {
-                          "nullable": true,
-                        },
-                        "_hooks": {
-                          "onGenerate": [
-                            [Function],
-                          ],
-                          "onLoad": [
-                            [Function],
-                          ],
-                        },
+                        "_definition": {},
                         "_id": "5",
                         "_isCommutative": true,
-                        "_options": {},
-                        "_type": "ref",
+                        "_type": "nullable",
                       },
                       "shape": {},
                     },
                   ],
                   "_definition": {},
                   "_id": "7",
-                  "_isCommutative": true,
+                  "_isCommutative": false,
                   "_options": {},
                   "_type": "union",
                 },
@@ -985,58 +1005,68 @@ describe('toJsonSchema', () => {
                             "typescript": {},
                           },
                           "_children": [
-                            RecordType {
+                            NodeTrait {
                               "_attributes": {
                                 "generic": {},
                                 "typescript": {},
                               },
                               "_children": [
-                                StringType {
+                                RecordType {
                                   "_attributes": {
                                     "generic": {},
                                     "typescript": {},
                                   },
+                                  "_children": [
+                                    StringType {
+                                      "_attributes": {
+                                        "generic": {},
+                                        "typescript": {},
+                                      },
+                                      "_definition": {},
+                                      "_id": "1",
+                                      "_isCommutative": true,
+                                      "_options": {},
+                                      "_type": "string",
+                                    },
+                                  ],
                                   "_definition": {},
-                                  "_id": "1",
-                                  "_isCommutative": true,
+                                  "_id": "2",
+                                  "_isCommutative": false,
                                   "_options": {},
-                                  "_type": "string",
+                                  "_type": "object",
+                                  "element": StringType {
+                                    "_attributes": {
+                                      "generic": {},
+                                      "typescript": {},
+                                    },
+                                    "_definition": {},
+                                    "_id": "1",
+                                    "_isCommutative": true,
+                                    "_options": {},
+                                    "_type": "string",
+                                  },
+                                  "shape": {},
                                 },
                               ],
                               "_definition": {},
-                              "_id": "2",
-                              "_isCommutative": false,
-                              "_options": {},
-                              "_type": "object",
-                              "element": StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "1",
-                                "_isCommutative": true,
-                                "_options": {},
-                                "_type": "string",
+                              "_hooks": {
+                                "onGenerate": [
+                                  [Function],
+                                ],
+                                "onLoad": [
+                                  [Function],
+                                ],
                               },
-                              "shape": {},
+                              "_id": "4",
+                              "_isCommutative": true,
+                              "_options": {},
+                              "_type": "ref",
                             },
                           ],
-                          "_definition": {
-                            "nullable": true,
-                          },
-                          "_hooks": {
-                            "onGenerate": [
-                              [Function],
-                            ],
-                            "onLoad": [
-                              [Function],
-                            ],
-                          },
+                          "_definition": {},
                           "_id": "5",
                           "_isCommutative": true,
-                          "_options": {},
-                          "_type": "ref",
+                          "_type": "nullable",
                         },
                       ],
                       "_definition": {},
@@ -1050,65 +1080,75 @@ describe('toJsonSchema', () => {
                           "typescript": {},
                         },
                         "_children": [
-                          RecordType {
+                          NodeTrait {
                             "_attributes": {
                               "generic": {},
                               "typescript": {},
                             },
                             "_children": [
-                              StringType {
+                              RecordType {
                                 "_attributes": {
                                   "generic": {},
                                   "typescript": {},
                                 },
+                                "_children": [
+                                  StringType {
+                                    "_attributes": {
+                                      "generic": {},
+                                      "typescript": {},
+                                    },
+                                    "_definition": {},
+                                    "_id": "1",
+                                    "_isCommutative": true,
+                                    "_options": {},
+                                    "_type": "string",
+                                  },
+                                ],
                                 "_definition": {},
-                                "_id": "1",
-                                "_isCommutative": true,
+                                "_id": "2",
+                                "_isCommutative": false,
                                 "_options": {},
-                                "_type": "string",
+                                "_type": "object",
+                                "element": StringType {
+                                  "_attributes": {
+                                    "generic": {},
+                                    "typescript": {},
+                                  },
+                                  "_definition": {},
+                                  "_id": "1",
+                                  "_isCommutative": true,
+                                  "_options": {},
+                                  "_type": "string",
+                                },
+                                "shape": {},
                               },
                             ],
                             "_definition": {},
-                            "_id": "2",
-                            "_isCommutative": false,
-                            "_options": {},
-                            "_type": "object",
-                            "element": StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "1",
-                              "_isCommutative": true,
-                              "_options": {},
-                              "_type": "string",
+                            "_hooks": {
+                              "onGenerate": [
+                                [Function],
+                              ],
+                              "onLoad": [
+                                [Function],
+                              ],
                             },
-                            "shape": {},
+                            "_id": "4",
+                            "_isCommutative": true,
+                            "_options": {},
+                            "_type": "ref",
                           },
                         ],
-                        "_definition": {
-                          "nullable": true,
-                        },
-                        "_hooks": {
-                          "onGenerate": [
-                            [Function],
-                          ],
-                          "onLoad": [
-                            [Function],
-                          ],
-                        },
+                        "_definition": {},
                         "_id": "5",
                         "_isCommutative": true,
-                        "_options": {},
-                        "_type": "ref",
+                        "_type": "nullable",
                       },
                       "shape": {},
                     },
                   ],
                   "_definition": {},
                   "_id": "7",
-                  "_isCommutative": true,
+                  "_isCommutative": false,
                   "_options": {},
                   "_type": "union",
                 },

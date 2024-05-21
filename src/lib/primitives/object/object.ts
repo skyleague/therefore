@@ -2,13 +2,13 @@ import type { Simplify } from '@skyleague/axioms/types'
 import type { GenericOutput, ThereforeExpr, TypescriptOutput } from '../../cst/cst.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import { NodeTrait } from '../../cst/mixin.js'
-import { Node } from '../../cst/node.js'
-import type { AsOptional, AsRequired } from '../../cst/types.js'
+import type { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
 import { EnumType } from '../enum/enum.js'
 
 import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
+import { $optional, OptionalType } from '../optional/optional.js'
 
 export type ObjectShape<Shape extends Record<string, Node> = Record<string, Node>> = {
     [K in keyof Shape]: ConstExpr<Shape[K]>
@@ -26,18 +26,18 @@ export type ShapeToInfer<Shape extends Record<string, Node>> = _ShapeToInferred<
 
 export type ShapeToPartial<Shape extends Record<string, Node>, Keys extends [...(keyof Shape)[]]> = Keys extends { length: 0 }
     ? {
-          [K in keyof Shape]: AsOptional<Shape[K]>
+          [K in keyof Shape]: OptionalType<Shape[K]>
       }
     : {
-          [K in keyof Shape]: [K] extends Keys ? AsOptional<Shape[K]> : Shape[K]
+          [K in keyof Shape]: [K] extends Keys ? OptionalType<Shape[K]> : Shape[K]
       }
 
 export type ShapeToRequired<Shape extends Record<string, Node>, Keys extends [...(keyof Shape)[]]> = Keys extends { length: 0 }
     ? {
-          [K in keyof Shape]: AsRequired<Shape[K]>
+          [K in keyof Shape]: Shape[K] extends OptionalType<infer T> ? T : Shape[K]
       }
     : {
-          [K in keyof Shape]: [K] extends Keys ? AsRequired<Shape[K]> : Shape[K]
+          [K in keyof Shape]: [K] extends Keys ? (Shape[K] extends OptionalType<infer T> ? T : Shape[K]) : Shape[K]
       }
 
 export interface ObjectOptions {
@@ -115,7 +115,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     public partial<Keys extends (keyof Shape)[]>(...properties: Keys): ObjectType<ShapeToPartial<Shape, Keys>> {
         return new ObjectType(
             mapValues(this.shape, (p, property) =>
-                properties.length === 0 || properties.includes(property) ? p.optional() : p,
+                properties.length === 0 || properties.includes(property) ? $optional(p) : p,
             ) as Record<string, Node>,
             {
                 ...this._options,
@@ -127,9 +127,11 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         return new ObjectType(
             mapValues(this.shape, (p, property) => {
                 if (properties.length === 0 || properties.includes(property)) {
-                    const clone = Node._clone(this)
-                    clone._definition.optional = false
-                    return clone
+                    let field = p
+                    while (field instanceof OptionalType) {
+                        field = field.unwrap()
+                    }
+                    return field
                 }
                 return p
             }) as Record<string, Node>,

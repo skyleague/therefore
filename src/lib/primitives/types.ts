@@ -5,8 +5,10 @@ import type { EnumType, NativeEnumType } from './enum/enum.js'
 import type { GraphqlFieldType } from './graphql/field.js'
 import type { IntegerType } from './integer/integer.js'
 import type { IntersectionType } from './intersection/intersection.js'
+import type { NullableType } from './nullable/nullable.js'
 import type { NumberType } from './number/number.js'
 import type { ObjectType } from './object/object.js'
+import type { OptionalType } from './optional/optional.js'
 import type { RefType } from './ref/type.js'
 import type { StringType } from './string/string.js'
 import type { TupleType } from './tuple/tuple.js'
@@ -31,3 +33,5 @@ export type ThereforeSchema =
     | UnknownType
     | GraphqlFieldType
     | ValidatorType
+    | NullableType
+    | OptionalType

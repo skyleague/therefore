@@ -1,18 +1,13 @@
-import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
-import { id } from './id.js'
-import type { AsNullable, AsOptional } from './types.js'
-
+import { keysOf, omit } from '@skyleague/axioms'
+import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
 import type { JsonSchema } from '../../json.js'
 import type { ThereforeMeta } from '../primitives/base.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
-
-import { keysOf, omit } from '@skyleague/axioms'
-import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
+import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
+import { id } from './id.js'
 
 export const definitionKeys = keysOf({
     description: true,
-    optional: true,
-    nullable: true,
     deprecated: true,
     default: true,
     readonly: true,
@@ -86,18 +81,6 @@ export class Node {
     public describe(description: string): this {
         this._definition.description = description
         return this
-    }
-
-    public nullable(): AsNullable<this> {
-        const clone = Node._clone(this)
-        clone._definition.nullable = true
-        return clone as AsNullable<this>
-    }
-
-    public optional(): AsOptional<this> {
-        const clone = Node._clone(this)
-        clone._definition.optional = true
-        return clone as AsOptional<this>
     }
 
     public default(value: this['infer']): this {
