@@ -276,7 +276,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         }
         if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
             // https://github.com/OAI/OpenAPI-Specification/issues/1368
-            return { oneOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
+            return { anyOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
         }
         return { $ref: `#/$defs/${symbolName}` }
     },
