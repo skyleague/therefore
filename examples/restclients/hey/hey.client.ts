@@ -425,8 +425,13 @@ export class Hey {
         return this.client.delete(`api/v${path.apiVersion}/simple`)
     }
 
-    public deleteFoo({ path }: { path: { foo: string; bar: string; apiVersion: string } }) {
-        return this.client.delete(`api/v${path.apiVersion}/foo/${path.foo}/bar/${path.bar}`)
+    public deleteFoo({
+        path,
+        headers,
+    }: { path: { fooParam: string; barParam: string; apiVersion: string }; headers: { 'x-Foo-Bar': string } }) {
+        return this.client.delete(`api/v${path.apiVersion}/foo/${path.fooParam}/bar/${path.barParam}`, {
+            headers: headers,
+        })
     }
 
     /**

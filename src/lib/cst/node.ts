@@ -19,6 +19,7 @@ export interface Hooks {
     onLoad?: ((node: Node) => void)[]
     onGenerate?: ((node: Node) => void)[]
     onExport?: ((node: SourceNode & NameNode) => void)[]
+    onContent?: ((node: SourceNode & NameNode) => void)[]
 }
 
 export class Node {
@@ -56,6 +57,7 @@ export class Node {
     public _isCommutative = true
 
     public declare infer: unknown
+    // public declare intrinsic: unknown
 
     public constructor(definition: ThereforeNodeDefinition & ThereforeMeta = {}) {
         for (const key of Object.keys(definition) as (keyof ThereforeNodeDefinition)[]) {
