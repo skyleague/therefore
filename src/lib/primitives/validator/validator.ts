@@ -13,6 +13,7 @@ import decamelize from 'decamelize'
 
 import fs from 'node:fs'
 import path from 'node:path'
+import type { JsonSchema } from '../../../json.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
 
 export function ajvOptions(node?: Node): Options {
@@ -58,6 +59,8 @@ export interface ValidatorOptions {
      * The ajv options to use.
      */
     ajv?: Options
+
+    onContent?: (schema: JsonSchema) => void
 }
 
 export class ValidatorType<T extends Node = Node> extends Node {
@@ -206,6 +209,9 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         formats: this.formats !== undefined,
                     })
                     this.formats = jsonschema.formats
+
+                    this._options.onContent?.(jsonschema.schema)
+
                     if (jsonschema.compiled) {
                         return `/* eslint-disable */\n// @ts-nocheck\n/**\n * ${generatedAjv}\n */\n${jsonschema.code}`
                     }
