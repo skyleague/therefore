@@ -11,6 +11,7 @@ import type { TypescriptWalkerContext } from '../visitor/typescript/typescript.j
 export type ThereforeExpr = Node | (() => Node)
 
 export interface ThereforeOutputFile {
+    enabled?: () => boolean
     onExport?: ((node: Node) => void)[]
     targetPath?: (node: SourceNode) => string
     clean?: (targetPath: string) => void

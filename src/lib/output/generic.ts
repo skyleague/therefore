@@ -28,7 +28,7 @@ export class GenericFileOutput {
     }
 
     public static fromSymbol({ symbol, output }: { symbol: SourceNode; output: ThereforeOutput }) {
-        const generators = (symbol._output ?? []).filter((o): o is GenericOutput => o.type === 'file')
+        const generators = (symbol._output ?? []).filter((o): o is GenericOutput => o.type === 'file' && o.enabled?.() !== false)
 
         for (const generator of generators) {
             const targetPath = generator.targetPath(symbol)

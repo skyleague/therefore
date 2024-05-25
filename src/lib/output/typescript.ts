@@ -143,7 +143,7 @@ export class TypescriptFileOutput {
     private static tsGenerators(symbol: Node): DefinedTypescriptOutput[] {
         return (
             (symbol._output ?? [defaultTypescriptOutput(symbol)])
-                .filter((o): o is TypescriptOutput => o.type === 'typescript')
+                .filter((o): o is TypescriptOutput => o.type === 'typescript' && o.enabled?.() !== false)
                 // load in the defaults
                 .map((o) => defaultTypescriptOutput(symbol, o))
         )

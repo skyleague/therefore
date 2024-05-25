@@ -4,7 +4,6 @@ import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { ajvFormatsSymbols, ajvSymbols, moduleSymbol } from '../../cst/module.js'
 import { type Hooks, Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
-import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { createWriter } from '../../writer.js'
 
 import { type ConstExpr, evaluate } from '@skyleague/axioms'
@@ -13,7 +12,7 @@ import decamelize from 'decamelize'
 
 import fs from 'node:fs'
 import path from 'node:path'
-import type { JsonSchema } from '../../../json.js'
+import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
 
 export function ajvOptions(node?: Node): Options {
@@ -60,7 +59,7 @@ export interface ValidatorOptions {
      */
     ajv?: Options
 
-    onContent?: (schema: JsonSchema) => void
+    schemaFilename?: string
 }
 
 export class ValidatorType<T extends Node = Node> extends Node {
@@ -209,9 +208,6 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         formats: this.formats !== undefined,
                     })
                     this.formats = jsonschema.formats
-
-                    this._options.onContent?.(jsonschema.schema)
-
                     if (jsonschema.compiled) {
                         return `/* eslint-disable */\n// @ts-nocheck\n/**\n * ${generatedAjv}\n */\n${jsonschema.code}`
                     }
@@ -225,6 +221,23 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     }
                 },
                 prettify: () => !this._options.compile,
+            },
+            {
+                type: 'file',
+                enabled: () => this._options.schemaFilename !== undefined,
+                subtype: () => 'json',
+                targetPath: ({ _sourcePath }) => {
+                    const dir = path.dirname(_sourcePath)
+                    // biome-ignore lint/style/noNonNullAssertion: this is the condition to enable the file
+                    return path.join(dir, this._options.schemaFilename!)
+                },
+                content: (_, { references }) => {
+                    const jsonschema = toJsonSchema(this._children[0], {
+                        compile: false,
+                        references,
+                    })
+                    return JSON.stringify(jsonschema.schema, null, 2)
+                },
             },
         ]
     }

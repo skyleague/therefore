@@ -36,9 +36,9 @@
   "dependencies": {
     "@biomejs/js-api": "^0.6.0",
     "@biomejs/wasm-nodejs": "1.7.3",
-    "@skyleague/axioms": "4.3.1",
+    "@skyleague/axioms": "4.3.3",
     "@typeschema/main": "^0.13.9",
-    "@urql/introspection": "^1.0.3",
+    "@urql/introspection": "^1.1.0",
     "ajv": "^8.13.0",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
@@ -55,22 +55,22 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^7.0.0",
+    "@skyleague/node-standards": "^7.0.2",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.32",
     "ajv": "^8.13.0",
-    "got": "^14.2.1",
+    "got": "^14.3.0",
     "json-schema-to-zod": "^2.1.0",
     "nock": "^13.5.4",
-    "tsx": "^4.9.3",
+    "tsx": "^4.11.0",
     "type-testing": "^0.2.0",
     "typescript": "^5.4.5",
-    "zod": "^3.23.6",
+    "zod": "^3.23.8",
     "zod-to-json-schema": "^3.23.0"
   },
   "peerDependencies": {
-    "got": "^14.2.1",
-    "tsx": "^4.9.3"
+    "got": "^14.3.0",
+    "tsx": "^4.11.0"
   },
   "engines": {
     "node": ">=20"
