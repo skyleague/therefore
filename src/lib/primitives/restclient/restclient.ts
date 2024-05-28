@@ -53,6 +53,11 @@ export interface RestClientOptions {
      */
     compile?: boolean
     /**
+     * Whether to check format types with https://ajv.js.org/packages/ajv-formats.html
+     * @defaultValue true
+     */
+    formats?: boolean
+    /**
      * Allows for a transformation of the standardized openapi schema (swagger gets automatically converted to
      * openapiv3).
      */

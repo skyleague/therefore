@@ -51,8 +51,10 @@ export interface ValidatorOptions {
     coerce: boolean
 
     /**
-     *
+     * Whether to check format types with https://ajv.js.org/packages/ajv-formats.html
+     * @defaultValue true
      */
+    formats: boolean
 
     /**
      * The ajv options to use.
@@ -75,7 +77,14 @@ export class ValidatorType<T extends Node = Node> extends Node {
         super({})
         const evaluatedNode = evaluate(node)
 
-        this._options = { assert: false, compile: true, parse: true, coerce: false, ...evaluatedNode._definition.validator }
+        this._options = {
+            assert: false,
+            compile: true,
+            parse: true,
+            coerce: false,
+            formats: true,
+            ...evaluatedNode._definition.validator,
+        }
         this._children = [evaluatedNode]
         this._connections = [evaluatedNode]
     }
