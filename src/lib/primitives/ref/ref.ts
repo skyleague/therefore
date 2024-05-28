@@ -35,8 +35,7 @@ export const cache = new WeakMap()
  * @group Primitives
  */
 
-export function $ref<T>(reference: Schema<T>, options?: SchemaOptions<RefOptions>): SchemaAsNode<T>
-export function $ref<const Reference extends Node>(
+export function $ref<Reference extends Node>(
     reference: ConstExpr<Reference>,
     options?: SchemaOptions<RefOptions, Reference['infer']>,
 ): RefType<Intrinsic<Reference>>
@@ -45,6 +44,7 @@ export function $ref<T extends TypeSchema>(
     reference: T,
     options?: SchemaOptions<RefOptions>,
 ): Promise<RefType<NodeTrait & { infer: Infer<T> }>>
+export function $ref<T>(reference: Schema<T>, options?: SchemaOptions<RefOptions>): SchemaAsNode<T>
 export function $ref<const Reference extends Node, T extends ZodSchema>(
     reference: ConstExpr<Reference> | Schema<unknown> | TypeSchema,
     options: SchemaOptions<RefOptions, Reference['infer']> = {},
@@ -65,5 +65,6 @@ export function $ref<const Reference extends Node, T extends ZodSchema>(
         }
     }
 
-    return RefType._from(reference as ConstExpr<Reference>, options)
+    // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+    return RefType._from(reference as ConstExpr<Reference>, options) as any
 }

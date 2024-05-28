@@ -287,6 +287,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
  *
  * @group Arbitrary
  */
+export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'>): Dependent<T>
+export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T })): Dependent<T> {
     const context = buildContext()
     if ('schema' in schema) {

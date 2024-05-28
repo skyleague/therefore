@@ -535,12 +535,15 @@ export class RestClientBuilder {
                                     for (const [statusCode, { schema: responseSchema, isUnknown }] of entriesOf(
                                         responses.responses,
                                     )) {
+                                        const statusCodeLiteral = statusCode.match(/\d+[a-zA-Z]+/)
+                                            ? `"${statusCode}"`
+                                            : statusCode
                                         if (responseSchema !== undefined && isUnknown !== true) {
-                                            writer.write(`${statusCode}: ${value(responseSchema)},`)
+                                            writer.write(`${statusCodeLiteral}: ${value(responseSchema)},`)
                                         } else if (statusCode !== 'default') {
                                             if (this.options.useEither) {
                                                 writer.write(
-                                                    `${statusCode}: ${
+                                                    `${statusCodeLiteral}: ${
                                                         responseType === 'text' || responseType === undefined
                                                             ? parseString
                                                             : parseUnknown
@@ -548,7 +551,7 @@ export class RestClientBuilder {
                                                 )
                                             } else {
                                                 writer.write(
-                                                    `${statusCode}: ${
+                                                    `${statusCodeLiteral}: ${
                                                         responseType === 'text' || responseType === undefined
                                                             ? isStringIs
                                                             : isUnknownIs

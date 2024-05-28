@@ -11,6 +11,7 @@ import { validate as CallWithResponseAndNoContentResponseResponse200Validator } 
 import { validate as CallWithResponsesResponse200Validator } from './schemas/call-with-responses-response200.schema.js'
 import { validate as ComplexParamsRequestValidator } from './schemas/complex-params-request.schema.js'
 import { validate as ComplexTypesResponseValidator } from './schemas/complex-types-response.schema.js'
+import { validate as DictionaryWithArrayValidator } from './schemas/dictionary-with-array.schema.js'
 import { validate as ModelFromZendeskValidator } from './schemas/model-from.zendesk.schema.js'
 import { validate as ModelThatExtendsExtendsValidator } from './schemas/model-that-extends-extends.schema.js'
 import { validate as ModelThatExtendsValidator } from './schemas/model-that-extends.schema.js'
@@ -142,6 +143,30 @@ export const ComplexTypesResponse = {
             return { right: o }
         }
         return { left: (ComplexTypesResponse.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * This is a complex dictionary
+ */
+export interface DictionaryWithArray {
+    [k: string]: ModelWithString[] | undefined
+}
+
+export const DictionaryWithArray = {
+    validate: DictionaryWithArrayValidator as ValidateFunction<DictionaryWithArray>,
+    get schema() {
+        return DictionaryWithArray.validate.schema
+    },
+    get errors() {
+        return DictionaryWithArray.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is DictionaryWithArray => DictionaryWithArray.validate(o) === true,
+    parse: (o: unknown): { right: DictionaryWithArray } | { left: DefinedError[] } => {
+        if (DictionaryWithArray.is(o)) {
+            return { right: o }
+        }
+        return { left: (DictionaryWithArray.errors ?? []) as DefinedError[] }
     },
 } as const
 

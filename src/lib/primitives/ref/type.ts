@@ -43,7 +43,7 @@ export class RefType<Reference extends Node = Node> extends Node {
         ],
     }
 
-    public get item(): Node {
+    public get item(): Reference {
         return this._children[0] as Reference
     }
 

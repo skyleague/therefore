@@ -16,6 +16,7 @@ import {
     CallWithResponsesResponse200,
     ComplexParamsRequest,
     ComplexTypesResponse,
+    DictionaryWithArray,
     ModelFromZendesk,
     ModelThatExtends,
     ModelThatExtendsExtends,
@@ -152,9 +153,10 @@ export class Hey {
         | FailureResponse<'500', ModelWithStringError, 'response:statuscode'>
         | FailureResponse<'501', ModelWithStringError, 'response:statuscode'>
         | FailureResponse<'502', ModelWithStringError, 'response:statuscode'>
+        | FailureResponse<'4XX', DictionaryWithArray, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
-              Exclude<StatusCode<1 | 3 | 4 | 5>, '500' | '501' | '502'>,
+              Exclude<StatusCode<1 | 3 | 4 | 5>, '500' | '501' | '502' | '4XX'>,
               string,
               'response:statuscode',
               IncomingHttpHeaders
@@ -171,6 +173,7 @@ export class Hey {
                 500: ModelWithStringError,
                 501: ModelWithStringError,
                 502: ModelWithStringError,
+                '4XX': DictionaryWithArray,
                 default: ModelWithBoolean,
             },
         ) as ReturnType<this['callWithDuplicateResponses']>
