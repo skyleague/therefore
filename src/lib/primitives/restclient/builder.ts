@@ -235,6 +235,7 @@ export class RestClientBuilder {
             optionalNullable = false,
             allowIntersectionTypes = false,
             compile = true,
+            formats = true,
         }: Partial<RestClientOptions> = {},
     ) {
         this.openapi = openapi
@@ -247,6 +248,7 @@ export class RestClientBuilder {
             optionalNullable,
             allowIntersectionTypes,
             compile,
+            formats,
         }
         this.pathItems = this._pathItems
 
@@ -930,6 +932,9 @@ export class RestClientBuilder {
         node._definition.validator.assert ||= assert
         if (this.options.compile !== undefined) {
             node._definition.validator.compile = this.options.compile
+        }
+        if (this.options.formats) {
+            node._definition.validator.formats = this.options.formats
         }
         return node
     }
