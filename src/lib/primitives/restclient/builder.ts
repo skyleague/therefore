@@ -933,7 +933,7 @@ export class RestClientBuilder {
         if (this.options.compile !== undefined) {
             node._definition.validator.compile = this.options.compile
         }
-        if (this.options.formats) {
+        if (this.options.formats !== undefined) {
             node._definition.validator.formats = this.options.formats
         }
         return node
