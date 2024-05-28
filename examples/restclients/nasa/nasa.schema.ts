@@ -9,6 +9,7 @@ const astroids = await got
     .text()
 export const Astroids = await $restclient(yaml.load(astroids) as OpenapiV3, {
     filename: 'astroids/nasa.client.ts',
+    formats: false,
 })
 
 const apod = await got

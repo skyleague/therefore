@@ -214,7 +214,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     const jsonschema = toJsonSchema(this._children[0], {
                         compile: this._options.compile,
                         references,
-                        formats: this.formats !== undefined,
+                        formats: this.formats !== undefined && this._options.formats === true,
                     })
                     this.formats = jsonschema.formats
                     if (jsonschema.compiled) {
