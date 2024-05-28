@@ -1,12 +1,3 @@
-import type { ArrayType } from './array.js'
-import { $array } from './array.js'
-
-import type { Intrinsic } from '../../cst/types.js'
-import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
-import { $boolean } from '../boolean/boolean.js'
-import type { StringType } from '../string/string.js'
-import { $string } from '../string/string.js'
-
 import {
     arbitraryContext,
     collect,
@@ -21,6 +12,13 @@ import {
 } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
+import { $boolean } from '../boolean/boolean.js'
+import type { StringType } from '../string/string.js'
+import { $string } from '../string/string.js'
+import type { ArrayType } from './array.js'
+import { $array } from './array.js'
 
 it('simple', () => {
     expect($array($boolean())).toMatchInlineSnapshot(`
