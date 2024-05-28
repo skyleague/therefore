@@ -14,6 +14,7 @@
   "exports": {
     ".": "./.dist/index.js",
     "./package.json": "./package.json",
+    "./dev": "./.dist/src/dev/index.js",
     "./*.js": "./.dist/*.js"
   },
   "types": "./.dist/index.d.ts",
