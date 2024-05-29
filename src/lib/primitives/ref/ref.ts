@@ -1,5 +1,4 @@
 import { type ConstExpr, isFunction, isObject } from '@skyleague/axioms'
-import { toJSONSchema } from '@typeschema/main'
 import type { Infer, Schema as TypeSchema } from '@typeschema/main'
 import type { JsonSchema } from '../../../json.js'
 import { isNode } from '../../cst/cst.js'
@@ -58,10 +57,14 @@ export function $ref<const Reference extends Node, T extends ZodSchema>(
                 // biome-ignore lint/suspicious/noExplicitAny: just roll with it
                 return $zod(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
             }
-            // biome-ignore lint/suspicious/noExplicitAny: just roll with it
-            return toJSONSchema(reference as never).then((schema) => $jsonschema(schema as any, options)) as Promise<
-                RefType<NodeTrait & { infer: unknown }>
-            >
+            return require('@typeschema/main').then(
+                // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+                ({ toJSONSchema }: { toJSONSchema: any }) =>
+                    // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+                    toJSONSchema(reference as never).then((schema: any) => $jsonschema(schema as any, options)) as Promise<
+                        RefType<NodeTrait & { infer: unknown }>
+                    >,
+            )
         }
     }
 
