@@ -3,6 +3,7 @@ import type { Options as AjvOptions, Schema } from 'ajv'
 import { Ajv } from 'ajv'
 import addFormats, { type FormatName } from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
+import camelcase from 'camelcase'
 import type {
     JsonAnnotations,
     JsonAnyInstance,
@@ -290,6 +291,50 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
     },
 }
 
+export function convertRequiresToImports(code: string): string {
+    const requireRegex = /const\s+(\w+)\s+=\s+require\(["']([^"']+)["']\)(\.\w+|\["[\w-]+"\])/g
+    const importsMap: Map<string, Set<string>> = new Map()
+    const assignments: { fullMatch: string; variable: string; module: string; property: string; originalProperty: string }[] = []
+    let match: RegExpExecArray | null
+
+    // biome-ignore lint/suspicious/noAssignInExpressions: this code is from hell anyway
+    while ((match = requireRegex.exec(code)) !== null) {
+        const [fullMatch, variable, module, property] = match
+        const originalProperty = property
+
+        if (module === undefined || property === undefined || variable === undefined || originalProperty === undefined) {
+            continue
+        }
+
+        if (!importsMap.has(module)) {
+            importsMap.set(module, new Set())
+        }
+
+        const alias = camelcase(module.replace(/[^a-zA-Z0-9]/g, '_'))
+        const cleanedProperty = property.replace(/[\.\[\]"]/g, '')
+        importsMap.get(module)?.add(`${cleanedProperty} as ${camelcase(`${alias}_${cleanedProperty}`)}`)
+        assignments.push({ fullMatch, variable, module, property: cleanedProperty, originalProperty })
+    }
+
+    const imports: string[] = []
+    for (const [module, variables] of importsMap.entries()) {
+        const variableList = Array.from(variables).join(', ')
+        imports.push(`import { ${variableList} } from '${module}.js';`)
+    }
+
+    let transformedCode = code
+    for (const { fullMatch, variable, module, property } of assignments) {
+        const alias = camelcase(module.replace(/[^a-zA-Z0-9]/g, '_'))
+        const replacement = camelcase(`${alias}_${property}`)
+        transformedCode = transformedCode.replace(fullMatch, `const ${variable} = ${replacement}`)
+    }
+
+    const importsCode = `${imports.join('\n')}\n`
+    transformedCode = importsCode + transformedCode
+
+    return transformedCode
+}
+
 export function toJsonSchema(
     obj: Node,
     {
@@ -318,7 +363,7 @@ export function toJsonSchema(
         let code = standaloneCode.default(ajv, validator)
         code = `${code};validate.schema=schema11;`
         if (code.includes('require(')) {
-            code = `import {createRequire} from 'module';const require = createRequire(import.meta.url);${code}`
+            code = convertRequiresToImports(code)
         }
         // nice little "hack" to disble inferrence on the validate function
         // it also allows copying over the javascript files like tsc should
