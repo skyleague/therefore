@@ -326,7 +326,10 @@ export function convertRequiresToImports(code: string): string {
     for (const { fullMatch, variable, module, property } of assignments) {
         const alias = camelcase(module.replace(/[^a-zA-Z0-9]/g, '_'))
         const replacement = camelcase(`${alias}_${property}`)
-        transformedCode = transformedCode.replace(fullMatch, `const ${variable} = ${replacement}`)
+        transformedCode = transformedCode.replace(
+            fullMatch,
+            `const ${variable} = ${property === 'default' ? replacement : `(${replacement}.default ?? ${replacement})`}`,
+        )
     }
 
     const importsCode = `${imports.join('\n')}\n`
