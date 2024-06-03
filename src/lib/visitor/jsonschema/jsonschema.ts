@@ -328,7 +328,7 @@ export function convertRequiresToImports(code: string): string {
         const replacement = camelcase(`${alias}_${property}`)
         transformedCode = transformedCode.replace(
             fullMatch,
-            `const ${variable} = ${property === 'default' ? replacement : `(${replacement}.default ?? ${replacement})`}`,
+            `const ${variable} = ${property === 'default' ? `(${replacement}.default ?? ${replacement})` : replacement}`,
         )
     }
 
