@@ -377,8 +377,13 @@ export function toJsonSchema(
             validator,
             compiled: true as const,
             references: context.references,
-            formats: [...context.formats],
+            formats: context.formats.size > 0 && formats ? [...context.formats] : undefined,
         }
     }
-    return { schema: definition, compiled: false as const, formats: [...context.formats], references: context.references }
+    return {
+        schema: definition,
+        compiled: false as const,
+        formats: context.formats.size > 0 && formats ? [...context.formats] : undefined,
+        references: context.references,
+    }
 }
