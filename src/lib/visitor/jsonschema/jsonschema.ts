@@ -272,7 +272,6 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         if (definitions[symbolName] === undefined) {
             definitions[symbolName] = {} // mark spot as taken (prevents recursion)
             const node: JsonSchema = context.render(reference)
-            // node.title = symbolName
             definitions[symbolName] = node
         }
         if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {

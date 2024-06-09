@@ -185,6 +185,15 @@ export class TypescriptFileOutput {
     }
 
     public bind() {
+        for (const local of this.locals) {
+            loadNode(local)
+            generateNode(local)
+
+            for (const localOutput of TypescriptFileOutput.tsGenerators(local)) {
+                this.addSymbol({ symbol: local, output: localOutput, exportSymbol: false })
+            }
+        }
+
         const data = this.references.data()
         const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
             .map(second)
@@ -205,15 +214,6 @@ export class TypescriptFileOutput {
     }
 
     public async render({ prettier }: { prettier: Prettier }) {
-        for (const local of this.locals) {
-            loadNode(local)
-            generateNode(local)
-
-            for (const localOutput of TypescriptFileOutput.tsGenerators(local)) {
-                this.addSymbol({ symbol: local, output: localOutput, exportSymbol: false })
-            }
-        }
-
         if (this.content.length === 0) {
             return
         }
