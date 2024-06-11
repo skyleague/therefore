@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Combined",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/Reference1"
+    },
+    {
+      "$ref": "#/$defs/Reference2"
+    }
+  ],
+  "$defs": {
+    "Reference1": {
+      "type": "object",
+      "title": "Loan repayment executed",
+      "properties": {
+        "keys": {
+          "$ref": "#/$defs/Keys"
+        }
+      },
+      "required": ["keys"],
+      "additionalProperties": true
+    },
+    "Keys": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Foo"
+      },
+      "uniqueItems": true
+    },
+    "Foo": {
+      "type": "string"
+    },
+    "Reference2": {
+      "type": "object",
+      "title": "Loan repayment executed",
+      "properties": {
+        "keys": {
+          "$ref": "#/$defs/Keys2"
+        }
+      },
+      "required": ["keys"],
+      "additionalProperties": true
+    },
+    "Keys2": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Foo2"
+      },
+      "uniqueItems": true
+    },
+    "Foo2": {
+      "type": "string"
+    }
+  }
+}

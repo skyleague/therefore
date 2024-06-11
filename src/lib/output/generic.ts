@@ -7,7 +7,7 @@ import type { GenericOutput } from '../cst/cst.js'
 import type { Node, SourceNode } from '../cst/node.js'
 import type { GeneratorHooks } from '../primitives/therefore.js'
 
-import { evaluate } from '@skyleague/axioms'
+import { entriesOf, evaluate, groupBy, second } from '@skyleague/axioms'
 
 export class GenericFileOutput {
     public path: string
@@ -24,7 +24,23 @@ export class GenericFileOutput {
     }
 
     public bind() {
-        //
+        const data = this.references.data()
+        const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
+            .map(second)
+            .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
+            .filter((records) => records.length > 1)
+
+        const unmappedDuplicates = duplicates.map((records) =>
+            records.filter(([name]) => this.references.key2node.get(name)?._attributes.typescript.aliasName === undefined),
+        )
+
+        const suffixes = unmappedDuplicates.flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
+
+        for (const [key, suffix] of suffixes) {
+            this.references.transform[key]?.((current) => {
+                return `${current}${suffix}`
+            })
+        }
     }
 
     public static fromSymbol({ symbol, output }: { symbol: SourceNode; output: ThereforeOutput }) {
