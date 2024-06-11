@@ -1,4 +1,5 @@
 import { $jsonschema } from '../../src/lib/primitives/jsonschema/jsonschema.js'
+import { $union } from '../../src/lib/primitives/union/union.js'
 
 export const reference1 = $jsonschema({
     required: ['keys'],
@@ -49,3 +50,5 @@ export const reference2 = $jsonschema({
     },
     type: 'object',
 })
+
+export const combined = $union([reference1, reference2]).validator({ compile: false })
