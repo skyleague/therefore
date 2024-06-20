@@ -1,4 +1,4 @@
-import { entriesOf, enumerate } from '@skyleague/axioms'
+import { entriesOf } from '@skyleague/axioms'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
@@ -110,7 +110,7 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
 
             therefore.generateSymbol(node)
 
-            for (const [i, v] of enumerate(node._children ?? [])) {
+            for (const [i, v] of (node._children ?? []).entries()) {
                 if (node._children !== undefined && i in node._children && symbols.has(v) && v._canReference !== false) {
                     node._children[i] = $ref(v)
                 } else {
