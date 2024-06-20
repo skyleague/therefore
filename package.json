@@ -28,25 +28,25 @@
     "check:coverage": "vitest run --coverage=true",
     "check:project": "node-standards lint",
     "check:types": "tsc -p tsconfig.json",
-    "lint": "biome check src test examples",
-    "lint:fix": "npm run lint -- --apply-unsafe",
+    "lint": "biome check",
+    "lint:fix": "npm run lint -- --write --unsafe",
     "package": "rm -rf .dist && npm run build",
     "prepare": "husky || true",
     "test": "vitest run"
   },
   "dependencies": {
-    "@biomejs/js-api": "^0.6.0",
-    "@biomejs/wasm-nodejs": "1.7.3",
+    "@biomejs/js-api": "^0.6.1",
+    "@biomejs/wasm-nodejs": "1.8.2",
     "@skyleague/axioms": "4.3.3",
-    "@typeschema/main": "^0.13.9",
+    "@typeschema/main": "^0.13.10",
     "@urql/introspection": "^1.1.0",
-    "ajv": "^8.13.0",
+    "ajv": "^8.16.0",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
     "code-block-writer": "^13.0.1",
     "decamelize": "^6.0.0",
     "fast-glob": "^3.3.2",
-    "graphql": "^16.8.1",
+    "graphql": "^16.8.2",
     "inflection": "^3.0.0",
     "js-yaml": "^4.1.0",
     "jsonpointer": "^5.0.1",
@@ -56,22 +56,22 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^7.0.2",
+    "@skyleague/node-standards": "^7.2.0",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.32",
-    "ajv": "^8.13.0",
-    "got": "^14.3.0",
-    "json-schema-to-zod": "^2.1.0",
+    "ajv": "^8.16.0",
+    "got": "^14.4.1",
+    "json-schema-to-zod": "^2.1.1",
     "nock": "^13.5.4",
-    "tsx": "^4.11.0",
+    "tsx": "^4.15.6",
     "type-testing": "^0.2.0",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.2",
     "zod": "^3.23.8",
-    "zod-to-json-schema": "^3.23.0"
+    "zod-to-json-schema": "^3.23.1"
   },
   "peerDependencies": {
-    "got": "^14.3.0",
-    "tsx": "^4.11.0"
+    "got": "^14.4.1",
+    "tsx": "^4.15.6"
   },
   "engines": {
     "node": ">=20"

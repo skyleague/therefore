@@ -13,7 +13,6 @@ import { createWriter } from '../../writer.js'
 import {
     collect,
     entriesOf,
-    enumerate,
     groupBy,
     identity,
     isDefined,
@@ -1108,7 +1107,7 @@ export class RestClientBuilder {
         const _groupedByNumber = valuesOf(groupBy(pathItems, (x) => x.method))
             .filter((x) => x.length > 1)
             .map((x) => {
-                for (const [i, item] of enumerate(x)) {
+                for (const [i, item] of x.entries()) {
                     item.method = `${item.method}${i}`
                 }
                 return x
