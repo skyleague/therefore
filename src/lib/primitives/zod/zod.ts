@@ -132,7 +132,11 @@ const stringVisitor: {
         if (kind.version === 'v4') {
             return x.ipv4()
         }
-        return x.ipv6()
+        if (kind.version === 'v6') {
+            return x.ipv6()
+        }
+        // @todo support both
+        return x
     },
     duration: (x, _kind: { kind: 'duration'; message?: string }) => {
         return x.duration()
