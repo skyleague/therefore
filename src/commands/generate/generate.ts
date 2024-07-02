@@ -78,7 +78,7 @@ export async function scanModule({
         let node = await nodePromise
 
         if (isFunction(node)) {
-            node = await node()
+            node = await mapTry(node, (x) => x())
         }
         if (!isNode(node)) {
             node = await mapTry(node, (x) => $ref(x as Schema))
