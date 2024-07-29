@@ -14,7 +14,12 @@ export function loadNode<T extends Node>(obj: T & { _loaded?: true }): T & { _lo
             if (seen.has(node)) {
                 return node
             }
-            seen.add(node)
+            try {
+                seen.add(node)
+            } catch (e) {
+                console.log(node)
+                throw e
+            }
 
             therefore.loadSymbol(node)
 

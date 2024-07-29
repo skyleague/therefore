@@ -22,7 +22,7 @@ type UndefinedToOptional<T> = {
 type _ShapeToInferred<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Shape>> & UndefinedToOptional<Shape>>
 
 export type ShapeToInfer<Shape extends Record<string, Node>> = _ShapeToInferred<{
-    [K in keyof Shape]: Shape[K]['infer']
+    [K in keyof Shape]: Shape[K] extends infer S extends Node ? S['infer'] : never
 }>
 type _ShapeToInput<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Shape>> & UndefinedToOptional<Shape>>
 export type ShapeToInput<Shape extends Record<string, Node>> = _ShapeToInferred<{
