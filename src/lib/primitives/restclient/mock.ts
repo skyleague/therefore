@@ -3,6 +3,10 @@ import type { ConditionalExcept, HasRequiredKeys, Simplify } from '@skyleague/ax
 import type { Got } from 'got'
 import type { Interceptor, Scope } from 'nock'
 
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
+
 export type NockArgs<T> = Simplify<
     ConditionalExcept<
         {
