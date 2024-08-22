@@ -157,6 +157,7 @@ export class EitherHelper extends Node {
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
                     const IncomingHttpHeaders = reference(httpSymbols.IncomingHttpHeaders())
+                    const DefinedError = reference(ajvSymbols.DefinedError())
 
                     return (
                         createWriter()
@@ -170,7 +171,7 @@ export class EitherHelper extends Node {
                     statusCode: StatusCode
                     status: Status<StatusCode>
                     headers: Headers
-                    validationErrors: DefinedError[] | undefined
+                    validationErrors: ${DefinedError}[] | undefined
                     left: T
                     where: Where
                 }`)
@@ -570,7 +571,7 @@ export class RestClientBuilder {
             }
 
             if (this.hasValidateRequestBody) {
-                writer.writeLine(this.writeValidateRequestBody())
+                writer.writeLine(this.writeValidateRequestBody(reference))
             }
 
             if (this.hasAwaitResponse) {
@@ -641,13 +642,14 @@ export class RestClientBuilder {
             .toString()
     }
 
-    private writeValidateRequestBody() {
+    private writeValidateRequestBody(reference: (node: Node) => string) {
         const writer = createWriter()
         if (this.options.useEither) {
+            const DefinedError = reference(ajvSymbols.DefinedError())
             return writer
                 .newLine()
                 .writeLine(
-                    'public validateRequestBody<Parser extends { parse: (o: unknown) => { left: DefinedError[] } | { right: Body } }, Body>(',
+                    `public validateRequestBody<Parser extends { parse: (o: unknown) => { left: ${DefinedError}[] } | { right: Body } }, Body>(`,
                 )
                 .writeLine('parser: Parser, body: unknown )')
                 .block(() => {
