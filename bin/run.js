@@ -36,5 +36,5 @@ if (!process.env.NODE_OPTIONS?.includes('--import tsx/esm')) {
     process.exit(0)
 }
 
-const { run } = dev ? await import('../src/index.ts') : await import('../.dist/index.js')
+const { run } = dev ? await import('../src/cli.ts') : await import('../.dist/src/cli.js')
 await run().catch(console.error)
