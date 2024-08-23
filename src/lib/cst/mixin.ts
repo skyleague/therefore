@@ -4,13 +4,14 @@ import { NullableType } from '../primitives/nullable/nullable.js'
 import { OptionalType } from '../primitives/optional/optional.js'
 import { type RefOptions, RefType } from '../primitives/ref/type.js'
 import { Node } from './node.js'
+import type { Intrinsic } from './types.js'
 
 export abstract class NodeTrait extends Node {
-    public array(options: SchemaOptions<ArrayOptions> = {}): ArrayType {
+    public array(options: SchemaOptions<ArrayOptions> = {}): ArrayType<this> {
         return new ArrayType(this, options)
     }
 
-    public reference(options: SchemaOptions<RefOptions> = {}): RefType {
+    public reference(options: SchemaOptions<RefOptions> = {}): RefType<Intrinsic<this>> {
         return RefType._from(this, options)
     }
 
