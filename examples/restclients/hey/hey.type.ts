@@ -6,12 +6,17 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
+import { validate as ArrayWithStringsValidator } from './schemas/array-with-strings.schema.js'
 import { validate as CallWithDuplicateResponsesResponse200Validator } from './schemas/call-with-duplicate-responses-response200.schema.js'
+import { validate as CallWithParametersRequestValidator } from './schemas/call-with-parameters-request.schema.js'
 import { validate as CallWithResponseAndNoContentResponseResponse200Validator } from './schemas/call-with-response-and-no-content-response-response200.schema.js'
 import { validate as CallWithResponsesResponse200Validator } from './schemas/call-with-responses-response200.schema.js'
 import { validate as ComplexParamsRequestValidator } from './schemas/complex-params-request.schema.js'
 import { validate as ComplexTypesResponseValidator } from './schemas/complex-types-response.schema.js'
 import { validate as DictionaryWithArrayValidator } from './schemas/dictionary-with-array.schema.js'
+import { validate as Hey2Validator } from './schemas/hey.schema.js'
+import { validate as ImportRequestValidator } from './schemas/import-request.schema.js'
+import { validate as ImportValidator } from './schemas/import.schema.js'
 import { validate as ModelFromZendeskValidator } from './schemas/model-from.zendesk.schema.js'
 import { validate as ModelThatExtendsExtendsValidator } from './schemas/model-that-extends-extends.schema.js'
 import { validate as ModelThatExtendsValidator } from './schemas/model-that-extends.schema.js'
@@ -21,12 +26,38 @@ import { validate as ModelWithReadOnlyAndWriteOnlyValidator } from './schemas/mo
 import { validate as ModelWithStringErrorValidator } from './schemas/model-with-string-error.schema.js'
 import { validate as ModelWithStringValidator } from './schemas/model-with-string.schema.js'
 import { validate as NonAsciiResponseValidator } from './schemas/non-ascii-response.schema.js'
-import { validate as PostServiceWithEmptyTagRequestValidator } from './schemas/post-service-with-empty-tag-request.schema.js'
+import { validate as PostCallWithOptionalParamRequestValidator } from './schemas/post-call-with-optional-param-request.schema.js'
+import { validate as PostCallWithOptionalParamResponse200Validator } from './schemas/post-call-with-optional-param-response200.schema.js'
 import { validate as TypesResponse200Validator } from './schemas/types-response200.schema.js'
 import { validate as TypesResponse201Validator } from './schemas/types-response201.schema.js'
 import { validate as TypesResponse202Validator } from './schemas/types-response202.schema.js'
 import { validate as TypesResponse203Validator } from './schemas/types-response203.schema.js'
+import { validate as UploadFileRequestValidator } from './schemas/upload-file-request.schema.js'
 import { validate as UploadFileResponseValidator } from './schemas/upload-file-response.schema.js'
+
+/**
+ * This is a simple array with strings
+ *
+ * @default ['test']
+ */
+export type ArrayWithStrings = string[]
+
+export const ArrayWithStrings = {
+    validate: ArrayWithStringsValidator as ValidateFunction<ArrayWithStrings>,
+    get schema() {
+        return ArrayWithStrings.validate.schema
+    },
+    get errors() {
+        return ArrayWithStrings.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ArrayWithStrings => ArrayWithStrings.validate(o) === true,
+    parse: (o: unknown): { right: ArrayWithStrings } | { left: DefinedError[] } => {
+        if (ArrayWithStrings.is(o)) {
+            return { right: o }
+        }
+        return { left: (ArrayWithStrings.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 export type CallWithDuplicateResponsesResponse200 = ModelWithBoolean & ModelWithInteger
 
@@ -44,6 +75,25 @@ export const CallWithDuplicateResponsesResponse200 = {
             return { right: o }
         }
         return { left: (CallWithDuplicateResponsesResponse200.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface CallWithParametersRequest {}
+
+export const CallWithParametersRequest = {
+    validate: CallWithParametersRequestValidator as ValidateFunction<CallWithParametersRequest>,
+    get schema() {
+        return CallWithParametersRequest.validate.schema
+    },
+    get errors() {
+        return CallWithParametersRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is CallWithParametersRequest => CallWithParametersRequest.validate(o) === true,
+    parse: (o: unknown): { right: CallWithParametersRequest } | { left: DefinedError[] } => {
+        if (CallWithParametersRequest.is(o)) {
+            return { right: o }
+        }
+        return { left: (CallWithParametersRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -167,6 +217,69 @@ export const DictionaryWithArray = {
             return { right: o }
         }
         return { left: (DictionaryWithArray.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * Model with number-only name
+ */
+export type Hey2 = string
+
+export const Hey2 = {
+    validate: Hey2Validator as ValidateFunction<Hey2>,
+    get schema() {
+        return Hey2.validate.schema
+    },
+    get errors() {
+        return Hey2.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Hey2 => Hey2.validate(o) === true,
+    parse: (o: unknown): { right: Hey2 } | { left: DefinedError[] } => {
+        if (Hey2.is(o)) {
+            return { right: o }
+        }
+        return { left: (Hey2.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * Model with restricted keyword name
+ */
+export type Import = string
+
+export const Import = {
+    validate: ImportValidator as ValidateFunction<Import>,
+    get schema() {
+        return Import.validate.schema
+    },
+    get errors() {
+        return Import.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Import => Import.validate(o) === true,
+    parse: (o: unknown): { right: Import } | { left: DefinedError[] } => {
+        if (Import.is(o)) {
+            return { right: o }
+        }
+        return { left: (Import.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export type ImportRequest = ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
+
+export const ImportRequest = {
+    validate: ImportRequestValidator as ValidateFunction<ImportRequest>,
+    get schema() {
+        return ImportRequest.validate.schema
+    },
+    get errors() {
+        return ImportRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ImportRequest => ImportRequest.validate(o) === true,
+    parse: (o: unknown): { right: ImportRequest } | { left: DefinedError[] } => {
+        if (ImportRequest.is(o)) {
+            return { right: o }
+        }
+        return { left: (ImportRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -464,22 +577,43 @@ export const NonAsciiResponse = {
  */
 export type NonAsciiString = string
 
-export type PostServiceWithEmptyTagRequest = ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
+export interface PostCallWithOptionalParamRequest {
+    offset?: number | null | undefined
+}
 
-export const PostServiceWithEmptyTagRequest = {
-    validate: PostServiceWithEmptyTagRequestValidator as ValidateFunction<PostServiceWithEmptyTagRequest>,
+export const PostCallWithOptionalParamRequest = {
+    validate: PostCallWithOptionalParamRequestValidator as ValidateFunction<PostCallWithOptionalParamRequest>,
     get schema() {
-        return PostServiceWithEmptyTagRequest.validate.schema
+        return PostCallWithOptionalParamRequest.validate.schema
     },
     get errors() {
-        return PostServiceWithEmptyTagRequest.validate.errors ?? undefined
+        return PostCallWithOptionalParamRequest.validate.errors ?? undefined
     },
-    is: (o: unknown): o is PostServiceWithEmptyTagRequest => PostServiceWithEmptyTagRequest.validate(o) === true,
-    parse: (o: unknown): { right: PostServiceWithEmptyTagRequest } | { left: DefinedError[] } => {
-        if (PostServiceWithEmptyTagRequest.is(o)) {
+    is: (o: unknown): o is PostCallWithOptionalParamRequest => PostCallWithOptionalParamRequest.validate(o) === true,
+    parse: (o: unknown): { right: PostCallWithOptionalParamRequest } | { left: DefinedError[] } => {
+        if (PostCallWithOptionalParamRequest.is(o)) {
             return { right: o }
         }
-        return { left: (PostServiceWithEmptyTagRequest.errors ?? []) as DefinedError[] }
+        return { left: (PostCallWithOptionalParamRequest.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export type PostCallWithOptionalParamResponse200 = number
+
+export const PostCallWithOptionalParamResponse200 = {
+    validate: PostCallWithOptionalParamResponse200Validator as ValidateFunction<PostCallWithOptionalParamResponse200>,
+    get schema() {
+        return PostCallWithOptionalParamResponse200.validate.schema
+    },
+    get errors() {
+        return PostCallWithOptionalParamResponse200.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is PostCallWithOptionalParamResponse200 => PostCallWithOptionalParamResponse200.validate(o) === true,
+    parse: (o: unknown): { right: PostCallWithOptionalParamResponse200 } | { left: DefinedError[] } => {
+        if (PostCallWithOptionalParamResponse200.is(o)) {
+            return { right: o }
+        }
+        return { left: (PostCallWithOptionalParamResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -556,6 +690,25 @@ export const TypesResponse203 = {
             return { right: o }
         }
         return { left: (TypesResponse203.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export type UploadFileRequest = unknown
+
+export const UploadFileRequest = {
+    validate: UploadFileRequestValidator as ValidateFunction<UploadFileRequest>,
+    get schema() {
+        return UploadFileRequest.validate.schema
+    },
+    get errors() {
+        return UploadFileRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is UploadFileRequest => UploadFileRequest.validate(o) === true,
+    parse: (o: unknown): { right: UploadFileRequest } | { left: DefinedError[] } => {
+        if (UploadFileRequest.is(o)) {
+            return { right: o }
+        }
+        return { left: (UploadFileRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 

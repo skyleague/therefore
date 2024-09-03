@@ -11,12 +11,17 @@ import { got } from 'got'
 import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 
 import {
+    ArrayWithStrings,
     CallWithDuplicateResponsesResponse200,
+    CallWithParametersRequest,
     CallWithResponseAndNoContentResponseResponse200,
     CallWithResponsesResponse200,
     ComplexParamsRequest,
     ComplexTypesResponse,
     DictionaryWithArray,
+    Hey2,
+    Import,
+    ImportRequest,
     ModelFromZendesk,
     ModelThatExtends,
     ModelThatExtendsExtends,
@@ -26,11 +31,13 @@ import {
     ModelWithString,
     ModelWithStringError,
     NonAsciiResponse,
-    PostServiceWithEmptyTagRequest,
+    PostCallWithOptionalParamRequest,
+    PostCallWithOptionalParamResponse200,
     TypesResponse200,
     TypesResponse201,
     TypesResponse202,
     TypesResponse203,
+    UploadFileRequest,
     UploadFileResponse,
 } from './hey.type.js'
 
@@ -202,12 +209,12 @@ export class Hey {
         query,
         headers,
     }: {
-        body: ModelWithString
+        body: CallWithParametersRequest
         path: { parameterPath: string; apiVersion: string }
-        query?: { foo_ref_enum?: string; foo_all_of_enum: string; parameterQuery: string }
+        query?: { foo_ref_enum?: string; foo_all_of_enum: string; cursor: string }
         headers: { parameterHeader: string }
     }) {
-        const _body = this.validateRequestBody(ModelWithString, body)
+        const _body = this.validateRequestBody(CallWithParametersRequest, body)
         if ('left' in _body) {
             return Promise.resolve(_body)
         }
@@ -222,7 +229,7 @@ export class Hey {
     public callWithResponse({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<StatusCode<2>, ModelWithString>
+        | SuccessResponse<StatusCode<2>, Import>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
@@ -231,7 +238,7 @@ export class Hey {
                 responseType: 'json',
             }),
             {
-                default: ModelWithString,
+                default: Import,
             },
         ) as ReturnType<this['callWithResponse']>
     }
@@ -258,7 +265,7 @@ export class Hey {
     public callWithResponses({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<Exclude<StatusCode<2>, '200' | '201' | '202'>, ModelWithString>
+        | SuccessResponse<Exclude<StatusCode<2>, '200' | '201' | '202'>, ModelWithStringError>
         | SuccessResponse<'200', CallWithResponsesResponse200>
         | SuccessResponse<'201', ModelThatExtends>
         | SuccessResponse<'202', ModelThatExtendsExtends>
@@ -284,7 +291,7 @@ export class Hey {
                 500: ModelWithStringError,
                 501: ModelWithStringError,
                 502: ModelWithStringError,
-                default: ModelWithString,
+                default: ModelWithStringError,
             },
         ) as ReturnType<this['callWithResponses']>
     }
@@ -449,16 +456,16 @@ export class Hey {
     public dummyA({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<'204', unknown>
+        | SuccessResponse<'200', Hey2>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
             this.client.get(`api/v${path.apiVersion}/multiple-tags/a`, {
-                responseType: 'text',
+                responseType: 'json',
             }),
             {
-                204: { parse: (x: unknown) => ({ right: x }) },
+                200: Hey2,
             },
         ) as ReturnType<this['dummyA']>
     }
@@ -496,6 +503,10 @@ export class Hey {
         return this.client.delete(`api/v${path.apiVersion}/duplicate`)
     }
 
+    public export({ path }: { path: { apiVersion: string } }) {
+        return this.client.get(`api/v${path.apiVersion}/no-tag`)
+    }
+
     public fileResponse({
         path,
     }: { path: { id: string; apiVersion: string } }): Promise<
@@ -517,7 +528,7 @@ export class Hey {
         body,
         path,
         query,
-    }: { body: ModelWithOneOfEnum; path: { apiVersion: string }; query?: { parameter?: string } }) {
+    }: { body: ModelWithOneOfEnum; path: { apiVersion: string }; query?: { page?: string } }) {
         const _body = this.validateRequestBody(ModelWithOneOfEnum, body)
         if ('left' in _body) {
             return Promise.resolve(_body)
@@ -537,6 +548,33 @@ export class Hey {
         return this.client(`api/v${path.apiVersion}/simple`, {
             method: 'HEAD',
         })
+    }
+
+    public import({
+        body,
+        path,
+    }: { body: ImportRequest; path: { apiVersion: string } }): Promise<
+        | SuccessResponse<Exclude<StatusCode<2>, '200'>, ModelWithReadOnlyAndWriteOnly>
+        | SuccessResponse<'200', ModelFromZendesk>
+        | FailureResponse<undefined, unknown, 'request:body', undefined>
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        const _body = this.validateRequestBody(ImportRequest, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
+        return this.awaitResponse(
+            this.client.post(`api/v${path.apiVersion}/no-tag`, {
+                json: body,
+                responseType: 'json',
+            }),
+            {
+                200: ModelFromZendesk,
+                default: ModelWithReadOnlyAndWriteOnly,
+            },
+        ) as ReturnType<this['import']>
     }
 
     public multipartRequest({ path }: { path: { apiVersion: string } }) {
@@ -593,53 +631,51 @@ export class Hey {
         body,
         path,
         query,
-    }: { body: ModelWithString; path: { apiVersion: string }; query: { parameter: string } }) {
-        const _body = this.validateRequestBody(ModelWithString, body)
+    }: { body: PostCallWithOptionalParamRequest; path: { apiVersion: string }; query: { parameter: string } }): Promise<
+        | SuccessResponse<'200', PostCallWithOptionalParamResponse200>
+        | SuccessResponse<'204', unknown>
+        | FailureResponse<undefined, unknown, 'request:body', undefined>
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        const _body = this.validateRequestBody(PostCallWithOptionalParamRequest, body)
         if ('left' in _body) {
             return Promise.resolve(_body)
         }
 
-        return this.client.post(`api/v${path.apiVersion}/parameters/`, {
-            json: body,
-            searchParams: query,
-        })
+        return this.awaitResponse(
+            this.client.post(`api/v${path.apiVersion}/parameters/`, {
+                json: body,
+                searchParams: query,
+                responseType: 'json',
+            }),
+            {
+                200: PostCallWithOptionalParamResponse200,
+                204: { parse: (x: unknown) => ({ right: x }) },
+            },
+        ) as ReturnType<this['postCallWithOptionalParam']>
     }
 
     public postCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.post(`api/v${path.apiVersion}/simple`)
     }
 
-    public postServiceWithEmptyTag({
-        body,
-        path,
-    }: { body: PostServiceWithEmptyTagRequest; path: { apiVersion: string } }): Promise<
-        | SuccessResponse<StatusCode<2>, ModelWithReadOnlyAndWriteOnly>
-        | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
-    > {
-        const _body = this.validateRequestBody(PostServiceWithEmptyTagRequest, body)
-        if ('left' in _body) {
-            return Promise.resolve(_body)
-        }
-
-        return this.awaitResponse(
-            this.client.post(`api/v${path.apiVersion}/no-tag`, {
-                json: body,
-                responseType: 'json',
-            }),
-            {
-                default: ModelWithReadOnlyAndWriteOnly,
-            },
-        ) as ReturnType<this['postServiceWithEmptyTag']>
-    }
-
     public putCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.put(`api/v${path.apiVersion}/simple`)
     }
 
-    public serviceWithEmptyTag({ path }: { path: { apiVersion: string } }) {
-        return this.client.get(`api/v${path.apiVersion}/no-tag`)
+    /**
+     * Login User
+     */
+    public putWithFormUrlEncoded({ body, path }: { body: ArrayWithStrings; path: { apiVersion: string } }) {
+        const _body = this.validateRequestBody(ArrayWithStrings, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
+        return this.client.put(`api/v${path.apiVersion}/non-ascii-æøåÆØÅöôêÊ字符串`, {
+            form: body,
+        })
     }
 
     public testErrorCode({
@@ -711,14 +747,22 @@ export class Hey {
     }
 
     public uploadFile({
+        body,
         path,
-    }: { path: { apiVersion: string } }): Promise<
+    }: { body: UploadFileRequest; path: { apiVersion: string } }): Promise<
         | SuccessResponse<'200', UploadFileResponse>
+        | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
+        const _body = this.validateRequestBody(UploadFileRequest, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
         return this.awaitResponse(
             this.client.post(`api/v${path.apiVersion}/upload`, {
+                form: _body.right as Record<string, unknown>,
                 responseType: 'json',
             }),
             {

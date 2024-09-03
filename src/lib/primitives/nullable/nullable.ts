@@ -11,10 +11,20 @@ export class NullableType<T extends Node = Node> extends Node {
     public constructor(item: T, options: SchemaOptions<unknown> = {}) {
         super(options)
         this._children = [item as Node]
+        if (this._name === undefined && item._name !== undefined) {
+            this._name = item._name
+        }
     }
 
     public unwrap(): T {
         return this._children[0] as T
+    }
+
+    public static from<T extends Node>(item: T, options: SchemaOptions<unknown> = {}): NullableType<T> {
+        if (item instanceof NullableType) {
+            return item as NullableType<T>
+        }
+        return new NullableType(item, options) as NullableType<T>
     }
 }
 export interface NullableType extends Node, NodeTrait {}
@@ -35,5 +45,5 @@ export interface NullableType extends Node, NodeTrait {}
  */
 export function $nullable<T extends Node>(literal: ConstExpr<T>): NullableType<T> {
     const subNode = evaluate(literal)
-    return new NullableType(subNode)
+    return NullableType.from(subNode)
 }
