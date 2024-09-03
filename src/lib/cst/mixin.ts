@@ -16,11 +16,11 @@ export abstract class NodeTrait extends Node {
     }
 
     public nullable(): NullableType<this> {
-        return new NullableType(this)
+        return NullableType.from(this)
     }
 
     public optional(): OptionalType<this> {
-        return new OptionalType(this)
+        return OptionalType.from(this)
     }
 }
 

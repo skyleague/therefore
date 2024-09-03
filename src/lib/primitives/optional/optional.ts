@@ -11,10 +11,20 @@ export class OptionalType<T extends Node = Node> extends Node {
     public constructor(item: T, options: SchemaOptions<unknown> = {}) {
         super(options)
         this._children = [item as Node]
+        if (this._name === undefined && item._name !== undefined) {
+            this._name = item._name
+        }
     }
 
     public unwrap(): T {
         return this._children[0] as T
+    }
+
+    public static from<T extends Node>(item: T, options: SchemaOptions<unknown> = {}): OptionalType<T> {
+        if (item instanceof OptionalType) {
+            return item as OptionalType<T>
+        }
+        return new OptionalType(item, options) as OptionalType<T>
     }
 }
 export interface OptionalType extends Node, NodeTrait {}
@@ -36,5 +46,5 @@ export interface OptionalType extends Node, NodeTrait {}
  */
 export function $optional<T extends Node>(literal: T | (() => T)): OptionalType<T> {
     const subNode = evaluate(literal)
-    return new OptionalType(subNode)
+    return OptionalType.from(subNode)
 }
