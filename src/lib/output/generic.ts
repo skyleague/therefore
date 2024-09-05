@@ -1,7 +1,7 @@
 import { References } from './references.js'
 import type { ThereforeOutput } from './types.js'
 
-import { type Prettier, formatFile } from '../../commands/generate/format.js'
+import { type Prettier, formatContent } from '../../commands/generate/format.js'
 import { renderTemplate } from '../../common/template/template.js'
 import type { GenericOutput } from '../cst/cst.js'
 import type { Node, SourceNode } from '../cst/node.js'
@@ -83,7 +83,7 @@ export class GenericFileOutput {
         const file = renderTemplate(this.references.render(contents.toString()), data)
 
         if (this.content.output.prettify?.() !== false) {
-            return formatFile({ prettier, input: file, file: this.path, type: evaluate(this.content.output.subtype) })
+            return formatContent({ prettier, input: file, file: this.path, type: evaluate(this.content.output.subtype) })
         }
         return file
     }
