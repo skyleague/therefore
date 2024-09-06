@@ -9,6 +9,7 @@ export type RecordOptions = object
 
 export class RecordType<IndexType extends Node = Node> extends ObjectType {
     public declare infer: Record<string, IndexType['infer']>
+    public declare input: Record<string, IndexType['input']>
     public declare element: IndexType
 
     public constructor(recordType: ThereforeExpr, options: SchemaOptions<RecordOptions, Record<string, IndexType['infer']>>) {

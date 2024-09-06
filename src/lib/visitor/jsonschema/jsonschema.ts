@@ -337,13 +337,13 @@ export function convertRequiresToImports(code: string): string {
     return transformedCode
 }
 
-export function toJsonSchema(
+export function toJsonSchema<Compile extends boolean = true>(
     obj: Node,
     {
-        compile = true,
+        compile,
         references = new References('generic'),
         formats = true,
-    }: { compile?: boolean; references?: References<'generic'>; formats?: boolean } = {},
+    }: { compile?: Compile; references?: References<'generic'>; formats?: boolean } = {},
 ) {
     const context = buildContext(obj, { references })
     const definition: JsonSchema = {
@@ -355,7 +355,7 @@ export function toJsonSchema(
     if (Object.keys(context.definitions).length > 0) {
         definition.$defs = context.definitions
     }
-    if (compile) {
+    if (compile !== false) {
         const ajv = new Ajv(context.ajv)
         if (context.formats.size > 0 && formats) {
             addFormats.default(ajv, { formats: [...context.formats] as FormatName[] })

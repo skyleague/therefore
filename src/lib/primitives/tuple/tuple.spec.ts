@@ -17,14 +17,17 @@ it('function', () => {
 it('types', () => {
     const schema = $tuple([$string(), $number()])
     expectTypeOf(schema.infer).toEqualTypeOf<[string, number]>()
+    expectTypeOf(schema.input).toEqualTypeOf<[string, number]>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, TupleType<[StringType, NumberType]>>>
 
     const restArg = $tuple([$string(), $number()], { rest: $string() })
     expectTypeOf(restArg.infer).toEqualTypeOf<[string, number, ...string[]]>()
+    expectTypeOf(restArg.input).toEqualTypeOf<[string, number, ...string[]]>()
     type _test_rest_intrinsic = Expect<Equal<Intrinsic<typeof restArg>, TupleType<[StringType, NumberType], StringType>>>
 
     const newRestArg = restArg.rest($number())
     expectTypeOf(newRestArg.infer).toEqualTypeOf<[string, number, ...number[]]>()
+    expectTypeOf(newRestArg.input).toEqualTypeOf<[string, number, ...number[]]>()
     type _test_newrest_intrinsic = Expect<Equal<Intrinsic<typeof newRestArg>, TupleType<[StringType, NumberType], NumberType>>>
 })
 

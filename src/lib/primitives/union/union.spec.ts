@@ -19,11 +19,13 @@ it('types', () => {
     const schema = $union([$string(), $number(), $boolean])
 
     expectTypeOf(schema.infer).toEqualTypeOf<string | number | boolean>()
+    expectTypeOf(schema.input).toEqualTypeOf<string | number | boolean>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, StringType | NumberType | BooleanType>>
 
     const schemaFn = $union([$string, $number, $boolean])
 
     expectTypeOf(schemaFn.infer).toEqualTypeOf<string | number | boolean>()
+    expectTypeOf(schemaFn.input).toEqualTypeOf<string | number | boolean>()
     type _test_fn_intrinsic = Expect<Equal<Intrinsic<typeof schemaFn>, StringType | NumberType | BooleanType>>
 })
 

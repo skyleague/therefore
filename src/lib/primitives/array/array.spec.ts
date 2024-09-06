@@ -103,6 +103,7 @@ it('simple unexpanded', () => {
 it('types', () => {
     const schema = $array($string())
     expectTypeOf(schema.infer).toEqualTypeOf<string[]>()
+    expectTypeOf(schema.input).toEqualTypeOf<string[]>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ArrayType<StringType>>>
 
     expectTypeOf(schema._definition.default).toEqualTypeOf<string[] | undefined>()

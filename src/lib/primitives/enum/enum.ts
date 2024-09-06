@@ -15,6 +15,7 @@ export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
     public _isNamed = false as const
     public enum: Values
     public declare infer: Values[number]
+    public declare input: Values[number]
 
     public constructor(values: Values, options: SchemaOptions<EnumOptions, Values[number]>) {
         super(options)
@@ -39,6 +40,7 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
     public enum: Enum
 
     public declare infer: Enum[keyof Enum]
+    public declare input: Enum[keyof Enum]
     public constructor(values: Enum, options: SchemaOptions<EnumOptions, Enum[keyof Enum]>) {
         super(options)
         this._options = options

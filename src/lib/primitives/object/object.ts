@@ -23,6 +23,10 @@ type _ShapeToInferred<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Sh
 export type ShapeToInfer<Shape extends Record<string, Node>> = _ShapeToInferred<{
     [K in keyof Shape]: Shape[K]['infer']
 }>
+type _ShapeToInput<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Shape>> & UndefinedToOptional<Shape>>
+export type ShapeToInput<Shape extends Record<string, Node>> = _ShapeToInferred<{
+    [K in keyof Shape]: Shape[K]['input']
+}>
 
 export type ShapeToPartial<Shape extends Record<string, Node>, Keys extends [...(keyof Shape)[]]> = Keys extends { length: 0 }
     ? {
@@ -68,6 +72,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     protected declare patternProperties?: Record<string, Node> | undefined
     public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
+    public declare input: ShapeToInput<Shape>
 
     public constructor(shape: ObjectShape<Shape>, options: SchemaOptions<ObjectOptions, ShapeToInfer<Shape>>) {
         super(options)

@@ -23,18 +23,22 @@ it('types', () => {
     const value = $string
     const schema = $ref(value)
     expectTypeOf(schema.infer).toEqualTypeOf<string>()
+    expectTypeOf(schema.input).toEqualTypeOf<string>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, StringType>>
 
     const nested = $ref(schema)
     expectTypeOf(nested.infer).toEqualTypeOf<string>()
+    expectTypeOf(nested.input).toEqualTypeOf<string>()
     type _test_nested_intrinsic = Expect<Equal<Intrinsic<typeof nested>, StringType>>
 
     const doubleNested = $ref(nested)
     expectTypeOf(doubleNested.infer).toEqualTypeOf<string>()
+    expectTypeOf(doubleNested.input).toEqualTypeOf<string>()
     type _test_double_nested_intrinsic = Expect<Equal<Intrinsic<typeof doubleNested>, StringType>>
 
     const trippleNested = $ref(doubleNested)
     expectTypeOf(trippleNested.infer).toEqualTypeOf<string>()
+    expectTypeOf(trippleNested.input).toEqualTypeOf<string>()
     expectTypeOf(trippleNested.intrinsic).toEqualTypeOf<StringType>()
     type _test_tripple_nested_intrinsic = Expect<Equal<Intrinsic<typeof trippleNested>, StringType>>
 })

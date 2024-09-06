@@ -24,6 +24,10 @@ it('types', () => {
         foo: string
         bar: string
     }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{
+        foo: string
+        bar: string
+    }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof schema>,

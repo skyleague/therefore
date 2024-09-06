@@ -9,6 +9,7 @@ export class BooleanType extends NodeTrait {
     public _options: BooleanOptions = {}
 
     public declare infer: boolean
+    public declare input: boolean
 
     public constructor(options: SchemaOptions<BooleanOptions>) {
         super(options)

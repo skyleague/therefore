@@ -7,6 +7,7 @@ export class OptionalType<T extends Node = Node> extends Node {
     public override _type = 'optional' as const
     public override _children: [Node]
     public declare infer: T['infer'] | undefined
+    public declare input: T['input'] | undefined
 
     public constructor(item: T, options: SchemaOptions<unknown> = {}) {
         super(options)

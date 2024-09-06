@@ -15,6 +15,7 @@ it('function', () => {
 it('types', () => {
     const schema = $number()
     expectTypeOf(schema.infer).toEqualTypeOf<number>()
+    expectTypeOf(schema.input).toEqualTypeOf<number>()
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, NumberType>>
 

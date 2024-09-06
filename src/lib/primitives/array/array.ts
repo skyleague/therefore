@@ -30,6 +30,7 @@ export class ArrayType<Element extends Node = Node> extends Node {
     public element: Element
 
     public declare infer: Element['infer'][]
+    public declare input: Element['input'][]
 
     public override _isCommutative = false
     public constructor(items: ConstExpr<Element>, options: SchemaOptions<ArrayOptions, Element['infer']>) {

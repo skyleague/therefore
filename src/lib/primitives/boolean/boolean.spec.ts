@@ -16,6 +16,7 @@ it('function', () => {
 it('types', () => {
     const schema = $boolean()
     expectTypeOf(schema.infer).toEqualTypeOf<boolean>()
+    expectTypeOf(schema.input).toEqualTypeOf<boolean>()
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, BooleanType>>
 
@@ -26,6 +27,7 @@ it('types', () => {
 it('types - optional', () => {
     const schema = $boolean().optional()
     expectTypeOf(schema.infer).toEqualTypeOf<boolean | undefined>()
+    expectTypeOf(schema.input).toEqualTypeOf<boolean | undefined>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, OptionalType<BooleanType>>>
 
     expectTypeOf(schema._definition.default).toEqualTypeOf<boolean | undefined>()

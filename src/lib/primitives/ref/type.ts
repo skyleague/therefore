@@ -14,6 +14,7 @@ export class RefType<Reference extends Node = Node> extends Node {
 
     public _options: RefOptions = {}
     public declare infer: Reference['infer']
+    public declare input: Reference['input']
     public declare intrinsic: Intrinsic<Reference>
 
     public constructor(reference: ConstExpr<Reference>, options: SchemaOptions<RefOptions, Reference['infer']>) {

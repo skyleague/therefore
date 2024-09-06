@@ -5,6 +5,7 @@ import { $array } from '../array/array.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import { $boolean } from '../boolean/boolean.js'
 import type { NullableType } from '../nullable/nullable.js'
+import type { DefaultType } from '../optional/default.js'
 import type { OptionalType } from '../optional/optional.js'
 import type { StringType } from '../string/string.js'
 import { $string } from '../string/string.js'
@@ -18,6 +19,7 @@ it('function', () => {
 it('types', () => {
     const schema = $object({ foo: $string })
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo: string }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo: string }>()
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ObjectType<{ foo: StringType }>>>
 
     expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo: string } | undefined>()
@@ -25,21 +27,52 @@ it('types', () => {
 })
 
 it('types - modifiers', () => {
-    const schema = $object({ foo: $string().optional(), bar: $boolean().nullable() })
-    expectTypeOf(schema.infer).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null }>()
+    const schema = $object({ foo: $string().optional(), bar: $boolean().nullable(), def: $string().optional().default('foo') })
+
+    expectTypeOf(schema.infer).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null; def: string }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null; def?: string | undefined }>()
     type _test_intrinsic = Expect<
-        Equal<Intrinsic<typeof schema>, ObjectType<{ foo: OptionalType<StringType>; bar: NullableType<BooleanType> }>>
+        Equal<
+            Intrinsic<typeof schema>,
+            ObjectType<{
+                foo: OptionalType<StringType>
+                bar: NullableType<BooleanType>
+                def: DefaultType<OptionalType<StringType>>
+            }>
+        >
     >
 
-    expectTypeOf(schema._definition.default).toEqualTypeOf<{ foo?: string | undefined; bar: boolean | null } | undefined>()
+    expectTypeOf(schema.default).toEqualTypeOf<
+        (args: {
+            bar: boolean | null
+            def?: string
+            foo?: string | undefined
+        }) => DefaultType<
+            ObjectType<{
+                foo: OptionalType<StringType>
+                bar: NullableType<BooleanType>
+                def: DefaultType<OptionalType<StringType>>
+            }>
+        >
+    >()
+
+    expectTypeOf(schema._definition.default).toEqualTypeOf<
+        | {
+              bar: boolean | null
+              def: string
+              foo?: string | undefined
+          }
+        | undefined
+    >()
     expectTypeOf(schema._definition.jsonschema?.examples).toEqualTypeOf<
-        { foo?: string | undefined; bar: boolean | null }[] | undefined
+        { foo?: string | undefined; bar: boolean | null; def: string }[] | undefined
     >()
 })
 
 it('types - partials', () => {
     const schema = $object({ foo: $string, bar: $boolean }).partial()
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo?: string | undefined; bar?: boolean | undefined }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo?: string | undefined; bar?: boolean | undefined }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof schema>,
@@ -69,6 +102,7 @@ it('types - partials', () => {
 it('types - partials - by name', () => {
     const schema = $object({ foo: $string, bar: $boolean }).partial('foo')
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo?: string | undefined; bar: boolean }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo?: string | undefined; bar: boolean }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof schema>,
@@ -98,6 +132,7 @@ it('types - partials - by name', () => {
 it('types - required', () => {
     const schema = $object({ foo: $string().optional(), bar: $boolean }).required()
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo: string; bar: boolean }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo: string; bar: boolean }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof schema>,
@@ -127,6 +162,7 @@ it('types - required', () => {
 it('types - required - by name', () => {
     const schema = $object({ foo: $string().optional(), bar: $boolean }).required('foo')
     expectTypeOf(schema.infer).toEqualTypeOf<{ foo: string; bar: boolean }>()
+    expectTypeOf(schema.input).toEqualTypeOf<{ foo: string; bar: boolean }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof schema>,
@@ -157,6 +193,7 @@ it('types - extends', () => {
     const schema = $object({ foo: $string, bar: $boolean })
     const other = schema.extend({ baz: $string })
     expectTypeOf(other.infer).toEqualTypeOf<{ foo: string; bar: boolean; baz: string }>()
+    expectTypeOf(other.input).toEqualTypeOf<{ foo: string; bar: boolean; baz: string }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof other>,
@@ -191,6 +228,7 @@ it('types - merge', () => {
     const schemaB = $object({ baz: $string })
     const other = schemaA.merge(schemaB)
     expectTypeOf(other.infer).toEqualTypeOf<{ foo: string; bar: boolean; baz: string }>()
+    expectTypeOf(other.input).toEqualTypeOf<{ foo: string; bar: boolean; baz: string }>()
     type _test_intrinsic = Expect<
         Equal<
             Intrinsic<typeof other>,

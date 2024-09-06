@@ -7,6 +7,7 @@ export class NullableType<T extends Node = Node> extends Node {
     public override _type = 'nullable' as const
     public override _children: [Node]
     public declare infer: T['infer'] | null
+    public declare input: T['input'] | null
 
     public constructor(item: T, options: SchemaOptions<unknown> = {}) {
         super(options)
