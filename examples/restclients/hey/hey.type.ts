@@ -32,7 +32,6 @@ import { validate as TypesResponse200Validator } from './schemas/types-response2
 import { validate as TypesResponse201Validator } from './schemas/types-response201.schema.js'
 import { validate as TypesResponse202Validator } from './schemas/types-response202.schema.js'
 import { validate as TypesResponse203Validator } from './schemas/types-response203.schema.js'
-import { validate as UploadFileRequestValidator } from './schemas/upload-file-request.schema.js'
 import { validate as UploadFileResponseValidator } from './schemas/upload-file-response.schema.js'
 
 /**
@@ -690,25 +689,6 @@ export const TypesResponse203 = {
             return { right: o }
         }
         return { left: (TypesResponse203.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export type UploadFileRequest = unknown
-
-export const UploadFileRequest = {
-    validate: UploadFileRequestValidator as ValidateFunction<UploadFileRequest>,
-    get schema() {
-        return UploadFileRequest.validate.schema
-    },
-    get errors() {
-        return UploadFileRequest.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is UploadFileRequest => UploadFileRequest.validate(o) === true,
-    parse: (o: unknown): { right: UploadFileRequest } | { left: DefinedError[] } => {
-        if (UploadFileRequest.is(o)) {
-            return { right: o }
-        }
-        return { left: (UploadFileRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 

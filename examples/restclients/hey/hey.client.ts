@@ -37,7 +37,6 @@ import {
     TypesResponse201,
     TypesResponse202,
     TypesResponse203,
-    UploadFileRequest,
     UploadFileResponse,
 } from './hey.type.js'
 
@@ -220,7 +219,7 @@ export class Hey {
         }
 
         return this.client.post(`api/v${path.apiVersion}/parameters/${path.parameterPath}`, {
-            json: body,
+            json: _body.right as CallWithParametersRequest,
             searchParams: query ?? {},
             headers: headers,
         })
@@ -336,7 +335,7 @@ export class Hey {
         return this.client.post(
             `api/v${path.apiVersion}/parameters/${path.parameterPath1}/${path.parameterPath2}/${path.parameterPath3}`,
             {
-                json: body,
+                json: _body.right as ModelWithString,
                 searchParams: query ?? {},
                 headers: headers,
             },
@@ -377,7 +376,7 @@ export class Hey {
 
         return this.awaitResponse(
             this.client.put(`api/v${path.apiVersion}/complex/${path.id}`, {
-                json: body,
+                json: _body.right as ComplexParamsRequest,
                 responseType: 'json',
             }),
             {
@@ -426,7 +425,7 @@ export class Hey {
         }
 
         return this.client.post(`api/v${path.apiVersion}/requestBody/`, {
-            json: body,
+            json: _body.right as ModelWithString,
             searchParams: query ?? {},
         })
     }
@@ -535,7 +534,7 @@ export class Hey {
         }
 
         return this.client.get(`api/v${path.apiVersion}/parameters/`, {
-            json: body,
+            json: _body.right as ModelWithOneOfEnum,
             searchParams: query ?? {},
         })
     }
@@ -567,7 +566,7 @@ export class Hey {
 
         return this.awaitResponse(
             this.client.post(`api/v${path.apiVersion}/no-tag`, {
-                json: body,
+                json: _body.right as ImportRequest,
                 responseType: 'json',
             }),
             {
@@ -645,7 +644,7 @@ export class Hey {
 
         return this.awaitResponse(
             this.client.post(`api/v${path.apiVersion}/parameters/`, {
-                json: body,
+                json: _body.right as PostCallWithOptionalParamRequest,
                 searchParams: query,
                 responseType: 'json',
             }),
@@ -674,7 +673,7 @@ export class Hey {
         }
 
         return this.client.put(`api/v${path.apiVersion}/non-ascii-æøåÆØÅöôêÊ字符串`, {
-            form: body,
+            form: _body.right as ArrayWithStrings,
         })
     }
 
@@ -749,20 +748,14 @@ export class Hey {
     public uploadFile({
         body,
         path,
-    }: { body: UploadFileRequest; path: { apiVersion: string } }): Promise<
+    }: { body: FormData; path: { apiVersion: string } }): Promise<
         | SuccessResponse<'200', UploadFileResponse>
-        | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
-        const _body = this.validateRequestBody(UploadFileRequest, body)
-        if ('left' in _body) {
-            return Promise.resolve(_body)
-        }
-
         return this.awaitResponse(
             this.client.post(`api/v${path.apiVersion}/upload`, {
-                form: _body.right as Record<string, unknown>,
+                form: body,
                 responseType: 'json',
             }),
             {

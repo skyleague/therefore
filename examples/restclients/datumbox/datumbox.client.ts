@@ -65,7 +65,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/AdultContentDetection.json', {
-                form: body,
+                form: _body.right as AdultContentDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -94,7 +94,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/CommercialDetection.json', {
-                form: body,
+                form: _body.right as CommercialDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -123,7 +123,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/DocumentSimilarity.json', {
-                form: body,
+                form: _body.right as DocumentSimilarityRequest,
                 responseType: 'text',
             }),
             {
@@ -152,7 +152,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/EducationalDetection.json', {
-                form: body,
+                form: _body.right as EducationalDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -181,7 +181,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/GenderDetection.json', {
-                form: body,
+                form: _body.right as GenderDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -210,7 +210,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/KeywordExtraction.json', {
-                form: body,
+                form: _body.right as KeywordExtractionRequest,
                 responseType: 'text',
             }),
             {
@@ -239,7 +239,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/LanguageDetection.json', {
-                form: body,
+                form: _body.right as LanguageDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -268,7 +268,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/ReadabilityAssessment.json', {
-                form: body,
+                form: _body.right as ReadabilityAssessmentRequest,
                 responseType: 'text',
             }),
             {
@@ -297,7 +297,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/SentimentAnalysis.json', {
-                form: body,
+                form: _body.right as SentimentAnalysisRequest,
                 responseType: 'text',
             }),
             {
@@ -326,7 +326,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/SpamDetection.json', {
-                form: body,
+                form: _body.right as SpamDetectionRequest,
                 responseType: 'text',
             }),
             {
@@ -355,7 +355,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/SubjectivityAnalysis.json', {
-                form: body,
+                form: _body.right as SubjectivityAnalysisRequest,
                 responseType: 'text',
             }),
             {
@@ -384,7 +384,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/TextExtraction.json', {
-                form: body,
+                form: _body.right as TextExtractionRequest,
                 responseType: 'text',
             }),
             {
@@ -413,7 +413,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/TopicClassification.json', {
-                form: body,
+                form: _body.right as TopicClassificationRequest,
                 responseType: 'text',
             }),
             {
@@ -442,7 +442,7 @@ export class Datumbox {
 
         return this.awaitResponse(
             this.client.post('1.0/TwitterSentimentAnalysis.json', {
-                form: body,
+                form: _body.right as TwitterSentimentAnalysisRequest,
                 responseType: 'text',
             }),
             {
