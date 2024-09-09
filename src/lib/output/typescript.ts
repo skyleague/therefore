@@ -3,7 +3,7 @@ import type { ThereforeOutput } from './types.js'
 
 import packageJson from '../../../package.json' with { type: 'json' }
 import { generatedBy } from '../../commands/generate/constants.js'
-import { type Prettier, formatFile } from '../../commands/generate/format.js'
+import { type Prettier, formatContent } from '../../commands/generate/format.js'
 import { renderTemplate } from '../../common/template/template.js'
 import type { TypescriptOutput } from '../cst/cst.js'
 import type { Node, SourceNode } from '../cst/node.js'
@@ -339,7 +339,7 @@ export class TypescriptFileOutput {
         }
 
         const file = this.references.render(contents.toString())
-        return await formatFile({ prettier, input: renderTemplate(file, data), file: this.path, type: 'typescript' })
+        return await formatContent({ prettier, input: renderTemplate(file, data), file: this.path, type: 'typescript' })
     }
 
     public clean() {

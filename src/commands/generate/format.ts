@@ -1,6 +1,6 @@
-import path from 'node:path'
-import { Biome, Distribution } from '@biomejs/js-api'
-import { mapTry, memoize, tryAsValue } from '@skyleague/axioms'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
+import { memoize } from '@skyleague/axioms'
 import type { ThereforeOutputType } from '../../lib/output/types.js'
 
 // biome-ignore lint/suspicious/noExplicitAny: it's a third-party library
@@ -14,27 +14,7 @@ export async function maybeLoadPrettier() {
     }
 }
 
-const biome = memoize(async () => {
-    const local = await Biome.create({
-        distribution: Distribution.NODE,
-    })
-    try {
-        const baseConfig = (await import(`file:///${process.cwd().replace(/\\/g, '/')}/biome.json`)).default
-        if ('extends' in baseConfig && Array.isArray(baseConfig.extends)) {
-            for (const extend of baseConfig.extends) {
-                const extendedConfig = (await import(extend)).default
-                local.applyConfiguration(extendedConfig)
-            }
-        }
-        local.applyConfiguration(baseConfig)
-    } catch (_e) {
-        console.debug('No biome.json found')
-    }
-
-    return local
-})
-
-export async function formatFile({
+export async function formatContent({
     prettier,
     input,
     file,
@@ -52,14 +32,39 @@ export async function formatFile({
             parser: type,
         })
     }
-    const formatter = await biome()
-    const formatted = mapTry(input, () => {
-        const formatted = formatter.formatContent(input, {
-            // this virual path might ignore the file alltogether
-            // filePath: file,
-            filePath: `src/${path.dirname(file)}.${file.split('.').pop()}`,
-        })
-        return formatted.content
-    })
-    return tryAsValue(formatted) ?? input
+    return input
+}
+
+const execAsync = promisify(exec)
+
+const getBiomeBinaryPath = memoize(async () => {
+    try {
+        const { stdout } = await execAsync('npx --no-install biome --version')
+        if (stdout.trim()) {
+            return 'npx'
+        }
+    } catch (error) {
+        console.error('Error finding Biome:', error)
+    }
+    return null
+})
+
+export async function formatBiomeFiles(files: string[]) {
+    const biomePath = await getBiomeBinaryPath()
+    if (!biomePath) {
+        console.warn('Biome not found. Skipping formatting.')
+        return
+    }
+    try {
+        const command = `${biomePath} biome check --write ${files.join(' ')}`
+        const { stdout, stderr } = await execAsync(command)
+
+        if (stderr) {
+            console.warn('Biome formatting warning:', stderr)
+        }
+
+        console.log('Biome formatting completed:', stdout)
+    } catch (error) {
+        console.error('Error running Biome format:', error)
+    }
 }

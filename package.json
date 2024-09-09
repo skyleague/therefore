@@ -35,8 +35,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@biomejs/js-api": "^0.6.2",
-    "@biomejs/wasm-nodejs": "1.8.3",
     "@skyleague/axioms": "^4.5.2",
     "@typeschema/main": "^0.13.10",
     "@urql/introspection": "^1.1.0",
@@ -56,7 +54,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^8.0.1",
+    "@skyleague/node-standards": "^8.1.2",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",

@@ -12,7 +12,7 @@ import { $ref } from '../../lib/primitives/ref/ref.js'
 import { therefore } from '../../lib/primitives/therefore.js'
 import { ValidatorType } from '../../lib/primitives/validator/validator.js'
 import { autoRef, generateNode } from '../../lib/visitor/prepass/prepass.js'
-import { type Prettier, maybeLoadPrettier } from './format.js'
+import { type Prettier, formatBiomeFiles, maybeLoadPrettier } from './format.js'
 import { expandGlobs } from './glob.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -213,4 +213,6 @@ export async function generate({
         fs.mkdirSync(path.dirname(absTargetPath), { recursive: true })
         fs.writeFileSync(absTargetPath, contents)
     }
+
+    await formatBiomeFiles(Object.keys(outputFiles))
 }
