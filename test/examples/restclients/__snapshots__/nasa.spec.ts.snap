@@ -63,7 +63,7 @@ export class Apod {
     | SuccessResponse<'200', GetApodResponse>
     | FailureResponse<'400', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400">, string, 'response:statuscode', IncomingHttpHeaders>
+    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400">, unknown, 'response:statuscode', IncomingHttpHeaders>
     >
     {
         return this.awaitResponse(this.buildClient(auth).get('apod', {

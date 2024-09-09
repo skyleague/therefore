@@ -433,10 +433,20 @@ export class RestClientBuilder {
                         const responseRef = responses.default?.schema !== undefined ? value(responses.default.schema) : undefined
                         if (responseRef !== undefined) {
                             if (successCodes.length > 0) {
+                                // typescript collapses this variant too eagerly and makes it `2${number}`
+                                // writer.writeLine(
+                                //     `| SuccessResponse<Exclude<StatusCode<2>, ${successCodes
+                                //         .map((s) => `"${s}"`)
+                                //         .join(' | ')}>, ${responseRef}>`,
+                                // )
+                                const knownSuccessCodes = new Set(
+                                    [200, 201, 202, 203, 204, 205, 206, 207, 208, 226].map((x) => x.toString()),
+                                )
+                                for (const definedCode of successCodes) {
+                                    knownSuccessCodes.delete(definedCode)
+                                }
                                 writer.writeLine(
-                                    `| SuccessResponse<Exclude<StatusCode<2>, ${successCodes
-                                        .map((s) => `"${s}"`)
-                                        .join(' | ')}>, ${responseRef}>`,
+                                    `| SuccessResponse<${[...knownSuccessCodes].map((s) => `"${s}"`).join(' | ')}, ${responseRef}>`,
                                 )
                             } else {
                                 writer.writeLine(`| SuccessResponse<StatusCode<2>, ${responseRef}>`)
@@ -465,7 +475,7 @@ export class RestClientBuilder {
                         writer.writeLine(
                             `| FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, ${errorCodes
                                 .map((s) => `"${s}"`)
-                                .join(' | ')}>, string, 'response:statuscode', ${IncomingHttpHeaders()}>`,
+                                .join(' | ')}>, unknown, 'response:statuscode', ${IncomingHttpHeaders()}>`,
                         )
                     } else {
                         writer.writeLine(

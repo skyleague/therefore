@@ -152,7 +152,7 @@ export class Hey {
     public callWithDuplicateResponses({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<Exclude<StatusCode<2>, '200' | '201' | '202'>, ModelWithBoolean>
+        | SuccessResponse<'203' | '204' | '205' | '206' | '207' | '208' | '226', ModelWithBoolean>
         | SuccessResponse<'200', CallWithDuplicateResponsesResponse200>
         | SuccessResponse<'201', ModelWithString>
         | SuccessResponse<'202', ModelWithString>
@@ -163,7 +163,7 @@ export class Hey {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
               Exclude<StatusCode<1 | 3 | 4 | 5>, '500' | '501' | '502' | '4XX'>,
-              string,
+              unknown,
               'response:statuscode',
               IncomingHttpHeaders
           >
@@ -264,7 +264,7 @@ export class Hey {
     public callWithResponses({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<Exclude<StatusCode<2>, '200' | '201' | '202'>, ModelWithStringError>
+        | SuccessResponse<'203' | '204' | '205' | '206' | '207' | '208' | '226', ModelWithStringError>
         | SuccessResponse<'200', CallWithResponsesResponse200>
         | SuccessResponse<'201', ModelThatExtends>
         | SuccessResponse<'202', ModelThatExtendsExtends>
@@ -274,7 +274,7 @@ export class Hey {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
               Exclude<StatusCode<1 | 3 | 4 | 5>, '500' | '501' | '502'>,
-              string,
+              unknown,
               'response:statuscode',
               IncomingHttpHeaders
           >
@@ -302,7 +302,7 @@ export class Hey {
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'500', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '500'>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '500'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
             this.client.post(`api/v${path.apiVersion}/header`, {
@@ -393,7 +393,7 @@ export class Hey {
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'500', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '500'>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '500'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
             this.client.get(`api/v${path.apiVersion}/complex`, {
@@ -553,7 +553,7 @@ export class Hey {
         body,
         path,
     }: { body: ImportRequest; path: { apiVersion: string } }): Promise<
-        | SuccessResponse<Exclude<StatusCode<2>, '200'>, ModelWithReadOnlyAndWriteOnly>
+        | SuccessResponse<'201' | '202' | '203' | '204' | '205' | '206' | '207' | '208' | '226', ModelWithReadOnlyAndWriteOnly>
         | SuccessResponse<'200', ModelFromZendesk>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -689,7 +689,7 @@ export class Hey {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
               Exclude<StatusCode<1 | 3 | 4 | 5>, '500' | '501' | '502' | '503'>,
-              string,
+              unknown,
               'response:statuscode',
               IncomingHttpHeaders
           >

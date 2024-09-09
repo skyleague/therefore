@@ -97,8 +97,8 @@ describe('methods', () => {
             if (result.status === 'informational') {
                 expectTypeOf(result).toEqualTypeOf<
                     FailureResponse<
-                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                        string,
+                        `1${number}` | `4${number}` | `3${number}` | `5${number}`,
+                        unknown,
                         'response:statuscode',
                         IncomingHttpHeaders
                     >
@@ -114,7 +114,7 @@ describe('methods', () => {
                     | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
                     | FailureResponse<
                           `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                          string,
+                          unknown,
                           'response:statuscode',
                           IncomingHttpHeaders
                       >
@@ -123,8 +123,8 @@ describe('methods', () => {
             if (result.status === 'server-error') {
                 expectTypeOf(result).toEqualTypeOf<
                     FailureResponse<
-                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                        string,
+                        `3${number}` | `1${number}` | `4${number}` | `5${number}`,
+                        unknown,
                         'response:statuscode',
                         IncomingHttpHeaders
                     >
@@ -368,7 +368,7 @@ describe('methods', () => {
                 }
 
                 if (result.statusCode === '500') {
-                    expectTypeOf(result.left).toEqualTypeOf<string>()
+                    expectTypeOf(result.left).toEqualTypeOf<unknown>()
                     expectTypeOf(`${result.statusCode}` as const).toEqualTypeOf<'500'>()
                     expectTypeOf(result.headers).toEqualTypeOf<IncomingHttpHeaders>()
                     expectTypeOf(result.validationErrors).toEqualTypeOf<DefinedError[] | undefined>()
@@ -394,7 +394,7 @@ describe('methods', () => {
                 expectTypeOf(result).toEqualTypeOf<
                     FailureResponse<
                         `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                        string,
+                        unknown,
                         'response:statuscode',
                         IncomingHttpHeaders
                     >
@@ -405,20 +405,19 @@ describe('methods', () => {
             }
             if (result.status === 'client-error') {
                 expectTypeOf(result).toEqualTypeOf<
-                    | FailureResponse<
-                          `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                          string,
-                          'response:statuscode',
-                          IncomingHttpHeaders
-                      >
-                    | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
+                    FailureResponse<
+                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                        unknown,
+                        'response:statuscode',
+                        IncomingHttpHeaders
+                    >
                 >()
             }
             if (result.status === 'server-error') {
                 expectTypeOf(result).toEqualTypeOf<
                     FailureResponse<
                         `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                        string,
+                        unknown,
                         'response:statuscode',
                         IncomingHttpHeaders
                     >
@@ -541,7 +540,7 @@ describe('methods', () => {
             expectTypeOf(result).toEqualTypeOf<
                 FailureResponse<
                     `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                    string,
+                    unknown,
                     'response:statuscode',
                     IncomingHttpHeaders
                 >
@@ -557,7 +556,7 @@ describe('methods', () => {
                 | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
                 | FailureResponse<
                       `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                      string,
+                      unknown,
                       'response:statuscode',
                       IncomingHttpHeaders
                   >
@@ -570,7 +569,7 @@ describe('methods', () => {
             expectTypeOf(result).toEqualTypeOf<
                 FailureResponse<
                     `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                    string,
+                    unknown,
                     'response:statuscode',
                     IncomingHttpHeaders
                 >

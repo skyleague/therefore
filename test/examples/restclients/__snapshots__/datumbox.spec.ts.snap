@@ -57,7 +57,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/AdultContentDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as AdultContentDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["adultContentDetection"]>
@@ -82,7 +82,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/CommercialDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as CommercialDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["commercialDetection"]>
@@ -107,7 +107,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/DocumentSimilarity.json', {
-            form: body,responseType: 'text',
+            form: _body.right as DocumentSimilarityRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["documentSimilarity"]>
@@ -132,7 +132,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/EducationalDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as EducationalDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["educationalDetection"]>
@@ -157,7 +157,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/GenderDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as GenderDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["genderDetection"]>
@@ -182,7 +182,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/KeywordExtraction.json', {
-            form: body,responseType: 'text',
+            form: _body.right as KeywordExtractionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["keywordExtraction"]>
@@ -207,7 +207,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/LanguageDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as LanguageDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["languageDetection"]>
@@ -232,7 +232,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/ReadabilityAssessment.json', {
-            form: body,responseType: 'text',
+            form: _body.right as ReadabilityAssessmentRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["readabilityAssessment"]>
@@ -257,7 +257,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/SentimentAnalysis.json', {
-            form: body,responseType: 'text',
+            form: _body.right as SentimentAnalysisRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["sentimentAnalysis"]>
@@ -282,7 +282,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/SpamDetection.json', {
-            form: body,responseType: 'text',
+            form: _body.right as SpamDetectionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["spamDetection"]>
@@ -307,7 +307,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/SubjectivityAnalysis.json', {
-            form: body,responseType: 'text',
+            form: _body.right as SubjectivityAnalysisRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["subjectivityAnalysis"]>
@@ -332,7 +332,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/TextExtraction.json', {
-            form: body,responseType: 'text',
+            form: _body.right as TextExtractionRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["textExtraction"]>
@@ -357,7 +357,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/TopicClassification.json', {
-            form: body,responseType: 'text',
+            form: _body.right as TopicClassificationRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["topicClassification"]>
@@ -382,7 +382,7 @@ export class Datumbox {
 
 
         return this.awaitResponse(this.client.post('1.0/TwitterSentimentAnalysis.json', {
-            form: body,responseType: 'text',
+            form: _body.right as TwitterSentimentAnalysisRequest,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["twitterSentimentAnalysis"]>

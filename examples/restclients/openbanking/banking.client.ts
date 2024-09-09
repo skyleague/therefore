@@ -84,7 +84,7 @@ export class Banking {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
               Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '401' | '403' | '404' | '405' | '406' | '415' | '429' | '500'>,
-              string,
+              unknown,
               'response:statuscode',
               IncomingHttpHeaders
           >
@@ -145,7 +145,7 @@ export class Banking {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
               Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '401' | '403' | '404' | '405' | '406' | '429' | '500'>,
-              string,
+              unknown,
               'response:statuscode',
               IncomingHttpHeaders
           >

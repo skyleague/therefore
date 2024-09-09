@@ -116,3 +116,59 @@ export const doubleSuccess: OpenapiV3 = {
 }
 
 export const doubleSuccessClient = $restclient(doubleSuccess, { strict: false })
+
+export const defaultTest: OpenapiV3 = {
+    openapi: '3.0.0',
+    info: { title: 'openapi', version: '1.0.0' },
+    paths: {
+        '/employees': {
+            get: {
+                responses: {
+                    '200': {
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        id: {
+                                            type: 'integer',
+                                        },
+                                        name: {
+                                            type: 'string',
+                                        },
+                                        fullTime: {
+                                            type: 'boolean',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    default: {
+                        description: 'error',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        id: {
+                                            type: 'integer',
+                                        },
+                                        name: {
+                                            type: 'string',
+                                        },
+                                        fullTime: {
+                                            type: 'boolean',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
+
+export const defaultTestClient = $restclient(defaultTest, { strict: false })
