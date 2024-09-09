@@ -97,6 +97,7 @@ export type AsRequestBody =
           type: 'json' | 'form'
           mimeType?: string
           definition: (args: { reference: (node: Node) => string }) => string
+          variableName?: string
       }
     | {
           schema?: undefined
@@ -104,6 +105,7 @@ export type AsRequestBody =
           name: 'body'
           type: 'body'
           definition: (args: { reference: (node: Node) => string }) => string
+          variableName?: string
       }
 
 export type ResponseBodyDefinition =
@@ -304,6 +306,7 @@ export class RestClientBuilder {
                             .writeLine('return Promise.resolve(_body)')
                             .writeLine('}')
                             .toString()
+                        request.variableName = `_body.right as ${reference(request.schema)}`
                     } else {
                         requestValidationStr = `this.validateRequestBody(${value(request.schema)}, ${request.name})`
                     }
@@ -495,7 +498,7 @@ export class RestClientBuilder {
                                     writer
                                         .conditionalWrite(
                                             request !== undefined,
-                                            `${request?.type ?? ''}: ${request?.name ?? ''},`,
+                                            `${request?.type ?? ''}: ${request?.variableName ?? request?.name ?? ''},`,
                                         )
                                         .conditionalWrite(
                                             queryParameters.length > 0,
@@ -813,6 +816,11 @@ export class RestClientBuilder {
         const formContent = entriesOf(request?.content ?? {}).find(([mime]) => formUrlEncodedMime.test(mime))?.[1]
         if (formContent !== undefined) {
             const schema = formContent.schema ?? {}
+
+            if ((schema as { type?: string }).type === 'file') {
+                return { name: 'body', type: 'form', definition: () => 'FormData' }
+            }
+
             const name = `${method}Request`
             const therefore = $jsonschema(schema as JsonSchema, {
                 name,

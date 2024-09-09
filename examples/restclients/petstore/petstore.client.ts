@@ -85,7 +85,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.buildClient(auth).post('pet', {
-                json: body,
+                json: _body.right as Pet,
                 responseType: 'json',
             }),
             {
@@ -115,7 +115,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.client.post('user', {
-                json: body,
+                json: _body.right as User,
                 responseType: 'json',
             }),
             {
@@ -142,7 +142,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.client.post('user/createWithList', {
-                json: body,
+                json: _body.right as CreateUsersWithListInputRequest,
                 responseType: 'json',
             }),
             {
@@ -432,7 +432,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.client.post('store/order', {
-                json: body,
+                json: _body.right as Order,
                 responseType: 'json',
             }),
             {
@@ -471,7 +471,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.buildClient(auth).put('pet', {
-                json: body,
+                json: _body.right as Pet,
                 responseType: 'json',
             }),
             {
@@ -526,7 +526,7 @@ export class PetStore {
 
         return this.awaitResponse(
             this.client.put(`user/${path.username}`, {
-                json: body,
+                json: _body.right as User,
                 responseType: 'text',
             }),
             {},
