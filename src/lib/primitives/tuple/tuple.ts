@@ -8,6 +8,9 @@ import { evaluate } from '@skyleague/axioms'
 type TupleToInfer<Elements extends Node[]> = {
     [K in keyof Elements]: Elements[K]['infer']
 }
+type TupleToInput<Elements extends Node[]> = {
+    [K in keyof Elements]: Elements[K]['input']
+}
 type ConstExprTuple<Elements extends [...Node[]]> = {
     [K in keyof Elements]: ConstExpr<Elements[K]>
 }
@@ -30,6 +33,10 @@ export class TupleType<
     public declare infer: Rest extends { infer: unknown }
         ? [...TupleToInfer<Elements>, ...Rest['infer'][]]
         : TupleToInfer<Elements>
+
+    public declare input: Rest extends { infer: unknown }
+        ? [...TupleToInput<Elements>, ...Rest['input'][]]
+        : TupleToInput<Elements>
 
     public constructor(elements: ConstExprTuple<Elements>, options: SchemaOptions<TupleOptions<Rest>, TupleToInfer<Elements>>) {
         super(options)

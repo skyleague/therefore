@@ -17,6 +17,7 @@ it('value', () => {
 it('types', () => {
     const schema = $null()
     expectTypeOf(schema.infer).toEqualTypeOf<null>()
+    expectTypeOf(schema.input).toEqualTypeOf<null>()
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, ConstType<null>>>
 

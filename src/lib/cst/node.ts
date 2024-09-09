@@ -2,6 +2,7 @@ import { keysOf, omit } from '@skyleague/axioms'
 import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
 import type { JsonSchema } from '../../json.js'
 import type { ThereforeMeta } from '../primitives/base.js'
+import type { DefaultType } from '../primitives/optional/default.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
@@ -57,6 +58,7 @@ export class Node {
     public _isCommutative = true
 
     public declare infer: unknown
+    public declare input: unknown
     // public declare intrinsic: unknown
 
     public constructor(definition: ThereforeNodeDefinition & ThereforeMeta = {}) {
@@ -85,9 +87,9 @@ export class Node {
         return this
     }
 
-    public default(value: this['infer']): this {
+    public default(value: this['input']): DefaultType<this> {
         this._definition.default = value
-        return this
+        return this as DefaultType<this>
     }
 
     public jsonschema(schema: JsonSchema<this['infer']>): this {

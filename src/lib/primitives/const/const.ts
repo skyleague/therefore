@@ -11,6 +11,7 @@ export class ConstType<T = unknown> extends Node {
     public const: unknown
 
     public declare infer: T
+    public declare input: T
 
     public constructor(value: unknown, options: SchemaOptions<ConstOptions>) {
         super(options)

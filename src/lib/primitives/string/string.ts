@@ -46,6 +46,7 @@ export class StringType extends NodeTrait {
     public _options: StringOptions = {}
 
     public declare infer: string
+    public declare input: string
 
     public constructor(options: SchemaOptions<StringOptions, string>) {
         super(options)

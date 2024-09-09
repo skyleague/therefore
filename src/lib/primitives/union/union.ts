@@ -10,6 +10,10 @@ export type UnionOptions = object
 type ToInfer<Elements extends Node[]> = {
     [K in keyof Elements]: Elements[K]['infer']
 }
+
+type ToInput<Elements extends Node[]> = {
+    [K in keyof Elements]: Elements[K]['input']
+}
 type ConstExprTuple<Elements extends [...Node[]]> = {
     [K in keyof Elements]: ConstExpr<Elements[K]>
 }
@@ -27,6 +31,7 @@ export class UnionType<const Elements extends [...Node[]] = Node[]> extends Node
     public override _isCommutative = false
     public _options: UnionOptions = {}
     public declare infer: ToInfer<Elements>[number]
+    public declare input: ToInput<Elements>[number]
     public declare intrinsic: Intrinsic<Elements[number]>
 
     public constructor(union: ConstExprTuple<Elements>, options: SchemaOptions<UnionOptions, ToInfer<Elements>[number]>) {

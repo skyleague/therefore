@@ -26,6 +26,7 @@ it('function', () => {
 it('types', () => {
     const schema = $enum(['foo', 'bar'])
     expectTypeOf(schema.infer).toEqualTypeOf<'foo' | 'bar'>()
+    expectTypeOf(schema.input).toEqualTypeOf<'foo' | 'bar'>()
 
     type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, EnumType<['foo', 'bar']>>>
 
@@ -34,6 +35,7 @@ it('types', () => {
 
     const schemaNative = $enum({ foo: 'fooz', bar: 'baz' })
     expectTypeOf(schemaNative.infer).toEqualTypeOf<'fooz' | 'baz'>()
+    expectTypeOf(schemaNative.input).toEqualTypeOf<'fooz' | 'baz'>()
 
     type _test_native_intrinsic = Expect<
         Equal<Intrinsic<typeof schemaNative>, NativeEnumType<{ readonly foo: 'fooz'; readonly bar: 'baz' }>>

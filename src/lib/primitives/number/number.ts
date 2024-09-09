@@ -48,6 +48,7 @@ export class NumberType extends NodeTrait {
     public _options: NumberOptions
 
     public declare infer: number
+    public declare input: number
 
     public constructor({ minInclusive = true, maxInclusive = true, ...options }: SchemaOptions<Partial<NumberOptions>>) {
         super(options)

@@ -17,6 +17,7 @@ export class IntersectionType<const Elements extends Node[] = Node[]> extends No
     public _options: IntersectionOptions = {}
 
     public declare infer: Simplify<UnionToIntersection<Elements[number]['infer']>>
+    public declare input: Simplify<UnionToIntersection<Elements[number]['input']>>
     public declare intrinsic: Intrinsic<Elements[number]>
 
     public constructor(
