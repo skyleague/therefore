@@ -70,7 +70,7 @@ export class Banking {
     | FailureResponse<'500', OBErrorResponse1, 'response:statuscode'>
     | FailureResponse<undefined, unknown, 'request:body', undefined>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400" | "401" | "403" | "404" | "405" | "406" | "415" | "429" | "500">, string, 'response:statuscode', IncomingHttpHeaders>
+    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400" | "401" | "403" | "404" | "405" | "406" | "415" | "429" | "500">, unknown, 'response:statuscode', IncomingHttpHeaders>
     >
     {
         const _body = this.validateRequestBody(File, body)
@@ -80,7 +80,7 @@ export class Banking {
 
 
         return this.awaitResponse(this.buildClient(auth).post(\`file-payment-consents/\${path.consentId}/file\`, {
-            json: body,headers: headers,responseType: 'text',
+            json: _body.right as File,headers: headers,responseType: 'text',
         }), {
             200: { parse: (x: unknown) => ({ right: x }) },400: OBErrorResponse1,401: { parse: (x: unknown) => ({ right: x }) },403: OBErrorResponse1,404: { parse: (x: unknown) => ({ right: x }) },405: { parse: (x: unknown) => ({ right: x }) },406: { parse: (x: unknown) => ({ right: x }) },415: { parse: (x: unknown) => ({ right: x }) },429: { parse: (x: unknown) => ({ right: x }) },500: OBErrorResponse1,
         }) as ReturnType<this["createFilePaymentConsentsConsentIdFile"]>
@@ -100,7 +100,7 @@ export class Banking {
     | FailureResponse<'429', unknown, 'response:statuscode'>
     | FailureResponse<'500', OBErrorResponse1, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400" | "401" | "403" | "404" | "405" | "406" | "429" | "500">, string, 'response:statuscode', IncomingHttpHeaders>
+    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "400" | "401" | "403" | "404" | "405" | "406" | "429" | "500">, unknown, 'response:statuscode', IncomingHttpHeaders>
     >
     {
         return this.awaitResponse(this.buildClient(auth).get(\`file-payment-consents/\${path.consentId}/file\`, {

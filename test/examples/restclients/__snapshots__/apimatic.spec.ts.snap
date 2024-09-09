@@ -86,7 +86,7 @@ export class Banking {
     | SuccessResponse<'200', ConvertApiResponse>
     | FailureResponse<'429', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "429">, string, 'response:statuscode', IncomingHttpHeaders>
+    | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, "429">, unknown, 'response:statuscode', IncomingHttpHeaders>
     >
     {
         return this.awaitResponse(this.buildClient().post('transform', {
