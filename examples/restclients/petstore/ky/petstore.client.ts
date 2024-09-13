@@ -7,8 +7,8 @@
 import type { IncomingHttpHeaders } from 'node:http'
 
 import type { DefinedError } from 'ajv'
-import { got } from 'got'
-import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
+import ky from 'ky'
+import type { KyInstance, Options, ResponsePromise } from 'ky'
 
 import {
     ApiResponse,
@@ -34,8 +34,8 @@ import {
  * - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
  * - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
  */
-export class PetStore {
-    public client: Got
+export class PetStoreKy {
+    public client: KyInstance
 
     public auth: {
         petstoreAuth?: string | (() => Promise<string>)
@@ -50,20 +50,18 @@ export class PetStore {
         options,
         auth = {},
         defaultAuth,
-        client = got,
+        client = ky,
     }: {
         prefixUrl: string | `${string}/api/v3`
-        options?: Options | OptionsInit
+        options?: Options
         auth: {
             petstoreAuth?: string | (() => Promise<string>)
             apiKey?: string | (() => Promise<string>)
         }
         defaultAuth?: string[][] | string[]
-        client?: Got
+        client?: KyInstance
     }) {
-        this.client = client.extend(
-            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
-        )
+        this.client = client.extend({ prefixUrl, throwHttpErrors: false, ...options })
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth
@@ -90,12 +88,12 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).post('pet', {
                 json: _body.right as Pet,
-                responseType: 'json',
             }),
             {
                 200: Pet,
                 405: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['addPet']>
     }
 
@@ -120,11 +118,11 @@ export class PetStore {
         return this.awaitResponse(
             this.client.post('user', {
                 json: _body.right as User,
-                responseType: 'json',
             }),
             {
                 default: User,
             },
+            'json',
         ) as ReturnType<this['createUser']>
     }
 
@@ -147,11 +145,11 @@ export class PetStore {
         return this.awaitResponse(
             this.client.post('user/createWithList', {
                 json: _body.right as CreateUsersWithListInputRequest,
-                responseType: 'json',
             }),
             {
                 200: User,
             },
+            'json',
         ) as ReturnType<this['createUsersWithListInput']>
     }
 
@@ -169,13 +167,12 @@ export class PetStore {
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.client.delete(`store/order/${path.orderId}`, {
-                responseType: 'text',
-            }),
+            this.client.delete(`store/order/${path.orderId}`, {}),
             {
                 400: { parse: (x: unknown) => ({ right: x }) },
                 404: { parse: (x: unknown) => ({ right: x }) },
             },
+            'text',
         ) as ReturnType<this['deleteOrder']>
     }
 
@@ -194,11 +191,11 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).delete(`pet/${path.petId}`, {
                 headers: headers ?? {},
-                responseType: 'text',
             }),
             {
                 400: { parse: (x: unknown) => ({ right: x }) },
             },
+            'text',
         ) as ReturnType<this['deletePet']>
     }
 
@@ -216,13 +213,12 @@ export class PetStore {
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.client.delete(`user/${path.username}`, {
-                responseType: 'text',
-            }),
+            this.client.delete(`user/${path.username}`, {}),
             {
                 400: { parse: (x: unknown) => ({ right: x }) },
                 404: { parse: (x: unknown) => ({ right: x }) },
             },
+            'text',
         ) as ReturnType<this['deleteUser']>
     }
 
@@ -243,12 +239,12 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByStatus', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: FindPetsByStatusResponse,
                 400: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['findPetsByStatus']>
     }
 
@@ -269,12 +265,12 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByTags', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: FindPetsByTagsResponse,
                 400: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['findPetsByTags']>
     }
 
@@ -291,12 +287,11 @@ export class PetStore {
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.buildClient(auth).get('store/inventory', {
-                responseType: 'json',
-            }),
+            this.buildClient(auth).get('store/inventory', {}),
             {
                 200: GetInventoryResponse,
             },
+            'json',
         ) as ReturnType<this['getInventory']>
     }
 
@@ -315,14 +310,13 @@ export class PetStore {
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.client.get(`store/order/${path.orderId}`, {
-                responseType: 'json',
-            }),
+            this.client.get(`store/order/${path.orderId}`, {}),
             {
                 200: Order,
                 400: { parse: (x: unknown) => ({ right: x }) },
                 404: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['getOrderById']>
     }
 
@@ -342,14 +336,13 @@ export class PetStore {
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.buildClient(auth).get(`pet/${path.petId}`, {
-                responseType: 'json',
-            }),
+            this.buildClient(auth).get(`pet/${path.petId}`, {}),
             {
                 200: Pet,
                 400: { parse: (x: unknown) => ({ right: x }) },
                 404: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['getPetById']>
     }
 
@@ -366,14 +359,13 @@ export class PetStore {
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
-            this.client.get(`user/${path.username}`, {
-                responseType: 'json',
-            }),
+            this.client.get(`user/${path.username}`, {}),
             {
                 200: User,
                 400: { parse: (x: unknown) => ({ right: x }) },
                 404: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['getUserByName']>
     }
 
@@ -391,12 +383,12 @@ export class PetStore {
         return this.awaitResponse(
             this.client.get('user/login', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: LoginUserResponse,
                 400: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['loginUser']>
     }
 
@@ -407,12 +399,7 @@ export class PetStore {
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
-        return this.awaitResponse(
-            this.client.get('user/logout', {
-                responseType: 'text',
-            }),
-            {},
-        ) as ReturnType<this['logoutUser']>
+        return this.awaitResponse(this.client.get('user/logout', {}), {}, 'text') as ReturnType<this['logoutUser']>
     }
 
     /**
@@ -437,12 +424,12 @@ export class PetStore {
         return this.awaitResponse(
             this.client.post('store/order', {
                 json: _body.right as Order,
-                responseType: 'json',
             }),
             {
                 200: Order,
                 405: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['placeOrder']>
     }
 
@@ -476,7 +463,6 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).put('pet', {
                 json: _body.right as Pet,
-                responseType: 'json',
             }),
             {
                 200: Pet,
@@ -484,6 +470,7 @@ export class PetStore {
                 404: { parse: (x: unknown) => ({ right: x }) },
                 405: { parse: (x: unknown) => ({ right: x }) },
             },
+            'json',
         ) as ReturnType<this['updatePet']>
     }
 
@@ -502,11 +489,11 @@ export class PetStore {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}`, {
                 searchParams: query ?? {},
-                responseType: 'text',
             }),
             {
                 405: { parse: (x: unknown) => ({ right: x }) },
             },
+            'text',
         ) as ReturnType<this['updatePetWithForm']>
     }
 
@@ -531,9 +518,9 @@ export class PetStore {
         return this.awaitResponse(
             this.client.put(`user/${path.username}`, {
                 json: _body.right as User,
-                responseType: 'text',
             }),
             {},
+            'text',
         ) as ReturnType<this['updateUser']>
     }
 
@@ -559,11 +546,11 @@ export class PetStore {
             this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
                 body: body,
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: ApiResponse,
             },
+            'json',
         ) as ReturnType<this['uploadFile']>
     }
 
@@ -588,62 +575,63 @@ export class PetStore {
     public async awaitResponse<
         I,
         S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>,
-    >(response: CancelableRequest<Response<I>>, schemas: S) {
+    >(response: ResponsePromise<I>, schemas: S, responseType?: 'json' | 'text') {
         const result = await response
+        const _body = (responseType !== undefined ? result[responseType]() : result.text()) as I
         const status =
-            result.statusCode < 200
+            result.status < 200
                 ? 'informational'
-                : result.statusCode < 300
+                : result.status < 300
                   ? 'success'
-                  : result.statusCode < 400
+                  : result.status < 400
                     ? 'redirection'
-                    : result.statusCode < 500
+                    : result.status < 500
                       ? 'client-error'
                       : 'server-error'
-        const validator = schemas[result.statusCode] ?? schemas.default
-        const body = validator?.parse?.(result.body)
-        if (result.statusCode < 200 || result.statusCode >= 300) {
+        const validator = schemas[result.status] ?? schemas.default
+        const body = validator?.parse?.(_body)
+        if (result.status < 200 || result.status >= 300) {
             return {
-                statusCode: result.statusCode.toString(),
+                statusCode: result.status.toString(),
                 status,
                 headers: result.headers,
-                left: body !== undefined && 'right' in body ? body.right : result.body,
+                left: body !== undefined && 'right' in body ? body.right : _body,
                 validationErrors: body !== undefined && 'left' in body ? body.left : undefined,
                 where: 'response:statuscode',
             }
         }
         if (body === undefined || 'left' in body) {
             return {
-                statusCode: result.statusCode.toString(),
+                statusCode: result.status.toString(),
                 status,
                 headers: result.headers,
-                left: result.body,
+                left: _body,
                 validationErrors: body?.left,
                 where: 'response:body',
             }
         }
-        return { statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
+        return { statusCode: result.status.toString(), status, headers: result.headers, right: _body }
     }
 
-    protected buildPetstoreAuthClient(client: Got) {
+    protected buildPetstoreAuthClient(client: KyInstance) {
         return client
     }
 
-    protected buildApiKeyClient(client: Got) {
+    protected buildApiKeyClient(client: KyInstance) {
         return client.extend({
             hooks: {
                 beforeRequest: [
                     async (options) => {
                         const apiKey = this.auth.apiKey
                         const key = typeof apiKey === 'function' ? await apiKey() : apiKey
-                        options.headers.api_key = key
+                        options.headers.set('api_key', `Bearer ${key}`)
                     },
                 ],
             },
         })
     }
 
-    protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: Got): Got {
+    protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: KyInstance): KyInstance {
         const auth = (auths ?? [...this.availableAuth])
             .map((auth) => (Array.isArray(auth) ? auth : [auth]))
             .filter((auth) => auth.every((a) => this.availableAuth.has(a)))

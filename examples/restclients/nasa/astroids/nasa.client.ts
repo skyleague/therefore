@@ -23,11 +23,15 @@ export class Astroids {
     public constructor({
         prefixUrl,
         options,
+        client = got,
     }: {
         prefixUrl: string | 'http://techport.nasa.gov/api' | 'https://techport.nasa.gov/api'
         options?: Options | OptionsInit
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     /**

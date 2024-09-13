@@ -38,11 +38,15 @@ export class Datumbox {
     public constructor({
         prefixUrl = 'http://api.datumbox.com/',
         options,
+        client = got,
     }: {
         prefixUrl?: string | 'http://api.datumbox.com/'
         options?: Options | OptionsInit
+        client?: Got
     } = {}) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     /**

@@ -4,8 +4,8 @@
  */
 /* eslint-disable */
 
-import { got } from 'got'
-import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
+import ky from 'ky'
+import type { KyInstance, Options, ResponsePromise } from 'ky'
 
 import {
     ApiResponse,
@@ -31,8 +31,8 @@ import {
  * - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
  * - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
  */
-export class PetStoreOptions {
-    public client: Got
+export class PetStoreOptionsKy {
+    public client: KyInstance
 
     public auth: {
         petstoreAuth?: string | (() => Promise<string>)
@@ -47,18 +47,18 @@ export class PetStoreOptions {
         options,
         auth = {},
         defaultAuth,
-        client = got,
+        client = ky,
     }: {
         prefixUrl: string | `${string}/api/v3`
-        options?: Options | OptionsInit
+        options?: Options
         auth: {
             petstoreAuth?: string | (() => Promise<string>)
             apiKey?: string | (() => Promise<string>)
         }
         defaultAuth?: string[][] | string[]
-        client?: Got
+        client?: KyInstance
     }) {
-        this.client = client.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend({ prefixUrl, ...options })
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth
@@ -73,12 +73,12 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).post('pet', {
                 json: body,
-                responseType: 'json',
             }),
             {
                 200: Pet,
                 405: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -93,11 +93,11 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.client.post('user', {
                 json: body,
-                responseType: 'json',
             }),
             {
                 default: User,
             },
+            'json',
         )
     }
 
@@ -110,11 +110,11 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.client.post('user/createWithList', {
                 json: body,
-                responseType: 'json',
             }),
             {
                 200: User,
             },
+            'json',
         )
     }
 
@@ -125,13 +125,12 @@ export class PetStoreOptions {
      */
     public deleteOrder({ path }: { path: { orderId: string } }) {
         return this.awaitResponse(
-            this.client.delete(`store/order/${path.orderId}`, {
-                responseType: 'text',
-            }),
+            this.client.delete(`store/order/${path.orderId}`, {}),
             {
                 400: { is: (x: unknown): x is string => true },
                 404: { is: (x: unknown): x is string => true },
             },
+            'text',
         )
     }
 
@@ -146,11 +145,11 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).delete(`pet/${path.petId}`, {
                 headers: headers ?? {},
-                responseType: 'text',
             }),
             {
                 400: { is: (x: unknown): x is string => true },
             },
+            'text',
         )
     }
 
@@ -161,13 +160,12 @@ export class PetStoreOptions {
      */
     public deleteUser({ path }: { path: { username: string } }) {
         return this.awaitResponse(
-            this.client.delete(`user/${path.username}`, {
-                responseType: 'text',
-            }),
+            this.client.delete(`user/${path.username}`, {}),
             {
                 400: { is: (x: unknown): x is string => true },
                 404: { is: (x: unknown): x is string => true },
             },
+            'text',
         )
     }
 
@@ -183,12 +181,12 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByStatus', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: FindPetsByStatusResponse,
                 400: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -204,12 +202,12 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByTags', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: FindPetsByTagsResponse,
                 400: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -220,12 +218,11 @@ export class PetStoreOptions {
      */
     public getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] } = {}) {
         return this.awaitResponse(
-            this.buildClient(auth).get('store/inventory', {
-                responseType: 'json',
-            }),
+            this.buildClient(auth).get('store/inventory', {}),
             {
                 200: GetInventoryResponse,
             },
+            'json',
         )
     }
 
@@ -236,14 +233,13 @@ export class PetStoreOptions {
      */
     public getOrderById({ path }: { path: { orderId: string } }) {
         return this.awaitResponse(
-            this.client.get(`store/order/${path.orderId}`, {
-                responseType: 'json',
-            }),
+            this.client.get(`store/order/${path.orderId}`, {}),
             {
                 200: Order,
                 400: { is: (x: unknown): x is string => true },
                 404: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -257,14 +253,13 @@ export class PetStoreOptions {
         auth = [['apiKey'], ['petstoreAuth']],
     }: { path: { petId: string }; auth?: string[][] | string[] }) {
         return this.awaitResponse(
-            this.buildClient(auth).get(`pet/${path.petId}`, {
-                responseType: 'json',
-            }),
+            this.buildClient(auth).get(`pet/${path.petId}`, {}),
             {
                 200: Pet,
                 400: { is: (x: unknown): x is string => true },
                 404: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -273,14 +268,13 @@ export class PetStoreOptions {
      */
     public getUserByName({ path }: { path: { username: string } }) {
         return this.awaitResponse(
-            this.client.get(`user/${path.username}`, {
-                responseType: 'json',
-            }),
+            this.client.get(`user/${path.username}`, {}),
             {
                 200: User,
                 400: { is: (x: unknown): x is string => true },
                 404: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -291,12 +285,12 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.client.get('user/login', {
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: LoginUserResponse,
                 400: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -304,12 +298,7 @@ export class PetStoreOptions {
      * Logs out current logged in user session
      */
     public logoutUser() {
-        return this.awaitResponse(
-            this.client.get('user/logout', {
-                responseType: 'text',
-            }),
-            {},
-        )
+        return this.awaitResponse(this.client.get('user/logout', {}), {}, 'text')
     }
 
     /**
@@ -323,12 +312,12 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.client.post('store/order', {
                 json: body,
-                responseType: 'json',
             }),
             {
                 200: Order,
                 405: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -343,7 +332,6 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).put('pet', {
                 json: body,
-                responseType: 'json',
             }),
             {
                 200: Pet,
@@ -351,6 +339,7 @@ export class PetStoreOptions {
                 404: { is: (x: unknown): x is string => true },
                 405: { is: (x: unknown): x is string => true },
             },
+            'json',
         )
     }
 
@@ -365,11 +354,11 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}`, {
                 searchParams: query ?? {},
-                responseType: 'text',
             }),
             {
                 405: { is: (x: unknown): x is string => true },
             },
+            'text',
         )
     }
 
@@ -384,9 +373,9 @@ export class PetStoreOptions {
         return this.awaitResponse(
             this.client.put(`user/${path.username}`, {
                 json: body,
-                responseType: 'text',
             }),
             {},
+            'text',
         )
     }
 
@@ -408,11 +397,11 @@ export class PetStoreOptions {
             this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
                 body: body,
                 searchParams: query ?? {},
-                responseType: 'json',
             }),
             {
                 200: ApiResponse,
             },
+            'json',
         )
     }
 
@@ -424,7 +413,7 @@ export class PetStoreOptions {
     public async awaitResponse<
         T,
         S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>,
-    >(response: CancelableRequest<Response>, schemas: S) {
+    >(response: ResponsePromise, schemas: S, responseType?: 'json' | 'text') {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string
             ? `${S}` extends `${T}${infer _X}`
                 ? S
@@ -432,34 +421,35 @@ export class PetStoreOptions {
             : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
-        const schema = schemas[result.statusCode] ?? schemas.default
-        schema?.assert?.(result.body)
+        const _body = responseType !== undefined ? result[responseType]() : result.text()
+        const schema = schemas[result.status] ?? schemas.default
+        schema?.assert?.(_body)
         return {
-            statusCode: result.statusCode,
+            statusCode: result.status,
             headers: result.headers,
-            body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>,
+            body: _body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]>,
         }
     }
 
-    protected buildPetstoreAuthClient(client: Got) {
+    protected buildPetstoreAuthClient(client: KyInstance) {
         return client
     }
 
-    protected buildApiKeyClient(client: Got) {
+    protected buildApiKeyClient(client: KyInstance) {
         return client.extend({
             hooks: {
                 beforeRequest: [
                     async (options) => {
                         const apiKey = this.auth.apiKey
                         const key = typeof apiKey === 'function' ? await apiKey() : apiKey
-                        options.headers.api_key = key
+                        options.headers.set('api_key', `Bearer ${key}`)
                     },
                 ],
             },
         })
     }
 
-    protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: Got): Got {
+    protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: KyInstance): KyInstance {
         const auth = (auths ?? [...this.availableAuth])
             .map((auth) => (Array.isArray(auth) ? auth : [auth]))
             .filter((auth) => auth.every((a) => this.availableAuth.has(a)))

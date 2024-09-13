@@ -27,11 +27,13 @@ export class XKCDNullable {
     {
         prefixUrl = 'http://xkcd.com/',
         options,
+        client = got
     }: {
         prefixUrl?: string | 'http://xkcd.com/',
         options?: Options | OptionsInit,
+        client?: Got
     } = {}) {
-        this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
     }
 
 
@@ -59,8 +61,9 @@ export class XKCDNullable {
         })
     }
 
-    public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: CancelableRequest<Response>, schemas: S)
-    {
+    public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: 
+    CancelableRequest<Response>
+    , schemas: S) {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? \`\${S}\` extends \`\${T}\${infer _X}\` ? S : never : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response
@@ -200,11 +203,13 @@ export class XKCD {
     {
         prefixUrl = 'http://xkcd.com/',
         options,
+        client = got
     }: {
         prefixUrl?: string | 'http://xkcd.com/',
         options?: Options | OptionsInit,
+        client?: Got
     } = {}) {
-        this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
     }
 
 
@@ -232,8 +237,9 @@ export class XKCD {
         })
     }
 
-    public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: CancelableRequest<Response>, schemas: S)
-    {
+    public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: 
+    CancelableRequest<Response>
+    , schemas: S) {
         type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? \`\${S}\` extends \`\${T}\${infer _X}\` ? S : never : never
         type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never
         const result = await response

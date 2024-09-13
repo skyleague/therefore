@@ -29,7 +29,7 @@ import { capitalize, singularize } from 'inflection'
 import * as pointer from 'jsonpointer'
 import converter from 'swagger2openapi'
 import type { TypescriptOutput } from '../../cst/cst.js'
-import { ajvSymbols, gotSymbols, httpSymbols } from '../../cst/module.js'
+import { ajvSymbols, gotSymbols, httpSymbols, kySymbols } from '../../cst/module.js'
 import { sanitizeTypescriptTypeName } from '../../output/typescript.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
 
@@ -238,6 +238,7 @@ export class RestClientBuilder {
             allowIntersectionTypes = false,
             compile = true,
             formats = true,
+            client = 'got',
         }: Partial<RestClientOptions> = {},
     ) {
         this.openapi = openapi
@@ -251,6 +252,7 @@ export class RestClientBuilder {
             allowIntersectionTypes,
             compile,
             formats,
+            client,
         }
         this.pathItems = this._pathItems
 
@@ -532,7 +534,7 @@ export class RestClientBuilder {
                                         headerParameters.length > 0 && !hasWrittenHeaders,
                                         `headers: headers${headerOptionalStr.length > 0 ? ' ?? {}' : ''},`,
                                     )
-                                    if (hasResponse && responses.responseType !== undefined) {
+                                    if (hasResponse && responses.responseType !== undefined && this.options.client === 'got') {
                                         writer.write(`responseType: '${responses.responseType}',`)
                                     }
                                     if (!hasSyntaxSugarMethod) {
@@ -576,6 +578,10 @@ export class RestClientBuilder {
                                         }
                                     }
                                 })
+                                .conditionalWriteLine(
+                                    this.options.client === 'ky' && responses?.responseType !== undefined,
+                                    `, "${responses?.responseType}"`,
+                                )
                                 .write(')')
                                 .conditionalWrite(this.options.useEither, ` as ReturnType<this["${method}"]>`)
                         }
@@ -598,47 +604,76 @@ export class RestClientBuilder {
     }
 
     private writeAwaitResponse(reference: (node: Node) => string) {
-        const CancableRequest = reference(gotSymbols.CancableRequest())
-        const Response = reference(gotSymbols.Response())
+        const statusAccessor = this.options.client === 'ky' ? 'status' : 'statusCode'
+        const _body = this.options.client === 'ky' ? '_body' : 'result.body'
+
+        const RequestPromise = reference(this._client.RequestPromise())
         const writer = createWriter()
         if (this.options.useEither) {
             const DefinedError = reference(ajvSymbols.DefinedError())
-            return writer
+            writer
                 .newLine()
                 .writeLine(
-                    `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } } | undefined>>(response: ${CancableRequest}<${Response}<I>>, schemas: S)`,
+                    `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } } | undefined>>(response: `,
                 )
+
+            if (this.options.client === 'got') {
+                const Response = reference(this._client.Response())
+                writer.writeLine(`${RequestPromise}<${Response}<I>>`)
+            }
+
+            return writer
+                .conditionalWrite(this.options.client === 'ky', `${RequestPromise}<I>`)
+                .write(', schemas: S')
+                .conditionalWrite(this.options.client === 'ky', ', responseType?: "json" | "text"')
+                .write(')')
                 .block(() => {
                     writer
-                        .writeLine('const result = await response')
-                        .writeLine(
-                            "const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'",
+                        .conditionalWriteLine(this.options.client === 'got', 'const result = await response')
+                        .conditionalWriteLine(this.options.client === 'ky', 'const result = await response')
+                        .conditionalWriteLine(
+                            this.options.client === 'ky',
+                            'const _body = (responseType !== undefined ? result[responseType](): result.text()) as I ',
                         )
-                        .writeLine('const validator = schemas[result.statusCode] ?? schemas.default')
-                        .writeLine('const body = validator?.parse?.(result.body)')
-                        .writeLine(' if (result.statusCode < 200 || result.statusCode >= 300) ')
+                        .writeLine(
+                            `const status = result.${statusAccessor} < 200 ? 'informational' : result.${statusAccessor} < 300 ? 'success' : result.${statusAccessor} < 400 ? 'redirection' : result.${statusAccessor} < 500 ? 'client-error' : 'server-error'`,
+                        )
+                        .writeLine(`const validator = schemas[result.${statusAccessor}] ?? schemas.default`)
+                        .writeLine(`const body = validator?.parse?.(${_body})`)
+                        .writeLine(`if (result.${statusAccessor} < 200 || result.${statusAccessor} >= 300)`)
                         .block(() => {
                             writer.writeLine(
-                                "return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } ",
+                                `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : ${_body}, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } `,
                             )
                         })
                         .writeLine("if (body === undefined || 'left' in body)")
                         .block(() => {
                             writer.writeLine(
-                                "return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }",
+                                `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: ${_body}, validationErrors: body?.left, where: 'response:body' }`,
                             )
                         })
                         .writeLine(
-                            'return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }',
+                            `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, right: ${_body} }`,
                         )
                 })
                 .toString()
         }
-        return writer
+        writer
             .newLine()
             .writeLine(
-                `public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: ${CancableRequest}<${Response}>, schemas: S)`,
+                'public async awaitResponse<T, S extends Record<PropertyKey, undefined | { is: (o: unknown) => o is T; assert?: (o: unknown) => void }>>(response: ',
             )
+
+        if (this.options.client === 'got') {
+            const Response = reference(this._client.Response())
+            writer.writeLine(`${RequestPromise}<${Response}>`)
+        }
+
+        return writer
+            .conditionalWrite(this.options.client === 'ky', `${RequestPromise}`)
+            .write(', schemas: S')
+            .conditionalWrite(this.options.client === 'ky', ', responseType?: "json" | "text"')
+            .write(')')
             .block(() => {
                 writer
                     .writeLine(
@@ -646,10 +681,14 @@ export class RestClientBuilder {
                     )
                     .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
                     .writeLine('const result = await response')
-                    .writeLine('const schema = schemas[result.statusCode] ?? schemas.default')
-                    .writeLine('schema?.assert?.(result.body)')
+                    .conditionalWriteLine(
+                        this.options.client === 'ky',
+                        'const _body = responseType !== undefined ? result[responseType](): result.text()',
+                    )
+                    .writeLine(`const schema = schemas[result.${statusAccessor}] ?? schemas.default`)
+                    .writeLine(`schema?.assert?.(${_body})`)
                     .writeLine(
-                        `return {statusCode: result.statusCode, headers: result.headers, body: result.body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]> }`,
+                        `return {statusCode: result.${statusAccessor}, headers: result.headers, body: ${_body} as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]> }`,
                     )
             })
             .toString()
@@ -696,7 +735,7 @@ export class RestClientBuilder {
         const { prefixUrl, defaultValue } = this.prefixConfiguration
         const { authDeclaration, hasAuth } = this.security({ reference })
 
-        writer.writeLine(`public client: ${reference(gotSymbols.Got())}`).newLine()
+        writer.writeLine(`public client: ${reference(this._client.type())}`).newLine()
         if (hasAuth) {
             writer
                 .write('public auth: ')
@@ -711,8 +750,7 @@ export class RestClientBuilder {
         }
 
         const isDefaultConstructable = defaultValue !== undefined && !hasAuth
-        const Options = reference(gotSymbols.Options())
-        const OptionsInit = reference(gotSymbols.OptionsInit())
+        const Options = reference(this._client.Options())
         writer
             .writeLine('public constructor(')
             .inlineBlock(() => {
@@ -720,26 +758,36 @@ export class RestClientBuilder {
                 writer.writeLine('options,')
                 writer.conditionalWriteLine(hasAuth, 'auth = {},')
                 writer.conditionalWriteLine(hasAuth, 'defaultAuth,')
+                writer.writeLine(`client = ${value(this._client.client())}`)
             })
             .write(': ')
             .inlineBlock(() => {
                 writer.writeLine(`prefixUrl${defaultValue !== undefined ? '?' : ''}: ${prefixUrl},`)
-                writer.writeLine(`options?: ${Options} | ${OptionsInit},`)
+                if (this.options.client === 'got') {
+                    writer.writeLine(`options?: ${Options} | ${reference(gotSymbols.OptionsInit())},`)
+                }
+                writer.conditionalWriteLine(this.options.client === 'ky', `options?: ${Options},`)
                 if (hasAuth) {
                     writer.write('auth: ').inlineBlock(() => {
                         writer.writeLine(authDeclaration)
                     })
                     writer.writeLine('defaultAuth?: string[][] | string[]')
                 }
+                writer.writeLine(`client?: ${reference(this._client.type())}`)
             })
             .conditionalWrite(isDefaultConstructable, ' = {}')
             .write(')')
         writer
             .block(() => {
-                writer.writeLine(
-                    `this.client = ${value(gotSymbols.got())}.extend(...[{ prefixUrl${
+                writer.conditionalWriteLine(
+                    this.options.client === 'got',
+                    `this.client = client.extend(...[{ prefixUrl${
                         this.options.useEither ? ', throwHttpErrors: false' : ''
                     } }, options].filter((o): o is ${Options} => o !== undefined))`,
+                )
+                writer.conditionalWriteLine(
+                    this.options.client === 'ky',
+                    `this.client = client.extend({ prefixUrl${this.options.useEither ? ', throwHttpErrors: false' : ''}, ...options })`,
                 )
 
                 writer.conditionalWriteLine(hasAuth, 'this.auth = auth')
@@ -760,10 +808,10 @@ export class RestClientBuilder {
                 writer.newLine().writeLine(sec.clientFunc).newLine()
             }
 
-            const Got = reference(gotSymbols.Got())
+            const clientType = reference(this._client.type())
             writer
                 .writeLine(
-                    `protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: ${Got}): ${Got}`,
+                    `protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: ${clientType}): ${clientType}`,
                 )
                 .block(() => {
                     writer
@@ -1030,7 +1078,7 @@ export class RestClientBuilder {
 
     private _security = ({ reference }: { reference: TypescriptWalkerContext['reference'] }) => {
         const securityRequirements = this.openapi.components?.securitySchemes
-        const Got = reference(gotSymbols.Got())
+        const clientType = reference(this._client.type())
         const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
             const security = jsonPointer({ schema: this.openapi, ptr: securityRef }) as unknown as Partial<MappableSecurityScheme>
             const { type = 'http' } = security
@@ -1039,8 +1087,8 @@ export class RestClientBuilder {
             const camelName = camelCase(name)
             const clientRef = camelCase(`build_${camelName}_client`)
             const clientWriter = createWriter()
-            const hook = toSecurityHook[type](security as never, camelName)
-            clientWriter.writeLine(`protected ${clientRef}(client: ${Got})`).block(() => {
+            const hook = toSecurityHook[type](security as never, camelName, this.options)
+            clientWriter.writeLine(`protected ${clientRef}(client: ${clientType})`).block(() => {
                 if (hook !== undefined && hook.decl.length > 0) {
                     clientWriter
                         .writeLine('return client.extend({')
@@ -1133,5 +1181,9 @@ export class RestClientBuilder {
                 return x
             })
         return pathItems
+    }
+
+    private get _client() {
+        return this.options.client === 'got' ? gotSymbols : kySymbols
     }
 }
