@@ -21,11 +21,15 @@ export class DefaultTestClient {
     public constructor({
         prefixUrl,
         options,
+        client = got,
     }: {
         prefixUrl: string
         options?: Options | OptionsInit
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     public getEmployees(): Promise<
@@ -95,11 +99,15 @@ export class DoubleSuccessClient {
     public constructor({
         prefixUrl,
         options,
+        client = got,
     }: {
         prefixUrl: string
         options?: Options | OptionsInit
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     public getEmployees(): Promise<
@@ -184,11 +192,15 @@ export class Edges {
     public constructor({
         prefixUrl,
         options,
+        client = got,
     }: {
         prefixUrl: string
         options?: Options | OptionsInit
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     public getEmployees(): Promise<
@@ -298,11 +310,15 @@ export class SwaggerEdges {
     public constructor({
         prefixUrl,
         options,
+        client = got,
     }: {
         prefixUrl: string
         options?: Options | OptionsInit
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
     }
 
     public getJsonResponse(): Promise<

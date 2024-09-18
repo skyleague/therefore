@@ -66,7 +66,7 @@ export const toSecurityHook: {
             hook.writeLine(`const ${name} = this.auth.${name}`)
                 .writeLine(`const key = typeof ${name} === 'function' ? await ${name}() : ${name}`)
                 .conditionalWriteLine(client === 'got', `options.headers${accessProperty(s.name)} = key`)
-                .conditionalWriteLine(client === 'ky', `options.headers.set('${s.name}', \`Bearer \${key}\`)`)
+                .conditionalWriteLine(client === 'ky', `options.headers.set('${s.name}', \`\${key}\`)`)
         })
         return { decl: hook.toString(), headers: [s.name] }
     },

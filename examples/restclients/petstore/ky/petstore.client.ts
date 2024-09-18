@@ -624,7 +624,7 @@ export class PetStoreKy {
                     async (options) => {
                         const apiKey = this.auth.apiKey
                         const key = typeof apiKey === 'function' ? await apiKey() : apiKey
-                        options.headers.set('api_key', `Bearer ${key}`)
+                        options.headers.set('api_key', `${key}`)
                     },
                 ],
             },
