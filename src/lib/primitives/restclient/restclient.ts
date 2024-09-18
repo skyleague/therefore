@@ -62,6 +62,7 @@ export interface RestClientOptions {
      * openapiv3).
      */
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
+    client?: 'got' | 'ky'
 }
 
 export class RestclientType extends Node {

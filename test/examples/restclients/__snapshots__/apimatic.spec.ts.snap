@@ -39,6 +39,7 @@ export class Banking {
         options,
         auth = {},
         defaultAuth,
+        client = got
     }: {
         prefixUrl?: string | 'https://apimatic.io/api/transform',
         options?: Options | OptionsInit,
@@ -46,8 +47,9 @@ export class Banking {
             apiKey?: string | (() => Promise<string>),basic?: [username: string, password: string] | (() => Promise<[username: string, password: string]>)
         }
         defaultAuth?: string[][] | string[]
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth
@@ -96,13 +98,14 @@ export class Banking {
         }) as ReturnType<this["convertApi"]>
     }
 
-    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: CancelableRequest<Response<I>>, schemas: S)
-    {
+    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
+    CancelableRequest<Response<I>>
+    , schemas: S) {
         const result = await response
         const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'
         const validator = schemas[result.statusCode] ?? schemas.default
         const body = validator?.parse?.(result.body)
-         if (result.statusCode < 200 || result.statusCode >= 300) 
+        if (result.statusCode < 200 || result.statusCode >= 300)
         {
             return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
         }

@@ -6,6 +6,7 @@ import type {
 } from '../../../types/openapi.type.js'
 import { accessProperty } from '../../visitor/typescript/literal.js'
 import { createWriter } from '../../writer.js'
+import type { RestClientOptions } from './restclient.js'
 
 export type MappableSecurityScheme =
     | APIKeySecurityScheme
@@ -34,9 +35,10 @@ export const toSecurityHook: {
     [T in MappableSecurityScheme['type']]: (
         s: Extract<MappableSecurityScheme, { type: T }>,
         name: string,
+        options: RestClientOptions,
     ) => { decl: string; headers: string[] } | undefined
 } = {
-    http: (s: HTTPSecurityScheme & { type: 'http' }, name) => {
+    http: (s: HTTPSecurityScheme & { type: 'http' }, name, { client }) => {
         const hook = createWriter()
         const headers: string[] = []
         hook.writeLine('async (options) => ').block(() => {
@@ -51,18 +53,20 @@ export const toSecurityHook: {
             } else if (s.scheme === 'bearer') {
                 hook.writeLine(`const ${name} = this.auth.${name}!`)
                     .writeLine(`const token = typeof ${name} === 'function' ? await ${name}() : ${name}`)
-                    .writeLine('options.headers.Authorization = `Bearer ${token}`')
+                    .conditionalWriteLine(client === 'got', 'options.headers.Authorization = `Bearer ${token}`')
+                    .conditionalWriteLine(client === 'ky', 'options.headers.set(`Authorization`, `Bearer ${token}`)')
                 headers.push('Authorization')
             }
         })
         return { decl: hook.toString(), headers }
     },
-    apiKey: (s: APIKeySecurityScheme, name) => {
+    apiKey: (s: APIKeySecurityScheme, name, { client }) => {
         const hook = createWriter()
         hook.writeLine('async (options) => ').block(() => {
             hook.writeLine(`const ${name} = this.auth.${name}`)
                 .writeLine(`const key = typeof ${name} === 'function' ? await ${name}() : ${name}`)
-                .writeLine(`options.headers${accessProperty(s.name)} = key`)
+                .conditionalWriteLine(client === 'got', `options.headers${accessProperty(s.name)} = key`)
+                .conditionalWriteLine(client === 'ky', `options.headers.set('${s.name}', \`Bearer \${key}\`)`)
         })
         return { decl: hook.toString(), headers: [s.name] }
     },

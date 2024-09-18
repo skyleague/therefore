@@ -20,11 +20,13 @@ export class XKCDNullable {
     public constructor({
         prefixUrl = 'http://xkcd.com/',
         options,
+        client = got,
     }: {
         prefixUrl?: string | 'http://xkcd.com/'
         options?: Options | OptionsInit
+        client?: Got
     } = {}) {
-        this.client = got.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(...[{ prefixUrl }, options].filter((o): o is Options => o !== undefined))
     }
 
     /**

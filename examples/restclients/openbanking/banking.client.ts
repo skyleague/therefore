@@ -33,6 +33,7 @@ export class Banking {
         options,
         auth = {},
         defaultAuth,
+        client = got,
     }: {
         prefixUrl?: string | 'https://openbanking.org.uk' | `${string}/open-banking/v3.1/pisp`
         options?: Options | OptionsInit
@@ -41,8 +42,11 @@ export class Banking {
             tppoAuth2Security?: string | (() => Promise<string>)
         }
         defaultAuth?: string[][] | string[]
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth

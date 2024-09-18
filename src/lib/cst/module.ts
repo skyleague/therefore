@@ -32,12 +32,20 @@ export function moduleSymbol(module: string, symbol: string, options: ModuleOpti
 }
 
 export const gotSymbols = {
-    CancableRequest: moduleSymbol('got', 'CancelableRequest'),
-    Got: moduleSymbol('got', 'Got'),
+    RequestPromise: moduleSymbol('got', 'CancelableRequest'),
+    type: moduleSymbol('got', 'Got'),
     Options: moduleSymbol('got', 'Options'),
     OptionsInit: moduleSymbol('got', 'OptionsInit'),
     Response: moduleSymbol('got', 'Response'),
-    got: moduleSymbol('got', 'got'),
+    client: moduleSymbol('got', 'got'),
+}
+
+export const kySymbols = {
+    RequestPromise: moduleSymbol('ky', 'ResponsePromise'),
+    type: moduleSymbol('ky', 'KyInstance'),
+    Options: moduleSymbol('ky', 'Options'),
+    Response: moduleSymbol('ky', 'Response'),
+    client: moduleSymbol('ky', 'default', { alias: 'ky' }),
 }
 
 export const ajvSymbols = {

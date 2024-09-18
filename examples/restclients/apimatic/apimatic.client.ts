@@ -33,6 +33,7 @@ export class Banking {
         options,
         auth = {},
         defaultAuth,
+        client = got,
     }: {
         prefixUrl?: string | 'https://apimatic.io/api/transform'
         options?: Options | OptionsInit
@@ -41,8 +42,11 @@ export class Banking {
             basic?: [username: string, password: string] | (() => Promise<[username: string, password: string]>)
         }
         defaultAuth?: string[][] | string[]
+        client?: Got
     }) {
-        this.client = got.extend(...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined))
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth
