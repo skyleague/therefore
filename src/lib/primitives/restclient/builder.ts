@@ -633,7 +633,7 @@ export class RestClientBuilder {
                         .conditionalWriteLine(this.options.client === 'ky', 'const result = await response')
                         .conditionalWriteLine(
                             this.options.client === 'ky',
-                            'const _body = (responseType !== undefined ? result[responseType](): result.text()) as I ',
+                            'const _body = await (responseType !== undefined ? result[responseType](): result.text()) as I ',
                         )
                         .writeLine(
                             `const status = result.${statusAccessor} < 200 ? 'informational' : result.${statusAccessor} < 300 ? 'success' : result.${statusAccessor} < 400 ? 'redirection' : result.${statusAccessor} < 500 ? 'client-error' : 'server-error'`,
