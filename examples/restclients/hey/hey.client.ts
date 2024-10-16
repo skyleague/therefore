@@ -31,6 +31,7 @@ import {
     ModelWithString,
     ModelWithStringError,
     NonAsciiResponse,
+    OperationApiSimpleResponse200,
     PostCallWithOptionalParamRequest,
     PostCallWithOptionalParamResponse200,
     TypesResponse200,
@@ -60,6 +61,9 @@ export class Hey {
         )
     }
 
+    /**
+     * GET /api/v{api-version}/simple/$count
+     */
     public apiVVersionODataControllerCount({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -77,6 +81,9 @@ export class Hey {
         ) as ReturnType<this['apiVVersionODataControllerCount']>
     }
 
+    /**
+     * PUT /api/v{api-version}/defaults
+     */
     public callToTestOrderOfParams({
         path,
         query,
@@ -98,6 +105,9 @@ export class Hey {
         })
     }
 
+    /**
+     * POST /api/v{api-version}/defaults
+     */
     public callWithDefaultOptionalParameters({
         path,
         query,
@@ -116,6 +126,9 @@ export class Hey {
         })
     }
 
+    /**
+     * GET /api/v{api-version}/defaults
+     */
     public callWithDefaultParameters({
         path,
         query,
@@ -134,6 +147,9 @@ export class Hey {
         })
     }
 
+    /**
+     * POST /api/v{api-version}/descriptions/
+     */
     public callWithDescriptions({
         path,
         query,
@@ -153,6 +169,9 @@ export class Hey {
         })
     }
 
+    /**
+     * POST /api/v{api-version}/response
+     */
     public callWithDuplicateResponses({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -189,6 +208,9 @@ export class Hey {
         ) as ReturnType<this['callWithDuplicateResponses']>
     }
 
+    /**
+     * GET /api/v{api-version}/no-content
+     */
     public callWithNoContentResponse({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -206,6 +228,9 @@ export class Hey {
         ) as ReturnType<this['callWithNoContentResponse']>
     }
 
+    /**
+     * POST /api/v{api-version}/parameters/{parameterPath}
+     */
     public callWithParameters({
         body,
         path,
@@ -229,6 +254,9 @@ export class Hey {
         })
     }
 
+    /**
+     * GET /api/v{api-version}/response
+     */
     public callWithResponse({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -246,6 +274,9 @@ export class Hey {
         ) as ReturnType<this['callWithResponse']>
     }
 
+    /**
+     * GET /api/v{api-version}/multiple-tags/response-and-no-content
+     */
     public callWithResponseAndNoContentResponse({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -265,6 +296,9 @@ export class Hey {
         ) as ReturnType<this['callWithResponseAndNoContentResponse']>
     }
 
+    /**
+     * PUT /api/v{api-version}/response
+     */
     public callWithResponses({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -299,6 +333,9 @@ export class Hey {
         ) as ReturnType<this['callWithResponses']>
     }
 
+    /**
+     * POST /api/v{api-version}/header
+     */
     public callWithResultFromHeader({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -320,6 +357,9 @@ export class Hey {
         ) as ReturnType<this['callWithResultFromHeader']>
     }
 
+    /**
+     * POST /api/v{api-version}/parameters/{parameter.path.1}/{parameter-path-2}/{PARAMETER-PATH-3}
+     */
     public callWithWeirdParameterNames({
         body,
         path,
@@ -346,6 +386,9 @@ export class Hey {
         )
     }
 
+    /**
+     * GET /api/v{api-version}/collectionFormat
+     */
     public collectionFormat({
         path,
         query,
@@ -364,6 +407,9 @@ export class Hey {
         })
     }
 
+    /**
+     * PUT /api/v{api-version}/complex/{id}
+     */
     public complexParams({
         body,
         path,
@@ -389,6 +435,9 @@ export class Hey {
         ) as ReturnType<this['complexParams']>
     }
 
+    /**
+     * GET /api/v{api-version}/complex
+     */
     public complexTypes({
         path,
         query,
@@ -412,12 +461,18 @@ export class Hey {
         ) as ReturnType<this['complexTypes']>
     }
 
+    /**
+     * POST /api/v{api-version}/formData/
+     */
     public createApiFormDatum({ path, query }: { path: { apiVersion: string }; query?: { parameter?: string } }) {
         return this.client.post(`api/v${path.apiVersion}/formData/`, {
             searchParams: query ?? {},
         })
     }
 
+    /**
+     * POST /api/v{api-version}/requestBody/
+     */
     public createApiRequestBody({
         body,
         path,
@@ -434,10 +489,16 @@ export class Hey {
         })
     }
 
+    /**
+     * DELETE /api/v{api-version}/simple
+     */
     public deleteCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.delete(`api/v${path.apiVersion}/simple`)
     }
 
+    /**
+     * DELETE /api/v{api-version}/foo/{foo_param}/bar/{BarParam}
+     */
     public deleteFoo({
         path,
         headers,
@@ -448,6 +509,8 @@ export class Hey {
     }
 
     /**
+     * POST /api/v{api-version}/parameters/deprecated
+     *
      * @deprecated
      */
     public deprecatedCall({ path, headers }: { path: { apiVersion: string }; headers: { parameter: string } }) {
@@ -456,6 +519,9 @@ export class Hey {
         })
     }
 
+    /**
+     * GET /api/v{api-version}/multiple-tags/a
+     */
     public dummyA({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -473,6 +539,9 @@ export class Hey {
         ) as ReturnType<this['dummyA']>
     }
 
+    /**
+     * GET /api/v{api-version}/multiple-tags/b
+     */
     public dummyB({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -490,26 +559,44 @@ export class Hey {
         ) as ReturnType<this['dummyB']>
     }
 
+    /**
+     * GET /api/v{api-version}/duplicate
+     */
     public getDuplicateName({ path }: { path: { apiVersion: string } }) {
         return this.client.get(`api/v${path.apiVersion}/duplicate`)
     }
 
+    /**
+     * PUT /api/v{api-version}/duplicate
+     */
     public putDuplicateName({ path }: { path: { apiVersion: string } }) {
         return this.client.put(`api/v${path.apiVersion}/duplicate`)
     }
 
+    /**
+     * POST /api/v{api-version}/duplicate
+     */
     public postDuplicateName({ path }: { path: { apiVersion: string } }) {
         return this.client.post(`api/v${path.apiVersion}/duplicate`)
     }
 
+    /**
+     * DELETE /api/v{api-version}/duplicate
+     */
     public deleteDuplicateName({ path }: { path: { apiVersion: string } }) {
         return this.client.delete(`api/v${path.apiVersion}/duplicate`)
     }
 
+    /**
+     * GET /api/v{api-version}/no-tag
+     */
     public export({ path }: { path: { apiVersion: string } }) {
         return this.client.get(`api/v${path.apiVersion}/no-tag`)
     }
 
+    /**
+     * GET /api/v{api-version}/file/{id}
+     */
     public fileResponse({
         path,
     }: { path: { id: string; apiVersion: string } }): Promise<
@@ -527,6 +614,9 @@ export class Hey {
         ) as ReturnType<this['fileResponse']>
     }
 
+    /**
+     * GET /api/v{api-version}/parameters/
+     */
     public getCallWithOptionalParam({
         body,
         path,
@@ -543,16 +633,25 @@ export class Hey {
         })
     }
 
+    /**
+     * GET /api/v{api-version}/simple
+     */
     public getCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.get(`api/v${path.apiVersion}/simple`)
     }
 
+    /**
+     * HEAD /api/v{api-version}/simple
+     */
     public headCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client(`api/v${path.apiVersion}/simple`, {
             method: 'HEAD',
         })
     }
 
+    /**
+     * POST /api/v{api-version}/no-tag
+     */
     public import({
         body,
         path,
@@ -580,10 +679,16 @@ export class Hey {
         ) as ReturnType<this['import']>
     }
 
+    /**
+     * POST /api/v{api-version}/multipart
+     */
     public multipartRequest({ path }: { path: { apiVersion: string } }) {
         return this.client.post(`api/v${path.apiVersion}/multipart`)
     }
 
+    /**
+     * GET /api/v{api-version}/multipart
+     */
     public multipartResponse({
         path,
     }: { path: { apiVersion: string } }): Promise<
@@ -601,6 +706,9 @@ export class Hey {
         ) as ReturnType<this['multipartResponse']>
     }
 
+    /**
+     * POST /api/v{api-version}/non-ascii-æøåÆØÅöôêÊ字符串
+     */
     public nonAscii({
         path,
         query,
@@ -620,16 +728,47 @@ export class Hey {
         ) as ReturnType<this['nonAscii']>
     }
 
+    /**
+     * GET /api/v{api-version}/simple:operation
+     */
+    public operationApiSimple({
+        path,
+    }: { path: { fooParam: string; apiVersion: string } }): Promise<
+        | SuccessResponse<'201' | '202' | '203' | '204' | '205' | '206' | '207' | '208' | '226', ModelWithBoolean>
+        | SuccessResponse<'200', OperationApiSimpleResponse200>
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        return this.awaitResponse(
+            this.client.get(`api/v${path.apiVersion}/simple:operation`, {
+                responseType: 'json',
+            }),
+            {
+                200: OperationApiSimpleResponse200,
+                default: ModelWithBoolean,
+            },
+        ) as ReturnType<this['operationApiSimple']>
+    }
+
+    /**
+     * OPTIONS /api/v{api-version}/simple
+     */
     public optionsCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client(`api/v${path.apiVersion}/simple`, {
             method: 'OPTIONS',
         })
     }
 
+    /**
+     * PATCH /api/v{api-version}/simple
+     */
     public patchCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.patch(`api/v${path.apiVersion}/simple`)
     }
 
+    /**
+     * POST /api/v{api-version}/parameters/
+     */
     public postCallWithOptionalParam({
         body,
         path,
@@ -659,15 +798,23 @@ export class Hey {
         ) as ReturnType<this['postCallWithOptionalParam']>
     }
 
+    /**
+     * POST /api/v{api-version}/simple
+     */
     public postCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.post(`api/v${path.apiVersion}/simple`)
     }
 
+    /**
+     * PUT /api/v{api-version}/simple
+     */
     public putCallWithoutParametersAndResponse({ path }: { path: { apiVersion: string } }) {
         return this.client.put(`api/v${path.apiVersion}/simple`)
     }
 
     /**
+     * PUT /api/v{api-version}/non-ascii-æøåÆØÅöôêÊ字符串
+     *
      * Login User
      */
     public putWithFormUrlEncoded({ body, path }: { body: ArrayWithStrings; path: { apiVersion: string } }) {
@@ -681,6 +828,9 @@ export class Hey {
         })
     }
 
+    /**
+     * POST /api/v{api-version}/error
+     */
     public testErrorCode({
         path,
         query,
@@ -713,6 +863,9 @@ export class Hey {
         ) as ReturnType<this['testErrorCode']>
     }
 
+    /**
+     * GET /api/v{api-version}/types
+     */
     public types({
         path,
         query,
@@ -749,6 +902,9 @@ export class Hey {
         ) as ReturnType<this['types']>
     }
 
+    /**
+     * POST /api/v{api-version}/upload
+     */
     public uploadFile({
         body,
         path,

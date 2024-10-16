@@ -65,6 +65,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /pet
+     *
      * Add a new pet to the store
      */
     public addPet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
@@ -83,6 +85,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /user
+     *
      * Create user
      *
      * This can only be done by the logged in user.
@@ -102,6 +106,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /user/createWithList
+     *
      * Creates list of users with given input array
      */
     public createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }) {
@@ -119,6 +125,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * DELETE /store/order/{orderId}
+     *
      * Delete purchase order by ID
      *
      * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
@@ -135,6 +143,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * DELETE /pet/{petId}
+     *
      * Deletes a pet
      */
     public deletePet({
@@ -154,6 +164,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * DELETE /user/{username}
+     *
      * Delete user
      *
      * This can only be done by the logged in user.
@@ -170,6 +182,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /pet/findByStatus
+     *
      * Finds Pets by status
      *
      * Multiple status values can be provided with comma separated strings
@@ -191,6 +205,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /pet/findByTags
+     *
      * Finds Pets by tags
      *
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
@@ -212,6 +228,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /store/inventory
+     *
      * Returns pet inventories by status
      *
      * Returns a map of status codes to quantities
@@ -227,6 +245,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /store/order/{orderId}
+     *
      * Find purchase order by ID
      *
      * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
@@ -244,6 +264,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /pet/{petId}
+     *
      * Find pet by ID
      *
      * Returns a single pet
@@ -264,6 +286,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /user/{username}
+     *
      * Get user by user name
      */
     public getUserByName({ path }: { path: { username: string } }) {
@@ -279,6 +303,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /user/login
+     *
      * Logs user into the system
      */
     public loginUser({ query }: { query?: { username?: string; password?: string } } = {}) {
@@ -295,6 +321,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * GET /user/logout
+     *
      * Logs out current logged in user session
      */
     public logoutUser() {
@@ -302,6 +330,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /store/order
+     *
      * Place an order for a pet
      *
      * Place a new order in the store
@@ -322,6 +352,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * PUT /pet
+     *
      * Update an existing pet
      *
      * Update an existing pet by Id
@@ -344,6 +376,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /pet/{petId}
+     *
      * Updates a pet in the store with form data
      */
     public updatePetWithForm({
@@ -363,6 +397,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * PUT /user/{username}
+     *
      * Update user
      *
      * This can only be done by the logged in user.
@@ -380,6 +416,8 @@ export class PetStoreOptionsKy {
     }
 
     /**
+     * POST /pet/{petId}/uploadImage
+     *
      * uploads an image
      */
     public uploadFile({

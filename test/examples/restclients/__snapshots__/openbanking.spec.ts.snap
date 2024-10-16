@@ -57,6 +57,8 @@ export class Banking {
 
 
     /**
+     * POST /file-payment-consents/{ConsentId}/file
+     * 
      * Create File Payment Consents
      */
     public createFilePaymentConsentsConsentIdFile({body, path, headers, auth = [['tppoAuth2Security']]}: {body: File, path: { consentId: string }, headers: { 'x-fapi-auth-date'?: string, 'x-fapi-customer-ip-address'?: string, 'x-fapi-interaction-id'?: string, Authorization: string, 'x-idempotency-key': string, 'x-jws-signature': string, 'x-customer-user-agent'?: string }, auth?: string[][] | string[]}): Promise<
@@ -89,6 +91,8 @@ export class Banking {
     }
 
     /**
+     * GET /file-payment-consents/{ConsentId}/file
+     * 
      * Get File Payment Consents
      */
     public getFilePaymentConsentsConsentIdFile({path, headers, auth = [['tppoAuth2Security']]}: {path: { consentId: string }, headers: { 'x-fapi-auth-date'?: string, 'x-fapi-customer-ip-address'?: string, 'x-fapi-interaction-id'?: string, Authorization: string, 'x-customer-user-agent'?: string }, auth?: string[][] | string[]}): Promise<

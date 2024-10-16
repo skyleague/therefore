@@ -30,6 +30,8 @@ export class XKCD {
     }
 
     /**
+     * GET /info.0.json
+     *
      * Fetch current comic and metadata.
      */
     public getInfo0Json() {
@@ -44,6 +46,8 @@ export class XKCD {
     }
 
     /**
+     * GET /{comicId}/info.0.json
+     *
      * Fetch comics and metadata  by comic id.
      */
     public getInfo0JsonByComicId({ path }: { path: { comicId: string } }) {

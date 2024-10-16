@@ -53,6 +53,8 @@ export class Banking {
     }
 
     /**
+     * POST /transform
+     *
      * Transform API Descriptions from/to various formats
      *
      * Transform API Descriptions from/to various formats e.g., Swagger, API Blueprint, RAML, WADL, Google Discovery, I/O Docs.

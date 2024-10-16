@@ -35,6 +35,8 @@ export class Astroids {
     }
 
     /**
+     * GET /api
+     *
      * Returns the swagger specification for the API.
      */
     public getApi(): Promise<
@@ -53,6 +55,8 @@ export class Astroids {
     }
 
     /**
+     * GET /api/projects{.format}
+     *
      * Returns a list of available technology project IDs.
      */
     public getApiBy({
@@ -75,6 +79,8 @@ export class Astroids {
     }
 
     /**
+     * GET /api/projects/{id}{.format}
+     *
      * Returns information about a specific technology project.
      */
     public getApiProjectByFormat({

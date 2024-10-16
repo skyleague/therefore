@@ -53,6 +53,8 @@ export class Banking {
     }
 
     /**
+     * POST /file-payment-consents/{ConsentId}/file
+     *
      * Create File Payment Consents
      */
     public createFilePaymentConsentsConsentIdFile({
@@ -120,6 +122,8 @@ export class Banking {
     }
 
     /**
+     * GET /file-payment-consents/{ConsentId}/file
+     *
      * Get File Payment Consents
      */
     public getFilePaymentConsentsConsentIdFile({
