@@ -37,8 +37,12 @@ export class JSDoc {
     public static from({
         key,
         _definition: definition,
+        prepend,
+        append,
     }: {
         key?: string
+        prepend?: string
+        append?: string
         _definition: {
             title?: string | undefined
             summary?: string | undefined
@@ -52,15 +56,22 @@ export class JSDoc {
         const docs: string[] = []
         const pad = () => (docs.length > 0 ? docs.push('') : undefined)
 
+        if (prepend !== undefined) {
+            docs.push(...escapeComment(prepend.trim()).split('\n'))
+        }
+
         const summary = definition.summary ?? definition.title
         const hasSummary = summary !== undefined && summary.length > 1
         if (hasSummary) {
+            if (docs.length > 0) {
+                docs.push('')
+            }
             docs.push(...escapeComment(summary.trim()).split('\n'))
         }
 
         const description = definition.description
         if (description !== undefined && description.length > 1 && description !== summary) {
-            if (hasSummary) {
+            if (docs.length > 0) {
                 docs.push('')
             }
             docs.push(...escapeComment(description.trim()).split('\n'))
@@ -90,6 +101,13 @@ export class JSDoc {
             for (const example of examples) {
                 docs.push(`@example ${escapeComment(key)} = ${escapeComment(toLiteral(example))}`)
             }
+        }
+
+        if (append !== undefined) {
+            if (docs.length > 0) {
+                docs.push('')
+            }
+            docs.push(...escapeComment(append.trim()).split('\n'))
         }
 
         return docs.length > 0 ? `/**\n * ${docs.join('\n * ')}\n */\n` : undefined

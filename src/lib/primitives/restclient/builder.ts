@@ -409,7 +409,10 @@ export class RestClientBuilder {
                         : ''
 
                 writer.write('\n')
-                const jsdoc = JSDoc.from({ _definition: operation })
+                const jsdoc = JSDoc.from({
+                    prepend: `${httpMethod.toUpperCase()} ${path}`,
+                    _definition: operation,
+                })
                 if (jsdoc !== undefined) {
                     writer.write(jsdoc)
                 }

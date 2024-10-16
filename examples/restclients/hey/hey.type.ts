@@ -26,6 +26,7 @@ import { validate as ModelWithReadOnlyAndWriteOnlyValidator } from './schemas/mo
 import { validate as ModelWithStringErrorValidator } from './schemas/model-with-string-error.schema.js'
 import { validate as ModelWithStringValidator } from './schemas/model-with-string.schema.js'
 import { validate as NonAsciiResponseValidator } from './schemas/non-ascii-response.schema.js'
+import { validate as OperationApiSimpleResponse200Validator } from './schemas/operation-api-simple-response200.schema.js'
 import { validate as PostCallWithOptionalParamRequestValidator } from './schemas/post-call-with-optional-param-request.schema.js'
 import { validate as PostCallWithOptionalParamResponse200Validator } from './schemas/post-call-with-optional-param-response200.schema.js'
 import { validate as TypesResponse200Validator } from './schemas/types-response200.schema.js'
@@ -575,6 +576,25 @@ export const NonAsciiResponse = {
  * A string with non-ascii (unicode) characters valid in typescript identifiers (æøåÆØÅöÔèÈ字符串)
  */
 export type NonAsciiString = string
+
+export type OperationApiSimpleResponse200 = number
+
+export const OperationApiSimpleResponse200 = {
+    validate: OperationApiSimpleResponse200Validator as ValidateFunction<OperationApiSimpleResponse200>,
+    get schema() {
+        return OperationApiSimpleResponse200.validate.schema
+    },
+    get errors() {
+        return OperationApiSimpleResponse200.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is OperationApiSimpleResponse200 => OperationApiSimpleResponse200.validate(o) === true,
+    parse: (o: unknown): { right: OperationApiSimpleResponse200 } | { left: DefinedError[] } => {
+        if (OperationApiSimpleResponse200.is(o)) {
+            return { right: o }
+        }
+        return { left: (OperationApiSimpleResponse200.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 export interface PostCallWithOptionalParamRequest {
     offset?: number | null | undefined

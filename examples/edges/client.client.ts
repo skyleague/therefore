@@ -32,6 +32,9 @@ export class DefaultTestClient {
         )
     }
 
+    /**
+     * GET /employees
+     */
     public getEmployees(): Promise<
         | SuccessResponse<'201' | '202' | '203' | '204' | '205' | '206' | '207' | '208' | '226', GetEmployeesResponseDefault>
         | SuccessResponse<'200', GetEmployeesResponse200>
@@ -110,6 +113,9 @@ export class DoubleSuccessClient {
         )
     }
 
+    /**
+     * GET /employees
+     */
     public getEmployees(): Promise<
         | SuccessResponse<'200', unknown>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -125,6 +131,9 @@ export class DoubleSuccessClient {
         ) as ReturnType<this['getEmployees']>
     }
 
+    /**
+     * GET /image
+     */
     public getImage(): Promise<
         | SuccessResponse<'200', unknown>
         | SuccessResponse<'202', unknown>
@@ -203,6 +212,9 @@ export class Edges {
         )
     }
 
+    /**
+     * GET /employees
+     */
     public getEmployees(): Promise<
         | SuccessResponse<'200', unknown>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -218,6 +230,9 @@ export class Edges {
         ) as ReturnType<this['getEmployees']>
     }
 
+    /**
+     * GET /image
+     */
     public getImage(): Promise<
         | SuccessResponse<'200', unknown>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -321,6 +336,9 @@ export class SwaggerEdges {
         )
     }
 
+    /**
+     * GET /json-response
+     */
     public getJsonResponse(): Promise<
         | SuccessResponse<'200', unknown>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>

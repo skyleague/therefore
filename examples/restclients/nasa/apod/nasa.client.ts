@@ -51,6 +51,8 @@ export class Apod {
     }
 
     /**
+     * GET /apod
+     *
      * Returns images
      *
      * Returns the picture of the day
