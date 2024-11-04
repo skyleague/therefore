@@ -1,8 +1,6 @@
-import type { JsonSchema } from '../../json.js'
-
-import got from 'got'
 import pointer from 'jsonpointer'
 import makeSynchronous from 'make-synchronous'
+import type { JsonSchema } from '../../json.js'
 
 // global caching is good enough for our purposes here
 const cache = new Map<string, JsonSchema>()
@@ -28,7 +26,10 @@ export function jsonPointer<T extends {}>({
 
             if (!cache.has(url)) {
                 console.log(`fetching schema from ${url}`)
-                const json = makeSynchronous(async () => got.get(url).json<JsonSchema>())
+                const json = makeSynchronous(async () => {
+                    const response = await fetch(url)
+                    return response.json() as Promise<JsonSchema>
+                })
                 cache.set(url, json())
             }
             // biome-ignore lint/style/noNonNullAssertion: cache is checked explicitly
