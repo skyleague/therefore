@@ -55,15 +55,53 @@ export async function formatBiomeFiles(files: string[]) {
         console.warn('Biome not found. Skipping formatting.')
         return
     }
-    try {
-        const command = `${biomePath} biome check --write ${files.join(' ')}`
-        const { stdout, stderr } = await execAsync(command)
 
-        if (stderr) {
-            console.warn('Biome formatting warning:', stderr)
+    const baseCommand = `${biomePath} biome check --write `
+    let fileChunks: string[][]
+    if (process.platform === 'win32') {
+        // Windows command line length limit
+        const MAX_COMMAND_LENGTH = 8191
+        const remainingLength = MAX_COMMAND_LENGTH - baseCommand.length
+
+        fileChunks = []
+        let currentChunk: string[] = []
+        let currentLength = 0
+
+        for (const file of files) {
+            // +1 for the space between files
+            const fileLength = file.length + 1
+
+            if (currentLength + fileLength > remainingLength) {
+                fileChunks.push(currentChunk)
+                currentChunk = []
+                currentLength = 0
+            }
+
+            currentChunk.push(file)
+            currentLength += fileLength
         }
 
-        console.log('Biome formatting completed:', stdout)
+        if (currentChunk.length > 0) {
+            fileChunks.push(currentChunk)
+        }
+    } else {
+        // On non-Windows platforms, process all files at once
+        fileChunks = [files]
+    }
+
+    try {
+        const promises = fileChunks.map(async (fileChunk) => {
+            const command = `${baseCommand} ${fileChunk.join(' ')}`
+            const { stdout, stderr } = await execAsync(command)
+
+            if (stderr) {
+                console.warn('Biome formatting warning:', stderr)
+            }
+            return stdout
+        })
+
+        const results = await Promise.all(promises)
+        console.log('Biome formatting completed:', results.join('\n'))
     } catch (error) {
         console.error('Error running Biome format:', error)
     }
