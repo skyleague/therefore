@@ -94,10 +94,11 @@ export type AsRequestBody =
     | {
           schema?: Node
           name: 'body'
-          type: 'json' | 'form'
+          type: 'json' | 'form' | 'body'
           mimeType?: string
           definition: (args: { reference: (node: Node) => string }) => string
           variableName?: string
+          precode?: (args: { reference: (node: Node) => string }) => string
       }
     | {
           schema?: undefined
@@ -106,6 +107,7 @@ export type AsRequestBody =
           type: 'body'
           definition: (args: { reference: (node: Node) => string }) => string
           variableName?: string
+          precode?: (args: { reference: (node: Node) => string }) => string
       }
 
 export type ResponseBodyDefinition =
@@ -308,7 +310,7 @@ export class RestClientBuilder {
                             .writeLine('return Promise.resolve(_body)')
                             .writeLine('}')
                             .toString()
-                        request.variableName = `_body.right as ${reference(request.schema)}`
+                        request.variableName ??= `_body.right as ${reference(request.schema)}`
                     } else {
                         requestValidationStr = `this.validateRequestBody(${value(request.schema)}, ${request.name})`
                     }
@@ -500,8 +502,11 @@ export class RestClientBuilder {
                             headerParameters.length > 0 ||
                             (this.options.explicitContentNegotiation && hasResponse)
                         const hasSyntaxSugarMethod = ['get', 'delete', 'post', 'put', 'patch'].includes(httpMethod)
+                        writer.conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}`)
+                        if (request?.precode !== undefined) {
+                            writer.writeLine(request.precode({ reference }))
+                        }
                         writer
-                            .conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                             .conditionalWrite(hasResponse, 'return this.awaitResponse(')
                             .conditionalWrite(!hasResponse, 'return ')
                             .conditionalWrite(hasSyntaxSugarMethod, `${clientDecl}.${httpMethod}(${asString(urlPath)}`)
@@ -892,6 +897,23 @@ export class RestClientBuilder {
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
             const validator = this.asValidator(therefore, { assert: !this.options.useEither })
+
+            if (this.options.client === 'ky') {
+                return {
+                    type: 'body',
+                    schema: validator,
+                    name: 'body',
+                    definition: ({ reference }) => reference(validator),
+                    precode: ({ reference }) =>
+                        [
+                            'const _form = new FormData()',
+                            `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
+                            '    _form.append(key, value as string)',
+                            '}',
+                        ].join('\n'),
+                    variableName: '_form',
+                }
+            }
 
             return {
                 schema: validator,
