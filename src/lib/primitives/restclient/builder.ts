@@ -89,6 +89,7 @@ const jsonMime = /(application|\*)\/(.*json|\*)/
 const yamlMime = /(application|\*)\/(.*yaml|\*)/
 const formUrlEncodedMime = /^application\/x-www-form-urlencoded$/
 const binaryMime = /application\/.*octet-stream/
+const multipartFormMime = /^multipart\/form-data$/
 
 export type AsRequestBody =
     | {
@@ -502,7 +503,7 @@ export class RestClientBuilder {
                             headerParameters.length > 0 ||
                             (this.options.explicitContentNegotiation && hasResponse)
                         const hasSyntaxSugarMethod = ['get', 'delete', 'post', 'put', 'patch'].includes(httpMethod)
-                        writer.conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}`)
+                        writer.conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                         if (request?.precode !== undefined) {
                             writer.writeLine(request.precode({ reference }))
                         }
@@ -879,7 +880,11 @@ export class RestClientBuilder {
             }
         }
 
-        const formContent = entriesOf(request?.content ?? {}).find(([mime]) => formUrlEncodedMime.test(mime))?.[1]
+        const formUrlContent = entriesOf(request?.content ?? {}).find(([mime]) => formUrlEncodedMime.test(mime))?.[1]
+        const multipartContent = entriesOf(request?.content ?? {}).find(([mime]) => multipartFormMime.test(mime))?.[1]
+        const formContent = formUrlContent ?? multipartContent
+        const isMultipart = multipartContent !== undefined
+
         if (formContent !== undefined) {
             const schema = formContent.schema ?? {}
 
@@ -899,6 +904,26 @@ export class RestClientBuilder {
             const validator = this.asValidator(therefore, { assert: !this.options.useEither })
 
             if (this.options.client === 'ky') {
+                if (isMultipart) {
+                    return {
+                        type: 'body',
+                        schema: validator,
+                        name: 'body',
+                        definition: ({ reference }) => reference(validator),
+                        precode: ({ reference }) =>
+                            [
+                                'const _form = new FormData()',
+                                `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
+                                '    if (value instanceof Blob || value instanceof File) {',
+                                '        _form.append(key, value)',
+                                '    } else if (value !== null && value !== undefined) {',
+                                '        _form.append(key, value as string)',
+                                '    }',
+                                '}',
+                            ].join('\n'),
+                        variableName: '_form',
+                    }
+                }
                 return {
                     type: 'body',
                     schema: validator,
@@ -906,9 +931,11 @@ export class RestClientBuilder {
                     definition: ({ reference }) => reference(validator),
                     precode: ({ reference }) =>
                         [
-                            'const _form = new FormData()',
+                            'const _form = new URLSearchParams()',
                             `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
-                            '    _form.append(key, value as string)',
+                            '    if (value !== null && value !== undefined) {',
+                            '        _form.set(key, value as string)',
+                            '    }',
                             '}',
                         ].join('\n'),
                     variableName: '_form',
