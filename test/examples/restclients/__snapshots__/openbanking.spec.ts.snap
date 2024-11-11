@@ -82,6 +82,7 @@ export class Banking {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.buildClient(auth).post(\`file-payment-consents/\${path.consentId}/file\`, {
             json: _body.right as File,headers: headers,responseType: 'text',
         }), {

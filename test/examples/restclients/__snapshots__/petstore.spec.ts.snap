@@ -81,6 +81,7 @@ export class PetStoreKy {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.buildClient(auth).post('pet', {
             json: _body.right as Pet,
         }), {
@@ -109,6 +110,7 @@ export class PetStoreKy {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.client.post('user', {
             json: _body.right as User,
         }), {
@@ -134,6 +136,7 @@ export class PetStoreKy {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.client.post('user/createWithList', {
             json: _body.right as CreateUsersWithListInputRequest,
@@ -400,6 +403,7 @@ export class PetStoreKy {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.client.post('store/order', {
             json: _body.right as Order,
         }), {
@@ -430,6 +434,7 @@ export class PetStoreKy {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.buildClient(auth).put('pet', {
             json: _body.right as Pet,
@@ -477,6 +482,7 @@ export class PetStoreKy {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.client.put(\`user/\${path.username}\`, {
             json: _body.right as User,
@@ -947,6 +953,7 @@ export class PetStoreOptionsKy {
     public addPet({body, auth = [['petstoreAuth']]}: {body: Pet, auth?: string[][] | string[]})
     {
         this.validateRequestBody(Pet, body)
+
         return this.awaitResponse(this.buildClient(auth).post('pet', {
             json: body,
         }), {
@@ -966,6 +973,7 @@ export class PetStoreOptionsKy {
     public createUser({body}: {body: User})
     {
         this.validateRequestBody(User, body)
+
         return this.awaitResponse(this.client.post('user', {
             json: body,
         }), {
@@ -983,6 +991,7 @@ export class PetStoreOptionsKy {
     public createUsersWithListInput({body}: {body: CreateUsersWithListInputRequest})
     {
         this.validateRequestBody(CreateUsersWithListInputRequest, body)
+
         return this.awaitResponse(this.client.post('user/createWithList', {
             json: body,
         }), {
@@ -1184,6 +1193,7 @@ export class PetStoreOptionsKy {
     public placeOrder({body}: {body: Order})
     {
         this.validateRequestBody(Order, body)
+
         return this.awaitResponse(this.client.post('store/order', {
             json: body,
         }), {
@@ -1203,6 +1213,7 @@ export class PetStoreOptionsKy {
     public updatePet({body, auth = [['petstoreAuth']]}: {body: Pet, auth?: string[][] | string[]})
     {
         this.validateRequestBody(Pet, body)
+
         return this.awaitResponse(this.buildClient(auth).put('pet', {
             json: body,
         }), {
@@ -1238,6 +1249,7 @@ export class PetStoreOptionsKy {
     public updateUser({body, path}: {body: User, path: { username: string }})
     {
         this.validateRequestBody(User, body)
+
         return this.awaitResponse(this.client.put(\`user/\${path.username}\`, {
             json: body,
         }), {
@@ -1723,6 +1735,7 @@ export class PetStoreOptions {
     public addPet({body, auth = [['petstoreAuth']]}: {body: Pet, auth?: string[][] | string[]})
     {
         this.validateRequestBody(Pet, body)
+
         return this.awaitResponse(this.buildClient(auth).post('pet', {
             json: body,responseType: 'json',
         }), {
@@ -1740,6 +1753,7 @@ export class PetStoreOptions {
     public createUser({body}: {body: User})
     {
         this.validateRequestBody(User, body)
+
         return this.awaitResponse(this.client.post('user', {
             json: body,responseType: 'json',
         }), {
@@ -1755,6 +1769,7 @@ export class PetStoreOptions {
     public createUsersWithListInput({body}: {body: CreateUsersWithListInputRequest})
     {
         this.validateRequestBody(CreateUsersWithListInputRequest, body)
+
         return this.awaitResponse(this.client.post('user/createWithList', {
             json: body,responseType: 'json',
         }), {
@@ -1939,6 +1954,7 @@ export class PetStoreOptions {
     public placeOrder({body}: {body: Order})
     {
         this.validateRequestBody(Order, body)
+
         return this.awaitResponse(this.client.post('store/order', {
             json: body,responseType: 'json',
         }), {
@@ -1956,6 +1972,7 @@ export class PetStoreOptions {
     public updatePet({body, auth = [['petstoreAuth']]}: {body: Pet, auth?: string[][] | string[]})
     {
         this.validateRequestBody(Pet, body)
+
         return this.awaitResponse(this.buildClient(auth).put('pet', {
             json: body,responseType: 'json',
         }), {
@@ -1987,6 +2004,7 @@ export class PetStoreOptions {
     public updateUser({body, path}: {body: User, path: { username: string }})
     {
         this.validateRequestBody(User, body)
+
         return this.awaitResponse(this.client.put(\`user/\${path.username}\`, {
             json: body,responseType: 'text',
         }), {
@@ -2759,6 +2777,7 @@ export class PetStore {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.buildClient(auth).post('pet', {
             json: _body.right as Pet,responseType: 'json',
         }), {
@@ -2785,6 +2804,7 @@ export class PetStore {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.client.post('user', {
             json: _body.right as User,responseType: 'json',
         }), {
@@ -2808,6 +2828,7 @@ export class PetStore {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.client.post('user/createWithList', {
             json: _body.right as CreateUsersWithListInputRequest,responseType: 'json',
@@ -3057,6 +3078,7 @@ export class PetStore {
         return Promise.resolve(_body)
         }
 
+
         return this.awaitResponse(this.client.post('store/order', {
             json: _body.right as Order,responseType: 'json',
         }), {
@@ -3085,6 +3107,7 @@ export class PetStore {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.buildClient(auth).put('pet', {
             json: _body.right as Pet,responseType: 'json',
@@ -3128,6 +3151,7 @@ export class PetStore {
         if ('left' in _body) {
         return Promise.resolve(_body)
         }
+
 
         return this.awaitResponse(this.client.put(\`user/\${path.username}\`, {
             json: _body.right as User,responseType: 'text',
