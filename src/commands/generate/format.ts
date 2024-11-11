@@ -56,7 +56,7 @@ export async function formatBiomeFiles(files: string[]) {
         return
     }
 
-    const baseCommand = `${biomePath} biome check --write `
+    const baseCommand = `${biomePath} biome check --write`
     let fileChunks: string[][]
     if (process.platform === 'win32') {
         // Windows command line length limit
@@ -70,7 +70,7 @@ export async function formatBiomeFiles(files: string[]) {
         for (const file of files) {
             // +1 for the space between files
             // +2 for the quotes
-            const fileLength = file.length + 1 + 2
+            const fileLength = file.length + 1 + 2 + file.split('/').length * 2
 
             if (currentLength + fileLength > remainingLength) {
                 fileChunks.push(currentChunk)
@@ -78,7 +78,7 @@ export async function formatBiomeFiles(files: string[]) {
                 currentLength = 0
             }
 
-            currentChunk.push(`"${file}"`)
+            currentChunk.push(`"${file.replace('/', '\\')}"`)
             currentLength += fileLength
         }
 
