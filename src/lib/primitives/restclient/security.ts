@@ -47,8 +47,12 @@ export const toSecurityHook: {
                     .writeLine(`if (${name} !== undefined)`)
                     .block(() => {
                         hook.writeLine(`const [username, password] = typeof ${name} === 'function' ? await ${name}() : ${name}`)
-                            .writeLine('options.username = username')
-                            .writeLine('options.password = password')
+                            .conditionalWriteLine(client === 'got', 'options.username = username')
+                            .conditionalWriteLine(client === 'got', 'options.password = password')
+                            .conditionalWriteLine(
+                                client === 'ky',
+                                'options.headers.set("Authorization", `Basic ${btoa(`${username}:${password}`)}`)',
+                            )
                     })
             } else if (s.scheme === 'bearer') {
                 hook.writeLine(`const ${name} = this.auth.${name}!`)
