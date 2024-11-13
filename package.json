@@ -51,6 +51,7 @@
     "make-synchronous": "^1.0.0",
     "regex-to-strings": "^2.1.0",
     "swagger2openapi": "^7.0.8",
+    "undici": "^6.20.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
@@ -59,8 +60,8 @@
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",
     "got": "^14.4.2",
-    "ky": "^1.7.2",
     "json-schema-to-zod": "^2.4.0",
+    "ky": "^1.7.2",
     "nock": "^13.5.5",
     "tsx": "^4.17.0",
     "type-testing": "^0.2.0",

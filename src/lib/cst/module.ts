@@ -1,6 +1,9 @@
 import { memoize } from '@skyleague/axioms'
 import { Node } from './node.js'
 
+import IncomingHttpHeaders from 'undici'
+// import Headers from 'undici'
+
 export type ModuleOptions = {
     alias?: string
     transform?: Node['_transform']
@@ -61,5 +64,6 @@ export const ajvFormatsSymbols = {
 }
 
 export const httpSymbols = {
-    IncomingHttpHeaders: moduleSymbol('node:http', 'IncomingHttpHeaders'),
+    IncomingHttpHeadersNode: moduleSymbol('node:http', 'IncomingHttpHeaders'),
+    IncomingHttpHeadersUndici: IncomingHttpHeaders,
 }

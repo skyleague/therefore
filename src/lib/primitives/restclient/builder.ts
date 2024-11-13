@@ -161,7 +161,7 @@ export class EitherHelper extends Node {
                 type: 'typescript' as const,
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
-                    const IncomingHttpHeaders = reference(httpSymbols.IncomingHttpHeaders())
+                    const IncomingHttpHeadersNode = reference(httpSymbols.IncomingHttpHeadersNode())
                     const DefinedError = reference(ajvSymbols.DefinedError())
 
                     return (
@@ -170,9 +170,9 @@ export class EitherHelper extends Node {
                                 "export type Status<Major> = Major extends string ? Major extends `1${number}`? 'informational': Major extends `2${number}` ? 'success' : Major extends `3${number}` ? 'redirection' : Major extends `4${number}` ? 'client-error' : 'server-error' : undefined",
                             )
                             .writeLine(
-                                `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeaders}; right: T }`,
+                                `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeadersNode}; right: T }`,
                             )
-                            .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = ${IncomingHttpHeaders}> {
+                            .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = ${IncomingHttpHeadersNode}> {
                     statusCode: StatusCode
                     status: Status<StatusCode>
                     headers: Headers
@@ -290,7 +290,9 @@ export class RestClientBuilder {
 
     public definition(node: Node, { declare, reference, value }: TypescriptWalkerContext): string {
         const writer = createWriter()
-        const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeaders()))
+
+        const IncomingHttpHeadersNode = memoize(() => reference(httpSymbols.IncomingHttpHeadersNode()))
+        const IncomingHttpHeadersUndici = memoize(() => httpSymbols.IncomingHttpHeadersUndici)
 
         writer.write(declare('class', node)).block(() => {
             this.writeConstructor({ reference, value, writer })
@@ -477,6 +479,9 @@ export class RestClientBuilder {
                     if (hasBodyValidation) {
                         writer.writeLine(`| FailureResponse<undefined, unknown, 'request:body', undefined>`)
                     }
+
+                    const IncomingHttpHeaders = this.options.client === 'ky' ? IncomingHttpHeadersUndici : IncomingHttpHeadersNode
+
                     writer.writeLine(`| FailureResponse<StatusCode<2>, string, 'response:body', ${IncomingHttpHeaders()}>`)
 
                     if (errorCodes.length > 0) {
