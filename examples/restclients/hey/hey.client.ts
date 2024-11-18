@@ -30,6 +30,7 @@ import {
     ModelWithReadOnlyAndWriteOnly,
     ModelWithString,
     ModelWithStringError,
+    MultipartRequestRequest,
     NonAsciiResponse,
     OperationApiSimpleResponse200,
     PostCallWithOptionalParamRequest,
@@ -464,8 +465,18 @@ export class Hey {
     /**
      * POST /api/v{api-version}/formData/
      */
-    public createApiFormDatum({ path, query }: { path: { apiVersion: string }; query?: { parameter?: string } }) {
+    public createApiFormDatum({
+        body,
+        path,
+        query,
+    }: { body: ModelWithString; path: { apiVersion: string }; query?: { parameter?: string } }) {
+        const _body = this.validateRequestBody(ModelWithString, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
         return this.client.post(`api/v${path.apiVersion}/formData/`, {
+            form: _body.right as ModelWithString,
             searchParams: query ?? {},
         })
     }
@@ -682,8 +693,15 @@ export class Hey {
     /**
      * POST /api/v{api-version}/multipart
      */
-    public multipartRequest({ path }: { path: { apiVersion: string } }) {
-        return this.client.post(`api/v${path.apiVersion}/multipart`)
+    public multipartRequest({ body, path }: { body: MultipartRequestRequest; path: { apiVersion: string } }) {
+        const _body = this.validateRequestBody(MultipartRequestRequest, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
+        return this.client.post(`api/v${path.apiVersion}/multipart`, {
+            form: _body.right as MultipartRequestRequest,
+        })
     }
 
     /**

@@ -10,7 +10,7 @@ import type { DefinedError } from 'ajv'
 import { got } from 'got'
 import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 
-import { ConvertApiResponse } from './apimatic.type.js'
+import { ConvertApiRequest, ConvertApiResponse } from './apimatic.type.js'
 
 /**
  * APIMATIC API Transformer
@@ -83,15 +83,23 @@ export class Banking {
      * * APIMATIC Format
      */
     public convertApi({
+        body,
         query,
-    }: { query: { format: string } }): Promise<
+    }: { body: ConvertApiRequest; query: { format: string } }): Promise<
         | SuccessResponse<'200', ConvertApiResponse>
         | FailureResponse<'429', unknown, 'response:statuscode'>
+        | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '429'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
+        const _body = this.validateRequestBody(ConvertApiRequest, body)
+        if ('left' in _body) {
+            return Promise.resolve(_body)
+        }
+
         return this.awaitResponse(
             this.buildClient().post('transform', {
+                form: _body.right as ConvertApiRequest,
                 searchParams: query,
                 headers: { Accept: 'application/json' },
                 responseType: 'json',
@@ -101,6 +109,24 @@ export class Banking {
                 429: { parse: (x: unknown) => ({ right: x }) },
             },
         ) as ReturnType<this['convertApi']>
+    }
+
+    public validateRequestBody<Parser extends { parse: (o: unknown) => { left: DefinedError[] } | { right: Body } }, Body>(
+        parser: Parser,
+        body: unknown,
+    ) {
+        const _body = parser.parse(body)
+        if ('left' in _body) {
+            return {
+                statusCode: undefined,
+                status: undefined,
+                headers: undefined,
+                left: body,
+                validationErrors: _body.left,
+                where: 'request:body',
+            } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>
+        }
+        return _body
     }
 
     public async awaitResponse<

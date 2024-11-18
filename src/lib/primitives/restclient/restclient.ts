@@ -112,7 +112,7 @@ export class RestclientType extends Node {
                 node._sourcePath = newSourcePath
 
                 if (this._options.useEither !== false) {
-                    const instance = EitherHelper.from(newSourcePath)
+                    const instance = EitherHelper.from({ sourcePath: newSourcePath, client: this._builder.options.client })
                     node._children?.push(instance)
                     node._connections?.push(instance)
                 }
