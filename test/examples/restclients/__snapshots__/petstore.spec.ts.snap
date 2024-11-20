@@ -523,8 +523,8 @@ export class PetStoreKy {
 
     public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
     ResponsePromise<I>, schemas: S, responseType?: "json" | "text") {
+        const _body = (await (responseType !== undefined ? response[responseType]() : response.text())) as I
         const result = await response
-        const _body = await (responseType !== undefined ? result[responseType](): result.text()) as I 
         const status = result.status < 200 ? 'informational' : result.status < 300 ? 'success' : result.status < 400 ? 'redirection' : result.status < 500 ? 'client-error' : 'server-error'
         const validator = schemas[result.status] ?? schemas.default
         const body = validator?.parse?.(_body)

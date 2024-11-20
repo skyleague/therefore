@@ -646,11 +646,11 @@ export class RestClientBuilder {
                 .block(() => {
                     writer
                         .conditionalWriteLine(this.options.client === 'got', 'const result = await response')
-                        .conditionalWriteLine(this.options.client === 'ky', 'const result = await response')
                         .conditionalWriteLine(
                             this.options.client === 'ky',
-                            'const _body = await (responseType !== undefined ? result[responseType](): result.text()) as I ',
+                            'const _body = (await (responseType !== undefined ? response[responseType]() : response.text())) as I',
                         )
+                        .conditionalWriteLine(this.options.client === 'ky', 'const result = await response')
                         .writeLine(
                             `const status = result.${statusAccessor} < 200 ? 'informational' : result.${statusAccessor} < 300 ? 'success' : result.${statusAccessor} < 400 ? 'redirection' : result.${statusAccessor} < 500 ? 'client-error' : 'server-error'`,
                         )
@@ -1045,6 +1045,8 @@ export class RestClientBuilder {
             let responseType = eligibleResponse?.type
             if (this.options.client === 'ky' && responseType === 'json' && eligibleResponse?.statusCode === '204') {
                 responseType = 'text'
+                // change the schema on the matching response to unknown so the types are correct
+                eligibleResponse.schema = undefined
             }
             return {
                 responses: Object.fromEntries(result.sort(([a], [b]) => a.localeCompare(b))),
