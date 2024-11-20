@@ -61,5 +61,5 @@ export const ajvFormatsSymbols = {
 }
 
 export const httpSymbols = {
-    IncomingHttpHeaders: moduleSymbol('node:http', 'IncomingHttpHeaders'),
+    IncomingHttpHeadersNode: moduleSymbol('node:http', 'IncomingHttpHeaders'),
 }

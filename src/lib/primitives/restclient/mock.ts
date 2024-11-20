@@ -1,6 +1,7 @@
 import { identity } from '@skyleague/axioms'
 import type { ConditionalExcept, HasRequiredKeys, Simplify } from '@skyleague/axioms/types'
 import type { Got } from 'got'
+import type { KyInstance } from 'ky'
 import type { Interceptor, Scope } from 'nock'
 
 import { createRequire } from 'node:module'
@@ -24,7 +25,7 @@ export type NockFn<Args extends object> = HasRequiredKeys<Args> extends true
     : (args?: Args) => Interceptor
 
 export type RestClient = {
-    client: Got
+    client: Got | KyInstance
 }
 
 const httpMethods = ['get', 'post', 'put', 'patch', 'head', 'delete'] as const
@@ -45,7 +46,18 @@ export function $nockClient<T extends RestClient>(client: T): NockClient<T> {
     // biome-ignore lint/suspicious/noExplicitAny: ignore
     const self: any = Object.create(client)
 
-    const serve = nock(new URL(client.client.defaults.options.prefixUrl).href)
+    let prefixUrl: string | URL = ''
+    if (client.client.name === 'ky') {
+        ;(client.client as KyInstance).extend((parent) => {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            prefixUrl = parent.prefixUrl!
+            return parent
+        })
+    } else {
+        prefixUrl = (client.client as Got).defaults.options.prefixUrl
+    }
+
+    const serve = nock(new URL(prefixUrl).href)
 
     // biome-ignore lint/suspicious/noExplicitAny: we mock the whole thing
     self.validateRequestBody = (() => ({ right: true })).bind(self) as any

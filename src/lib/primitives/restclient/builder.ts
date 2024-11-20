@@ -154,6 +154,7 @@ export class EitherHelper extends Node {
     public override _type = 'restclient:either' as const
     public override _name = 'restclient:either'
     public override _canReference: false = false
+    public client: 'ky' | 'got' | undefined
 
     public override get _output(): TypescriptOutput[] {
         return [
@@ -161,8 +162,10 @@ export class EitherHelper extends Node {
                 type: 'typescript' as const,
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
-                    const IncomingHttpHeaders = reference(httpSymbols.IncomingHttpHeaders())
+                    const IncomingHttpHeaders =
+                        this.client === 'ky' ? 'Headers' : reference(httpSymbols.IncomingHttpHeadersNode())
                     const DefinedError = reference(ajvSymbols.DefinedError())
+                    const HeaderVar = this.client === 'ky' ? 'HeaderResponse' : 'Headers'
 
                     return (
                         createWriter()
@@ -172,10 +175,10 @@ export class EitherHelper extends Node {
                             .writeLine(
                                 `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeaders}; right: T }`,
                             )
-                            .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = ${IncomingHttpHeaders}> {
+                            .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, ${HeaderVar} = ${IncomingHttpHeaders}> {
                     statusCode: StatusCode
                     status: Status<StatusCode>
-                    headers: Headers
+                    headers: ${HeaderVar}
                     validationErrors: ${DefinedError}[] | undefined
                     left: T
                     where: Where
@@ -192,14 +195,15 @@ export class EitherHelper extends Node {
     }
 
     private static _cache = new Map<string, EitherHelper>()
-    public static from(path: string) {
-        if (EitherHelper._cache.has(path)) {
+    public static from({ sourcePath, client }: { sourcePath: string; client: 'ky' | 'got' | undefined }) {
+        if (EitherHelper._cache.has(sourcePath)) {
             // biome-ignore lint/style/noNonNullAssertion: ignore
-            return EitherHelper._cache.get(path)!
+            return EitherHelper._cache.get(sourcePath)!
         }
         const instance = new EitherHelper({})
-        EitherHelper._cache.set(path, instance)
-        instance._sourcePath = path
+        EitherHelper._cache.set(sourcePath, instance)
+        instance._sourcePath = sourcePath
+        instance.client = client
         return instance
     }
 }
@@ -290,7 +294,7 @@ export class RestClientBuilder {
 
     public definition(node: Node, { declare, reference, value }: TypescriptWalkerContext): string {
         const writer = createWriter()
-        const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeaders()))
+        const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeadersNode()))
 
         writer.write(declare('class', node)).block(() => {
             this.writeConstructor({ reference, value, writer })
@@ -477,17 +481,20 @@ export class RestClientBuilder {
                     if (hasBodyValidation) {
                         writer.writeLine(`| FailureResponse<undefined, unknown, 'request:body', undefined>`)
                     }
-                    writer.writeLine(`| FailureResponse<StatusCode<2>, string, 'response:body', ${IncomingHttpHeaders()}>`)
+
+                    const ClientIncomingHttpHeaders = this.options.client === 'ky' ? () => 'Headers' : IncomingHttpHeaders
+
+                    writer.writeLine(`| FailureResponse<StatusCode<2>, string, 'response:body', ${ClientIncomingHttpHeaders()}>`)
 
                     if (errorCodes.length > 0) {
                         writer.writeLine(
                             `| FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, ${errorCodes
                                 .map((s) => `"${s}"`)
-                                .join(' | ')}>, unknown, 'response:statuscode', ${IncomingHttpHeaders()}>`,
+                                .join(' | ')}>, unknown, 'response:statuscode', ${ClientIncomingHttpHeaders()}>`,
                         )
                     } else {
                         writer.writeLine(
-                            `| FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', ${IncomingHttpHeaders()}>`,
+                            `| FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', ${ClientIncomingHttpHeaders()}>`,
                         )
                     }
 

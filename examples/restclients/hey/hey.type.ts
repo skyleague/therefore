@@ -25,6 +25,7 @@ import { validate as ModelWithOneOfEnumValidator } from './schemas/model-with-on
 import { validate as ModelWithReadOnlyAndWriteOnlyValidator } from './schemas/model-with-read-only-and-write-only.schema.js'
 import { validate as ModelWithStringErrorValidator } from './schemas/model-with-string-error.schema.js'
 import { validate as ModelWithStringValidator } from './schemas/model-with-string.schema.js'
+import { validate as MultipartRequestRequestValidator } from './schemas/multipart-request-request.schema.js'
 import { validate as NonAsciiResponseValidator } from './schemas/non-ascii-response.schema.js'
 import { validate as OperationApiSimpleResponse200Validator } from './schemas/operation-api-simple-response200.schema.js'
 import { validate as PostCallWithOptionalParamRequestValidator } from './schemas/post-call-with-optional-param-request.schema.js'
@@ -550,6 +551,28 @@ export const ModelWithStringError = {
             return { right: o }
         }
         return { left: (ModelWithStringError.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface MultipartRequestRequest {
+    content?: string | undefined
+    data?: ModelWithString | null | undefined
+}
+
+export const MultipartRequestRequest = {
+    validate: MultipartRequestRequestValidator as ValidateFunction<MultipartRequestRequest>,
+    get schema() {
+        return MultipartRequestRequest.validate.schema
+    },
+    get errors() {
+        return MultipartRequestRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is MultipartRequestRequest => MultipartRequestRequest.validate(o) === true,
+    parse: (o: unknown): { right: MultipartRequestRequest } | { left: DefinedError[] } => {
+        if (MultipartRequestRequest.is(o)) {
+            return { right: o }
+        }
+        return { left: (MultipartRequestRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 

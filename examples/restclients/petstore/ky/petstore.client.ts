@@ -4,8 +4,6 @@
  */
 /* eslint-disable */
 
-import type { IncomingHttpHeaders } from 'node:http'
-
 import type { DefinedError } from 'ajv'
 import ky from 'ky'
 import type { KyInstance, Options, ResponsePromise } from 'ky'
@@ -79,8 +77,8 @@ export class PetStoreKy {
         | SuccessResponse<'200', Pet>
         | FailureResponse<'405', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(Pet, body)
         if ('left' in _body) {
@@ -111,8 +109,8 @@ export class PetStoreKy {
     }: { body: User }): Promise<
         | SuccessResponse<StatusCode<2>, User>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(User, body)
         if ('left' in _body) {
@@ -140,8 +138,8 @@ export class PetStoreKy {
     }: { body: CreateUsersWithListInputRequest }): Promise<
         | SuccessResponse<'200', User>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(CreateUsersWithListInputRequest, body)
         if ('left' in _body) {
@@ -171,8 +169,8 @@ export class PetStoreKy {
     }: { path: { orderId: string } }): Promise<
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.client.delete(`store/order/${path.orderId}`, {}),
@@ -195,8 +193,8 @@ export class PetStoreKy {
         auth = [['petstoreAuth']],
     }: { path: { petId: string }; headers?: { api_key?: string }; auth?: string[][] | string[] }): Promise<
         | FailureResponse<'400', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).delete(`pet/${path.petId}`, {
@@ -221,8 +219,8 @@ export class PetStoreKy {
     }: { path: { username: string } }): Promise<
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.client.delete(`user/${path.username}`, {}),
@@ -247,8 +245,8 @@ export class PetStoreKy {
     }: { query?: { status?: string }; auth?: string[][] | string[] } = {}): Promise<
         | SuccessResponse<'200', FindPetsByStatusResponse>
         | FailureResponse<'400', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByStatus', {
@@ -275,8 +273,8 @@ export class PetStoreKy {
     }: { query?: { tags?: string }; auth?: string[][] | string[] } = {}): Promise<
         | SuccessResponse<'200', FindPetsByTagsResponse>
         | FailureResponse<'400', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByTags', {
@@ -301,8 +299,8 @@ export class PetStoreKy {
         auth = [['apiKey']],
     }: { auth?: string[][] | string[] } = {}): Promise<
         | SuccessResponse<'200', GetInventoryResponse>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).get('store/inventory', {}),
@@ -326,8 +324,8 @@ export class PetStoreKy {
         | SuccessResponse<'200', Order>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.client.get(`store/order/${path.orderId}`, {}),
@@ -354,8 +352,8 @@ export class PetStoreKy {
         | SuccessResponse<'200', Pet>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).get(`pet/${path.petId}`, {}),
@@ -379,8 +377,8 @@ export class PetStoreKy {
         | SuccessResponse<'200', User>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.client.get(`user/${path.username}`, {}),
@@ -403,8 +401,8 @@ export class PetStoreKy {
     }: { query?: { username?: string; password?: string } } = {}): Promise<
         | SuccessResponse<'200', LoginUserResponse>
         | FailureResponse<'400', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.client.get('user/login', {
@@ -424,8 +422,8 @@ export class PetStoreKy {
      * Logs out current logged in user session
      */
     public logoutUser(): Promise<
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(this.client.get('user/logout', {}), {}, 'text') as ReturnType<this['logoutUser']>
     }
@@ -443,8 +441,8 @@ export class PetStoreKy {
         | SuccessResponse<'200', Order>
         | FailureResponse<'405', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(Order, body)
         if ('left' in _body) {
@@ -479,13 +477,8 @@ export class PetStoreKy {
         | FailureResponse<'404', unknown, 'response:statuscode'>
         | FailureResponse<'405', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<
-              Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404' | '405'>,
-              unknown,
-              'response:statuscode',
-              IncomingHttpHeaders
-          >
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404' | '405'>, unknown, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(Pet, body)
         if ('left' in _body) {
@@ -517,8 +510,8 @@ export class PetStoreKy {
         auth = [['petstoreAuth']],
     }: { path: { petId: string }; query?: { name?: string; status?: string }; auth?: string[][] | string[] }): Promise<
         | FailureResponse<'405', unknown, 'response:statuscode'>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}`, {
@@ -543,8 +536,8 @@ export class PetStoreKy {
         path,
     }: { body: User; path: { username: string } }): Promise<
         | FailureResponse<undefined, unknown, 'request:body', undefined>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         const _body = this.validateRequestBody(User, body)
         if ('left' in _body) {
@@ -577,8 +570,8 @@ export class PetStoreKy {
         auth?: string[][] | string[]
     }): Promise<
         | SuccessResponse<'200', ApiResponse>
-        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', Headers>
     > {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
@@ -699,13 +692,13 @@ export type Status<Major> = Major extends string
 export interface SuccessResponse<StatusCode extends string, T> {
     statusCode: StatusCode
     status: Status<StatusCode>
-    headers: IncomingHttpHeaders
+    headers: Headers
     right: T
 }
-export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = IncomingHttpHeaders> {
+export interface FailureResponse<StatusCode = string, T = unknown, Where = never, HeaderResponse = Headers> {
     statusCode: StatusCode
     status: Status<StatusCode>
-    headers: Headers
+    headers: HeaderResponse
     validationErrors: DefinedError[] | undefined
     left: T
     where: Where
