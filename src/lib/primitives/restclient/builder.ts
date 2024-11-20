@@ -1041,13 +1041,18 @@ export class RestClientBuilder {
         if (result.length > 0) {
             const eligibleResponseTypes = success.length > 0 ? success : def !== undefined ? [def] : failure
             const eligibleResponse = eligibleResponseTypes[0]
+
+            let responseType = eligibleResponse?.type
+            if (this.options.client === 'ky' && responseType === 'json' && eligibleResponse?.statusCode === '204') {
+                responseType = 'text'
+            }
             return {
                 responses: Object.fromEntries(result.sort(([a], [b]) => a.localeCompare(b))),
                 success,
                 failure,
                 default: def,
                 mimeType: eligibleResponse?.mimeType,
-                responseType: eligibleResponse?.type,
+                responseType,
             }
         }
         return undefined
