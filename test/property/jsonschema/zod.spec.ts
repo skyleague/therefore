@@ -80,7 +80,7 @@ function zodSensiblePost(jsonschema: JSONSchema.JsonSchema): JSONSchema.JsonSche
 
     if (Array.isArray(schema.type)) {
         return {
-            anyOf: schema.type.map((x) => omitUndefined({ ...schema, type: x })),
+            anyOf: schema.type.map((x) => zodSensiblePost(omitUndefined({ ...(x !== 'null' ? schema : {}), type: x }))),
         }
     }
     if (schema.enum !== undefined && schema.enum.length > 1 && !schema.enum.every((x) => typeof x === 'string')) {
@@ -153,24 +153,24 @@ function zodNormalize(schema: JSONSchema.JsonSchema): JSONSchema.JsonSchema {
     return omitUndefined(schema)
 }
 
-it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
+it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema', async (target) => {
     await asyncForAll(
         arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
         async (jsonschema) => {
             const copy = structuredClone(jsonschema)
             // schema = zodSensible(schema, schema)
-            const schema = sensible({ schema: copy, document: copy, pre: zodSensiblePre, post: zodSensiblePost })
+            const schema = sensible({ schema: copy, document: copy, pre: zodSensiblePre, post: zodSensiblePost, target })
             const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
             // biome-ignore lint/security/noGlobalEval: needed here as part of the test
             const zod = eval(zodStr)
             const therefore = $zod(zod)
             therefore._name = 'Root'
             generateNode(therefore)
-            const converted = toJsonSchema(therefore)
+            const converted = toJsonSchema(therefore, { target })
             const normalized = {
                 $schema: 'http://json-schema.org/draft-07/schema#',
                 title: 'Root',
-                ...normalize(structuredClone(schema)),
+                ...normalize(structuredClone(schema), { target }),
             }
 
             const fileOutput = new GenericFileOutput({ path: 'test.json' })

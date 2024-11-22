@@ -2,7 +2,7 @@ import { isAlphaNumeric, isDigits } from '@skyleague/axioms'
 
 export function isValidIdentifier(x: string): boolean {
     // biome-ignore lint/suspicious/noMisleadingCharacterClass: taken from mdn
-    return /[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*/u.test(x)
+    return /^[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u.test(x)
 }
 
 export function accessProperty(x: string): string {
@@ -13,8 +13,8 @@ export function accessProperty(x: string): string {
 }
 
 export function objectProperty(x: string) {
-    if (x.includes('.') || x.includes('-') || x.includes(' ')) {
-        return stringLiteral(x, { allowBacktick: true })
+    if (!isValidIdentifier(x)) {
+        return stringLiteral(x, { allowBacktick: !x.startsWith('{') })
     }
     return x
 }

@@ -9,7 +9,6 @@ import { $null } from '../../primitives/null/null.js'
 import { $nullable } from '../../primitives/nullable/nullable.js'
 import { $number } from '../../primitives/number/number.js'
 import { $object } from '../../primitives/object/object.js'
-import { $optional } from '../../primitives/optional/optional.js'
 import { $record } from '../../primitives/record/record.js'
 import { $ref } from '../../primitives/ref/ref.js'
 import { $string } from '../../primitives/string/string.js'
@@ -26,6 +25,40 @@ describe('toTypeDefinition', () => {
         expect(ctx.render($string())).toEqual({
             type: 'string',
         })
+        expect(ctx.render($string().nullable())).toEqual({
+            type: ['string', 'null'],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+        {
+          "definitions": {},
+        }
+      `)
+    })
+
+    it('string - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($string())).toEqual({
+            type: 'string',
+        })
+        expect(ctx.render($string().nullable())).toEqual({
+            type: 'string',
+            nullable: true,
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+        {
+          "definitions": {},
+        }
+      `)
+    })
+
+    it('number', () => {
+        const ctx = buildContext()
+        expect(ctx.render($number())).toEqual({
+            type: 'number',
+        })
+        expect(ctx.render($number().nullable())).toEqual({
+            type: ['number', 'null'],
+        })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
             "definitions": {},
@@ -33,10 +66,14 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    it('number', () => {
-        const ctx = buildContext()
+    it('number - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
         expect(ctx.render($number())).toEqual({
             type: 'number',
+        })
+        expect(ctx.render($number().nullable())).toEqual({
+            type: 'number',
+            nullable: true,
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
@@ -50,6 +87,25 @@ describe('toTypeDefinition', () => {
         expect(ctx.render($integer())).toEqual({
             type: 'integer',
         })
+        expect(ctx.render($integer().nullable())).toEqual({
+            type: ['integer', 'null'],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('integer - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($integer())).toEqual({
+            type: 'integer',
+        })
+        expect(ctx.render($integer().nullable())).toEqual({
+            type: 'integer',
+            nullable: true,
+        })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
             "definitions": {},
@@ -61,6 +117,25 @@ describe('toTypeDefinition', () => {
         const ctx = buildContext()
         expect(ctx.render($boolean())).toEqual({
             type: 'boolean',
+        })
+        expect(ctx.render($boolean().nullable())).toEqual({
+            type: ['boolean', 'null'],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('boolean - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($boolean())).toEqual({
+            type: 'boolean',
+        })
+        expect(ctx.render($boolean().nullable())).toEqual({
+            type: 'boolean',
+            nullable: true,
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
@@ -74,6 +149,28 @@ describe('toTypeDefinition', () => {
         expect(ctx.render($null())).toEqual({
             type: 'null',
         })
+        expect(ctx.render($null().nullable())).toEqual({
+            type: 'null',
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('null - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($null())).toEqual({
+            enum: [null],
+            nullable: true,
+            type: 'string',
+        })
+        expect(ctx.render($null().nullable())).toEqual({
+            enum: [null],
+            nullable: true,
+            type: 'string',
+        })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
             "definitions": {},
@@ -84,6 +181,7 @@ describe('toTypeDefinition', () => {
     it('unknown', () => {
         const ctx = buildContext()
         expect(ctx.render($unknown())).toEqual({})
+        expect(ctx.render($unknown().nullable())).toEqual({})
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
             "definitions": {},
@@ -99,8 +197,34 @@ describe('toTypeDefinition', () => {
         expect(ctx.render($enum({ foo: 'bar', bar: '1' }))).toEqual({
             enum: ['bar', '1'],
         })
+        expect(ctx.render($enum(['foo', 'bar']).nullable())).toEqual({
+            enum: ['foo', 'bar', null],
+        })
         expect(ctx.render($enum(['foobar']))).toEqual({
             const: 'foobar',
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('enum - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($enum(['foo', 'bar']))).toEqual({
+            enum: ['foo', 'bar'],
+        })
+        expect(ctx.render($enum({ foo: 'bar', bar: '1' }))).toEqual({
+            enum: ['bar', '1'],
+        })
+        expect(ctx.render($enum(['foo', 'bar']).nullable())).toEqual({
+            enum: ['foo', 'bar', null],
+            nullable: true,
+            type: 'string',
+        })
+        expect(ctx.render($enum(['foobar']))).toEqual({
+            enum: ['foobar'],
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
@@ -113,6 +237,26 @@ describe('toTypeDefinition', () => {
         const ctx = buildContext()
         expect(ctx.render($const('foobar'))).toEqual({
             const: 'foobar',
+        })
+        expect(ctx.render($const('foobar').nullable())).toEqual({
+            enum: ['foobar', null],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('const - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($const('foobar'))).toEqual({
+            enum: ['foobar'],
+        })
+        expect(ctx.render($const('foobar').nullable())).toEqual({
+            enum: ['foobar', null],
+            nullable: true,
+            type: 'string',
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
@@ -128,6 +272,12 @@ describe('toTypeDefinition', () => {
                 type: 'string',
             },
             type: 'array',
+        })
+        expect(ctx.render($array($string).nullable())).toEqual({
+            items: {
+                type: 'string',
+            },
+            type: ['array', 'null'],
         })
         expect(ctx.render($array($enum(['foo', 'bar'])))).toEqual({
             items: {
@@ -155,6 +305,47 @@ describe('toTypeDefinition', () => {
         `)
     })
 
+    it('array - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($array($string))).toEqual({
+            items: {
+                type: 'string',
+            },
+            type: 'array',
+        })
+        expect(ctx.render($array($string).nullable())).toEqual({
+            items: {
+                type: 'string',
+            },
+            type: 'array',
+            nullable: true,
+        })
+        expect(ctx.render($array($enum(['foo', 'bar'])))).toEqual({
+            items: {
+                enum: ['foo', 'bar'],
+            },
+            type: 'array',
+        })
+        expect(ctx.render($array($union([$string, $integer])))).toEqual({
+            items: {
+                anyOf: [
+                    {
+                        type: 'string',
+                    },
+                    {
+                        type: 'integer',
+                    },
+                ],
+            },
+            type: 'array',
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+        {
+          "definitions": {},
+        }
+      `)
+    })
+
     it('tuple', () => {
         const ctx = buildContext()
         expect(ctx.render($tuple([$string, $string, $integer]))).toEqual({
@@ -173,6 +364,64 @@ describe('toTypeDefinition', () => {
             minItems: 3,
             type: 'array',
         })
+        expect(ctx.render($tuple([$string, $string, $integer]).nullable())).toEqual({
+            additionalItems: false,
+            items: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'integer',
+                },
+            ],
+            minItems: 3,
+            type: ['array', 'null'],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('tuple - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($tuple([$string, $string, $integer]))).toEqual({
+            additionalItems: false,
+            items: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'integer',
+                },
+            ],
+            minItems: 3,
+            type: 'array',
+        })
+        expect(ctx.render($tuple([$string, $string, $integer]).nullable())).toEqual({
+            additionalItems: false,
+            items: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'integer',
+                },
+            ],
+            minItems: 3,
+            type: 'array',
+            nullable: true,
+        })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
             "definitions": {},
@@ -187,6 +436,34 @@ describe('toTypeDefinition', () => {
                 type: 'string',
             },
             type: 'object',
+        })
+        expect(ctx.render($record($string).nullable())).toEqual({
+            additionalProperties: {
+                type: 'string',
+            },
+            type: ['object', 'null'],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('record - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($record($string))).toEqual({
+            additionalProperties: {
+                type: 'string',
+            },
+            type: 'object',
+        })
+        expect(ctx.render($record($string).nullable())).toEqual({
+            additionalProperties: {
+                type: 'string',
+            },
+            type: 'object',
+            nullable: true,
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
           {
@@ -273,12 +550,98 @@ describe('toTypeDefinition', () => {
         `)
     })
 
+    it('ref - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        const foo = $record($string)
+        expect(ctx.render($ref(foo))).toEqual({
+            $ref: '#/$defs/{{2:symbolName}}',
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {
+              "{{2:symbolName}}": {
+                "additionalProperties": {
+                  "type": "string",
+                },
+                "type": "object",
+              },
+            },
+          }
+        `)
+        // test the stable uuid referencing
+        expect(ctx.render($union([$ref(foo), $record($ref(foo))]))).toEqual({
+            anyOf: [
+                {
+                    $ref: '#/$defs/{{2:symbolName}}',
+                },
+                {
+                    additionalProperties: {
+                        $ref: '#/$defs/{{2:symbolName}}',
+                    },
+                    type: 'object',
+                },
+            ],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {
+              "{{2:symbolName}}": {
+                "additionalProperties": {
+                  "type": "string",
+                },
+                "type": "object",
+              },
+            },
+          }
+        `)
+        expect(ctx.render($union([$ref(foo), $record($ref(foo).nullable())]))).toEqual({
+            anyOf: [
+                {
+                    $ref: '#/$defs/{{2:symbolName}}',
+                },
+                {
+                    additionalProperties: {
+                        anyOf: [
+                            {
+                                $ref: '#/$defs/{{2:symbolName}}',
+                            },
+                        ],
+                        nullable: true,
+                    },
+                    type: 'object',
+                },
+            ],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {
+              "{{2:symbolName}}": {
+                "additionalProperties": {
+                  "type": "string",
+                },
+                "type": "object",
+              },
+            },
+          }
+        `)
+    })
+
     it('union', () => {
         const ctx = buildContext()
         expect(ctx.render($union([$string]))).toEqual({
             anyOf: [
                 {
                     type: 'string',
+                },
+            ],
+        })
+        expect(ctx.render($union([$string]).nullable())).toEqual({
+            anyOf: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'null',
                 },
             ],
         })
@@ -302,23 +665,63 @@ describe('toTypeDefinition', () => {
         `)
     })
 
-    it.skip('object', () => {
+    it('union - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($union([$string]))).toEqual({
+            anyOf: [
+                {
+                    type: 'string',
+                },
+            ],
+        })
+        expect(ctx.render($union([$string]).nullable())).toEqual({
+            anyOf: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'string',
+                    nullable: true,
+                    enum: [null],
+                },
+            ],
+        })
+        expect(ctx.render($union([$string, $string, $integer]))).toEqual({
+            anyOf: [
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'string',
+                },
+                {
+                    type: 'integer',
+                },
+            ],
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('object', () => {
         const ctx = buildContext()
-        // expect(ctx.render($object({ foo: $string }))).toEqual({
-        //     additionalProperties: true,
-        //     properties: {
-        //         foo: {
-        //             type: 'string',
-        //         },
-        //     },
-        //     required: ['foo'],
-        //     type: 'object',
-        // })
-        expect(ctx.render($object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }))).toEqual({
+        expect(ctx.render($object({ foo: $string }))).toEqual({
+            additionalProperties: true,
+            properties: {
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['foo'],
+            type: 'object',
+        })
+        expect(ctx.render($object({ foo: $string, bar: $integer().nullable(), baz: $integer().optional() }))).toEqual({
             additionalProperties: true,
             properties: {
                 bar: {
-                    nullable: true,
                     type: ['integer', 'null'],
                 },
                 baz: {
@@ -328,23 +731,23 @@ describe('toTypeDefinition', () => {
                     type: 'string',
                 },
             },
-            required: ['foo', 'bar'],
+            required: ['bar', 'foo'],
             type: 'object',
         })
-        // expect(ctx.render($object({ foo: $string, bar: $string({ description: 'fooscription' }) }))).toEqual({
-        //     additionalProperties: true,
-        //     properties: {
-        //         bar: {
-        //             description: 'fooscription',
-        //             type: 'string',
-        //         },
-        //         foo: {
-        //             type: 'string',
-        //         },
-        //     },
-        //     required: ['foo', 'bar'],
-        //     type: 'object',
-        // })
+        expect(ctx.render($object({ foo: $string, bar: $string().describe('fooscription') }))).toEqual({
+            additionalProperties: true,
+            properties: {
+                bar: {
+                    description: 'fooscription',
+                    type: 'string',
+                },
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['bar', 'foo'],
+            type: 'object',
+        })
         expect(
             ctx.render(
                 $object(
@@ -370,7 +773,85 @@ describe('toTypeDefinition', () => {
                     type: 'string',
                 },
             },
-            required: ['foo', 'bar'],
+            required: ['bar', 'foo'],
+            type: 'object',
+        })
+        expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`
+          {
+            "definitions": {},
+          }
+        `)
+    })
+
+    it('object - openapi', () => {
+        const ctx = buildContext(undefined, { target: 'openapi3' })
+        expect(ctx.render($object({ foo: $string }))).toEqual({
+            additionalProperties: true,
+            properties: {
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['foo'],
+            type: 'object',
+        })
+        expect(ctx.render($object({ foo: $string, bar: $integer().nullable(), baz: $integer().optional() }))).toEqual({
+            additionalProperties: true,
+            properties: {
+                bar: {
+                    nullable: true,
+                    type: 'integer',
+                },
+                baz: {
+                    type: 'integer',
+                },
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['bar', 'foo'],
+            type: 'object',
+        })
+        expect(ctx.render($object({ foo: $string, bar: $string().describe('fooscription') }))).toEqual({
+            additionalProperties: true,
+            properties: {
+                bar: {
+                    description: 'fooscription',
+                    type: 'string',
+                },
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['bar', 'foo'],
+            type: 'object',
+        })
+        expect(
+            ctx.render(
+                $object(
+                    {
+                        foo: $string,
+                        bar: $string({ description: 'fooscription' }),
+                    },
+                    { default: { foo: 'bar', bar: 'foo' } },
+                ),
+            ),
+        ).toEqual({
+            additionalProperties: true,
+            default: {
+                bar: 'foo',
+                foo: 'bar',
+            },
+            properties: {
+                bar: {
+                    description: 'fooscription',
+                    type: 'string',
+                },
+                foo: {
+                    type: 'string',
+                },
+            },
+            required: ['bar', 'foo'],
             type: 'object',
         })
         expect(pick(ctx, ['definitions'])).toMatchInlineSnapshot(`

@@ -1,11 +1,11 @@
 import type { JsonValue } from '@skyleague/axioms/types'
-import type { NodeTrait } from '../../cst/mixin.js'
-import { Node } from '../../cst/node.js'
+import { NodeTrait } from '../../cst/mixin.js'
+import type { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
 
 export type ConstOptions = object
 
-export class ConstType<T = unknown> extends Node {
+export class ConstType<T = unknown> extends NodeTrait {
     public override _type = 'const' as const
     public _options: ConstOptions = {}
     public const: unknown
@@ -20,7 +20,7 @@ export class ConstType<T = unknown> extends Node {
     }
 }
 
-export interface ConstTyp extends Node, NodeTrait {}
+export interface ConstType extends Node, NodeTrait {}
 
 /**
  * Create a new `EnumType` instance with the given options.

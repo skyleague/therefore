@@ -20,9 +20,9 @@ it('annotation type matches', () => {
     const _foo: JSONSchema.JsonSchema = {} satisfies JsonSchema
 })
 
-it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
+it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema', async (target) => {
     await asyncForAll(
-        jsonSchemaArbitrary,
+        jsonSchemaArbitrary({ target }),
         async (schema) => {
             const therefore = $jsonschema(structuredClone(schema), {
                 name: 'root',
@@ -34,11 +34,11 @@ it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
                 },
             })
             generateNode(therefore)
-            const converted = toJsonSchema(therefore)
+            const converted = toJsonSchema(therefore, { target })
             const normalized = {
                 $schema: 'http://json-schema.org/draft-07/schema#',
                 title: 'Root',
-                ...normalize(structuredClone(schema)),
+                ...normalize(structuredClone(schema), { target }),
             }
 
             const fileOutput = new GenericFileOutput({ path: 'test.json' })
@@ -76,13 +76,14 @@ it('arbitrary <=> jsonschema <=> therefore <=> jsonschema', async () => {
             tests: 200,
             depth: 'm',
             shrinks: 400,
+            counterExample: { type: 'number', multipleOf: 1 },
         },
     )
 })
 
-it('value to literal', () => {
+it.each(['draft-07', 'openapi3'] as const)('%s - value to literal', async (target) => {
     forAll(
-        jsonSchemaArbitrary
+        jsonSchemaArbitrary({ target })
             .map((schema) => {
                 const therefore = $jsonschema(structuredClone(schema), {
                     name: 'root',

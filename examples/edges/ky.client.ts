@@ -99,8 +99,8 @@ export class KyurlencodedClient {
         I,
         S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>,
     >(response: ResponsePromise<I>, schemas: S, responseType?: 'json' | 'text') {
+        const _body = (await (responseType !== undefined ? response[responseType]() : response.text())) as I
         const result = await response
-        const _body = (await (responseType !== undefined ? result[responseType]() : result.text())) as I
         const status =
             result.status < 200
                 ? 'informational'

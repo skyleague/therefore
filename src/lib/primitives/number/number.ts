@@ -26,7 +26,7 @@ export interface NumberOptions {
      *  - input: 2 (invalid)
      */
     max?: number | undefined
-    maxInclusive: boolean
+    maxInclusive?: boolean
 
     /**
      * A number is valid if the value is greater than or equal to the parameter.
@@ -38,7 +38,7 @@ export interface NumberOptions {
      *  - input: 1 (validates)
      */
     min?: number | undefined
-    minInclusive: boolean
+    minInclusive?: boolean
 
     arbitrary?: Partial<FloatGenerator> | undefined
 }
@@ -50,13 +50,9 @@ export class NumberType extends NodeTrait {
     public declare infer: number
     public declare input: number
 
-    public constructor({ minInclusive = true, maxInclusive = true, ...options }: SchemaOptions<Partial<NumberOptions>>) {
+    public constructor(options: SchemaOptions<Partial<NumberOptions>>) {
         super(options)
-        this._options = {
-            minInclusive,
-            maxInclusive,
-            ...options,
-        }
+        this._options = options
     }
 
     public arbitrary(options: Partial<FloatGenerator>) {

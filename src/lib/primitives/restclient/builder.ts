@@ -224,6 +224,9 @@ export class RestClientBuilder {
     public hasValidateRequestBody = false
 
     public static async from(definition: OpenapiV3, options: Partial<RestClientOptions> = {}) {
+        if ((definition as { swagger?: string }).swagger?.startsWith('2.')) {
+            console.warn('Loading swagger 2.0 definitions will be deprecated in the future, please use openapi 3.0/3.1 instead')
+        }
         const converted: { openapi: OpenapiV3 } = await converter.convertObj(definition, {
             path: true,
         })

@@ -133,8 +133,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         const { min, max, minInclusive, maxInclusive, ...restArbitrary } = options.arbitrary ?? {}
 
         return float({
-            minInclusive: minInclusive ?? options.minInclusive,
-            maxInclusive: maxInclusive ?? options.maxInclusive,
+            minInclusive: minInclusive ?? options.minInclusive ?? true,
+            maxInclusive: maxInclusive ?? options.maxInclusive ?? true,
             min: min ?? options.min,
             max: max ?? options.max,
             ...restArbitrary,
@@ -149,8 +149,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
     integer: ({ _options: options }) => {
         const { min, max, minInclusive, maxInclusive, ...restArbitrary } = options.arbitrary ?? {}
         return integer({
-            minInclusive: minInclusive ?? options.minInclusive,
-            maxInclusive: maxInclusive ?? options.maxInclusive,
+            minInclusive: minInclusive ?? options.minInclusive ?? true,
+            maxInclusive: maxInclusive ?? options.maxInclusive ?? true,
             min: min ?? options.min,
             max: max ?? options.max,
             ...restArbitrary,

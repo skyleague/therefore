@@ -119,7 +119,7 @@ export interface JsonAnnotations<T = unknown> {
     /** @deprecated */
     writeonly?: boolean | undefined
     examples?: T[] | undefined
-    /** @experimental */
+    /** @experimental is also removed from openapi 3.1*/
     nullable?: boolean | undefined
 }
 
