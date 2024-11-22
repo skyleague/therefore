@@ -4,48 +4,37 @@
   "type": "object",
   "properties": {
     "alt": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "day": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "img": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "link": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "month": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "news": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "num": {
-      "type": "number",
-      "nullable": true
+      "type": ["number", "null"]
     },
     "safe_title": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "title": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "transcript": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     },
     "year": {
-      "type": "string",
-      "nullable": true
+      "type": ["string", "null"]
     }
   },
   "additionalProperties": true

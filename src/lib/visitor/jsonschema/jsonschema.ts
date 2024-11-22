@@ -1,4 +1,4 @@
-import { isObject, omitUndefined } from '@skyleague/axioms'
+import { isObject, omitUndefined, unique } from '@skyleague/axioms'
 import type { Options as AjvOptions, Schema } from 'ajv'
 import { Ajv } from 'ajv'
 import addFormats, { type FormatName } from 'ajv-formats'
@@ -10,6 +10,7 @@ import type {
     JsonArrayInstance,
     JsonObjectInstance,
     JsonSchema,
+    JsonSchema7TypeName,
     ThereforeExtension,
 } from '../../../json.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
@@ -29,13 +30,17 @@ export interface JsonSchemaWalkerContext {
     definitions: NonNullable<JsonSchema['definitions']>
     references: References<'generic'>
     formats: Set<string>
+    target: 'draft-07' | 'openapi3'
     transform: (node: Node, schema: Partial<JsonSchema>) => JsonSchema
     render: (node: Node) => JsonSchema
 }
 
 export function buildContext(
     obj?: Node,
-    { references = new References('generic') }: { references?: References<'generic'> } = {},
+    {
+        references = new References('generic'),
+        target = 'draft-07',
+    }: { references?: References<'generic'>; target?: 'draft-07' | 'openapi3' } = {},
 ): JsonSchemaWalkerContext {
     const ajv = ajvOptions(obj)
     ajv.code ??= {}
@@ -48,19 +53,22 @@ export function buildContext(
         branch: obj,
         current: obj,
         references,
+        target: target,
         formats: new Set(),
         transform: (node, schema): JsonSchema => {
             const { type, ...other } = schema
-            return omitUndefined({
+            const value = omitUndefined({
                 type,
-                ...annotate(schema, node, context.branch),
+                ...annotate({ schema, node, branch: context.branch, version: target }),
                 ...other,
             })
+
+            return value
         },
         render: (node) => {
             const previous = context?.current
             const branch = context.branch
-            if (previous?._isCommutative === false) {
+            if (previous?._isCommutative === false || previous === undefined) {
                 context.branch = node
             }
 
@@ -75,7 +83,12 @@ export function buildContext(
     return context
 }
 
-export function annotate(schema: JsonSchema, node: Node, branch: Node | undefined): JsonAnnotations {
+export function annotate({
+    schema,
+    node,
+    branch,
+    version,
+}: { schema: JsonSchema; node: Node; branch: Node | undefined; version: 'openapi3' | 'draft-07' }): JsonAnnotations {
     const hasType = schema.type !== undefined
 
     return {
@@ -87,7 +100,14 @@ export function annotate(schema: JsonSchema, node: Node, branch: Node | undefine
         default: node._definition.default,
         readonly: node._definition.readonly,
         deprecated: node._definition.deprecated,
-        nullable: hasType && branch !== undefined ? (hasNullablePrimitive(branch) ? true : undefined) : undefined,
+        nullable:
+            version === 'openapi3'
+                ? hasType && branch !== undefined
+                    ? hasNullablePrimitive(branch)
+                        ? true
+                        : undefined
+                    : undefined
+                : undefined,
     }
 }
 
@@ -106,14 +126,26 @@ export const toFormat: Record<StringFormat, JsonSchema['format'] | 'ulid' | 'uui
     base64: undefined,
 }
 
+export function asType(type: JsonSchema7TypeName, context: JsonSchemaWalkerContext): JsonSchema['type'] {
+    if (context.target === 'openapi3') {
+        return type
+    }
+
+    if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
+        return [type, 'null']
+    }
+    return type
+}
+
 export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerContext> = {
-    string: ({ _options: options }, { formats }) => {
+    string: ({ _options: options }, ctx) => {
+        const { formats } = ctx
         const format = options.format ? (toFormat[options.format] as JsonSchema['format']) : undefined
         if (format !== undefined) {
             formats.add(format)
         }
         return {
-            type: 'string',
+            type: asType('string', ctx),
             minLength: options.minLength,
             maxLength: options.maxLength,
             pattern: typeof options.regex !== 'string' ? options.regex?.source : options.regex,
@@ -122,25 +154,64 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             'x-arbitrary': options.arbitrary,
         }
     },
-    number: ({ _options: options }) => ({
-        type: 'number',
+    number: ({ _options: options }, ctx) => ({
+        type: asType('number', ctx),
         multipleOf: options.multipleOf,
-        ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
-        ...(options.maxInclusive ? { maximum: options.max } : { exclusiveMaximum: options.max }),
+        ...(ctx.target === 'openapi3'
+            ? {
+                  minimum: options.min,
+                  maximum: options.max,
+                  ...(options.minInclusive === false ? { exclusiveMinimum: true as never } : {}),
+                  ...(options.maxInclusive === false ? { exclusiveMaximum: true as never } : {}),
+              }
+            : {
+                  ...(options.minInclusive || options.minInclusive === undefined
+                      ? { minimum: options.min }
+                      : { exclusiveMinimum: options.min }),
+                  ...(options.maxInclusive || options.maxInclusive === undefined
+                      ? { maximum: options.max }
+                      : { exclusiveMaximum: options.max }),
+              }),
         'x-arbitrary': options.arbitrary,
     }),
-    integer: ({ _options: options }) => ({
-        type: 'integer',
+    integer: ({ _options: options }, ctx) => ({
+        type: asType('integer', ctx),
         multipleOf: options.multipleOf,
-        ...(options.minInclusive ? { minimum: options.min } : { exclusiveMinimum: options.min }),
-        ...(options.maxInclusive ? { maximum: options.max } : { exclusiveMaximum: options.max }),
+        ...(ctx.target === 'openapi3'
+            ? {
+                  minimum: options.min,
+                  maximum: options.max,
+                  ...(options.minInclusive === false ? { exclusiveMinimum: true as never } : {}),
+                  ...(options.maxInclusive === false ? { exclusiveMaximum: true as never } : {}),
+              }
+            : {
+                  ...(options.minInclusive || options.minInclusive === undefined
+                      ? { minimum: options.min }
+                      : { exclusiveMinimum: options.min }),
+                  ...(options.maxInclusive || options.maxInclusive === undefined
+                      ? { maximum: options.max }
+                      : { exclusiveMaximum: options.max }),
+              }),
         'x-arbitrary': options.arbitrary,
     }),
-    boolean: () => ({
-        type: 'boolean',
+    boolean: (_, ctx) => ({
+        type: asType('boolean', ctx),
     }),
     unknown: ({ _options: options }) => ({ 'x-arbitrary': options.arbitrary }),
-    const: (node, { branch }) => {
+    const: (node, { branch, target: version }) => {
+        if (version === 'openapi3') {
+            if ((branch !== undefined && hasNullablePrimitive(branch)) || node.const === null) {
+                return {
+                    type: 'string',
+                    enum: [...unique([node.const, null])],
+                    nullable: true,
+                }
+            }
+
+            return {
+                enum: [node.const],
+            }
+        }
         if (node.const === null) {
             return {
                 type: 'null',
@@ -156,8 +227,23 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             const: node.const,
         }
     },
-    enum: (node, { branch }) => {
+    enum: (node, { branch, target: version }) => {
         const values = node._isNamed ? Object.values(node.enum) : node.enum
+
+        if (version === 'openapi3') {
+            if (branch !== undefined && hasNullablePrimitive(branch) && values.findIndex((v) => v === null) === -1) {
+                return {
+                    // like really?!
+                    type: 'string',
+                    enum: [...values, null],
+                    nullable: true,
+                }
+            }
+            return {
+                enum: values,
+            }
+        }
+
         if (branch !== undefined && hasNullablePrimitive(branch) && values.findIndex((v) => v === null) === -1) {
             return {
                 enum: [...values, null],
@@ -172,13 +258,26 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             enum: values,
         }
     },
-    union: ({ _children }, context) => {
-        const children = _children.map((u) => context.render(u))
+    union: ({ _children }, ctx) => {
+        const children = _children.map((u) => ctx.render(u))
         if (
-            context.branch !== undefined &&
-            hasNullablePrimitive(context.branch) &&
+            ctx.branch !== undefined &&
+            hasNullablePrimitive(ctx.branch) &&
             children.find((c) => c.type === 'null') === undefined
         ) {
+            if (ctx.target === 'openapi3') {
+                return {
+                    anyOf: [
+                        ...children,
+                        {
+                            // like really?!
+                            type: 'string',
+                            enum: [null],
+                            nullable: true,
+                        },
+                    ],
+                }
+            }
             return {
                 anyOf: [...children, { type: 'null' }],
             }
@@ -187,12 +286,27 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             anyOf: children,
         }
     },
-    intersection: ({ _children }, context) => {
-        if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
+    intersection: ({ _children }, ctx) => {
+        if (ctx.branch !== undefined && hasNullablePrimitive(ctx.branch)) {
+            if (ctx.target === 'openapi3') {
+                return {
+                    anyOf: [
+                        {
+                            allOf: _children.map((u) => ctx.render(u)),
+                        },
+                        {
+                            // like really?!
+                            type: 'string',
+                            enum: [null],
+                            nullable: true,
+                        },
+                    ],
+                }
+            }
             return {
                 anyOf: [
                     {
-                        allOf: _children.map((u) => context.render(u)),
+                        allOf: _children.map((u) => ctx.render(u)),
                     },
                     {
                         type: 'null',
@@ -202,32 +316,32 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         }
         return {
             allOf: _children.map((u) => {
-                return context.render(u)
+                return ctx.render(u)
             }),
         }
     },
-    object: (obj, context): JsonAnyInstance & JsonObjectInstance & ThereforeExtension => {
+    object: (obj, ctx): JsonAnyInstance & JsonObjectInstance & ThereforeExtension => {
         const { shape, _options: options, element: recordType, patternProperties: childPatternProperties } = obj as JSONObjectType
         const properties: NonNullable<JsonSchema['properties']> = {}
         const required: string[] = []
         for (const [name, child] of Object.entries(shape)) {
-            properties[name] = context.render(child)
-            const defaultIsInferred = child._definition.default !== undefined && context.ajv.useDefaults === true
+            properties[name] = ctx.render(child)
+            const defaultIsInferred = child._definition.default !== undefined && ctx.ajv.useDefaults === true
             if (!(defaultIsInferred || hasOptionalPrimitive(child))) {
                 required.push(name)
             }
         }
 
         const additionalProperties: JsonSchema['additionalProperties'] =
-            recordType !== undefined ? context.render(recordType) : options.strict !== true
+            recordType !== undefined ? ctx.render(recordType) : options.strict !== true
         const patternProperties: JsonSchema['patternProperties'] =
             childPatternProperties !== undefined
                 ? Object.fromEntries(
-                      Object.entries(childPatternProperties).map(([pattern, values]) => [pattern, context.render(values)]),
+                      Object.entries(childPatternProperties).map(([pattern, values]) => [pattern, ctx.render(values)]),
                   )
                 : undefined
         return {
-            type: 'object' as const,
+            type: asType('object', ctx),
             properties: Object.keys(shape).length > 0 ? properties : undefined,
             required: required.length > 0 ? required.sort((a, b) => a.localeCompare(b)) : undefined,
             additionalProperties:
@@ -236,26 +350,26 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             'x-arbitrary': options.arbitrary,
         } satisfies JsonSchema
     },
-    array: ({ _options: options, element }, context): JsonArrayInstance & JsonAnyInstance & ThereforeExtension => {
+    array: ({ _options: options, element }, ctx): JsonArrayInstance & JsonAnyInstance & ThereforeExtension => {
         return {
-            type: 'array' as const,
-            items: context.render(element),
+            type: asType('array', ctx),
+            items: ctx.render(element),
             minItems: options.minItems,
             maxItems: options.maxItems,
             uniqueItems: options.set,
             'x-arbitrary': options.arbitrary,
         }
     },
-    tuple: ({ items: elements, _options: { rest } }, context): JsonArrayInstance & JsonAnyInstance => {
+    tuple: ({ items: elements, _options: { rest } }, ctx): JsonArrayInstance & JsonAnyInstance => {
         return {
-            type: 'array',
-            items: elements.map((c) => context.render(c)),
-            additionalItems: rest !== undefined ? context.render(rest) : false,
+            type: asType('array', ctx),
+            items: elements.map((c) => ctx.render(c)),
+            additionalItems: rest !== undefined ? ctx.render(rest) : false,
             minItems: elements.length,
         }
     },
-    ref: ({ _children: [reference], _definition }, context) => {
-        const { definitions, entry, references } = context
+    ref: ({ _children: [reference], _definition }, ctx) => {
+        const { definitions, entry, references } = ctx
 
         const uuid = reference._id
 
@@ -271,10 +385,16 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         const symbolName = references.reference(reference, 'symbolName')
         if (definitions[symbolName] === undefined) {
             definitions[symbolName] = {} // mark spot as taken (prevents recursion)
-            const node: JsonSchema = context.render(reference)
+            const node: JsonSchema = ctx.render(reference)
             definitions[symbolName] = node
         }
-        if (context.branch !== undefined && hasNullablePrimitive(context.branch)) {
+        if (ctx.branch !== undefined && hasNullablePrimitive(ctx.branch)) {
+            if (ctx.target === 'openapi3') {
+                return {
+                    anyOf: [{ $ref: `#/$defs/${symbolName}` }],
+                    nullable: true,
+                }
+            }
             // https://github.com/OAI/OpenAPI-Specification/issues/1368
             return { anyOf: [{ $ref: `#/$defs/${symbolName}` }, { type: 'null' }] }
         }
@@ -343,9 +463,10 @@ export function toJsonSchema<Compile extends boolean = true>(
         compile,
         references = new References('generic'),
         formats = true,
-    }: { compile?: Compile; references?: References<'generic'>; formats?: boolean } = {},
+        target = 'draft-07',
+    }: { compile?: Compile; references?: References<'generic'>; formats?: boolean; target?: 'draft-07' | 'openapi3' } = {},
 ) {
-    const context = buildContext(obj, { references })
+    const context = buildContext(obj, { references, target: target })
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
         title: references.reference(obj, 'symbolName'),

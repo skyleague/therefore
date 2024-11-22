@@ -1,6 +1,6 @@
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { NodeTrait } from '../../cst/mixin.js'
-import { toLiteral } from '../../visitor/typescript/literal.js'
+import { objectProperty, toLiteral } from '../../visitor/typescript/literal.js'
 import { createWriter } from '../../writer.js'
 import type { SchemaOptions } from '../base.js'
 
@@ -60,7 +60,7 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
                         .write(`${exportKeyword}const ${symbolName} = `)
                         .inlineBlock(() => {
                             for (const [childName, value] of Object.entries(vals)) {
-                                writer.writeLine(`${childName}: ${toLiteral(value)},`)
+                                writer.writeLine(`${objectProperty(childName)}: ${toLiteral(value)},`)
                             }
                         })
                         .write(' as const')

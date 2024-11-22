@@ -321,9 +321,7 @@ describe('coordinates', () => {
                 "_name": "latitude",
                 "_options": {
                   "max": 90,
-                  "maxInclusive": true,
                   "min": -90,
-                  "minInclusive": true,
                 },
                 "_type": "number",
               },
@@ -338,9 +336,7 @@ describe('coordinates', () => {
                 "_name": "longitude",
                 "_options": {
                   "max": 180,
-                  "maxInclusive": true,
                   "min": -180,
-                  "minInclusive": true,
                 },
                 "_type": "number",
               },
@@ -369,9 +365,7 @@ describe('coordinates', () => {
                 "_name": "latitude",
                 "_options": {
                   "max": 90,
-                  "maxInclusive": true,
                   "min": -90,
-                  "minInclusive": true,
                 },
                 "_type": "number",
               },
@@ -386,9 +380,7 @@ describe('coordinates', () => {
                 "_name": "longitude",
                 "_options": {
                   "max": 180,
-                  "maxInclusive": true,
                   "min": -180,
-                  "minInclusive": true,
                 },
                 "_type": "number",
               },
@@ -1250,10 +1242,7 @@ describe('object with nullable property', () => {
                             "_id": "7",
                             "_isCommutative": true,
                             "_name": "store",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
+                            "_options": {},
                             "_type": "number",
                           },
                         ],
@@ -1443,10 +1432,7 @@ describe('object with nullable property', () => {
                             "_id": "7",
                             "_isCommutative": true,
                             "_name": "store",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
+                            "_options": {},
                             "_type": "number",
                           },
                         ],
@@ -1538,8 +1524,10 @@ describe('object with nullable property', () => {
                 "items": {
                   "type": "string",
                 },
-                "nullable": true,
-                "type": "array",
+                "type": [
+                  "array",
+                  "null",
+                ],
               },
               "store": {
                 "anyOf": [
@@ -1611,10 +1599,7 @@ describe('make optional properties nullable', () => {
                 "_id": "2",
                 "_isCommutative": true,
                 "_name": "bar",
-                "_options": {
-                  "maxInclusive": true,
-                  "minInclusive": true,
-                },
+                "_options": {},
                 "_type": "number",
               },
               NodeTrait {
@@ -1694,10 +1679,7 @@ describe('make optional properties nullable', () => {
                             "_id": "4",
                             "_isCommutative": true,
                             "_name": "foobar",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
+                            "_options": {},
                             "_type": "number",
                           },
                         ],
@@ -1742,10 +1724,7 @@ describe('make optional properties nullable', () => {
                 "_id": "2",
                 "_isCommutative": true,
                 "_name": "bar",
-                "_options": {
-                  "maxInclusive": true,
-                  "minInclusive": true,
-                },
+                "_options": {},
                 "_type": "number",
               },
               "foo": NodeTrait {
@@ -1825,10 +1804,7 @@ describe('make optional properties nullable', () => {
                             "_id": "4",
                             "_isCommutative": true,
                             "_name": "foobar",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
+                            "_options": {},
                             "_type": "number",
                           },
                         ],
@@ -1869,8 +1845,10 @@ describe('make optional properties nullable', () => {
                 "type": "number",
               },
               "foo": {
-                "nullable": true,
-                "type": "string",
+                "type": [
+                  "string",
+                  "null",
+                ],
               },
               "foobar": {
                 "anyOf": [
@@ -2524,8 +2502,10 @@ describe('nullable array', () => {
                 "items": {
                   "$ref": "#/$defs/{{9:symbolName}}",
                 },
-                "nullable": true,
-                "type": "array",
+                "type": [
+                  "array",
+                  "null",
+                ],
               },
             },
             "type": "object",
