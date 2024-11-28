@@ -1,6 +1,7 @@
+import type { Infer, Schema as TSchema } from '@typeschema/main'
 import type { JsonSchema } from '../../../json.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
-import type { Node } from '../../cst/node.js'
+import { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
 import { $jsonschema, type JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
@@ -40,7 +41,9 @@ import {
     uuidv4Arbitrary,
 } from '@skyleague/axioms'
 import { expand } from 'regex-to-strings'
+import type { ZodSchema } from 'zod'
 import type { RecordType } from '../../primitives/record/record.js'
+import { $ref } from '../../primitives/ref/ref.js'
 
 export interface ArbitraryContext {
     references: Map<string, () => Arbitrary<unknown>>
@@ -289,11 +292,16 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
  */
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'>): Dependent<T>
 export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
-export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T })): Dependent<T> {
+export function arbitrary<T extends ZodSchema>(schema: T): Dependent<T['_output']>
+export function arbitrary<T extends TSchema>(schema: T): Dependent<Infer<T>>
+export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T }) | TSchema): Dependent<T> {
     const context = buildContext()
     if ('schema' in schema) {
         // as the therefore schemas are very strict by default, we can allow intersection types here
         return context.arbitrary($jsonschema(schema.schema as JsonSchema, { allowIntersection: true })) as Dependent<T>
+    }
+    if (!(schema instanceof Node)) {
+        return context.arbitrary($ref(schema)) as Dependent<T>
     }
     loadNode(schema)
     const root = context.arbitrary(schema) as Dependent<T>
