@@ -3,6 +3,7 @@ import { ValidationError } from 'ajv'
 import { jsonSchemaToZod } from 'json-schema-to-zod'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
+import type { ZodSchema } from 'zod'
 import type * as JSONSchema from '../../../src/json.js'
 import { GenericFileOutput } from '../../../src/lib/output/generic.js'
 import { TypescriptFileOutput } from '../../../src/lib/output/typescript.js'
@@ -198,6 +199,55 @@ it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> th
                         return true
                     }
                     throw new ValidationError(converted.validator?.errors ?? [])
+                },
+                {
+                    seed: 42n,
+                },
+            )
+        },
+        {
+            tests: 200,
+            depth: 'm',
+            shrinks: 400,
+        },
+    )
+})
+
+it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> zod <=> arbitrary', async (target) => {
+    await asyncForAll(
+        arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
+        async (jsonschema) => {
+            const copy = structuredClone(jsonschema)
+            // schema = zodSensible(schema, schema)
+            const schema = sensible({
+                schema: copy,
+                document: copy,
+                pre: (x) => {
+                    const schema = zodSensiblePre(x)
+
+                    // zod doesnt properly support full literals
+                    if (schema.const !== undefined) {
+                        schema.const = JSON.stringify(schema.const)
+                    }
+                    if (schema.enum !== undefined) {
+                        schema.enum = schema.enum.map((x) => JSON.stringify(x))
+                    }
+                    if (schema.format !== undefined) {
+                        schema.format = undefined
+                    }
+                    return schema
+                },
+                post: zodSensiblePost,
+                target,
+            })
+            const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
+            // biome-ignore lint/security/noGlobalEval: needed here as part of the test
+            const zod: ZodSchema = eval(zodStr)
+
+            forAll(
+                arbitrary(zod),
+                (value) => {
+                    return zod.safeParse(value).success
                 },
                 {
                     seed: 42n,
