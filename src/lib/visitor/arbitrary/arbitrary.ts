@@ -125,9 +125,11 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         if (options.regex !== undefined) {
             return regexArbitrary(options.regex)
         }
+        const min = minLength ?? options.minLength
+        const max = maxLength ?? options.maxLength
         return string({
-            minLength: minLength ?? options.minLength,
-            maxLength: maxLength ?? options.maxLength,
+            minLength: min === undefined || max === undefined ? min : Math.min(min, max),
+            maxLength: min === undefined || max === undefined ? max : Math.max(min, max),
             ...restArbitrary,
         })
     },

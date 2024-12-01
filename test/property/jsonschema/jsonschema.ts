@@ -11,14 +11,97 @@ export function normalize(
     },
 ): JSONSchema.JsonSchema {
     if (Array.isArray(schema.type)) {
-        const types = schema.type.filter((type) => !(schema.nullable === true && type === 'null') || schema.type?.length === 1)
+        if (schema.type.length === 1) {
+            schema.type = schema.type[0]
+        }
+    }
+    if (Array.isArray(schema.type)) {
+        const types = schema.type.filter((type) => type !== 'null')
 
         if (types.length > 1) {
-            schema.anyOf = types.map((type) => normalize({ type }, options))
+            schema.anyOf = types.map((type) => {
+                const subSchema: JSONSchema.JsonSchema = { type }
+                // Only keep fields relevant to the specific type
+                if (type === 'string') {
+                    // Keep string-specific fields
+                    subSchema.minLength = schema.minLength
+                    subSchema.maxLength = schema.maxLength
+                    subSchema.pattern = schema.pattern
+                    subSchema.format = schema.format
+                    subSchema.contentEncoding = schema.contentEncoding
+                    subSchema.contentMediaType = schema.contentMediaType
+                    subSchema['x-arbitrary'] = schema['x-arbitrary']
+                } else if (type === 'number' || type === 'integer') {
+                    // Keep numeric fields
+                    subSchema.minimum = schema.minimum
+                    subSchema.maximum = schema.maximum
+                    subSchema.exclusiveMinimum = schema.exclusiveMinimum
+                    subSchema.exclusiveMaximum = schema.exclusiveMaximum
+                    subSchema.multipleOf = schema.multipleOf
+                    subSchema['x-arbitrary'] = schema['x-arbitrary']
+                } else if (type === 'array') {
+                    // Keep array fields
+                    subSchema.items = schema.items
+                    subSchema.minItems = schema.minItems
+                    subSchema.maxItems = schema.maxItems
+                    subSchema.uniqueItems = schema.uniqueItems
+                    subSchema.additionalItems = schema.additionalItems
+                    subSchema['x-arbitrary'] = schema['x-arbitrary']
+                } else if (type === 'object') {
+                    // Keep object fields
+                    subSchema.properties = schema.properties
+                    subSchema.required = schema.required
+                    subSchema.additionalProperties = schema.additionalProperties
+                    subSchema.minProperties = schema.minProperties
+                    subSchema.maxProperties = schema.maxProperties
+                    subSchema.patternProperties = schema.patternProperties
+                    subSchema['x-arbitrary'] = schema['x-arbitrary']
+                }
+                return normalize(omitUndefined(subSchema), options)
+            })
             schema.type = undefined
+            // Clear hoisted fields that were not used in any of the type-specific schemas
+            schema.minLength = undefined
+            schema.maxLength = undefined
+            schema.pattern = undefined
+            schema.format = undefined
+            schema.contentEncoding = undefined
+            schema.contentMediaType = undefined
+            schema.minimum = undefined
+            schema.maximum = undefined
+            schema.exclusiveMinimum = undefined
+            schema.exclusiveMaximum = undefined
+            schema.multipleOf = undefined
+            schema.items = undefined
+            schema.minItems = undefined
+            schema.maxItems = undefined
+            schema.uniqueItems = undefined
+            schema.additionalItems = undefined
+            schema.properties = undefined
+            schema.required = undefined
+            schema.additionalProperties = undefined
+            schema.minProperties = undefined
+            schema.maxProperties = undefined
+            schema.patternProperties = undefined
+            schema['x-arbitrary'] = undefined
+        }
+
+        if (options.target !== 'openapi3') {
+            if (schema.nullable && types.length !== schema.type?.length) {
+                schema.nullable = undefined
+            }
         } else {
+            if (schema.type?.includes('null') === true) {
+                schema.type = types
+                schema.nullable = true
+            }
+        }
+
+        if (schema.type?.length === 1) {
             // biome-ignore lint/style/noNonNullAssertion: we know that types is not empty
             schema.type = types[0]!
+        } else if (schema.type !== undefined) {
+            schema.type = [...schema.type.filter((t) => t !== 'null'), ...schema.type.filter((t) => t === 'null')]
         }
     }
 
@@ -82,7 +165,7 @@ export function normalize(
             schema.nullable = undefined
         }
     }
-    if (schema.type === 'array') {
+    if (schemaIsTypeOf(schema, 'array')) {
         if (schema.items !== undefined) {
             schema.items = Array.isArray(schema.items)
                 ? schema.items.map((x) => normalize(x, options))
@@ -138,7 +221,9 @@ export function normalize(
 
     if (options.target !== 'openapi3' && schema.nullable) {
         if (schema.type !== 'null' && schema.type) {
-            schema.type = Array.isArray(schema.type) ? [...new Set([...schema.type, 'null'])] : [schema.type, 'null']
+            schema.type = Array.isArray(schema.type)
+                ? [...new Set([...schema.type, 'null'] as const)]
+                : ([schema.type, 'null'] as const)
         }
         schema.nullable = undefined
     }
@@ -181,6 +266,10 @@ export function normalize(
     }
 
     return omitUndefined(schema)
+}
+
+export function schemaIsTypeOf(schema: JSONSchema.JsonSchema, type: JSONSchema.JsonSchema7TypeName): boolean {
+    return Array.isArray(schema.type) ? schema.type.includes(type) : schema.type === type
 }
 
 export function sensible({
@@ -268,7 +357,7 @@ export function sensible({
             : sensible({ schema: schema.items, document, target, pre, post })
     }
     // In OpenAPI 3, exclusive min/max are not fully supported by AJV, so we convert them to regular min/max
-    if (target === 'openapi3' && (schema.type === 'number' || schema.type === 'integer')) {
+    if (target === 'openapi3' && (schemaIsTypeOf(schema, 'number') || schemaIsTypeOf(schema, 'integer'))) {
         if (schema.exclusiveMinimum !== undefined) {
             schema.minimum = schema.exclusiveMinimum
             schema.exclusiveMinimum = undefined
@@ -304,7 +393,7 @@ export function sensible({
         schema.maximum = maximum
     }
 
-    if (schema.type === 'integer') {
+    if (schemaIsTypeOf(schema, 'integer')) {
         schema.minimum = schema.minimum !== undefined ? Math.ceil(schema.minimum) : undefined
         schema.maximum = schema.maximum !== undefined ? Math.ceil(schema.maximum) : undefined
         schema.exclusiveMinimum = schema.exclusiveMinimum !== undefined ? Math.ceil(schema.exclusiveMinimum) : undefined
@@ -332,7 +421,7 @@ export function sensible({
         schema.exclusiveMinimum = undefined
     }
 
-    if (schema.type === 'array') {
+    if (schemaIsTypeOf(schema, 'array')) {
         if (schema.additionalItems !== undefined && isObject(schema.items)) {
             // this case does not make any sense
             /// https://ajv.js.org/json-schema.html#additionalitems
@@ -353,11 +442,15 @@ export function sensible({
     }
 
     if (target !== 'openapi3') {
-        if (schema.nullable === true && schema.type !== 'null' && schema.type) {
+        if (schema.nullable !== undefined && !schemaIsTypeOf(schema, 'null')) {
             // we dont support the nullable keyword outsize of openapi3/swagger
-            schema.type = (
-                Array.isArray(schema.type) ? [...new Set([...schema.type, 'null'])] : [schema.type, 'null']
-            ) as JSONSchema.JsonSchema7TypeName[]
+            if (schema.type && schema.nullable) {
+                schema.type = (
+                    Array.isArray(schema.type) ? [...new Set([...schema.type, 'null'])] : [schema.type, 'null']
+                ) as JSONSchema.JsonSchema7TypeName[]
+            }
+            // easy way out
+            schema.nullable = undefined
         }
     }
 
