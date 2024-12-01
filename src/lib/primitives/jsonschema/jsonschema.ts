@@ -1,4 +1,4 @@
-import { evaluate, isArray, isBoolean, isObject, keysOf, memoize, omitUndefined, pick } from '@skyleague/axioms'
+import { evaluate, isArray, isBoolean, isObject, keysOf, memoize, omit, omitUndefined, pick } from '@skyleague/axioms'
 import type { JsonValue } from '@skyleague/axioms/types'
 import { jsonPointer } from '../../../common/json/json.js'
 import type {
@@ -419,13 +419,31 @@ export function walkJsonschema({
     }
 
     if (isArray(child.type)) {
-        const isNullable = child.nullable === true
-        const types: JsonSchema7TypeName[] = child.type.filter(
-            (type) => !isNullable || type !== 'null' || child.type?.length === 1,
-        ) satisfies JsonSchema7TypeName[]
-
+        if (child.type.length === 1) {
+            child.type = child.type[0]
+        }
+    }
+    if (isArray(child.type)) {
+        const types: JsonSchema7TypeName[] = child.type.filter((type) => type !== 'null') satisfies JsonSchema7TypeName[]
         if (types.length > 1) {
-            return asNullable(annotateNode($union(types.map((t) => visitor[t]({ type: t }, context))), child, context), child)
+            return asNullable(
+                annotateNode(
+                    $union(
+                        types.map((t) =>
+                            visitor[t](
+                                { ...omit(child, [...jsonDefinitionKeys, ...jsonschemaKeys, 'nullable']), type: t },
+                                context,
+                            ),
+                        ),
+                    ),
+                    child,
+                    context,
+                ),
+                child,
+            )
+        }
+        if (child.type.some((t) => t === 'null')) {
+            child.nullable = true
         }
         child.type = types[0]
     }
