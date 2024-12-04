@@ -1,13 +1,11 @@
-import { References } from './references.js'
-import type { ThereforeOutput } from './types.js'
-
+import { entriesOf, evaluate } from '@skyleague/axioms'
 import { type Prettier, formatContent } from '../../commands/generate/format.js'
 import { renderTemplate } from '../../common/template/template.js'
 import type { GenericOutput } from '../cst/cst.js'
 import type { Node, SourceNode } from '../cst/node.js'
 import type { GeneratorHooks } from '../primitives/therefore.js'
-
-import { entriesOf, evaluate, groupBy, second } from '@skyleague/axioms'
+import { References } from './references.js'
+import type { ThereforeOutput } from './types.js'
 
 export class GenericFileOutput {
     public path: string
@@ -25,8 +23,9 @@ export class GenericFileOutput {
 
     public bind() {
         const data = this.references.data()
-        const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
-            .map(second)
+        const duplicates = entriesOf(Object.groupBy(entriesOf(data), ([, values]) => values))
+            .map(([_, second]) => second)
+            .filter((records) => records !== undefined)
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 

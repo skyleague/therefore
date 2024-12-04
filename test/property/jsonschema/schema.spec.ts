@@ -1,4 +1,4 @@
-import { asyncForAll, constant, forAll, groupBy, omitUndefined, tuple } from '@skyleague/axioms'
+import { asyncForAll, constant, forAll, omitUndefined, tuple } from '@skyleague/axioms'
 import { type AnySchema, ValidationError } from 'ajv'
 import { Ajv } from 'ajv'
 import ts from 'typescript'
@@ -26,7 +26,7 @@ function extendSchemaCoverage(schema: JSONSchema.JsonSchema) {
     // as the specified anyOf
     const anyOf = value.anyOf
     if (anyOf !== undefined && anyOf.length > 1) {
-        const typeGroups = groupBy(
+        const typeGroups = Object.groupBy(
             anyOf.flatMap((x) => x.type),
             (x) => {
                 if (x === 'number' || x === 'integer') {

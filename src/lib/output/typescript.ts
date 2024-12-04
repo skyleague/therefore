@@ -1,6 +1,5 @@
-import { References } from './references.js'
-import type { ThereforeOutput } from './types.js'
-
+import { entriesOf } from '@skyleague/axioms'
+import camelcase from 'camelcase'
 import packageJson from '../../../package.json' with { type: 'json' }
 import { generatedBy } from '../../commands/generate/constants.js'
 import { type Prettier, formatContent } from '../../commands/generate/format.js'
@@ -12,9 +11,8 @@ import { generateNode, loadNode } from '../visitor/prepass/prepass.js'
 import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../visitor/typescript/cst.js'
 import { type TypescriptWalkerContext, buildContext } from '../visitor/typescript/typescript.js'
 import { createWriter } from '../writer.js'
-
-import { entriesOf, groupBy, second } from '@skyleague/axioms'
-import camelcase from 'camelcase'
+import { References } from './references.js'
+import type { ThereforeOutput } from './types.js'
 
 import path from 'node:path'
 
@@ -136,7 +134,7 @@ export class TypescriptFileOutput {
             }
         }
 
-        let definition = output.content.map(second).join('\n')
+        let definition = output.content.map(([, second]) => second).join('\n')
         if (render) {
             const data = output.references.resolveData(output.references.data())
             definition = renderTemplate(definition, data)
@@ -199,8 +197,9 @@ export class TypescriptFileOutput {
         }
 
         const data = this.references.data()
-        const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
-            .map(second)
+        const duplicates = entriesOf(Object.groupBy(entriesOf(data), ([, values]) => values))
+            .map(([, second]) => second)
+            .filter((records) => records !== undefined)
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 
@@ -313,7 +312,7 @@ export class TypescriptFileOutput {
             ])
         }
 
-        const groupedImports = Object.values(groupBy(imports, (i) => i[0]))
+        const groupedImports = Object.values(Object.groupBy(imports, (i) => i[0]))
             .map((imports) => imports.sort((a, z) => importGroups.indexOf(a[0]) - importGroups.indexOf(z[0])))
             .map((imports) =>
                 imports

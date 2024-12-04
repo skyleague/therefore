@@ -1,4 +1,3 @@
-import { identity } from '@skyleague/axioms'
 import type { ConditionalExcept, HasRequiredKeys, Simplify } from '@skyleague/axioms/types'
 import type { Got } from 'got'
 import type { KyInstance } from 'ky'
@@ -63,7 +62,7 @@ export function $nockClient<T extends RestClient>(client: T): NockClient<T> {
     self.validateRequestBody = (() => ({ right: true })).bind(self) as any
 
     // biome-ignore lint/suspicious/noExplicitAny: we mock the whole thing
-    self.awaitResponse = identity.bind(self) as any
+    self.awaitResponse = ((x: unknown) => x).bind(self) as any
 
     self.buildClient = ((_auth: string[][] | string[] | undefined) =>
         new Proxy(

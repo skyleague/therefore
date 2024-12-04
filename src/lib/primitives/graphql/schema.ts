@@ -1,4 +1,4 @@
-import { all, isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
+import { isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
 import { minifyIntrospectionQuery } from '@urql/introspection'
 import {
     GraphQLBoolean,
@@ -122,7 +122,7 @@ export const graphqlVisitor: ThereforeVisitor<GraphQLOutputType & GraphQLInputTy
             })
         }
         const values = node.enum
-        if (all(values, isString)) {
+        if (values.every(isString)) {
             return new GraphQLEnumType({
                 name: references.hardlink(node, 'symbolName'),
                 values: Object.fromEntries(values.filter(isString).map((value) => [value, { value }] as const)),

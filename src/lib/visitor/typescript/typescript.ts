@@ -12,7 +12,7 @@ import type { EnumType } from '../../primitives/enum/enum.js'
 import { $ref } from '../../primitives/ref/ref.js'
 import { createWriter } from '../../writer.js'
 
-import { entriesOf, groupBy, isAlphaNumeric, isDefined, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
+import { entriesOf, isAlphaNumeric, isDefined, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
 import camelcase from 'camelcase'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import { NullableType } from '../../primitives/nullable/nullable.js'
@@ -198,8 +198,8 @@ export const typescriptVisitor: ThereforeVisitor<string, TypescriptWalkerContext
             }
             if (indices.length > 0) {
                 const grouped = mapValues(
-                    groupBy(indices, ([key]) => key),
-                    (values): string[] | undefined => values.map(([, v]) => v),
+                    Object.groupBy(indices, ([key]) => key),
+                    (values): string[] | undefined => values?.map(([, v]) => v),
                 )
                 const common = grouped[commonIndex]
                 if (keysOf(grouped).length > 1 && common !== undefined) {

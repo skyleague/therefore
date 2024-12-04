@@ -2,7 +2,7 @@ import { $string } from './string.js'
 
 import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 
-import { arbitraryContext, collect, constant, forAll, natural, repeat, take, tuple, xoroshiro128plus } from '@skyleague/axioms'
+import { arbitraryContext, constant, forAll, natural, tuple, xoroshiro128plus } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
 
 it('function', () => {
@@ -120,14 +120,7 @@ it('maxLength', () => {
 it('random sample', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string())
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "9L#l#'",
         "1.9e",
@@ -146,14 +139,7 @@ it('random sample', () => {
 it('random sample - date', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string().date())
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18",
         "2043-12-16",
@@ -172,14 +158,7 @@ it('random sample - date', () => {
 it('random sample - datetime', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string().datetime())
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18T16:27:55.000Z",
         "2043-12-16T06:04:41.000Z",
@@ -198,14 +177,7 @@ it('random sample - datetime', () => {
 it('random sample - hostname', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string().hostname())
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "jb3bcog.f1e9.ery689quq.g00j9",
         "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.la",

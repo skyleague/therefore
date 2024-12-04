@@ -4,7 +4,7 @@ import { $boolean } from './boolean.js'
 import type { Intrinsic } from '../../cst/types.js'
 import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 
-import { arbitraryContext, collect, forAll, repeat, take, xoroshiro128plus } from '@skyleague/axioms'
+import { arbitraryContext, forAll, xoroshiro128plus } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
 import type { OptionalType } from '../optional/optional.js'
@@ -88,14 +88,7 @@ it('value', () => {
 it('random sample', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($boolean())
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         false,
         true,

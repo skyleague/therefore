@@ -1,7 +1,7 @@
 import { renderTemplate } from '../../common/template/template.js'
 import type { Node } from '../cst/node.js'
 
-import { mapValues, partition, range, sha256 } from '@skyleague/axioms'
+import { mapValues, partition, sha256 } from '@skyleague/axioms'
 
 export const referenceTypes = ['symbolName', 'referenceName', 'aliasName'] as const
 export type ReferenceType = (typeof referenceTypes)[number]
@@ -97,7 +97,8 @@ export class References<Type extends 'typescript' | 'generic'> {
         const [unsolved, _solved] = partition(Object.entries(data), ([, value]) => isReference(value))
         const solved = Object.fromEntries(_solved)
         let foundUnsolved: [string, string][] = unsolved
-        for (const _ of range(unsolved.length)) {
+
+        for (const _ of foundUnsolved) {
             const newUnsolved: [string, string][] = []
             for (const [key, value] of foundUnsolved) {
                 const newValue = renderTemplate(value, solved)

@@ -1,15 +1,4 @@
-import {
-    arbitraryContext,
-    collect,
-    constant,
-    forAll,
-    natural,
-    repeat,
-    take,
-    tuple,
-    unique,
-    xoroshiro128plus,
-} from '@skyleague/axioms'
+import { arbitraryContext, constant, forAll, natural, tuple, unique, xoroshiro128plus } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
 import type { Intrinsic } from '../../cst/types.js'
@@ -156,21 +145,14 @@ it('nonempty', () => {
 
 it('set', () => {
     forAll(arbitrary($array($string()).set()), (xs) => {
-        expect(xs.length).toEqual(collect(unique(xs)).length)
+        expect(xs.length).toEqual(Iterator.from(unique(xs)).toArray().length)
     })
 })
 
 it('random sample', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($array($string()))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         [
           "L#",

@@ -1,11 +1,9 @@
-import { Nothing, fstat, isJust, isRight, normalizePath } from '@skyleague/axioms'
+import { Nothing, isJust, isRight } from '@skyleague/axioms'
 import fastGlob from 'fast-glob'
 
-import path from 'node:path'
+import fs from 'node:fs/promises'
+import { posix as pathPosix, resolve } from 'node:path'
 
-// should give the same glob behaviour as Prettier
-// https://github.com/prettier/prettier/blob/main/src/cli/expand-patterns.js
-// also heavily inspired by the logic there :)
 export async function expandGlobs({
     patterns,
     ignore = [],
@@ -26,27 +24,30 @@ export async function expandGlobs({
     const entries: string[] = (
         await Promise.allSettled(
             patterns.map(async (pattern) => {
-                const absolutePath = path.resolve(cwd, pattern)
+                const absolutePath = resolve(cwd, pattern)
                 if (ignoredDirectories.some((i) => pattern.includes(i))) {
                     return Nothing
                 }
 
-                const eitherStat = await fstat(absolutePath)
+                const eitherStat = await fs.stat(absolutePath).then(
+                    (stat) => ({ right: stat }),
+                    () => ({ left: new Error('Failed to stat file') }),
+                )
                 if (isRight(eitherStat) && isJust(eitherStat.right)) {
                     if (eitherStat.right.isFile()) {
-                        return fastGlob.escapePath(normalizePath(pattern))
+                        return fastGlob.escapePath(pathPosix.normalize(pattern))
                     }
                     if (eitherStat.right.isDirectory()) {
-                        return `${fastGlob.escapePath(normalizePath(path.relative(cwd, absolutePath)))}/**/*${extension}`
+                        return `${fastGlob.escapePath(pathPosix.normalize(pathPosix.relative(cwd, absolutePath)))}/**/*${extension}`
                     }
 
                     return Nothing
                 }
                 if (pattern.startsWith('!')) {
-                    globOptions.ignore.push(normalizePath(pattern.slice(1)))
+                    globOptions.ignore.push(pathPosix.normalize(pattern.slice(1)))
                     return Nothing
                 }
-                return normalizePath(pattern)
+                return pathPosix.normalize(pattern)
             }),
         )
     )
