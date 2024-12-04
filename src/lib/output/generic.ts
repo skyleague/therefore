@@ -7,7 +7,7 @@ import type { GenericOutput } from '../cst/cst.js'
 import type { Node, SourceNode } from '../cst/node.js'
 import type { GeneratorHooks } from '../primitives/therefore.js'
 
-import { entriesOf, evaluate, groupBy, second } from '@skyleague/axioms'
+import { entriesOf, evaluate, second } from '@skyleague/axioms'
 
 export class GenericFileOutput {
     public path: string
@@ -25,8 +25,9 @@ export class GenericFileOutput {
 
     public bind() {
         const data = this.references.data()
-        const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
+        const duplicates = entriesOf(Object.groupBy(entriesOf(data), ([, values]) => values))
             .map(second)
+            .filter((records) => records !== undefined)
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 

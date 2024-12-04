@@ -92,6 +92,17 @@ export interface Contact {
     [k: `x-${string}`]: unknown
 }
 
+/**
+ * Parameter in cookie
+ */
+export interface CookieParameter {
+    in?: 'cookie' | undefined
+    /**
+     * @default 'form'
+     */
+    style?: 'form' | undefined
+}
+
 export interface Discriminator {
     mapping?:
         | {
@@ -174,6 +185,17 @@ export type Header = {
     [k: `x-${string}`]: unknown
 } & ExampleXORExamples &
     SchemaXORContent
+
+/**
+ * Parameter in header
+ */
+export interface HeaderParameter {
+    in?: 'header' | undefined
+    /**
+     * @default 'simple'
+     */
+    style?: 'simple' | undefined
+}
 
 export type HTTPSecurityScheme = {
     bearerFormat?: string | undefined
@@ -261,7 +283,7 @@ export interface OAuthFlows {
 }
 
 /**
- * The description of OpenAPI v3.0.x documents, as defined by https://spec.openapis.org/oas/v3.0.3
+ * The description of OpenAPI v3.0.x Documents
  */
 export interface OpenapiV3 {
     components?: Components | undefined
@@ -340,43 +362,7 @@ export type Parameter = {
     schema?: (Schema | Reference) | undefined
     style?: string | undefined
     [k: `x-${string}`]: unknown
-} & ExampleXORExamples &
-    SchemaXORContent &
-    ParameterLocation
-
-/**
- * Parameter location
- */
-export type ParameterLocation =
-    | {
-          in?: 'path' | undefined
-          required: true
-          /**
-           * @default 'simple'
-           */
-          style?: 'matrix' | 'label' | 'simple' | undefined
-      }
-    | {
-          in?: 'query' | undefined
-          /**
-           * @default 'form'
-           */
-          style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject' | undefined
-      }
-    | {
-          in?: 'header' | undefined
-          /**
-           * @default 'simple'
-           */
-          style?: 'simple' | undefined
-      }
-    | {
-          in?: 'cookie' | undefined
-          /**
-           * @default 'form'
-           */
-          style?: 'form' | undefined
-      }
+} & (PathParameter | QueryParameter | HeaderParameter | CookieParameter)
 
 export interface PasswordOAuthFlow {
     refreshUrl?: string | undefined
@@ -404,9 +390,32 @@ export interface PathItem {
     [k: `x-${string}`]: unknown
 }
 
+/**
+ * Parameter in path
+ */
+export interface PathParameter {
+    in?: 'path' | undefined
+    required: true
+    /**
+     * @default 'simple'
+     */
+    style?: 'matrix' | 'label' | 'simple' | undefined
+}
+
 export interface Paths {
     [k: `/${string}`]: PathItem
     [k: `x-${string}`]: unknown
+}
+
+/**
+ * Parameter in query
+ */
+export interface QueryParameter {
+    in?: 'query' | undefined
+    /**
+     * @default 'form'
+     */
+    style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject' | undefined
 }
 
 export interface Reference {
