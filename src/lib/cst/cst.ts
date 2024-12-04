@@ -1,12 +1,10 @@
-import type { Node, SourceNode } from './node.js'
-
 import { isObject } from '@skyleague/axioms'
-import type {} from '@skyleague/axioms/types'
 import type { JsonAnnotations } from '../../json.js'
 import type { References } from '../output/references.js'
 import type { ThereforeOutputType } from '../output/types.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
 import type { TypescriptWalkerContext } from '../visitor/typescript/typescript.js'
+import type { Node, SourceNode } from './node.js'
 
 export type ThereforeExpr = Node | (() => Node)
 

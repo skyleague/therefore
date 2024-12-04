@@ -13,7 +13,6 @@ import { $unknown } from '../../primitives/unknown/unknown.js'
 
 import {
     arbitraryContext,
-    collect,
     forAll,
     isArray,
     isBoolean,
@@ -21,8 +20,6 @@ import {
     isNumber,
     isObject,
     isString,
-    repeat,
-    take,
     xoroshiro128plus,
 } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
@@ -105,14 +102,7 @@ it('union with enum and supertype', () => {
 it('format - date', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'date' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18",
         "2043-12-16",
@@ -131,14 +121,7 @@ it('format - date', () => {
 it('format - date-time', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'date-time' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18T16:27:55.000Z",
         "2043-12-16T06:04:41.000Z",
@@ -157,14 +140,7 @@ it('format - date-time', () => {
 it('format - time', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'time' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "16:27:55.000Z",
         "06:04:41.000Z",
@@ -183,14 +159,7 @@ it('format - time', () => {
 it('format - hostname', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'hostname' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "jb3bcog.f1e9.ery689quq.g00j9",
         "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.la",
@@ -209,14 +178,7 @@ it('format - hostname', () => {
 it('format - email', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'email' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "zb+c.v.io%.~h.z9^{|x4ys.%&n.{ry/k\`uuin2l@22n9yld.uc.yre-0zz.wnv8tj3ala76",
         "3x@tr76zd4x8jp2.7x2byq6pv.ntrat",
@@ -235,14 +197,7 @@ it('format - email', () => {
 it('format - uuid', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'uuid' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "935b684b-40f3-486f-9e2e-c404fd1e0e45",
         "d0eb1c7b-6308-478d-b582-4eb37858bf37",
@@ -261,14 +216,7 @@ it('format - uuid', () => {
 it('format - uri', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'uri' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "https://q3.bo.fj0y",
         "http://59qurmg01j-7.l4h7nof.iiy3r2n.xkduccytqe9zwnv8tj3ala",
@@ -287,14 +235,7 @@ it('format - uri', () => {
 it('format - ipv4', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'ipv4' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "140.69.120.9",
         "206.9.20.100",
@@ -313,14 +254,7 @@ it('format - ipv4', () => {
 it('format - ipv6', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'ipv6' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "70c0:6224:1f2b:aeff:8752:b4fe:7d3e:6238",
         "c7c5:a419:1b87:fbab:969f:4d05:ee02:678f",
@@ -339,14 +273,7 @@ it('format - ipv6', () => {
 it('format - base64', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'base64' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "ReCzCF==",
         "LJRv",
@@ -365,14 +292,7 @@ it('format - base64', () => {
 it('format - ulid', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
     const arb = arbitrary($string({ format: 'ulid' }))
-    expect(
-        collect(
-            take(
-                repeat(() => arb.sample(ctx)),
-                10,
-            ),
-        ),
-    ).toMatchInlineSnapshot(`
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "EM763FXE3HIUTMAEZKPCSNRNZV",
         "0JJ5B3U4CAZY7RPZTLBG4MWNT4",

@@ -13,7 +13,7 @@ import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../visito
 import { type TypescriptWalkerContext, buildContext } from '../visitor/typescript/typescript.js'
 import { createWriter } from '../writer.js'
 
-import { entriesOf, groupBy, second } from '@skyleague/axioms'
+import { entriesOf, second } from '@skyleague/axioms'
 import camelcase from 'camelcase'
 
 import path from 'node:path'
@@ -195,8 +195,9 @@ export class TypescriptFileOutput {
         }
 
         const data = this.references.data()
-        const duplicates = entriesOf(groupBy(entriesOf(data), ([, values]) => values))
+        const duplicates = entriesOf(Object.groupBy(entriesOf(data), ([, values]) => values))
             .map(second)
+            .filter((records) => records !== undefined)
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 
@@ -309,7 +310,7 @@ export class TypescriptFileOutput {
             ])
         }
 
-        const groupedImports = Object.values(groupBy(imports, (i) => i[0]))
+        const groupedImports = Object.values(Object.groupBy(imports, (i) => i[0]))
             .map((imports) => imports.sort((a, z) => importGroups.indexOf(a[0]) - importGroups.indexOf(z[0])))
             .map((imports) =>
                 imports
