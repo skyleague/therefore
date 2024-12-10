@@ -27,7 +27,6 @@ import {
     json,
     memoize,
     memoizeArbitrary,
-    next,
     nullable,
     object,
     oneOf,
@@ -79,7 +78,7 @@ export function buildContext(): ArbitraryContext {
 export const regexArbitrary = (regex: string | RegExp): Arbitrary<string> => {
     const it = expand(regex).getIterator()
     return dependentArbitrary(() => ({
-        value: next(it).right as string,
+        value: it.next().value as string,
         children: [],
     }))
 }
@@ -211,7 +210,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
                         return set(
                             {
                                 value: (): Tree<string> => ({
-                                    value: next(regex).right as string,
+                                    value: regex.next().value as string,
                                     children: [],
                                 }),
                             },

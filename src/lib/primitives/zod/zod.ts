@@ -141,6 +141,15 @@ const stringVisitor: {
     duration: (x, _kind: { kind: 'duration'; message?: string }) => {
         return x.duration()
     },
+    jwt: (_x, _kind: { kind: 'jwt'; message?: string }) => {
+        throw new Error('Function not implemented.')
+    },
+    cidr: (_x, _kind: { kind: 'cidr'; message?: string }) => {
+        throw new Error('Function not implemented.')
+    },
+    base64url: (_x, _kind: { kind: 'base64url'; message?: string }) => {
+        throw new Error('Function not implemented.')
+    },
 }
 
 const numberVisitor: {

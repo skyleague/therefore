@@ -10,19 +10,7 @@ import { asString, objectProperty } from '../../visitor/typescript/literal.js'
 import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript.js'
 import { createWriter } from '../../writer.js'
 
-import {
-    collect,
-    entriesOf,
-    groupBy,
-    identity,
-    isDefined,
-    keysOf,
-    memoize,
-    omitUndefined,
-    pick,
-    unique,
-    valuesOf,
-} from '@skyleague/axioms'
+import { entriesOf, isDefined, keysOf, memoize, omitUndefined, pick, unique, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import type CodeBlockWriter from 'code-block-writer'
 import { capitalize, singularize } from 'inflection'
@@ -239,7 +227,7 @@ export class RestClientBuilder {
     private constructor(
         openapi: OpenapiV3,
         {
-            transformOpenapi = identity,
+            transformOpenapi = (x) => x,
             preferOperationId = true,
             useEither = true,
             explicitContentNegotiation = false,
@@ -323,14 +311,14 @@ export class RestClientBuilder {
                         requestValidationStr = `this.validateRequestBody(${value(request.schema)}, ${request.name})`
                     }
                 }
-                const parameters: Parameter[] = collect(
+                const parameters: Parameter[] = Iterator.from(
                     unique(
                         [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
                             .map((parameter) => jsonPointer({ schema: this.openapi, ptr: parameter }) as Parameter | undefined)
                             .filter(isDefined),
                         (a, b) => a.name === b.name && a.in === b.in,
                     ),
-                )
+                ).toArray()
 
                 let clientDecl = 'this.client'
                 const authMethods: string[] = []
@@ -1233,7 +1221,8 @@ export class RestClientBuilder {
             .sort((a, b) => a.method.localeCompare(b.method))
 
         // deduplicate methods by operation first
-        const _groupedByOperation = valuesOf(groupBy(pathItems, (x) => x.method))
+        const _groupedByOperation = valuesOf(Object.groupBy(pathItems, (x) => x.method))
+            .filter((x) => x !== undefined)
             .filter((x) => x.length > 1)
             .map((x) => {
                 for (const item of x) {
@@ -1241,7 +1230,8 @@ export class RestClientBuilder {
                 }
                 return x
             })
-        const _groupedByNumber = valuesOf(groupBy(pathItems, (x) => x.method))
+        const _groupedByNumber = valuesOf(Object.groupBy(pathItems, (x) => x.method))
+            .filter((x) => x !== undefined)
             .filter((x) => x.length > 1)
             .map((x) => {
                 for (const [i, item] of x.entries()) {

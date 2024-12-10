@@ -1,29 +1,29 @@
 type Mutation {
-  addAuthor(input: AuthorInput!): Author!
-  addBook(input: BookInput!): Book!
+    addAuthor(input: AuthorInput!): Author!
+    addBook(input: BookInput!): Book!
 }
 
 type Query {
-  getAuthor(authorName: String!): Author!
-  getBook(bookName: String!): Book!
+    getAuthor(authorName: String!): Author!
+    getBook(bookName: String!): Book!
 }
 
 input AuthorInput {
-  books: [BookInput!]
-  name: String!
+    books: [BookInput!]
+    name: String!
 }
 
 type Author {
-  books: Book!
-  name: String!
+    books: Book!
+    name: String!
 }
 
 input BookInput {
-  authors: [AuthorInput!]
-  title: String!
+    authors: [AuthorInput!]
+    title: String!
 }
 
 type Book {
-  authors: Author!
-  title: String!
+    authors: Author!
+    title: String!
 }

@@ -280,7 +280,7 @@ const schemaWalker: JsonSchemaWalker = {
             maxLength: node.maxLength,
             regex: node.pattern,
             format:
-                (node.format !== undefined ? fromFormat[node.format] : undefined) ?? node.contentEncoding === 'base64'
+                ((node.format !== undefined ? fromFormat[node.format] : undefined) ?? node.contentEncoding === 'base64')
                     ? 'base64'
                     : undefined,
 
@@ -375,7 +375,7 @@ export function walkJsonschema({
 }): Node {
     const context: JsonSchemaContext = buildContext({ node, name, context: maybeContext })
 
-    const child = childProperty !== undefined ? node[childProperty] ?? { type: 'unknown' } : node
+    const child = childProperty !== undefined ? (node[childProperty] ?? { type: 'unknown' }) : node
 
     if (isArray(child) || (isObject(node.additionalItems) && node.type === 'array')) {
         return asNullable(visitor.array(node, context), node)
@@ -450,7 +450,7 @@ export function walkJsonschema({
 
     const validType =
         child.type === undefined || ['null', 'boolean', 'object', 'array', 'number', 'string', 'integer'].includes(child.type)
-            ? child.type ?? 'object'
+            ? (child.type ?? 'object')
             : 'unknown'
 
     const value = asNullable(visitor[validType](child, context), child)

@@ -1,5 +1,4 @@
-import { identity, isObject, isString, omitUndefined } from '@skyleague/axioms'
-import { deterministicBoolean } from '@skyleague/axioms'
+import { isObject, isString, omitUndefined } from '@skyleague/axioms'
 import type * as JSONSchema from '../../../src/json.js'
 import { arbitrary } from '../../../src/lib/visitor/arbitrary/arbitrary.js'
 import { jsonSchema } from './schema.schema.js'
@@ -276,8 +275,8 @@ export function sensible({
     schema,
     document,
     target,
-    pre = identity,
-    post = identity,
+    pre = (x) => x,
+    post = (x) => x,
 }: {
     schema: JSONSchema.JsonSchema
     document: JSONSchema.JsonSchema
@@ -334,7 +333,7 @@ export function sensible({
         for (const [name, property] of properties) {
             const subSchema = sensible({ schema: property, document, target, pre, post })
             schema.properties[name] = subSchema
-            if (deterministicBoolean(name) && !isObject(subSchema.default)) {
+            if (name.length % 2 === 0 && !isObject(subSchema.default)) {
                 schema.required ??= []
                 schema.required.push(name)
             }
