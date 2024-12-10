@@ -39,6 +39,10 @@ export const setDefaultNames = (self: Node) => {
     }
 }
 
+function startsWithPath(target: string, prefix: string) {
+    return target.startsWith(prefix) || target.startsWith(prefix.replace(/\//g, path.sep))
+}
+
 export const importGroups = ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'] as const
 export type ImportGroup = (typeof importGroups)[number]
 export class TypescriptFileOutput {
@@ -249,8 +253,8 @@ export class TypescriptFileOutput {
 
             let importPath =
                 symbol._attributes.typescript.isModule === true ? symbolPath : path.relative(path.dirname(this.path), symbolPath)
-            if (symbol._attributes.typescript.isModule !== true && !importPath.startsWith('../')) {
-                importPath = `./${importPath}`
+            if (symbol._attributes.typescript.isModule !== true && !startsWithPath(importPath, '../')) {
+                importPath = `.${path.sep}${importPath}`
             }
             const reference = this.references.reference(symbol, 'symbolName')
             if (this.references.references.get(symbol._id)?.has('value')) {
@@ -273,9 +277,9 @@ export class TypescriptFileOutput {
             ...Object.entries(typeDependencies).map(([targetPath, deps]) => ['type ', targetPath, deps] as const),
             ...Object.entries(dependencies).map(([targetPath, deps]) => ['', targetPath, deps] as const),
         ]) {
-            const group = targetPath.startsWith('../')
+            const group = startsWithPath(targetPath, '../')
                 ? 'parent'
-                : targetPath.startsWith('./')
+                : startsWithPath(targetPath, './')
                   ? 'sibling'
                   : targetPath.startsWith('node')
                     ? 'builtin'
