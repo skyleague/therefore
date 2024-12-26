@@ -11,6 +11,7 @@ import type {
     JsonSchema7TypeName,
     JsonStringInstance,
 } from '../../../json.js'
+import { constants } from '../../constants.js'
 import type { ThereforeNodeDefinition } from '../../cst/cst.js'
 import { type Node, definitionKeys } from '../../cst/node.js'
 import { loadNode } from '../../visitor/prepass/prepass.js'
@@ -29,7 +30,7 @@ import { $ref } from '../ref/ref.js'
 import { $string, type StringFormat, type StringOptions } from '../string/string.js'
 import { $tuple } from '../tuple/tuple.js'
 import type { ThereforeSchema } from '../types.js'
-import { $union } from '../union/union.js'
+import { $union, DiscriminatedUnionType } from '../union/union.js'
 import { $unknown, type UnknownOptions, UnknownType } from '../unknown/unknown.js'
 
 export const jsonschemaKeys = ['examples', 'title', 'writeonly'] as const satisfies Exclude<
@@ -197,7 +198,7 @@ const schemaWalker: JsonSchemaWalker = {
         )
         const shape = Object.fromEntries(
             subSchemas
-                .sort(([a], [b]) => a.localeCompare(b))
+                .toSorted(([a], [b]) => a.localeCompare(b))
                 .map(([name, schema]) => {
                     let field = schema
                     if (node.required?.includes(name.toString()) !== true) {
@@ -280,6 +281,7 @@ const schemaWalker: JsonSchemaWalker = {
             maxLength: node.maxLength,
             regex: node.pattern,
             format:
+                context.formats &&
                 ((node.format !== undefined ? fromFormat[node.format] : undefined) ?? node.contentEncoding === 'base64')
                     ? 'base64'
                     : undefined,
@@ -314,6 +316,9 @@ interface JsonSchemaContext {
     allowIntersection?: boolean
     optionalNullable: boolean
     connections: Node[]
+    formats: boolean
+
+    validator: 'ajv' | 'zod' | undefined
 
     render: (
         node: JsonSchema,
@@ -338,6 +343,8 @@ export function buildContext({
         allowIntersection = true,
         optionalNullable = false,
         connections = [],
+        validator = constants.migrateToValidator ?? constants.defaultValidator,
+        formats = true,
     } = maybeContext
 
     const context: JsonSchemaContext = {
@@ -348,6 +355,8 @@ export function buildContext({
         optionalNullable,
         connections,
         name,
+        validator,
+        formats,
         render: (
             schema: JsonSchema,
             {
@@ -406,6 +415,9 @@ export function walkJsonschema({
                 childRef,
                 memoize(() => {
                     const reference = asNullable(context.render(ref, { name: refName }), ref)
+                    if (context.validator !== undefined) {
+                        reference._attributes.validator = context.validator
+                    }
                     context.connections.push(reference)
                     return reference
                 }),
@@ -471,6 +483,14 @@ export function walkJsonschema({
         )
     }
     if (child.oneOf !== undefined) {
+        if (child.discriminator?.propertyName !== undefined) {
+            const union = new DiscriminatedUnionType(
+                child.oneOf.map((c) => context.render(c)),
+                {},
+            )
+            union._discriminator = child.discriminator.propertyName
+            return asNullable(annotateNode(maybeIntersection(union), child, context), child)
+        }
         return asNullable(
             annotateNode(maybeIntersection($union(child.oneOf.map((c) => context.render(c)))), child, context),
             child,
@@ -509,10 +529,10 @@ export interface JsonSchemaOptions {
      */
     strict?: boolean
     references?: Map<string, () => Node>
-    connections?: Node[]
     exportAllSymbols?: boolean
 
     document?: object
+    formats?: boolean
 
     /**
      * If true, the schema will be dereferenced if the root node is a reference.
@@ -530,6 +550,8 @@ export interface JsonSchemaOptions {
      * If true, all non-required fields will also be allowed to be `null`
      */
     optionalNullable?: boolean
+
+    validator?: 'ajv' | 'zod'
 }
 
 /**
@@ -546,13 +568,21 @@ export interface JsonSchemaOptions {
  * @group Schema
  */
 export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchemaOptions> = {}): ThereforeSchema {
-    const { document = schema, name, references = new Map<string, () => Node>(), dereference = true, connections = [] } = options
+    const {
+        document = schema,
+        name,
+        references = new Map<string, () => Node>(),
+        dereference = true,
+        formats = true,
+        validator,
+    } = options
+    const connections: Node[] = []
     references.set(
         '#',
         memoize(() => {
             const context = buildContext({
                 node: schema,
-                context: { ...options, connections, references, document },
+                context: { ...options, formats, connections, references, document, validator },
             })
             const node = context.render(schema, { name })
             node._name = name
@@ -560,6 +590,10 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
             if (options.exportAllSymbols === true) {
                 node._connections = connections
             }
+            if (validator !== undefined) {
+                node._attributes.validator = validator
+            }
+
             return node
         }),
     )

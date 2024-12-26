@@ -39,13 +39,16 @@ it('values', () => {
       EnumType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
         "_isCommutative": true,
         "_isNamed": false,
         "_options": {},
+        "_origin": {},
         "_type": "enum",
         "enum": [
           "1",
@@ -67,13 +70,16 @@ it('named', () => {
       NativeEnumType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
         "_isCommutative": true,
         "_isNamed": true,
         "_options": {},
+        "_origin": {},
         "_type": "enum",
         "enum": {
           "foo": "bar",

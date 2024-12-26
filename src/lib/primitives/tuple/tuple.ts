@@ -15,13 +15,13 @@ type ConstExprTuple<Elements extends [...Node[]]> = {
     [K in keyof Elements]: ConstExpr<Elements[K]>
 }
 
-export interface TupleOptions<Rest extends Node | undefined = undefined> {
+export interface TupleOptions<Rest extends Node | undefined = Node | undefined> {
     rest?: Rest
 }
 
 export class TupleType<
     const Elements extends [Node, ...Node[]] = [Node, ...Node[]],
-    Rest extends Node | undefined = undefined,
+    Rest extends Node | undefined = Node | undefined,
 > extends NodeTrait {
     public override _type = 'tuple' as const
     public declare _children: Node[]

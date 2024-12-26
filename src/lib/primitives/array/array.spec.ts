@@ -14,18 +14,23 @@ it('simple', () => {
       NodeTrait {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           BooleanType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "boolean",
           },
         ],
@@ -33,16 +38,20 @@ it('simple', () => {
         "_id": "2",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
             "generic": {},
+            "isGenerated": true,
             "typescript": {},
+            "validator": undefined,
           },
           "_definition": {},
           "_id": "1",
           "_isCommutative": true,
           "_options": {},
+          "_origin": {},
           "_type": "boolean",
         },
       }
@@ -54,18 +63,23 @@ it('simple unexpanded', () => {
       NodeTrait {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           BooleanType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "boolean",
           },
         ],
@@ -73,16 +87,20 @@ it('simple unexpanded', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
             "generic": {},
+            "isGenerated": true,
             "typescript": {},
+            "validator": undefined,
           },
           "_definition": {},
           "_id": "2",
           "_isCommutative": true,
           "_options": {},
+          "_origin": {},
           "_type": "boolean",
         },
       }

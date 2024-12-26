@@ -66,24 +66,31 @@ it('expand', () => {
       IntersectionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -91,17 +98,21 @@ it('expand', () => {
             "_id": "1",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "foo": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -111,6 +122,7 @@ it('expand', () => {
         "_id": "3",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "intersection",
       }
     `)
@@ -121,24 +133,31 @@ it('example', () => {
       IntersectionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -146,17 +165,21 @@ it('example', () => {
             "_id": "1",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "foo": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -174,6 +197,7 @@ it('example', () => {
         "_id": "3",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "intersection",
       }
     `)
@@ -184,24 +208,31 @@ it('default', () => {
       IntersectionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -209,17 +240,21 @@ it('default', () => {
             "_id": "1",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "foo": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -233,6 +268,7 @@ it('default', () => {
         "_id": "3",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "intersection",
       }
     `)
@@ -247,24 +283,31 @@ it('object intersection', () => {
       IntersectionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -272,17 +315,21 @@ it('object intersection', () => {
             "_id": "1",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "foo": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -290,18 +337,23 @@ it('object intersection', () => {
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "4",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -309,17 +361,21 @@ it('object intersection', () => {
             "_id": "3",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "bar": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "4",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -338,6 +394,7 @@ it('object intersection', () => {
         "_id": "5",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "intersection",
       }
     `)
@@ -351,24 +408,31 @@ it('reference intersection', () => {
       IntersectionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -376,17 +440,21 @@ it('reference intersection', () => {
             "_id": "1",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {
               "foo": StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             },
@@ -394,24 +462,31 @@ it('reference intersection', () => {
           NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               ObjectType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "2",
                     "_isCommutative": true,
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -419,17 +494,21 @@ it('reference intersection', () => {
                 "_id": "1",
                 "_isCommutative": false,
                 "_options": {},
+                "_origin": {},
                 "_type": "object",
                 "shape": {
                   "bar": StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "2",
                     "_isCommutative": true,
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 },
@@ -447,6 +526,7 @@ it('reference intersection', () => {
             "_id": "3",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "ref",
           },
         ],
@@ -463,6 +543,7 @@ it('reference intersection', () => {
         "_id": "4",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "intersection",
       }
     `)

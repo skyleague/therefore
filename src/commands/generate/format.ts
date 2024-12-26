@@ -1,7 +1,7 @@
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { memoize } from '@skyleague/axioms'
-import type { ThereforeOutputType } from '../../lib/output/types.js'
+import type { ThereforeOutputType } from './output/types.js'
 
 // biome-ignore lint/suspicious/noExplicitAny: it's a third-party library
 export type Prettier = any
@@ -53,6 +53,11 @@ export async function formatBiomeFiles(files: string[]) {
     const biomePath = await getBiomeBinaryPath()
     if (!biomePath) {
         console.warn('Biome not found. Skipping formatting.')
+        return
+    }
+
+    if (files.length === 0) {
+        console.warn('No files to format. Skipping formatting.')
         return
     }
 

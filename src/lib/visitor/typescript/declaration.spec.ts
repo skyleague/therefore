@@ -1,4 +1,4 @@
-import { TypescriptFileOutput } from '../../output/typescript.js'
+import { TypescriptFileOutput } from '../../../commands/generate/output/typescript.js'
 import { $object } from '../../primitives/object/object.js'
 import { $string } from '../../primitives/string/string.js'
 import { $union } from '../../primitives/union/union.js'

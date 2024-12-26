@@ -20,14 +20,24 @@ export function builder(yargs: Argv) {
             type: 'array',
         })
         .option('clean', {
-            default: false,
+            default: true,
             type: 'boolean',
+        })
+        .option('migrate-to', {
+            describe: 'migrate schemas to specified type',
+            type: 'string',
+            choices: ['zod'],
+            default: undefined,
         })
 }
 
 export async function handler(argv: ReturnType<typeof builder>['argv']): Promise<void> {
-    const { files = [], 'ignore-pattern': ignorePatterns, clean } = await argv
+    const { files = [], 'ignore-pattern': ignorePatterns, clean, 'migrate-to': migrateTo } = await argv
 
+    if (migrateTo) {
+        constants.migrateToValidator = migrateTo as 'zod' | 'ajv'
+        constants.migrate = true
+    }
     await generate({
         globs: files.map((f) => f.toString()),
         ignore: ignorePatterns.map((p) => p.toString()),

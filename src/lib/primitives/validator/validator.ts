@@ -1,7 +1,7 @@
 import { generatedAjv } from '../../../commands/generate/constants.js'
 import { defaultAjvConfig } from '../../ajv/defaults.js'
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
-import { ajvFormatsSymbols, ajvSymbols, moduleSymbol } from '../../cst/module.js'
+import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols } from '../../cst/module.js'
 import { type Hooks, Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import { createWriter } from '../../writer.js'
@@ -12,14 +12,17 @@ import decamelize from 'decamelize'
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { replaceExtension } from '../../../common/template/path.js'
+import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
+import { validatedSymbol } from '../therefore.js'
 
 export function ajvOptions(node?: Node): Options {
     return structuredClone({
         ...defaultAjvConfig,
-        ...(node?._definition.validator?.coerce ? { coerceTypes: true } : {}),
-        ...node?._definition.validator?.ajv,
+        ...(node?._definition._validator?.coerce ? { coerceTypes: true } : {}),
+        ...node?._definition._validator?.ajv,
     })
 }
 
@@ -83,10 +86,12 @@ export class ValidatorType<T extends Node = Node> extends Node {
             parse: true,
             coerce: false,
             formats: true,
-            ...evaluatedNode._definition.validator,
+            ...evaluatedNode._definition._validator,
         }
         this._children = [evaluatedNode]
         this._connections = [evaluatedNode]
+        this._attributes.validator = this._children[0]._attributes.validator
+        this._attributes.isGenerated = this._children[0]._attributes.isGenerated
     }
 
     public override _hooks: Partial<Hooks> = {
@@ -107,10 +112,16 @@ export class ValidatorType<T extends Node = Node> extends Node {
         ],
     }
 
+    public static _root(symbol: Node) {
+        return symbol._definition._validator !== undefined && !(validatedSymbol in symbol) ? new ValidatorType(symbol) : symbol
+    }
+
     public override get _output(): (TypescriptOutput | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
+                subtype: 'ajv',
+                isTypeOnly: false,
                 definition: ({ _attributes: { typescript } }, { value, reference, references }) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
@@ -202,6 +213,105 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 },
             },
             {
+                type: 'typescript',
+                subtype: 'zod',
+                isTypeOnly: false,
+                definition: ({ _attributes: { typescript } }, { value, references }) => {
+                    const child = this._children[0]
+                    const symbolName = references.reference(child, 'aliasName')
+                    const symbolNameAlias = moduleSymbol(
+                        `./${path.relative(path.dirname(this._attributes.typescript.path ?? ''), child._attributes.typescript.path ?? '')}`,
+                        symbolName,
+                        {
+                            alias: 'schema',
+                            transform: { aliasName: () => `${symbolName}Schema` },
+                        },
+                    )()
+
+                    const symbolPath = typescript.path
+                    if (symbolPath === undefined) {
+                        throw new Error('path is undefined, node was not properly initialized.')
+                    }
+                    const writer = createWriter()
+                    writer
+                        .writeLine('/**')
+                        .writeLine(' * @deprecated')
+                        .writeLine(' */')
+                        .writeLine(`export type ${symbolName} = ${value(zodSymbols.z())}.infer<typeof ${value(symbolNameAlias)}>`)
+                        .writeLine('/**')
+                        .writeLine(
+                            ` * @deprecated Use \`${symbolName}.safeParse\` instead. To migrate: 1) Replace \`${symbolName}.validate(data)\` with \`${symbolName}.safeParse(data)\` 2) Check result with \`.success\` instead of the return value 3) Access parsed data via \`.data\` or validation errors via \`.error.issues\` on the result object`,
+                        )
+                        .writeLine(' */')
+                        .writeLine(`export const ${symbolName} = Object.assign(${value(symbolNameAlias)}.refine(x => x), `)
+                        .block(() => {
+                            writer
+                                .writeLine('validate: (value: unknown): boolean => ')
+                                .inlineBlock(() => {
+                                    writer
+                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(value)`)
+                                        .writeLine('if (result.success && typeof value === "object" && value !== null) {')
+                                        .writeLine('    Object.assign(value, result.data)')
+                                        .writeLine('}')
+                                        .writeLine(
+                                            `${symbolName}.errors = result.success ? undefined : result.error.issues.map((issue) => ({`,
+                                        )
+                                        .writeLine('message: issue.message,')
+                                        .writeLine('params: issue.path,')
+                                        .writeLine("schemaPath: issue.path.join('/'),")
+                                        .writeLine('}))')
+                                        .writeLine('return result.success')
+                                })
+                                .write(',')
+                                .writeLine('errors: undefined as unknown[] | undefined,')
+                                .writeLine(`is: (o: unknown): o is ${symbolName} =>`)
+                                .inlineBlock(() => {
+                                    writer
+                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
+                                        .writeLine('if (result.success && typeof o === "object" && o !== null) {')
+                                        .writeLine('    Object.assign(o, result.data)')
+                                        .writeLine('}')
+                                        .writeLine('return result.success')
+                                })
+                                .write(',')
+                                .writeLine(`parse: (o: unknown): { right: ${symbolName} } | { left: unknown[] } => `)
+                                .inlineBlock(() => {
+                                    writer
+                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
+                                        .writeLine('if (result.success) { return { right: result.data } }')
+                                        .writeLine('return {')
+                                        .writeLine('left: result.error.issues.map((issue) => ({')
+                                        .writeLine('message: issue.message,')
+                                        .writeLine('params: issue.path,')
+                                        .writeLine("schemaPath: issue.path.join('/')")
+                                        .writeLine('}))')
+                                        .writeLine('}')
+                                })
+                        })
+                        .write(')')
+                    return writer.toString()
+                },
+                enabled: (node) => constants.migrate && constants.migrateToValidator === 'zod' && !node._attributes.isGenerated,
+                targetPath: ({ _sourcePath: sourcePath }) => {
+                    return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
+                },
+            },
+            {
+                type: 'typescript',
+                subtype: 'zod',
+                isTypeOnly: true,
+                // isGenerated: () => false,
+                enabled: (node) => node._attributes.isGenerated && node._attributes.validator === 'zod',
+                definition: (_, context) => {
+                    // be a little cheeky to not mark duplicates in our detection
+                    const child = this._children[0]
+                    const symbolName = context.references.reference(child, 'symbolName')
+                    this._attributes.typescript.symbolName = symbolName
+                    this._attributes.typescript.referenceName = context.reference(this)
+                    return `export type ${symbolName} = z.infer<typeof ${symbolName}>`
+                },
+            },
+            {
                 type: 'file',
                 subtype: () => (this._options.compile ? 'typescript' : 'json'),
                 targetPath: () => {
@@ -230,10 +340,11 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     }
                 },
                 prettify: () => !this._options.compile,
+                enabled: () => this._validator === 'ajv',
             },
             {
                 type: 'file',
-                enabled: () => this._options.schemaFilename !== undefined,
+                enabled: () => this._options.schemaFilename !== undefined && this._validator === 'ajv',
                 subtype: () => 'json',
                 targetPath: ({ _sourcePath }) => {
                     const dir = path.dirname(_sourcePath)

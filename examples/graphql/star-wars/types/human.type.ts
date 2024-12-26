@@ -4,12 +4,12 @@
  */
 /* eslint-disable */
 
-export type HomePlanetResolverType = string | undefined
-
 /**
  * The home planet of the human, or null if unknown.
  */
 export type HomePlanetResolver = () => HomePlanetResolverType
+
+export type HomePlanetResolverType = string | undefined
 
 /**
  * A humanoid creature in the Star Wars universe.

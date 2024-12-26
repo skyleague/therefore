@@ -11,7 +11,9 @@ it('simple', () => {
       UnknownType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -19,6 +21,7 @@ it('simple', () => {
         "_options": {
           "restrictToJson": false,
         },
+        "_origin": {},
         "_type": "unknown",
       }
     `)

@@ -37,24 +37,24 @@ export const Combined = {
     },
 } as const
 
-type Foo = string
-
 type Foo2 = string
 
-type Keys = Foo[]
+type Foo = string
 
 type Keys2 = Foo2[]
+
+type Keys = Foo[]
 
 /**
  * Loan repayment executed
  */
 export interface Reference1 {
-    keys: Keys
+    keys: Keys2
 }
 
 /**
  * Loan repayment executed
  */
 export interface Reference2 {
-    keys: Keys2
+    keys: Keys
 }

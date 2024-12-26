@@ -39,7 +39,9 @@ it('example', () => {
       BooleanType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {
           "jsonschema": {
@@ -52,6 +54,7 @@ it('example', () => {
         "_id": "1",
         "_isCommutative": true,
         "_options": {},
+        "_origin": {},
         "_type": "boolean",
       }
     `)
@@ -64,7 +67,9 @@ it('default', () => {
       BooleanType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {
           "default": true,
@@ -72,6 +77,7 @@ it('default', () => {
         "_id": "1",
         "_isCommutative": true,
         "_options": {},
+        "_origin": {},
         "_type": "boolean",
       }
     `)

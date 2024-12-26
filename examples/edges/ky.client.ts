@@ -77,13 +77,14 @@ export class KyurlencodedClient {
         ) as ReturnType<this['createConnectToken']>
     }
 
-    public validateRequestBody<Parser extends { parse: (o: unknown) => { left: DefinedError[] } | { right: Body } }, Body>(
-        parser: Parser,
+    public validateRequestBody<Body>(
+        parser: { parse: (o: unknown) => { left: DefinedError[] } | { right: Body } },
         body: unknown,
     ) {
         const _body = parser.parse(body)
         if ('left' in _body) {
             return {
+                success: false as const,
                 statusCode: undefined,
                 status: undefined,
                 headers: undefined,
@@ -97,7 +98,7 @@ export class KyurlencodedClient {
 
     public async awaitResponse<
         I,
-        S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>,
+        S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>,
     >(response: ResponsePromise<I>, schemas: S, responseType?: 'json' | 'text') {
         const _body = (await (responseType !== undefined ? response[responseType]() : response.text())) as I
         const result = await response
@@ -115,6 +116,7 @@ export class KyurlencodedClient {
         const body = validator?.parse?.(_body)
         if (result.status < 200 || result.status >= 300) {
             return {
+                success: false as const,
                 statusCode: result.status.toString(),
                 status,
                 headers: result.headers,
@@ -125,6 +127,7 @@ export class KyurlencodedClient {
         }
         if (body === undefined || 'left' in body) {
             return {
+                success: body === undefined,
                 statusCode: result.status.toString(),
                 status,
                 headers: result.headers,
@@ -133,7 +136,7 @@ export class KyurlencodedClient {
                 where: 'response:body',
             }
         }
-        return { statusCode: result.status.toString(), status, headers: result.headers, right: _body }
+        return { success: true as const, statusCode: result.status.toString(), status, headers: result.headers, right: _body }
     }
 
     protected buildBasicClient(client: KyInstance) {
@@ -178,12 +181,14 @@ export type Status<Major> = Major extends string
               : 'server-error'
     : undefined
 export interface SuccessResponse<StatusCode extends string, T> {
+    success: true
     statusCode: StatusCode
     status: Status<StatusCode>
     headers: Headers
     right: T
 }
 export interface FailureResponse<StatusCode = string, T = unknown, Where = never, HeaderResponse = Headers> {
+    success: false
     statusCode: StatusCode
     status: Status<StatusCode>
     headers: HeaderResponse

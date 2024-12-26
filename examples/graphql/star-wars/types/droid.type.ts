@@ -18,9 +18,9 @@ export interface Droid {
     name: string
 }
 
-export type PrimaryFunctionResolverType = string
-
 /**
  * The primary function of the droid.
  */
 export type PrimaryFunctionResolver = () => PrimaryFunctionResolverType
+
+export type PrimaryFunctionResolverType = string

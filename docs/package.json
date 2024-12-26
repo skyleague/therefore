@@ -4,6 +4,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "prebuild": "npm install",
     "build": "docusaurus build --out-dir=../.docs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -16,8 +17,8 @@
     "@docusaurus/core": "^3.6.3",
     "@docusaurus/preset-classic": "^3.6.3",
     "@docusaurus/faster": "^3.6.3",
-    "@mdx-js/react": "^3.0.1",
-    "prism-react-renderer": "^2.3.1",
+    "@mdx-js/react": "^3.1.0",
+    "prism-react-renderer": "^2.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -30,6 +31,6 @@
     "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

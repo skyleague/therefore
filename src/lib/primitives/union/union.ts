@@ -34,6 +34,8 @@ export class UnionType<const Elements extends [...Node[]] = Node[]> extends Node
     public declare input: ToInput<Elements>[number]
     public declare intrinsic: Intrinsic<Elements[number]>
 
+    protected declare _discriminator?: string | undefined
+
     public constructor(union: ConstExprTuple<Elements>, options: SchemaOptions<UnionOptions, ToInfer<Elements>[number]>) {
         super(options)
         this._options = options
@@ -43,6 +45,10 @@ export class UnionType<const Elements extends [...Node[]] = Node[]> extends Node
     public get options() {
         return this._children
     }
+}
+
+export class DiscriminatedUnionType<const Elements extends [...Node[]] = Node[]> extends UnionType<Elements> {
+    public declare _discriminator?: string
 }
 
 /**

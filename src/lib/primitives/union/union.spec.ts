@@ -34,18 +34,23 @@ it('expand', () => {
       UnionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -53,6 +58,7 @@ it('expand', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "union",
       }
     `)
@@ -63,18 +69,23 @@ it('example', () => {
       UnionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -88,6 +99,7 @@ it('example', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "union",
       }
     `)
@@ -98,18 +110,23 @@ it('default', () => {
       UnionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -119,6 +136,7 @@ it('default', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "union",
       }
     `)

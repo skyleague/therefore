@@ -48,24 +48,31 @@ it('expand', () => {
       NodeTrait {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           RecordType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "1",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -73,16 +80,20 @@ it('expand', () => {
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "element": StringType {
               "_attributes": {
                 "generic": {},
+                "isGenerated": true,
                 "typescript": {},
+                "validator": undefined,
               },
               "_definition": {},
               "_id": "1",
               "_isCommutative": true,
               "_options": {},
+              "_origin": {},
               "_type": "string",
             },
             "shape": {},
@@ -100,6 +111,7 @@ it('expand', () => {
         "_id": "1",
         "_isCommutative": true,
         "_options": {},
+        "_origin": {},
         "_type": "ref",
       }
     `)
@@ -111,30 +123,39 @@ it('self reference', () => {
       UnionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "5",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
           NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   [Function],
@@ -151,6 +172,7 @@ it('self reference', () => {
                 "_id": "1",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "ref",
               },
             ],
@@ -158,11 +180,14 @@ it('self reference', () => {
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
                 "generic": {},
+                "isGenerated": true,
                 "typescript": {},
+                "validator": undefined,
               },
               "_children": [
                 [Function],
@@ -179,13 +204,16 @@ it('self reference', () => {
               "_id": "1",
               "_isCommutative": true,
               "_options": {},
+              "_origin": {},
               "_type": "ref",
             },
           },
           NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               [Function],
@@ -202,6 +230,7 @@ it('self reference', () => {
             "_id": "3",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "ref",
           },
         ],
@@ -209,6 +238,7 @@ it('self reference', () => {
         "_id": "4",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "union",
       }
     `)
@@ -221,18 +251,23 @@ it('uuid reference', () => {
       NodeTrait {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -248,6 +283,7 @@ it('uuid reference', () => {
         "_id": "2",
         "_isCommutative": true,
         "_options": {},
+        "_origin": {},
         "_type": "ref",
       }
     `)
@@ -259,30 +295,39 @@ it('description ', () => {
       UnionType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "4",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
           NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   [Function],
@@ -302,6 +347,7 @@ it('description ', () => {
                 "_isCommutative": true,
                 "_name": "json",
                 "_options": {},
+                "_origin": {},
                 "_type": "ref",
               },
             ],
@@ -309,11 +355,14 @@ it('description ', () => {
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
                 "generic": {},
+                "isGenerated": true,
                 "typescript": {},
+                "validator": undefined,
               },
               "_children": [
                 [Function],
@@ -333,6 +382,7 @@ it('description ', () => {
               "_isCommutative": true,
               "_name": "json",
               "_options": {},
+              "_origin": {},
               "_type": "ref",
             },
           },
@@ -341,6 +391,7 @@ it('description ', () => {
         "_id": "3",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "union",
       }
     `)

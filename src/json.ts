@@ -105,6 +105,11 @@ export interface JsonBooleanLogic {
     oneOf?: JsonSchema[] | undefined
     /** @deprecated */
     not?: JsonSchema | undefined
+
+    /** @deprecated */
+    discriminator?: {
+        propertyName?: string
+    }
 }
 
 // https://tools.ietf.org/html/draft-handrews-json-schema-validation-01#section-10

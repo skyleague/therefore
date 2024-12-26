@@ -95,6 +95,36 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
 
             return node
         },
+        array: (node) => {
+            const element = node.element
+            if (symbols.has(element) && element._canReference !== false) {
+                node.element = $ref(element)
+            } else {
+                walkTherefore(element, autoRefVisitor)
+            }
+
+            return node
+        },
+        tuple: (node) => {
+            const items = node.items
+            for (const [i, item] of items.entries()) {
+                if (symbols.has(item) && item._canReference !== false) {
+                    items[i] = $ref(item)
+                } else {
+                    walkTherefore(item, autoRefVisitor)
+                }
+            }
+
+            const rest = node._options.rest
+            if (rest !== undefined) {
+                if (symbols.has(rest) && rest._canReference !== false) {
+                    node._options.rest = $ref(rest)
+                } else {
+                    walkTherefore(rest, autoRefVisitor)
+                }
+            }
+            return node
+        },
         validator: (node) => {
             return node
         },

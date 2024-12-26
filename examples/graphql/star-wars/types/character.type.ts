@@ -7,14 +7,14 @@
 import type { Episode } from './episode.type.js'
 import type { CharacterArgs } from './input.type.js'
 
-export type AppearsInResolverArgs = CharacterArgs
-
 export type AppearsInResolverType = Episode[]
 
 /**
  * Which movies they appear in.
  */
 export type AppearsInResolver = (args: AppearsInResolverArgs) => AppearsInResolverType
+
+export type AppearsInResolverArgs = CharacterArgs
 
 export interface Character {
     /**

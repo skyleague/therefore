@@ -117,7 +117,7 @@ export function normalize(
         }
     }
     if (schema.required !== undefined) {
-        schema.required = schema.required.sort((a, b) => a.localeCompare(b))
+        schema.required = schema.required.toSorted((a, b) => a.localeCompare(b))
     }
 
     if (schema.patternProperties !== undefined) {

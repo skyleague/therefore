@@ -18,7 +18,7 @@ it('types', () => {
     const schema = $tuple([$string(), $number()])
     expectTypeOf(schema.infer).toEqualTypeOf<[string, number]>()
     expectTypeOf(schema.input).toEqualTypeOf<[string, number]>()
-    type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, TupleType<[StringType, NumberType]>>>
+    type _test_intrinsic = Expect<Equal<Intrinsic<typeof schema>, TupleType<[StringType, NumberType], undefined>>>
 
     const restArg = $tuple([$string(), $number()], { rest: $string() })
     expectTypeOf(restArg.infer).toEqualTypeOf<[string, number, ...string[]]>()
@@ -36,18 +36,23 @@ it('expand', () => {
       TupleType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -55,17 +60,21 @@ it('expand', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "tuple",
         "items": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -78,18 +87,23 @@ it('example', () => {
       TupleType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -105,17 +119,21 @@ it('example', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "tuple",
         "items": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -131,18 +149,23 @@ it('default', () => {
       TupleType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -154,17 +177,21 @@ it('default', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "tuple",
         "items": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],

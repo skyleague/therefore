@@ -5,15 +5,15 @@ import { isFailure, isFunction, mapTry } from '@skyleague/axioms'
 import type { Schema } from '@typeschema/main'
 import { isNode } from '../../lib/cst/cst.js'
 import type { Node, SourceNode } from '../../lib/cst/node.js'
-import { GenericFileOutput } from '../../lib/output/generic.js'
-import type { ThereforeOutput } from '../../lib/output/types.js'
-import { TypescriptFileOutput } from '../../lib/output/typescript.js'
 import { $ref } from '../../lib/primitives/ref/ref.js'
 import { therefore } from '../../lib/primitives/therefore.js'
 import { ValidatorType } from '../../lib/primitives/validator/validator.js'
 import { autoRef, generateNode } from '../../lib/visitor/prepass/prepass.js'
 import { type Prettier, formatBiomeFiles, maybeLoadPrettier } from './format.js'
 import { expandGlobs } from './glob.js'
+import { GenericFileOutput } from './output/generic.js'
+import type { ThereforeOutput } from './output/types.js'
+import { TypescriptFileOutput } from './output/typescript.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function requireModule(module: string): Promise<Record<string, Node | unknown>> {

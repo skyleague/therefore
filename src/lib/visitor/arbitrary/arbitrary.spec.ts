@@ -26,82 +26,41 @@ import { expect, it } from 'vitest'
 import { $tuple } from '../../primitives/tuple/tuple.js'
 
 it('string', () => {
+    const schema = $string()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     forAll(arbitrary($string()), isString)
-})
 
-it('date', () => {
-    forAll(arbitrary($string({ format: 'date' })), (x) => new Date(x).toISOString().split('T')[0] === x)
-})
-
-it('date-time', () => {
-    forAll(arbitrary($string({ format: 'date-time' })), (x) => new Date(x).toISOString() === x)
-})
-
-it('number', () => {
-    forAll(arbitrary($number()), isNumber)
-})
-
-it('integer', () => {
-    forAll(arbitrary($integer()), isNumber)
-    forAll(arbitrary($integer()), isInteger)
-})
-
-it('boolean', () => {
-    forAll(arbitrary($boolean()), isBoolean)
-})
-
-it('null', () => {
-    forAll(arbitrary($null()), (x) => x === null)
-})
-
-it('array', () => {
-    forAll(arbitrary($array($unknown)), isArray)
-})
-
-it('boolean - tuple', () => {
-    forAll(arbitrary($tuple([$boolean()])), (x) => x.length === 1 && isBoolean(x[0]))
-})
-
-it('object - with index', () => {
-    const arb = arbitrary(new JSONObjectType({ shape: {}, recordType: $string() }))
-    forAll(arb, isObject)
-    expect(arb.value(arbitraryContext({ rng: xoroshiro128plus(44n) }))).toMatchInlineSnapshot(`
-      {
-        "children": {
-          Symbol(Symbol.iterator): [Function],
-        },
-        "value": {
-          "#": "P",
-          "*\\fr": "X6.sj",
-          ",CzE": "ED3",
-          "9ic4=<o": "",
-          "9mB": "|",
-          "LqDK^rK": ":",
-          "]'X<Z": "iYS",
-          "q": "^kVBIfS@",
-          "sbDhV-GR\`": "aj",
-        },
-      }
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        "9L#l#'",
+        "1.9e",
+        "}",
+        "a",
+        "^sy{I",
+        "K?1dg8",
+        "x?Ko2vCD.7",
+        "5]kNh",
+        "z^<)",
+        "'&aRK+",
+      ]
     `)
 })
 
-it('optional - primitive', () => {
-    forAll(
-        arbitrary<{ foo?: string | undefined }>($object({ foo: $optional($string()) })),
-        (x) => isString(x.foo) || x.foo === undefined,
-    )
-})
+it('date', () => {
+    const schema = $string().date()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($string({ format: 'date' })), (x) => new Date(x).toISOString().split('T')[0] === x)
 
-it('union with enum and supertype', () => {
-    forAll(
-        arbitrary<{ foo?: string | undefined }>($object({ foo: $optional($string()) })),
-        (x) => isString(x.foo) || x.foo === undefined,
-    )
-})
-
-it('format - date', () => {
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'date' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18",
@@ -118,85 +77,461 @@ it('format - date', () => {
     `)
 })
 
-it('format - date-time', () => {
+it('datetime', () => {
+    const schema = $string().datetime()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        if (compiled.is(x)) {
+            return true
+        }
+        throw new Error(JSON.stringify(compiled.errors))
+    })
+
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'date-time' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18T16:27:55.000Z",
-        "2043-12-16T06:04:41.000Z",
-        "2099-01-10T12:51:38.000Z",
-        "1979-12-16T13:45:18.000Z",
         "2190-07-31T00:32:52.000Z",
-        "1980-05-25T14:21:03.000Z",
-        "1991-09-25T08:09:16.000Z",
-        "2077-01-18T19:43:49.000Z",
         "2019-05-01T09:57:56.000Z",
-        "2010-10-08T15:17:06.000Z",
+        "2003-08-07T03:30:29.000-09:41",
+        "2101-04-30T06:06:24.000+09:56",
+        "2233-04-26T10:38:52.000Z",
+        "2061-11-04T23:43:45.000Z",
+        "2039-12-17T17:33:48.000+11:19",
+        "2095-12-10T18:43:21.000-08:54",
+        "2072-02-26T05:13:58.000Z",
+      ]
+    `)
+})
+
+it('number', () => {
+    const schema = $number()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($number()), isNumber)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        218084955.5757966,
+        -987316204.8333645,
+        -123414344.79032564,
+        -1991294021.561513,
+        1312757734.419653,
+        -1984378057.5129266,
+        -1806577500.5932693,
+        -468159076.21629095,
+        -1373641555.943141,
+        -1507935663.7794366,
+      ]
+    `)
+})
+
+it('integer', () => {
+    const schema = $integer()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($integer()), isNumber)
+    forAll(arbitrary($integer()), isInteger)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        218084956,
+        -987316205,
+        -123414345,
+        -1991294022,
+        1312757735,
+        -1984378058,
+        -1806577501,
+        -468159076,
+        -1373641556,
+        -1507935664,
+      ]
+    `)
+})
+
+it('boolean', () => {
+    const schema = $boolean()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($boolean()), isBoolean)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+      ]
+    `)
+})
+
+it('null', () => {
+    const schema = $null()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($null()), (x) => x === null)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ]
+    `)
+})
+
+it('array', () => {
+    const schema = $array($unknown())
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($array($unknown())), isArray)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        [
+          true,
+          1312757735,
+          -1806577501,
+          "",
+          -998293442.9723692,
+          undefined,
+        ],
+        [
+          {},
+        ],
+        [
+          "󮲰",
+          {
+            "TK?1": false,
+          },
+          false,
+          {},
+          "𶊧",
+          {},
+          "",
+        ],
+        [
+          null,
+          643485404.8784003,
+        ],
+        [
+          "񤰹",
+          {
+            ")U'": 814790767,
+          },
+          null,
+          "",
+          {
+            "cvZDX|T": 1403384848,
+          },
+          -778923280,
+          1866760029,
+          {},
+        ],
+        [
+          null,
+        ],
+        [
+          "􉚑",
+          "󮉐",
+          undefined,
+          1338156962,
+        ],
+        [
+          {},
+          "󹖜",
+          undefined,
+          undefined,
+          [],
+          undefined,
+        ],
+        [
+          {},
+          null,
+          true,
+          null,
+        ],
+        [
+          127942225,
+          706702613,
+          -661441363.1612315,
+          [
+            1707729668,
+          ],
+          {
+            "&TsF%Z-": 564074427,
+          },
+        ],
+      ]
+    `)
+})
+
+it('boolean - tuple', () => {
+    const schema = $tuple([$boolean()])
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary($tuple([$boolean()])), (x) => x.length === 1 && isBoolean(x[0]))
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        [
+          false,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+        [
+          false,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+        [
+          true,
+        ],
+      ]
+    `)
+})
+
+it('object - with index', () => {
+    const schema = new JSONObjectType({ shape: {}, recordType: $string() })
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+    forAll(arbitrary(new JSONObjectType({ shape: {}, recordType: $string() })), isObject)
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(44n) })
+    const arb = arbitrary(schema)
+    expect(arb.sample(ctx)).toMatchInlineSnapshot(`
+      {
+        "#": "P",
+        "*\\fr": "X6.sj",
+        ",CzE": "ED3",
+        "9ic4=<o": "",
+        "9mB": "|",
+        "LqDK^rK": ":",
+        "]'X<Z": "iYS",
+        "q": "^kVBIfS@",
+        "sbDhV-GR\`": "aj",
+      }
+    `)
+})
+
+it('optional - primitive', () => {
+    const schema = $object({ foo: $optional($string()) })
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+
+    forAll(
+        arbitrary<{ foo?: string | undefined }>($object({ foo: $optional($string()) })),
+        (x) => isString(x.foo) || x.foo === undefined,
+    )
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(arb.sample(ctx)).toMatchInlineSnapshot(`
+      {
+        "foo": "L#",
+      }
+    `)
+})
+
+it('format - date', () => {
+    const schema = $string({ format: 'date' })
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (x) => {
+        return compiled.is(x)
+    })
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        "2120-10-18",
+        "2043-12-16",
+        "2099-01-10",
+        "1979-12-16",
+        "2190-07-31",
+        "1980-05-25",
+        "1991-09-25",
+        "2077-01-18",
+        "2019-05-01",
+        "2010-10-08",
+      ]
+    `)
+})
+
+it('format - datetime', () => {
+    const schema = $string().datetime()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
+
+    const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
+    const arb = arbitrary(schema)
+    expect(Array.from({ length: 20 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
+      [
+        "2120-10-18T16:27:55.000Z",
+        "2190-07-31T00:32:52.000Z",
+        "2019-05-01T09:57:56.000Z",
+        "2003-08-07T03:30:29.000-09:41",
+        "2101-04-30T06:06:24.000+09:56",
+        "2233-04-26T10:38:52.000Z",
+        "2061-11-04T23:43:45.000Z",
+        "2039-12-17T17:33:48.000+11:19",
+        "2095-12-10T18:43:21.000-08:54",
+        "2072-02-26T05:13:58.000Z",
+        "2113-10-12T14:31:00.000Z",
+        "2102-10-26T07:45:40.000-03:56",
+        "2148-10-23T17:37:56.000Z",
+        "1991-11-13T16:12:13.000Z",
+        "2096-07-15T22:49:58.000Z",
+        "2155-02-27T10:21:48.000+10:37",
+        "2075-12-08T13:32:19.000+12:33",
+        "2042-01-17T05:45:24.000-12:19",
+        "1974-07-08T19:59:54.000+10:02",
+        "2012-12-18T03:41:55.000-02:29",
       ]
     `)
 })
 
 it('format - time', () => {
+    const schema = $string().time()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'time' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "16:27:55.000Z",
-        "06:04:41.000Z",
-        "12:51:38.000Z",
-        "13:45:18.000Z",
         "00:32:52.000Z",
-        "14:21:03.000Z",
-        "08:09:16.000Z",
-        "19:43:49.000Z",
         "09:57:56.000Z",
-        "15:17:06.000Z",
+        "03:30:29.000-09:41",
+        "06:06:24.000+09:56",
+        "10:38:52.000Z",
+        "23:43:45.000Z",
+        "17:33:48.000+11:19",
+        "18:43:21.000-08:54",
+        "05:13:58.000Z",
       ]
     `)
 })
 
 it('format - hostname', () => {
+    const schema = $string().hostname()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'hostname' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
-        "jb3bcog.f1e9.ery689quq.g00j9",
-        "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.la",
-        "6f.tst-r7.5d4x8jp37.z2byq6pvk.tratbx",
-        "m8e7700cu6o.we",
-        "wi15dzbyd.7-70c4nz.fpw0emrbcmxg",
-        "ho7kew.k69r0w.gniute",
-        "erdya6rj.asc",
-        "bzbc5z9-s.fbrgyeee7wg.gbt.ga8i",
-        "a29st3ph9jef.eqe959t",
-        "vs8mvs9g56k.pnt.m6b4wg8",
+        "jb3bcog.f1e9.ery689quq.essgy",
+        "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.ha",
+        "6f.tst-r7.5d4x8jp37.z2byq6pvk.nmanaq",
+        "m8e7700cu6o.pd",
+        "wi15dzbyd.7-70c4nz.ekpsdimabiqe",
+        "ho7kew.k69r0w.ejgnnd",
+        "erdya6rj.anb",
+        "bzbc5z9-s.fbrgyeee7wg.gbt.eaxg",
+        "a29st3ph9jef.dldywyn",
+        "vs8mvs9g56k.pnt.iwbvpex",
       ]
     `)
 })
 
 it('format - email', () => {
+    const schema = $string().email()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'email' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
-        "zb+c.v.io%.~h.z9^{|x4ys.%&n.{ry/k\`uuin2l@22n9yld.uc.yre-0zz.wnv8tj3ala76",
-        "3x@tr76zd4x8jp2.7x2byq6pv.ntrat",
-        "js-{g__%@c6pcwfow.015d.yy.7u9",
-        "d-t#}iw7&.s0.e.9jzlu._ph7p._|z$8.kun42.ig.zf9b^0ng.2.7@ybc5z9-sf.brgxdee7vgg",
-        "3.ka|n.b@1st3ph9jefte.q-5.9lw5s8l.v9g56kp.nts",
-        "c=7j|{^3=_c.nx8kk5a!g.%xfi.g=be.$t4{8@i18l.vh0e8b.u0psj7.9u8rl",
-        "+.v.i9.!=q._\`h9.rh.+yn#c&d%oz7+.|oau6!ql3es1.0t*ce|j2\`jh.07#0m.pzs@stg85of9q.d9m0i-d.0a3.39ocgsu8.vt",
-        "3_iheudh.l.p0n^#f01_8b.u}o6g!k+0bwj.=.6cg7|xi4{$0@t34434s.fi3nlbzo4c.rlhhz",
-        "0}fxib_syb.89.l.'sszw2.s0/.1x.518.^wv'/mj.\`6lhtv/@gzc6ow8ge.stf00rwk2.rn1z45hjstpn",
-        "3!u&r-4.r{_6.!enz|9_a.eo_{dd%x.{-9.cqx9.-w@24lu2.gnvilov",
+        "ksb6bdp@je-fzry689p.liessgyx",
+        "s7h_@ftiy2.19ylduc.rn",
+        "e.212_@vuj4ala87bfupr.976zd4x7.o70x2byq6pvk.nmanaq",
+        "n6+@60cu6pcwfow.fsvcraqcw",
+        "gqy3fntbdozh@n7kexko.80xphoju.ddcplcq",
+        "8@etc.bzbc5z9-sf6.le",
+        "efe_xggh@ja9ia.xt",
+        "uv6qi-kfgvfs@5ulw5s8mvs9g55.kdjnm",
+        "_b8yh@557bzjpxg.vze.0dfke5bc.zu8xyih.xhpjfrdxao",
+        "3ruk+@url5b3cogfygz5.j7eyflf-3qizb.bsglptxxga",
       ]
     `)
 })
 
 it('format - uuid', () => {
+    const schema = $string().uuid()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'uuid' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "935b684b-40f3-486f-9e2e-c404fd1e0e45",
@@ -214,27 +549,37 @@ it('format - uuid', () => {
 })
 
 it('format - uri', () => {
+    const schema = $string().uri()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'uri' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
-        "https://q3.bo.fj0y",
-        "http://59qurmg01j-7.l4h7nof.iiy3r2n.xkduccytqe9zwnv8tj3ala",
-        "https://bup.r-r76zd.38jp370x.2y.5pvknt:1082",
-        "https://m8e7700cu6o.we:4137504",
-        "http://bd7u-70c3.n-gpx1fmr.bm.grhno6kew",
-        "https://rxphojute.fwr.da6rjebtc.wy.bc5y89sf6",
-        "http://de7.vgg.bjga9ia.813oh8j",
-        "http://tre.59tlv4r7lvs8kpentsm6b",
-        "https://g86t57bzjpxg.gazek0qd.fe5bc.zmu7wy",
-        "https://loh0e8bu.opsj8k-v8r.lb3cogfygz5.k77e.flf92qizb",
+        "https://q3.bo.dgs/y",
+        "http://59qurmg01j-7.l4h7nof.iiy3r2n.qhcobbrnldyr/wnv8tj3ala",
+        "https://bup.r-r76zd.38jp370x.2y.vkohjn:1082/",
+        "https://m8e7700cu6o.pd:41375/04",
+        "http://bd7u-70c3.n-gpx1fmr.bm.elfjjwhdp/",
+        "https://rxphojute.fwr.da6rjebtc.wy.abvrxymdw/",
+        "http://de7.vgg.bjga9ia.xt/3oh8j",
+        "http://tre.wynhpumxiomy/kpentsm6b",
+        "https://g86t57bzjpxg.gazek0qd.fe5bc.rioxpq/",
+        "https://loh0e8bu.opsj8k-v8r.lb3cogfygz5.k77e.didyulgrb/",
       ]
     `)
 })
 
 it('format - ipv4', () => {
+    const schema = $string().ipv4()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'ipv4' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "140.69.120.9",
@@ -252,8 +597,13 @@ it('format - ipv4', () => {
 })
 
 it('format - ipv6', () => {
+    const schema = $string().ipv6()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'ipv6' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "70c0:6224:1f2b:aeff:8752:b4fe:7d3e:6238",
@@ -271,8 +621,13 @@ it('format - ipv6', () => {
 })
 
 it('format - base64', () => {
+    const schema = $string().base64()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'base64' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "ReCzCF==",
@@ -290,20 +645,25 @@ it('format - base64', () => {
 })
 
 it('format - ulid', () => {
+    const schema = $string().ulid()
+    const compiled = schema.compile()
+    forAll(arbitrary(schema), (s) => {
+        return compiled.is(s)
+    })
     const ctx = arbitraryContext({ rng: xoroshiro128plus(1638968569864n) })
-    const arb = arbitrary($string({ format: 'ulid' }))
+    const arb = arbitrary(schema)
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
-        "EM763FXE3HIUTMAEZKPCSNRNZV",
-        "0JJ5B3U4CAZY7RPZTLBG4MWNT4",
-        "0UKHIKG2A7MQMHLG6IFYP6JLAO",
-        "BGD25FAODWIR7UAPIHXRWMERUM",
-        "07NICLFVYT7NTI4VKYEKX5ZLGS",
-        "FQOZNWJB7SPLFSUHNHU7PTOYQX",
-        "HAX4HRUBOF6CZISRPN6Y2OEJTQ",
-        "DP5QSZCNVHR2RT2T6VOWSWEMIC",
-        "CV4CZPZNX4F7MIYWERXESMCVT2",
-        "F7SH0PI4NPIFVD2AS77N6LWB3D",
+        "4CZYV5Q4V78MKC04SAF2JDHDSN",
+        "099X1VMW20SRZHFSKB16WCPDKW",
+        "0MA78A6T0ZCGC7B6Y85RFY9B0E",
+        "163TX50E3P8HZM0F87QHPC4HMC",
+        "0ZD82B5NRKZDK8WNAR4AQXSB6J",
+        "5GESDP91ZJFB5JM7D7MZFKERGQ",
+        "70QW7HM1E5Y2S8JHFDYRTE49KG",
+        "3FXGJS2DN7HTHKTKYNEPJP4C82",
+        "2NW2SFSDQW5ZC8RP4HQ4JC2NKT",
+        "5ZJ70F8WDF85N3T0JZZDYBP1V3",
       ]
     `)
 })

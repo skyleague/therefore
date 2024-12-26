@@ -150,11 +150,21 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         return [
             {
                 type: 'typescript',
+                subtype: 'ajv',
+                isTypeOnly: true,
                 definition: (node, context) => {
                     if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node)) {
                         return `${context.declare('interface', node)} ${context.render(node)}`
                     }
                     return `${context.declare('type', node)} = ${context.render(node)}`
+                },
+            },
+            {
+                type: 'typescript',
+                subtype: 'zod',
+                isTypeOnly: false,
+                definition: (node, context) => {
+                    return `${context.declare('const', node)} = ${context.render(node)}`
                 },
             },
         ]

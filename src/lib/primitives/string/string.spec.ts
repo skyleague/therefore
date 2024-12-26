@@ -18,7 +18,9 @@ it('pattern', () => {
       StringType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -26,6 +28,7 @@ it('pattern', () => {
         "_options": {
           "regex": /foo/,
         },
+        "_origin": {},
         "_type": "string",
       }
     `)
@@ -40,7 +43,9 @@ it('format', () => {
       StringType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -48,6 +53,7 @@ it('format', () => {
         "_options": {
           "format": "date",
         },
+        "_origin": {},
         "_type": "string",
       }
     `)
@@ -64,7 +70,9 @@ it('all', () => {
       StringType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -74,6 +82,7 @@ it('all', () => {
           "minLength": 2,
           "regex": /foo/,
         },
+        "_origin": {},
         "_type": "string",
       }
     `)
@@ -161,15 +170,15 @@ it('random sample - datetime', () => {
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
         "2120-10-18T16:27:55.000Z",
-        "2043-12-16T06:04:41.000Z",
-        "2099-01-10T12:51:38.000Z",
-        "1979-12-16T13:45:18.000Z",
         "2190-07-31T00:32:52.000Z",
-        "1980-05-25T14:21:03.000Z",
-        "1991-09-25T08:09:16.000Z",
-        "2077-01-18T19:43:49.000Z",
         "2019-05-01T09:57:56.000Z",
-        "2010-10-08T15:17:06.000Z",
+        "2003-08-07T03:30:29.000-09:41",
+        "2101-04-30T06:06:24.000+09:56",
+        "2233-04-26T10:38:52.000Z",
+        "2061-11-04T23:43:45.000Z",
+        "2039-12-17T17:33:48.000+11:19",
+        "2095-12-10T18:43:21.000-08:54",
+        "2072-02-26T05:13:58.000Z",
       ]
     `)
 })
@@ -179,16 +188,16 @@ it('random sample - hostname', () => {
     const arb = arbitrary($string().hostname())
     expect(Array.from({ length: 10 }, () => arb.sample(ctx))).toMatchInlineSnapshot(`
       [
-        "jb3bcog.f1e9.ery689quq.g00j9",
-        "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.la",
-        "6f.tst-r7.5d4x8jp37.z2byq6pvk.tratbx",
-        "m8e7700cu6o.we",
-        "wi15dzbyd.7-70c4nz.fpw0emrbcmxg",
-        "ho7kew.k69r0w.gniute",
-        "erdya6rj.asc",
-        "bzbc5z9-s.fbrgyeee7wg.gbt.ga8i",
-        "a29st3ph9jef.eqe959t",
-        "vs8mvs9g56k.pnt.m6b4wg8",
+        "jb3bcog.f1e9.ery689quq.essgy",
+        "l4h7nof.iiy3r2n.8lduccztq.e0z07wov9uj3.ha",
+        "6f.tst-r7.5d4x8jp37.z2byq6pvk.nmanaq",
+        "m8e7700cu6o.pd",
+        "wi15dzbyd.7-70c4nz.ekpsdimabiqe",
+        "ho7kew.k69r0w.ejgnnd",
+        "erdya6rj.anb",
+        "bzbc5z9-s.fbrgyeee7wg.gbt.eaxg",
+        "a29st3ph9jef.dldywyn",
+        "vs8mvs9g56k.pnt.iwbvpex",
       ]
     `)
 })

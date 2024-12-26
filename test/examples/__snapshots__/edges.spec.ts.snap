@@ -55,8 +55,8 @@ export class DefaultTestClient {
         }) as ReturnType<this["getEmployees"]>
     }
 
-    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
-    CancelableRequest<Response<I>>
+    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>>(response: 
+    CancelableRequest<NoInfer<Response<I>>>
     , schemas: S) {
         const result = await response
         const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'
@@ -64,13 +64,13 @@ export class DefaultTestClient {
         const body = validator?.parse?.(result.body)
         if (result.statusCode < 200 || result.statusCode >= 300)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
+            return {success: false as const, statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
         }
         if (body === undefined || 'left' in body)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
+            return {success: body === undefined, statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
         }
-        return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
+        return {success: true as const, statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
     }
 }
 
@@ -127,8 +127,8 @@ export class DoubleSuccessClient {
         }) as ReturnType<this["getImage"]>
     }
 
-    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
-    CancelableRequest<Response<I>>
+    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>>(response: 
+    CancelableRequest<NoInfer<Response<I>>>
     , schemas: S) {
         const result = await response
         const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'
@@ -136,13 +136,13 @@ export class DoubleSuccessClient {
         const body = validator?.parse?.(result.body)
         if (result.statusCode < 200 || result.statusCode >= 300)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
+            return {success: false as const, statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
         }
         if (body === undefined || 'left' in body)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
+            return {success: body === undefined, statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
         }
-        return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
+        return {success: true as const, statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
     }
 }
 
@@ -198,8 +198,8 @@ export class Edges {
         }) as ReturnType<this["getImage"]>
     }
 
-    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
-    CancelableRequest<Response<I>>
+    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>>(response: 
+    CancelableRequest<NoInfer<Response<I>>>
     , schemas: S) {
         const result = await response
         const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'
@@ -207,26 +207,27 @@ export class Edges {
         const body = validator?.parse?.(result.body)
         if (result.statusCode < 200 || result.statusCode >= 300)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
+            return {success: false as const, statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
         }
         if (body === undefined || 'left' in body)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
+            return {success: body === undefined, statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
         }
-        return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
+        return {success: true as const, statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
     }
 }
 
 export type Status<Major> = Major extends string ? Major extends \`1\${number}\`? 'informational': Major extends \`2\${number}\` ? 'success' : Major extends \`3\${number}\` ? 'redirection' : Major extends \`4\${number}\` ? 'client-error' : 'server-error' : undefined
-export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: IncomingHttpHeaders; right: T }
+export interface SuccessResponse<StatusCode extends string, T> { success: true; statusCode: StatusCode; status: Status<StatusCode>; headers: IncomingHttpHeaders; right: T }
 export interface FailureResponse<StatusCode = string, T = unknown, Where = never, Headers = IncomingHttpHeaders> {
-                    statusCode: StatusCode
-                    status: Status<StatusCode>
-                    headers: Headers
-                    validationErrors: DefinedError[] | undefined
-                    left: T
-                    where: Where
-                }
+success: false
+statusCode: StatusCode
+status: Status<StatusCode>
+headers: Headers
+validationErrors: DefinedError[] | undefined
+left: T
+where: Where
+}
 export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = \`\${Major}\${number}\`
 
 
@@ -267,8 +268,8 @@ export class SwaggerEdges {
         }) as ReturnType<this["getJsonResponse"]>
     }
 
-    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } } | undefined>>(response: 
-    CancelableRequest<Response<I>>
+    public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>>(response: 
+    CancelableRequest<NoInfer<Response<I>>>
     , schemas: S) {
         const result = await response
         const status = result.statusCode < 200 ? 'informational' : result.statusCode < 300 ? 'success' : result.statusCode < 400 ? 'redirection' : result.statusCode < 500 ? 'client-error' : 'server-error'
@@ -276,13 +277,13 @@ export class SwaggerEdges {
         const body = validator?.parse?.(result.body)
         if (result.statusCode < 200 || result.statusCode >= 300)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
+            return {success: false as const, statusCode: result.statusCode.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : result.body, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } 
         }
         if (body === undefined || 'left' in body)
         {
-            return {statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
+            return {success: body === undefined, statusCode: result.statusCode.toString(), status, headers: result.headers, left: result.body, validationErrors: body?.left, where: 'response:body' }
         }
-        return {statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
+        return {success: true as const, statusCode: result.statusCode.toString(), status, headers: result.headers, right: result.body }
     }
 }
 
@@ -371,19 +372,19 @@ exports[`locals 1`] = `
 */
 /* eslint-disable */
 
+type Days2 = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+
 export interface Days {
     days: (Days2)[]
 }
 
-type Days2 = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+type Local2 = string
 
 type Local = string
 
-type Local2 = string
+export type Ref1 = Local2
 
-export type Ref1 = Local
-
-export type Ref2 = Local2
+export type Ref2 = Local
 
 export type Unevaluated = string
 

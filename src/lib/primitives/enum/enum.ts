@@ -27,8 +27,18 @@ export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
         return [
             {
                 type: 'typescript',
+                subtype: 'ajv',
+                isTypeOnly: true,
                 definition: (_, context) => {
                     return `${context.declare('type', this)} = ${context.render(this)}`
+                },
+            },
+            {
+                type: 'typescript',
+                subtype: 'zod',
+                isTypeOnly: false,
+                definition: (_, context) => {
+                    return `${context.declare('const', this)} = ${context.render(this)}`
                 },
             },
         ]
@@ -51,6 +61,8 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
         return [
             {
                 type: 'typescript',
+                subtype: 'ajv',
+                isTypeOnly: false,
                 definition: (_, context) => {
                     const { enum: vals } = this
                     const { exportKeyword = '', references } = context
@@ -68,6 +80,14 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
                     // @todo check this
                     this._attributes.typescript.referenceName = `keyof typeof ${symbolName}`
                     return writer.writeLine('').toString()
+                },
+            },
+            {
+                type: 'typescript',
+                subtype: 'zod',
+                isTypeOnly: false,
+                definition: (_, context) => {
+                    return `${context.declare('const', this)} = ${context.render(this)}`
                 },
             },
         ]

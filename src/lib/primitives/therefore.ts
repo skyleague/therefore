@@ -1,5 +1,5 @@
+import type { ThereforeOutput } from '../../commands/generate/output/types.js'
 import type { NameNode, Node, SourceNode } from '../cst/node.js'
-import type { ThereforeOutput } from '../output/types.js'
 import { loadNode } from '../visitor/prepass/prepass.js'
 import { ValidatorType } from './validator/validator.js'
 import type { ZodSchema } from './zod/type.js'
@@ -31,8 +31,7 @@ export class Therefore {
         sourcePath: string
         sourceSymbol: string | undefined
     }) {
-        const root =
-            symbol._definition.validator !== undefined && !(validatedSymbol in symbol) ? new ValidatorType(symbol) : symbol
+        const root = ValidatorType._root(symbol)
         symbol._sourcePath = sourcePath
         root._sourcePath = sourcePath
         if (sourceSymbol !== undefined) {

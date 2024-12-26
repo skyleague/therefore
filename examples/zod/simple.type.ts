@@ -6,6 +6,7 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
+import { validate as MyUnionValidator } from './schemas/my-union.schema.js'
 import { validate as ValidatedUserValidator } from './schemas/user-schema.schema.js'
 
 export interface Attributes {
@@ -13,6 +14,33 @@ export interface Attributes {
 }
 
 export type Email = string
+
+export type MyUnion =
+    | {
+          status: 'success'
+          data: string
+      }
+    | {
+          status: 'failed'
+          error: unknown
+      }
+
+export const MyUnion = {
+    validate: MyUnionValidator as ValidateFunction<MyUnion>,
+    get schema() {
+        return MyUnion.validate.schema
+    },
+    get errors() {
+        return MyUnion.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is MyUnion => MyUnion.validate(o) === true,
+    parse: (o: unknown): { right: MyUnion } | { left: DefinedError[] } => {
+        if (MyUnion.is(o)) {
+            return { right: o }
+        }
+        return { left: (MyUnion.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 export type Users = ValidatedUser[]
 

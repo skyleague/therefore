@@ -4,9 +4,11 @@ import { jsonSchemaToZod } from 'json-schema-to-zod'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
 import type { ZodSchema } from 'zod'
+import z from 'zod'
+import { GenericFileOutput } from '../../../src/commands/generate/output/generic.js'
+import { TypescriptFileOutput } from '../../../src/commands/generate/output/typescript.js'
 import type * as JSONSchema from '../../../src/json.js'
-import { GenericFileOutput } from '../../../src/lib/output/generic.js'
-import { TypescriptFileOutput } from '../../../src/lib/output/typescript.js'
+import { $jsonschema } from '../../../src/lib/primitives/jsonschema/jsonschema.js'
 import { $zod } from '../../../src/lib/primitives/zod/zod.js'
 import { arbitrary } from '../../../src/lib/visitor/arbitrary/arbitrary.js'
 import { toJsonSchema } from '../../../src/lib/visitor/jsonschema/jsonschema.js'
@@ -164,7 +166,7 @@ it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> th
             const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
             // biome-ignore lint/security/noGlobalEval: needed here as part of the test
             const zod = eval(zodStr)
-            const therefore = $zod(zod)
+            const therefore = $zod(zod, { keepOriginalSchema: false })
             therefore._name = 'Root'
             generateNode(therefore)
             const converted = toJsonSchema(therefore, { target })
@@ -244,10 +246,29 @@ it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> zo
             // biome-ignore lint/security/noGlobalEval: needed here as part of the test
             const zod: ZodSchema = eval(zodStr)
 
+            const therefore = $jsonschema(structuredClone(schema), {
+                name: 'root',
+                allowIntersection: true,
+                dereference: false,
+                // make our own lives a whole lot easier
+                validator: 'zod',
+            })
+            generateNode(therefore)
+            const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
+            const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
+            if (transpiled.diagnostics?.length !== 0) {
+                throw new Error(declaration)
+            }
+
+            void z
+
+            // biome-ignore lint/security/noGlobalEval: needed here as part of the test
+            const execute = await eval(`const { z } = require("zod"); ${transpiled.outputText}; Root`)
+
             forAll(
                 arbitrary(zod),
                 (value) => {
-                    return zod.safeParse(value).success
+                    return zod.safeParse(value).success && execute.safeParse(value).success
                 },
                 {
                     seed: 42n,

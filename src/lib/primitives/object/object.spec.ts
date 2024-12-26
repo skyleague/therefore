@@ -263,18 +263,23 @@ it('expand', () => {
       ObjectType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -282,17 +287,21 @@ it('expand', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "shape": {
           "foo": StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         },
@@ -302,19 +311,24 @@ it('expand', () => {
       ObjectType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [],
             "_definition": {},
             "_id": "3",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {},
           },
@@ -323,18 +337,22 @@ it('expand', () => {
         "_id": "4",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "shape": {
           "foo": ObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [],
             "_definition": {},
             "_id": "3",
             "_isCommutative": false,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "shape": {},
           },
@@ -348,7 +366,9 @@ it('example', () => {
       ObjectType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [],
         "_definition": {
@@ -363,6 +383,7 @@ it('example', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "shape": {},
       }
@@ -377,7 +398,9 @@ it('default', () => {
       ObjectType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [],
         "_definition": {
@@ -388,6 +411,7 @@ it('default', () => {
         "_id": "1",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "shape": {},
       }
@@ -427,24 +451,31 @@ it('complex', () => {
       ObjectType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -456,23 +487,29 @@ it('complex', () => {
             "_options": {
               "minItems": 1,
             },
+            "_origin": {},
             "_type": "array",
             "element": StringType {
               "_attributes": {
                 "generic": {},
+                "isGenerated": true,
                 "typescript": {},
+                "validator": undefined,
               },
               "_definition": {},
               "_id": "2",
               "_isCommutative": true,
               "_options": {},
+              "_origin": {},
               "_type": "string",
             },
           },
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
@@ -480,12 +517,15 @@ it('complex', () => {
             "_id": "3",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
           BooleanType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {
               "default": false,
@@ -494,6 +534,7 @@ it('complex', () => {
             "_id": "4",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "boolean",
           },
         ],
@@ -503,12 +544,15 @@ it('complex', () => {
         "_id": "5",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "shape": {
           "booleans": BooleanType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {
               "default": false,
@@ -517,23 +561,29 @@ it('complex', () => {
             "_id": "4",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "boolean",
           },
           "ids": NodeTrait {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               StringType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
+                "_origin": {},
                 "_type": "string",
               },
             ],
@@ -545,23 +595,29 @@ it('complex', () => {
             "_options": {
               "minItems": 1,
             },
+            "_origin": {},
             "_type": "array",
             "element": StringType {
               "_attributes": {
                 "generic": {},
+                "isGenerated": true,
                 "typescript": {},
+                "validator": undefined,
               },
               "_definition": {},
               "_id": "2",
               "_isCommutative": true,
               "_options": {},
+              "_origin": {},
               "_type": "string",
             },
           },
           "matches": StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
@@ -569,6 +625,7 @@ it('complex', () => {
             "_id": "3",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         },

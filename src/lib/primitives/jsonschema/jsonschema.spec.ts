@@ -1,9 +1,9 @@
 import { $jsonschema } from './jsonschema.js'
 
+import { TypescriptFileOutput } from '../../../commands/generate/output/typescript.js'
 import type { JsonSchema } from '../../../json.js'
 import type { OpenapiV3 } from '../../../types/openapi.type.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import { TypescriptFileOutput } from '../../output/typescript.js'
 import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 import { buildContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema.js'
 import { $object } from '../object/object.js'
@@ -40,19 +40,25 @@ describe('person', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   IntegerType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "Age in years which must be equal to or greater than zero.",
@@ -65,6 +71,7 @@ describe('person', () => {
                       "min": 0,
                       "minInclusive": true,
                     },
+                    "_origin": {},
                     "_type": "integer",
                   },
                 ],
@@ -72,18 +79,23 @@ describe('person', () => {
                 "_id": "4",
                 "_isCommutative": true,
                 "_name": "age",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "The person's first name.",
@@ -92,6 +104,7 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "firstName",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -99,18 +112,23 @@ describe('person', () => {
                 "_id": "5",
                 "_isCommutative": true,
                 "_name": "firstName",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "The person's last name.",
@@ -119,6 +137,7 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "lastName",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -126,6 +145,7 @@ describe('person', () => {
                 "_id": "6",
                 "_isCommutative": true,
                 "_name": "lastName",
+                "_origin": {},
                 "_type": "optional",
               },
             ],
@@ -138,19 +158,24 @@ describe('person', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "age": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   IntegerType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "Age in years which must be equal to or greater than zero.",
@@ -163,6 +188,7 @@ describe('person', () => {
                       "min": 0,
                       "minInclusive": true,
                     },
+                    "_origin": {},
                     "_type": "integer",
                   },
                 ],
@@ -170,18 +196,23 @@ describe('person', () => {
                 "_id": "4",
                 "_isCommutative": true,
                 "_name": "age",
+                "_origin": {},
                 "_type": "optional",
               },
               "firstName": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "The person's first name.",
@@ -190,6 +221,7 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "firstName",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -197,18 +229,23 @@ describe('person', () => {
                 "_id": "5",
                 "_isCommutative": true,
                 "_name": "firstName",
+                "_origin": {},
                 "_type": "optional",
               },
               "lastName": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {
                       "description": "The person's last name.",
@@ -217,6 +254,7 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "lastName",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -224,6 +262,7 @@ describe('person', () => {
                 "_id": "6",
                 "_isCommutative": true,
                 "_name": "lastName",
+                "_origin": {},
                 "_type": "optional",
               },
             },
@@ -262,7 +301,7 @@ describe('person', () => {
           "/**
            * Person
            */
-          export interface {{7:symbolName}} {
+          interface {{7:symbolName}} {
               /**
                * Age in years which must be equal to or greater than zero.
                */
@@ -307,13 +346,17 @@ describe('coordinates', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "1",
@@ -323,12 +366,15 @@ describe('coordinates', () => {
                   "max": 90,
                   "min": -90,
                 },
+                "_origin": {},
                 "_type": "number",
               },
               NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
@@ -338,6 +384,7 @@ describe('coordinates', () => {
                   "max": 180,
                   "min": -180,
                 },
+                "_origin": {},
                 "_type": "number",
               },
             ],
@@ -351,13 +398,16 @@ describe('coordinates', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "latitude": NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "1",
@@ -367,12 +417,15 @@ describe('coordinates', () => {
                   "max": 90,
                   "min": -90,
                 },
+                "_origin": {},
                 "_type": "number",
               },
               "longitude": NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
@@ -382,6 +435,7 @@ describe('coordinates', () => {
                   "max": 180,
                   "min": -180,
                 },
+                "_origin": {},
                 "_type": "number",
               },
             },
@@ -424,7 +478,7 @@ describe('coordinates', () => {
            * 
            * A geographical coordinate.
            */
-          export interface {{3:symbolName}} {
+          interface {{3:symbolName}} {
               latitude: number
               longitude: number
           }"
@@ -475,31 +529,40 @@ describe('array', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "1",
                         "_isCommutative": true,
                         "_name": "fruits",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -508,17 +571,21 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "fruits",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "1",
                       "_isCommutative": true,
                       "_name": "fruits",
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -527,36 +594,47 @@ describe('array', () => {
                 "_id": "5",
                 "_isCommutative": true,
                 "_name": "fruits",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           JSONObjectType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": "ajv",
                             },
                             "_children": [
                               BooleanType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "Do I like this vegetable?",
@@ -565,12 +643,15 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "boolean",
                               },
                               StringType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "The name of the vegetable.",
@@ -579,6 +660,7 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "string",
                               },
                             ],
@@ -587,12 +669,15 @@ describe('array', () => {
                             "_isCommutative": false,
                             "_name": "veggie",
                             "_options": {},
+                            "_origin": {},
                             "_type": "object",
                             "shape": {
                               "veggieLike": BooleanType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "Do I like this vegetable?",
@@ -601,12 +686,15 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "boolean",
                               },
                               "veggieName": StringType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "The name of the vegetable.",
@@ -615,6 +703,7 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "string",
                               },
                             },
@@ -633,6 +722,7 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
+                        "_origin": {},
                         "_type": "ref",
                       },
                     ],
@@ -641,23 +731,30 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": NodeTrait {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         JSONObjectType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": "ajv",
                           },
                           "_children": [
                             BooleanType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "Do I like this vegetable?",
@@ -666,12 +763,15 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "boolean",
                             },
                             StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "The name of the vegetable.",
@@ -680,6 +780,7 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           ],
@@ -688,12 +789,15 @@ describe('array', () => {
                           "_isCommutative": false,
                           "_name": "veggie",
                           "_options": {},
+                          "_origin": {},
                           "_type": "object",
                           "shape": {
                             "veggieLike": BooleanType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "Do I like this vegetable?",
@@ -702,12 +806,15 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "boolean",
                             },
                             "veggieName": StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "The name of the vegetable.",
@@ -716,6 +823,7 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           },
@@ -734,6 +842,7 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
+                      "_origin": {},
                       "_type": "ref",
                     },
                   },
@@ -742,6 +851,7 @@ describe('array', () => {
                 "_id": "6",
                 "_isCommutative": true,
                 "_name": "vegetables",
+                "_origin": {},
                 "_type": "optional",
               },
             ],
@@ -752,31 +862,39 @@ describe('array', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "fruits": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "1",
                         "_isCommutative": true,
                         "_name": "fruits",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -785,17 +903,21 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "fruits",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "1",
                       "_isCommutative": true,
                       "_name": "fruits",
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -804,36 +926,47 @@ describe('array', () => {
                 "_id": "5",
                 "_isCommutative": true,
                 "_name": "fruits",
+                "_origin": {},
                 "_type": "optional",
               },
               "vegetables": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           JSONObjectType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": "ajv",
                             },
                             "_children": [
                               BooleanType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "Do I like this vegetable?",
@@ -842,12 +975,15 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "boolean",
                               },
                               StringType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "The name of the vegetable.",
@@ -856,6 +992,7 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "string",
                               },
                             ],
@@ -864,12 +1001,15 @@ describe('array', () => {
                             "_isCommutative": false,
                             "_name": "veggie",
                             "_options": {},
+                            "_origin": {},
                             "_type": "object",
                             "shape": {
                               "veggieLike": BooleanType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "Do I like this vegetable?",
@@ -878,12 +1018,15 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "boolean",
                               },
                               "veggieName": StringType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_definition": {
                                   "description": "The name of the vegetable.",
@@ -892,6 +1035,7 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "string",
                               },
                             },
@@ -910,6 +1054,7 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
+                        "_origin": {},
                         "_type": "ref",
                       },
                     ],
@@ -918,23 +1063,30 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": NodeTrait {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         JSONObjectType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": "ajv",
                           },
                           "_children": [
                             BooleanType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "Do I like this vegetable?",
@@ -943,12 +1095,15 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "boolean",
                             },
                             StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "The name of the vegetable.",
@@ -957,6 +1112,7 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           ],
@@ -965,12 +1121,15 @@ describe('array', () => {
                           "_isCommutative": false,
                           "_name": "veggie",
                           "_options": {},
+                          "_origin": {},
                           "_type": "object",
                           "shape": {
                             "veggieLike": BooleanType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "Do I like this vegetable?",
@@ -979,12 +1138,15 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "boolean",
                             },
                             "veggieName": StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {
                                 "description": "The name of the vegetable.",
@@ -993,6 +1155,7 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           },
@@ -1011,6 +1174,7 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
+                      "_origin": {},
                       "_type": "ref",
                     },
                   },
@@ -1019,6 +1183,7 @@ describe('array', () => {
                 "_id": "6",
                 "_isCommutative": true,
                 "_name": "vegetables",
+                "_origin": {},
                 "_type": "optional",
               },
             },
@@ -1056,7 +1221,7 @@ describe('array', () => {
           "/**
            * A representation of a person, company, organization, or place
            */
-          export interface {{7:symbolName}} {
+          interface {{7:symbolName}} {
               fruits?: ((string)[] | undefined)
               vegetables?: (({{10:referenceName}})[] | undefined)
           }
@@ -1136,37 +1301,48 @@ describe('object with nullable property', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "1",
                             "_isCommutative": true,
                             "_name": "fruits",
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                         ],
@@ -1175,17 +1351,21 @@ describe('object with nullable property', () => {
                         "_isCommutative": false,
                         "_name": "fruits",
                         "_options": {},
+                        "_origin": {},
                         "_type": "array",
                         "element": StringType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_definition": {},
                           "_id": "1",
                           "_isCommutative": true,
                           "_name": "fruits",
                           "_options": {},
+                          "_origin": {},
                           "_type": "string",
                         },
                       },
@@ -1194,6 +1374,7 @@ describe('object with nullable property', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "fruits",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1201,48 +1382,61 @@ describe('object with nullable property', () => {
                 "_id": "10",
                 "_isCommutative": true,
                 "_name": "fruits",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       UnionType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "6",
                             "_isCommutative": true,
                             "_name": "store",
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                           NumberType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "7",
                             "_isCommutative": true,
                             "_name": "store",
                             "_options": {},
+                            "_origin": {},
                             "_type": "number",
                           },
                         ],
@@ -1251,6 +1445,7 @@ describe('object with nullable property', () => {
                         "_isCommutative": false,
                         "_name": "store",
                         "_options": {},
+                        "_origin": {},
                         "_type": "union",
                       },
                     ],
@@ -1258,6 +1453,7 @@ describe('object with nullable property', () => {
                     "_id": "9",
                     "_isCommutative": true,
                     "_name": "store",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1265,30 +1461,38 @@ describe('object with nullable property', () => {
                 "_id": "11",
                 "_isCommutative": true,
                 "_name": "store",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "4",
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -1297,17 +1501,21 @@ describe('object with nullable property', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "4",
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -1316,6 +1524,7 @@ describe('object with nullable property', () => {
                 "_id": "12",
                 "_isCommutative": true,
                 "_name": "vegetables",
+                "_origin": {},
                 "_type": "optional",
               },
             ],
@@ -1326,37 +1535,47 @@ describe('object with nullable property', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "fruits": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "1",
                             "_isCommutative": true,
                             "_name": "fruits",
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                         ],
@@ -1365,17 +1584,21 @@ describe('object with nullable property', () => {
                         "_isCommutative": false,
                         "_name": "fruits",
                         "_options": {},
+                        "_origin": {},
                         "_type": "array",
                         "element": StringType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_definition": {},
                           "_id": "1",
                           "_isCommutative": true,
                           "_name": "fruits",
                           "_options": {},
+                          "_origin": {},
                           "_type": "string",
                         },
                       },
@@ -1384,6 +1607,7 @@ describe('object with nullable property', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "fruits",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1391,48 +1615,61 @@ describe('object with nullable property', () => {
                 "_id": "10",
                 "_isCommutative": true,
                 "_name": "fruits",
+                "_origin": {},
                 "_type": "optional",
               },
               "store": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       UnionType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "6",
                             "_isCommutative": true,
                             "_name": "store",
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                           NumberType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "7",
                             "_isCommutative": true,
                             "_name": "store",
                             "_options": {},
+                            "_origin": {},
                             "_type": "number",
                           },
                         ],
@@ -1441,6 +1678,7 @@ describe('object with nullable property', () => {
                         "_isCommutative": false,
                         "_name": "store",
                         "_options": {},
+                        "_origin": {},
                         "_type": "union",
                       },
                     ],
@@ -1448,6 +1686,7 @@ describe('object with nullable property', () => {
                     "_id": "9",
                     "_isCommutative": true,
                     "_name": "store",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1455,30 +1694,38 @@ describe('object with nullable property', () => {
                 "_id": "11",
                 "_isCommutative": true,
                 "_name": "store",
+                "_origin": {},
                 "_type": "optional",
               },
               "vegetables": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "4",
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -1487,17 +1734,21 @@ describe('object with nullable property', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
+                    "_origin": {},
                     "_type": "array",
                     "element": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "4",
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -1506,6 +1757,7 @@ describe('object with nullable property', () => {
                 "_id": "12",
                 "_isCommutative": true,
                 "_name": "vegetables",
+                "_origin": {},
                 "_type": "optional",
               },
             },
@@ -1559,7 +1811,7 @@ describe('object with nullable property', () => {
           "/**
            * An object with nullable properties
            */
-          export interface {{13:symbolName}} {
+          interface {{13:symbolName}} {
               fruits?: ((string)[] | null | undefined)
               store?: ((string | number) | null | undefined)
               vegetables?: ((string)[] | undefined)
@@ -1587,43 +1839,55 @@ describe('make optional properties nullable', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_name": "bar",
                 "_options": {},
+                "_origin": {},
                 "_type": "number",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "1",
                         "_isCommutative": true,
                         "_name": "foo",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -1631,6 +1895,7 @@ describe('make optional properties nullable', () => {
                     "_id": "6",
                     "_isCommutative": true,
                     "_name": "foo",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1638,48 +1903,61 @@ describe('make optional properties nullable', () => {
                 "_id": "7",
                 "_isCommutative": true,
                 "_name": "foo",
+                "_origin": {},
                 "_type": "optional",
               },
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       UnionType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           BooleanType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "3",
                             "_isCommutative": true,
                             "_name": "foobar",
                             "_options": {},
+                            "_origin": {},
                             "_type": "boolean",
                           },
                           NumberType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "4",
                             "_isCommutative": true,
                             "_name": "foobar",
                             "_options": {},
+                            "_origin": {},
                             "_type": "number",
                           },
                         ],
@@ -1688,6 +1966,7 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": false,
                         "_name": "foobar",
                         "_options": {},
+                        "_origin": {},
                         "_type": "union",
                       },
                     ],
@@ -1695,6 +1974,7 @@ describe('make optional properties nullable', () => {
                     "_id": "8",
                     "_isCommutative": true,
                     "_name": "foobar",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1702,6 +1982,7 @@ describe('make optional properties nullable', () => {
                 "_id": "9",
                 "_isCommutative": true,
                 "_name": "foobar",
+                "_origin": {},
                 "_type": "optional",
               },
             ],
@@ -1712,43 +1993,54 @@ describe('make optional properties nullable', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "bar": NumberType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_name": "bar",
                 "_options": {},
+                "_origin": {},
                 "_type": "number",
               },
               "foo": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       StringType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_definition": {},
                         "_id": "1",
                         "_isCommutative": true,
                         "_name": "foo",
                         "_options": {},
+                        "_origin": {},
                         "_type": "string",
                       },
                     ],
@@ -1756,6 +2048,7 @@ describe('make optional properties nullable', () => {
                     "_id": "6",
                     "_isCommutative": true,
                     "_name": "foo",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1763,48 +2056,61 @@ describe('make optional properties nullable', () => {
                 "_id": "7",
                 "_isCommutative": true,
                 "_name": "foo",
+                "_origin": {},
                 "_type": "optional",
               },
               "foobar": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       UnionType {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           BooleanType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "3",
                             "_isCommutative": true,
                             "_name": "foobar",
                             "_options": {},
+                            "_origin": {},
                             "_type": "boolean",
                           },
                           NumberType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "4",
                             "_isCommutative": true,
                             "_name": "foobar",
                             "_options": {},
+                            "_origin": {},
                             "_type": "number",
                           },
                         ],
@@ -1813,6 +2119,7 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": false,
                         "_name": "foobar",
                         "_options": {},
+                        "_origin": {},
                         "_type": "union",
                       },
                     ],
@@ -1820,6 +2127,7 @@ describe('make optional properties nullable', () => {
                     "_id": "8",
                     "_isCommutative": true,
                     "_name": "foobar",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -1827,6 +2135,7 @@ describe('make optional properties nullable', () => {
                 "_id": "9",
                 "_isCommutative": true,
                 "_name": "foobar",
+                "_origin": {},
                 "_type": "optional",
               },
             },
@@ -1877,7 +2186,7 @@ describe('make optional properties nullable', () => {
           "/**
            * An object with optional properties
            */
-          export interface {{10:symbolName}} {
+          interface {{10:symbolName}} {
               bar: number
               foo?: (string | null | undefined)
               foobar?: ((boolean | number) | null | undefined)
@@ -1915,61 +2224,80 @@ describe('nullable array', () => {
           JSONObjectType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           NodeTrait {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_children": [
                               JSONObjectType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": "ajv",
                                 },
                                 "_children": [
                                   NodeTrait {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_children": [
                                       NodeTrait {
                                         "_attributes": {
                                           "generic": {},
+                                          "isGenerated": true,
                                           "typescript": {},
+                                          "validator": undefined,
                                         },
                                         "_children": [
                                           StringType {
                                             "_attributes": {
                                               "generic": {},
+                                              "isGenerated": true,
                                               "typescript": {},
+                                              "validator": undefined,
                                             },
                                             "_definition": {},
                                             "_id": "6",
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
+                                            "_origin": {},
                                             "_type": "string",
                                           },
                                         ],
@@ -1977,6 +2305,7 @@ describe('nullable array', () => {
                                         "_id": "7",
                                         "_isCommutative": true,
                                         "_name": "Foo",
+                                        "_origin": {},
                                         "_type": "nullable",
                                       },
                                     ],
@@ -1984,6 +2313,7 @@ describe('nullable array', () => {
                                     "_id": "8",
                                     "_isCommutative": true,
                                     "_name": "Foo",
+                                    "_origin": {},
                                     "_type": "optional",
                                   },
                                 ],
@@ -1992,30 +2322,38 @@ describe('nullable array', () => {
                                 "_isCommutative": false,
                                 "_name": "Foo",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "object",
                                 "shape": {
                                   "bar": NodeTrait {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_children": [
                                       NodeTrait {
                                         "_attributes": {
                                           "generic": {},
+                                          "isGenerated": true,
                                           "typescript": {},
+                                          "validator": undefined,
                                         },
                                         "_children": [
                                           StringType {
                                             "_attributes": {
                                               "generic": {},
+                                              "isGenerated": true,
                                               "typescript": {},
+                                              "validator": undefined,
                                             },
                                             "_definition": {},
                                             "_id": "6",
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
+                                            "_origin": {},
                                             "_type": "string",
                                           },
                                         ],
@@ -2023,6 +2361,7 @@ describe('nullable array', () => {
                                         "_id": "7",
                                         "_isCommutative": true,
                                         "_name": "Foo",
+                                        "_origin": {},
                                         "_type": "nullable",
                                       },
                                     ],
@@ -2030,6 +2369,7 @@ describe('nullable array', () => {
                                     "_id": "8",
                                     "_isCommutative": true,
                                     "_name": "Foo",
+                                    "_origin": {},
                                     "_type": "optional",
                                   },
                                 },
@@ -2048,6 +2388,7 @@ describe('nullable array', () => {
                             "_isCommutative": true,
                             "_name": "foo",
                             "_options": {},
+                            "_origin": {},
                             "_type": "ref",
                           },
                         ],
@@ -2064,41 +2405,53 @@ describe('nullable array', () => {
                         "_isCommutative": false,
                         "_name": "foo",
                         "_options": {},
+                        "_origin": {},
                         "_type": "array",
                         "element": NodeTrait {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             JSONObjectType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": "ajv",
                               },
                               "_children": [
                                 NodeTrait {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     NodeTrait {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_children": [
                                         StringType {
                                           "_attributes": {
                                             "generic": {},
+                                            "isGenerated": true,
                                             "typescript": {},
+                                            "validator": undefined,
                                           },
                                           "_definition": {},
                                           "_id": "6",
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
+                                          "_origin": {},
                                           "_type": "string",
                                         },
                                       ],
@@ -2106,6 +2459,7 @@ describe('nullable array', () => {
                                       "_id": "7",
                                       "_isCommutative": true,
                                       "_name": "Foo",
+                                      "_origin": {},
                                       "_type": "nullable",
                                     },
                                   ],
@@ -2113,6 +2467,7 @@ describe('nullable array', () => {
                                   "_id": "8",
                                   "_isCommutative": true,
                                   "_name": "Foo",
+                                  "_origin": {},
                                   "_type": "optional",
                                 },
                               ],
@@ -2121,30 +2476,38 @@ describe('nullable array', () => {
                               "_isCommutative": false,
                               "_name": "Foo",
                               "_options": {},
+                              "_origin": {},
                               "_type": "object",
                               "shape": {
                                 "bar": NodeTrait {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     NodeTrait {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_children": [
                                         StringType {
                                           "_attributes": {
                                             "generic": {},
+                                            "isGenerated": true,
                                             "typescript": {},
+                                            "validator": undefined,
                                           },
                                           "_definition": {},
                                           "_id": "6",
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
+                                          "_origin": {},
                                           "_type": "string",
                                         },
                                       ],
@@ -2152,6 +2515,7 @@ describe('nullable array', () => {
                                       "_id": "7",
                                       "_isCommutative": true,
                                       "_name": "Foo",
+                                      "_origin": {},
                                       "_type": "nullable",
                                     },
                                   ],
@@ -2159,6 +2523,7 @@ describe('nullable array', () => {
                                   "_id": "8",
                                   "_isCommutative": true,
                                   "_name": "Foo",
+                                  "_origin": {},
                                   "_type": "optional",
                                 },
                               },
@@ -2177,6 +2542,7 @@ describe('nullable array', () => {
                           "_isCommutative": true,
                           "_name": "foo",
                           "_options": {},
+                          "_origin": {},
                           "_type": "ref",
                         },
                       },
@@ -2185,6 +2551,7 @@ describe('nullable array', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "foo",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -2192,6 +2559,7 @@ describe('nullable array', () => {
                 "_id": "4",
                 "_isCommutative": true,
                 "_name": "foo",
+                "_origin": {},
                 "_type": "optional",
               },
             ],
@@ -2202,61 +2570,79 @@ describe('nullable array', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "object",
             "loaded": true,
             "shape": {
               "foo": NodeTrait {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   NodeTrait {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_children": [
                       NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           NodeTrait {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_children": [
                               JSONObjectType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": "ajv",
                                 },
                                 "_children": [
                                   NodeTrait {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_children": [
                                       NodeTrait {
                                         "_attributes": {
                                           "generic": {},
+                                          "isGenerated": true,
                                           "typescript": {},
+                                          "validator": undefined,
                                         },
                                         "_children": [
                                           StringType {
                                             "_attributes": {
                                               "generic": {},
+                                              "isGenerated": true,
                                               "typescript": {},
+                                              "validator": undefined,
                                             },
                                             "_definition": {},
                                             "_id": "6",
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
+                                            "_origin": {},
                                             "_type": "string",
                                           },
                                         ],
@@ -2264,6 +2650,7 @@ describe('nullable array', () => {
                                         "_id": "7",
                                         "_isCommutative": true,
                                         "_name": "Foo",
+                                        "_origin": {},
                                         "_type": "nullable",
                                       },
                                     ],
@@ -2271,6 +2658,7 @@ describe('nullable array', () => {
                                     "_id": "8",
                                     "_isCommutative": true,
                                     "_name": "Foo",
+                                    "_origin": {},
                                     "_type": "optional",
                                   },
                                 ],
@@ -2279,30 +2667,38 @@ describe('nullable array', () => {
                                 "_isCommutative": false,
                                 "_name": "Foo",
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "object",
                                 "shape": {
                                   "bar": NodeTrait {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_children": [
                                       NodeTrait {
                                         "_attributes": {
                                           "generic": {},
+                                          "isGenerated": true,
                                           "typescript": {},
+                                          "validator": undefined,
                                         },
                                         "_children": [
                                           StringType {
                                             "_attributes": {
                                               "generic": {},
+                                              "isGenerated": true,
                                               "typescript": {},
+                                              "validator": undefined,
                                             },
                                             "_definition": {},
                                             "_id": "6",
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
+                                            "_origin": {},
                                             "_type": "string",
                                           },
                                         ],
@@ -2310,6 +2706,7 @@ describe('nullable array', () => {
                                         "_id": "7",
                                         "_isCommutative": true,
                                         "_name": "Foo",
+                                        "_origin": {},
                                         "_type": "nullable",
                                       },
                                     ],
@@ -2317,6 +2714,7 @@ describe('nullable array', () => {
                                     "_id": "8",
                                     "_isCommutative": true,
                                     "_name": "Foo",
+                                    "_origin": {},
                                     "_type": "optional",
                                   },
                                 },
@@ -2335,6 +2733,7 @@ describe('nullable array', () => {
                             "_isCommutative": true,
                             "_name": "foo",
                             "_options": {},
+                            "_origin": {},
                             "_type": "ref",
                           },
                         ],
@@ -2351,41 +2750,53 @@ describe('nullable array', () => {
                         "_isCommutative": false,
                         "_name": "foo",
                         "_options": {},
+                        "_origin": {},
                         "_type": "array",
                         "element": NodeTrait {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             JSONObjectType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": "ajv",
                               },
                               "_children": [
                                 NodeTrait {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     NodeTrait {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_children": [
                                         StringType {
                                           "_attributes": {
                                             "generic": {},
+                                            "isGenerated": true,
                                             "typescript": {},
+                                            "validator": undefined,
                                           },
                                           "_definition": {},
                                           "_id": "6",
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
+                                          "_origin": {},
                                           "_type": "string",
                                         },
                                       ],
@@ -2393,6 +2804,7 @@ describe('nullable array', () => {
                                       "_id": "7",
                                       "_isCommutative": true,
                                       "_name": "Foo",
+                                      "_origin": {},
                                       "_type": "nullable",
                                     },
                                   ],
@@ -2400,6 +2812,7 @@ describe('nullable array', () => {
                                   "_id": "8",
                                   "_isCommutative": true,
                                   "_name": "Foo",
+                                  "_origin": {},
                                   "_type": "optional",
                                 },
                               ],
@@ -2408,30 +2821,38 @@ describe('nullable array', () => {
                               "_isCommutative": false,
                               "_name": "Foo",
                               "_options": {},
+                              "_origin": {},
                               "_type": "object",
                               "shape": {
                                 "bar": NodeTrait {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     NodeTrait {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_children": [
                                         StringType {
                                           "_attributes": {
                                             "generic": {},
+                                            "isGenerated": true,
                                             "typescript": {},
+                                            "validator": undefined,
                                           },
                                           "_definition": {},
                                           "_id": "6",
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
+                                          "_origin": {},
                                           "_type": "string",
                                         },
                                       ],
@@ -2439,6 +2860,7 @@ describe('nullable array', () => {
                                       "_id": "7",
                                       "_isCommutative": true,
                                       "_name": "Foo",
+                                      "_origin": {},
                                       "_type": "nullable",
                                     },
                                   ],
@@ -2446,6 +2868,7 @@ describe('nullable array', () => {
                                   "_id": "8",
                                   "_isCommutative": true,
                                   "_name": "Foo",
+                                  "_origin": {},
                                   "_type": "optional",
                                 },
                               },
@@ -2464,6 +2887,7 @@ describe('nullable array', () => {
                           "_isCommutative": true,
                           "_name": "foo",
                           "_options": {},
+                          "_origin": {},
                           "_type": "ref",
                         },
                       },
@@ -2472,6 +2896,7 @@ describe('nullable array', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "foo",
+                    "_origin": {},
                     "_type": "nullable",
                   },
                 ],
@@ -2479,6 +2904,7 @@ describe('nullable array', () => {
                 "_id": "4",
                 "_isCommutative": true,
                 "_name": "foo",
+                "_origin": {},
                 "_type": "optional",
               },
             },
@@ -2518,7 +2944,7 @@ describe('nullable array', () => {
           "/**
            * An object with a nullable array that has a ref
            */
-          export interface {{5:symbolName}} {
+          interface {{5:symbolName}} {
               /**
                * @example Foo = { bar: 'wut' }
                */
@@ -2540,7 +2966,9 @@ describe('const', () => {
           ConstType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {
               "jsonschema": {
@@ -2551,6 +2979,7 @@ describe('const', () => {
             "_isCommutative": true,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "const",
             "const": {},
             "loaded": true,
@@ -2573,7 +3002,7 @@ describe('const', () => {
           "/**
            * 
            */
-          export type {{1:symbolName}} = {  }"
+          type {{1:symbolName}} = {  }"
         `)
     })
 
@@ -2613,25 +3042,32 @@ describe('edge cases', () => {
           UnionType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_children": [
               JSONObjectType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "2",
                     "_isCommutative": true,
                     "_name": "OrgId",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -2639,18 +3075,22 @@ describe('edge cases', () => {
                 "_id": "3",
                 "_isCommutative": false,
                 "_options": {},
+                "_origin": {},
                 "_type": "object",
                 "shape": {
                   "OrgId": StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "2",
                     "_isCommutative": true,
                     "_name": "OrgId",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 },
@@ -2658,19 +3098,24 @@ describe('edge cases', () => {
               JSONObjectType {
                 "_attributes": {
                   "generic": {},
+                  "isGenerated": true,
                   "typescript": {},
+                  "validator": undefined,
                 },
                 "_children": [
                   StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "4",
                     "_isCommutative": true,
                     "_name": "PrvtId",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 ],
@@ -2678,18 +3123,22 @@ describe('edge cases', () => {
                 "_id": "5",
                 "_isCommutative": false,
                 "_options": {},
+                "_origin": {},
                 "_type": "object",
                 "shape": {
                   "PrvtId": StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "4",
                     "_isCommutative": true,
                     "_name": "PrvtId",
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                 },
@@ -2700,6 +3149,7 @@ describe('edge cases', () => {
             "_isCommutative": false,
             "_name": undefined,
             "_options": {},
+            "_origin": {},
             "_type": "union",
             "loaded": true,
           }
