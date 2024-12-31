@@ -13,18 +13,23 @@ it('expand', () => {
       RecordType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -32,16 +37,20 @@ it('expand', () => {
         "_id": "2",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "element": StringType {
           "_attributes": {
             "generic": {},
+            "isGenerated": true,
             "typescript": {},
+            "validator": undefined,
           },
           "_definition": {},
           "_id": "1",
           "_isCommutative": true,
           "_options": {},
+          "_origin": {},
           "_type": "string",
         },
         "shape": {},
@@ -54,18 +63,23 @@ it('example', () => {
       RecordType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -81,16 +95,20 @@ it('example', () => {
         "_id": "2",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "element": StringType {
           "_attributes": {
             "generic": {},
+            "isGenerated": true,
             "typescript": {},
+            "validator": undefined,
           },
           "_definition": {},
           "_id": "1",
           "_isCommutative": true,
           "_options": {},
+          "_origin": {},
           "_type": "string",
         },
         "shape": {},
@@ -105,18 +123,23 @@ it('default', () => {
       RecordType {
         "_attributes": {
           "generic": {},
+          "isGenerated": true,
           "typescript": {},
+          "validator": undefined,
         },
         "_children": [
           StringType {
             "_attributes": {
               "generic": {},
+              "isGenerated": true,
               "typescript": {},
+              "validator": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
+            "_origin": {},
             "_type": "string",
           },
         ],
@@ -128,16 +151,20 @@ it('default', () => {
         "_id": "2",
         "_isCommutative": false,
         "_options": {},
+        "_origin": {},
         "_type": "object",
         "element": StringType {
           "_attributes": {
             "generic": {},
+            "isGenerated": true,
             "typescript": {},
+            "validator": undefined,
           },
           "_definition": {},
           "_id": "1",
           "_isCommutative": true,
           "_options": {},
+          "_origin": {},
           "_type": "string",
         },
         "shape": {},

@@ -9,7 +9,7 @@ import type { OptionalType } from '../optional/optional.js'
 import type { RecordType } from '../record/record.js'
 import type { StringType } from '../string/string.js'
 import type { TupleType } from '../tuple/tuple.js'
-import type { UnionType } from '../union/union.js'
+import type { DiscriminatedUnionType, UnionType } from '../union/union.js'
 import type { UnknownType } from '../unknown/unknown.js'
 
 export type ZodSchema = { _def: { typeName: unknown }; _output: unknown }
@@ -38,29 +38,31 @@ export type ZodSchemaAsNode<T extends ZodSchema> = T['_def']['typeName'] extends
                       }>
                     : T['_def']['typeName'] extends 'ZodUnion'
                       ? UnionType
-                      : T['_def']['typeName'] extends 'ZodIntersection'
-                        ? IntersectionType
-                        : T['_def']['typeName'] extends 'ZodTuple'
-                          ? TupleType
-                          : T extends { _def: { typeName: 'ZodRecord' }; element: infer Element }
-                            ? RecordType<Element extends ZodSchema ? ZodSchemaAsNode<Element> : never>
-                            : T extends { _def: { typeName: 'ZodLiteral' }; value: infer Value }
-                              ? ConstType<Value>
-                              : T extends { _def: { typeName: 'ZodOptional'; innerType: infer Schema } }
-                                ? Schema extends ZodSchema
-                                    ? OptionalType<ZodSchemaAsNode<Schema>>
-                                    : never
-                                : T extends { _def: { typeName: 'ZodNullable'; innerType: infer Schema } }
+                      : T['_def']['typeName'] extends 'ZodDiscriminatedUnion'
+                        ? DiscriminatedUnionType
+                        : T['_def']['typeName'] extends 'ZodIntersection'
+                          ? IntersectionType
+                          : T['_def']['typeName'] extends 'ZodTuple'
+                            ? TupleType
+                            : T extends { _def: { typeName: 'ZodRecord' }; element: infer Element }
+                              ? RecordType<Element extends ZodSchema ? ZodSchemaAsNode<Element> : never>
+                              : T extends { _def: { typeName: 'ZodLiteral' }; value: infer Value }
+                                ? ConstType<Value>
+                                : T extends { _def: { typeName: 'ZodOptional'; innerType: infer Schema } }
                                   ? Schema extends ZodSchema
-                                      ? NullableType<ZodSchemaAsNode<Schema>>
+                                      ? OptionalType<ZodSchemaAsNode<Schema>>
                                       : never
-                                  : T['_def']['typeName'] extends 'ZodDefault'
-                                    ? BooleanType //
-                                    : T extends {
-                                            _def: { typeName: 'ZodEffects' }
-                                            innerType: (...args: unknown[]) => infer Schema
-                                        }
-                                      ? Schema extends ZodSchema
-                                          ? ZodSchemaAsNode<Schema>
-                                          : never
-                                      : never
+                                  : T extends { _def: { typeName: 'ZodNullable'; innerType: infer Schema } }
+                                    ? Schema extends ZodSchema
+                                        ? NullableType<ZodSchemaAsNode<Schema>>
+                                        : never
+                                    : T['_def']['typeName'] extends 'ZodDefault'
+                                      ? BooleanType //
+                                      : T extends {
+                                              _def: { typeName: 'ZodEffects' }
+                                              innerType: (...args: unknown[]) => infer Schema
+                                          }
+                                        ? Schema extends ZodSchema
+                                            ? ZodSchemaAsNode<Schema>
+                                            : never
+                                        : never

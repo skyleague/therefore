@@ -4,18 +4,18 @@
  */
 /* eslint-disable */
 
+type Days2 = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+
 export interface Days {
     days: Days2[]
 }
 
-type Days2 = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+type Local2 = string
 
 type Local = string
 
-type Local2 = string
+export type Ref1 = Local2
 
-export type Ref1 = Local
-
-export type Ref2 = Local2
+export type Ref2 = Local
 
 export type Unevaluated = string

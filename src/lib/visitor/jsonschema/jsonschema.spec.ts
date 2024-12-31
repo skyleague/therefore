@@ -881,12 +881,15 @@ describe('toJsonSchema', () => {
                 "1:symbolName" => StringType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_definition": {},
                   "_id": "1",
                   "_isCommutative": true,
                   "_options": {},
+                  "_origin": {},
                   "_type": "string",
                 },
               },
@@ -899,12 +902,15 @@ describe('toJsonSchema', () => {
                 "1" => StringType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_definition": {},
                   "_id": "1",
                   "_isCommutative": true,
                   "_options": {},
+                  "_origin": {},
                   "_type": "string",
                 },
               },
@@ -952,24 +958,31 @@ describe('toJsonSchema', () => {
                 "2:symbolName" => ObjectType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {
                         "description": "fooscription",
@@ -977,6 +990,7 @@ describe('toJsonSchema', () => {
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   ],
@@ -989,12 +1003,15 @@ describe('toJsonSchema', () => {
                   "_id": "2",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "object",
                   "shape": {
                     "bar": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {
                         "description": "fooscription",
@@ -1002,17 +1019,21 @@ describe('toJsonSchema', () => {
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                     "foo": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -1027,24 +1048,31 @@ describe('toJsonSchema', () => {
                 "2" => ObjectType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {
                         "description": "fooscription",
@@ -1052,6 +1080,7 @@ describe('toJsonSchema', () => {
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   ],
@@ -1064,12 +1093,15 @@ describe('toJsonSchema', () => {
                   "_id": "2",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "object",
                   "shape": {
                     "bar": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {
                         "description": "fooscription",
@@ -1077,17 +1109,21 @@ describe('toJsonSchema', () => {
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                     "foo": StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   },
@@ -1146,30 +1182,39 @@ describe('toJsonSchema', () => {
                 "7:symbolName" => UnionType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     NodeTrait {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         RecordType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {},
                               "_id": "1",
                               "_isCommutative": true,
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           ],
@@ -1177,16 +1222,20 @@ describe('toJsonSchema', () => {
                           "_id": "2",
                           "_isCommutative": false,
                           "_options": {},
+                          "_origin": {},
                           "_type": "object",
                           "element": StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "1",
                             "_isCommutative": true,
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                           "shape": {},
@@ -1204,41 +1253,53 @@ describe('toJsonSchema', () => {
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "ref",
                     },
                     RecordType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         NodeTrait {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             NodeTrait {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_children": [
                                 RecordType {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     StringType {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_definition": {},
                                       "_id": "1",
                                       "_isCommutative": true,
                                       "_options": {},
+                                      "_origin": {},
                                       "_type": "string",
                                     },
                                   ],
@@ -1246,16 +1307,20 @@ describe('toJsonSchema', () => {
                                   "_id": "2",
                                   "_isCommutative": false,
                                   "_options": {},
+                                  "_origin": {},
                                   "_type": "object",
                                   "element": StringType {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_definition": {},
                                     "_id": "1",
                                     "_isCommutative": true,
                                     "_options": {},
+                                    "_origin": {},
                                     "_type": "string",
                                   },
                                   "shape": {},
@@ -1273,12 +1338,14 @@ describe('toJsonSchema', () => {
                               "_id": "4",
                               "_isCommutative": true,
                               "_options": {},
+                              "_origin": {},
                               "_type": "ref",
                             },
                           ],
                           "_definition": {},
                           "_id": "5",
                           "_isCommutative": true,
+                          "_origin": {},
                           "_type": "nullable",
                         },
                       ],
@@ -1286,34 +1353,44 @@ describe('toJsonSchema', () => {
                       "_id": "6",
                       "_isCommutative": false,
                       "_options": {},
+                      "_origin": {},
                       "_type": "object",
                       "element": NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           NodeTrait {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_children": [
                               RecordType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_children": [
                                   StringType {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_definition": {},
                                     "_id": "1",
                                     "_isCommutative": true,
                                     "_options": {},
+                                    "_origin": {},
                                     "_type": "string",
                                   },
                                 ],
@@ -1321,16 +1398,20 @@ describe('toJsonSchema', () => {
                                 "_id": "2",
                                 "_isCommutative": false,
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "object",
                                 "element": StringType {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_definition": {},
                                   "_id": "1",
                                   "_isCommutative": true,
                                   "_options": {},
+                                  "_origin": {},
                                   "_type": "string",
                                 },
                                 "shape": {},
@@ -1348,12 +1429,14 @@ describe('toJsonSchema', () => {
                             "_id": "4",
                             "_isCommutative": true,
                             "_options": {},
+                            "_origin": {},
                             "_type": "ref",
                           },
                         ],
                         "_definition": {},
                         "_id": "5",
                         "_isCommutative": true,
+                        "_origin": {},
                         "_type": "nullable",
                       },
                       "shape": {},
@@ -1363,23 +1446,29 @@ describe('toJsonSchema', () => {
                   "_id": "7",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "union",
                 },
                 "2:symbolName" => RecordType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   ],
@@ -1387,16 +1476,20 @@ describe('toJsonSchema', () => {
                   "_id": "2",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "1",
                     "_isCommutative": true,
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                   "shape": {},
@@ -1414,30 +1507,39 @@ describe('toJsonSchema', () => {
                 "7" => UnionType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     NodeTrait {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         RecordType {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             StringType {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_definition": {},
                               "_id": "1",
                               "_isCommutative": true,
                               "_options": {},
+                              "_origin": {},
                               "_type": "string",
                             },
                           ],
@@ -1445,16 +1547,20 @@ describe('toJsonSchema', () => {
                           "_id": "2",
                           "_isCommutative": false,
                           "_options": {},
+                          "_origin": {},
                           "_type": "object",
                           "element": StringType {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_definition": {},
                             "_id": "1",
                             "_isCommutative": true,
                             "_options": {},
+                            "_origin": {},
                             "_type": "string",
                           },
                           "shape": {},
@@ -1472,41 +1578,53 @@ describe('toJsonSchema', () => {
                       "_id": "3",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "ref",
                     },
                     RecordType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_children": [
                         NodeTrait {
                           "_attributes": {
                             "generic": {},
+                            "isGenerated": true,
                             "typescript": {},
+                            "validator": undefined,
                           },
                           "_children": [
                             NodeTrait {
                               "_attributes": {
                                 "generic": {},
+                                "isGenerated": true,
                                 "typescript": {},
+                                "validator": undefined,
                               },
                               "_children": [
                                 RecordType {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_children": [
                                     StringType {
                                       "_attributes": {
                                         "generic": {},
+                                        "isGenerated": true,
                                         "typescript": {},
+                                        "validator": undefined,
                                       },
                                       "_definition": {},
                                       "_id": "1",
                                       "_isCommutative": true,
                                       "_options": {},
+                                      "_origin": {},
                                       "_type": "string",
                                     },
                                   ],
@@ -1514,16 +1632,20 @@ describe('toJsonSchema', () => {
                                   "_id": "2",
                                   "_isCommutative": false,
                                   "_options": {},
+                                  "_origin": {},
                                   "_type": "object",
                                   "element": StringType {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_definition": {},
                                     "_id": "1",
                                     "_isCommutative": true,
                                     "_options": {},
+                                    "_origin": {},
                                     "_type": "string",
                                   },
                                   "shape": {},
@@ -1541,12 +1663,14 @@ describe('toJsonSchema', () => {
                               "_id": "4",
                               "_isCommutative": true,
                               "_options": {},
+                              "_origin": {},
                               "_type": "ref",
                             },
                           ],
                           "_definition": {},
                           "_id": "5",
                           "_isCommutative": true,
+                          "_origin": {},
                           "_type": "nullable",
                         },
                       ],
@@ -1554,34 +1678,44 @@ describe('toJsonSchema', () => {
                       "_id": "6",
                       "_isCommutative": false,
                       "_options": {},
+                      "_origin": {},
                       "_type": "object",
                       "element": NodeTrait {
                         "_attributes": {
                           "generic": {},
+                          "isGenerated": true,
                           "typescript": {},
+                          "validator": undefined,
                         },
                         "_children": [
                           NodeTrait {
                             "_attributes": {
                               "generic": {},
+                              "isGenerated": true,
                               "typescript": {},
+                              "validator": undefined,
                             },
                             "_children": [
                               RecordType {
                                 "_attributes": {
                                   "generic": {},
+                                  "isGenerated": true,
                                   "typescript": {},
+                                  "validator": undefined,
                                 },
                                 "_children": [
                                   StringType {
                                     "_attributes": {
                                       "generic": {},
+                                      "isGenerated": true,
                                       "typescript": {},
+                                      "validator": undefined,
                                     },
                                     "_definition": {},
                                     "_id": "1",
                                     "_isCommutative": true,
                                     "_options": {},
+                                    "_origin": {},
                                     "_type": "string",
                                   },
                                 ],
@@ -1589,16 +1723,20 @@ describe('toJsonSchema', () => {
                                 "_id": "2",
                                 "_isCommutative": false,
                                 "_options": {},
+                                "_origin": {},
                                 "_type": "object",
                                 "element": StringType {
                                   "_attributes": {
                                     "generic": {},
+                                    "isGenerated": true,
                                     "typescript": {},
+                                    "validator": undefined,
                                   },
                                   "_definition": {},
                                   "_id": "1",
                                   "_isCommutative": true,
                                   "_options": {},
+                                  "_origin": {},
                                   "_type": "string",
                                 },
                                 "shape": {},
@@ -1616,12 +1754,14 @@ describe('toJsonSchema', () => {
                             "_id": "4",
                             "_isCommutative": true,
                             "_options": {},
+                            "_origin": {},
                             "_type": "ref",
                           },
                         ],
                         "_definition": {},
                         "_id": "5",
                         "_isCommutative": true,
+                        "_origin": {},
                         "_type": "nullable",
                       },
                       "shape": {},
@@ -1631,23 +1771,29 @@ describe('toJsonSchema', () => {
                   "_id": "7",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "union",
                 },
                 "2" => RecordType {
                   "_attributes": {
                     "generic": {},
+                    "isGenerated": true,
                     "typescript": {},
+                    "validator": undefined,
                   },
                   "_children": [
                     StringType {
                       "_attributes": {
                         "generic": {},
+                        "isGenerated": true,
                         "typescript": {},
+                        "validator": undefined,
                       },
                       "_definition": {},
                       "_id": "1",
                       "_isCommutative": true,
                       "_options": {},
+                      "_origin": {},
                       "_type": "string",
                     },
                   ],
@@ -1655,16 +1801,20 @@ describe('toJsonSchema', () => {
                   "_id": "2",
                   "_isCommutative": false,
                   "_options": {},
+                  "_origin": {},
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
                       "generic": {},
+                      "isGenerated": true,
                       "typescript": {},
+                      "validator": undefined,
                     },
                     "_definition": {},
                     "_id": "1",
                     "_isCommutative": true,
                     "_options": {},
+                    "_origin": {},
                     "_type": "string",
                   },
                   "shape": {},

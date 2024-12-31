@@ -1,17 +1,16 @@
-import type { Node, SourceNode } from './node.js'
-
 import { isObject } from '@skyleague/axioms'
-import type {} from '@skyleague/axioms/types'
+import type { References } from '../../commands/generate/output/references.js'
+import type { ThereforeOutputType } from '../../commands/generate/output/types.js'
 import type { JsonAnnotations } from '../../json.js'
-import type { References } from '../output/references.js'
-import type { ThereforeOutputType } from '../output/types.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
-import type { TypescriptWalkerContext } from '../visitor/typescript/typescript.js'
+import type { DefinedTypescriptOutput } from '../visitor/typescript/cst.js'
+import type { TypescriptAjvWalkerContext } from '../visitor/typescript/typescript-ajv.js'
+import type { Node, SourceNode } from './node.js'
 
 export type ThereforeExpr = Node | (() => Node)
 
 export interface ThereforeOutputFile {
-    enabled?: () => boolean
+    enabled?: (node: Node) => boolean
     onExport?: ((node: Node) => void)[]
     targetPath?: (node: SourceNode) => string
     clean?: (targetPath: string) => void
@@ -19,7 +18,16 @@ export interface ThereforeOutputFile {
 }
 
 export interface TypescriptOutput extends ThereforeOutputFile {
-    definition?: (node: Node, context: TypescriptWalkerContext) => string | undefined
+    context?: (args: {
+        symbol?: Node
+        references?: References<'typescript'>
+        locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
+        exportSymbol: boolean
+    }) => TypescriptAjvWalkerContext
+    definition?: (node: Node, context: TypescriptAjvWalkerContext) => string | undefined
+    isGenerated?: (node: Node) => boolean
+    subtype: 'zod' | 'ajv' | undefined
+    isTypeOnly: boolean
     content?: false
     type: 'typescript'
 }
@@ -79,7 +87,7 @@ export interface ThereforeNodeDefinition<T = unknown> {
      */
     deprecated?: boolean | undefined
 
-    validator?: Partial<ValidatorOptions> | undefined
+    _validator?: Partial<ValidatorOptions> | undefined
 }
 
 /**

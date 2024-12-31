@@ -9,20 +9,20 @@ import type { Droid } from '../types/droid.type.js'
 import type { Human } from '../types/human.type.js'
 import type { CharacterArgs, HeroArgs } from '../types/input.type.js'
 
-export type DroidFieldArgs = CharacterArgs
+export type DroidField = (args: DroidFieldArgs) => DroidFieldType
 
 export type DroidFieldType = Droid
 
-export type DroidField = (args: DroidFieldArgs) => DroidFieldType
-
-export type HeroFieldArgs = HeroArgs
-
-export type HeroFieldType = Character
+export type DroidFieldArgs = CharacterArgs
 
 export type HeroField = (input: HeroFieldArgs) => HeroFieldType
 
-export type HumanFieldArgs = CharacterArgs
+export type HeroFieldType = Character
+
+export type HeroFieldArgs = HeroArgs
+
+export type HumanField = (args: HumanFieldArgs) => HumanFieldType
 
 export type HumanFieldType = Human
 
-export type HumanField = (args: HumanFieldArgs) => HumanFieldType
+export type HumanFieldArgs = CharacterArgs

@@ -26,8 +26,8 @@ export interface BookInput {
 
 export const introspection = {
     __schema: {
-        queryType: { name: 'Query' },
-        mutationType: { name: 'Mutation' },
+        queryType: { name: 'Query', kind: 'OBJECT' },
+        mutationType: { name: 'Mutation', kind: 'OBJECT' },
         subscriptionType: null,
         types: [
             {

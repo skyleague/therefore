@@ -1,6 +1,8 @@
 import { keysOf, omit } from '@skyleague/axioms'
 import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
+import type { ZodType } from 'zod'
 import type { JsonSchema } from '../../json.js'
+import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
 import type { DefaultType } from '../primitives/optional/default.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
@@ -12,7 +14,7 @@ export const definitionKeys = keysOf({
     deprecated: true,
     default: true,
     readonly: true,
-    validator: true,
+    _validator: true,
     jsonschema: true,
 } satisfies Record<keyof ThereforeNodeDefinition, true>)
 
@@ -21,6 +23,13 @@ export interface Hooks {
     onGenerate?: ((node: Node) => void)[]
     onExport?: ((node: SourceNode & NameNode) => void)[]
     onContent?: ((node: SourceNode & NameNode) => void)[]
+}
+
+export interface NodeAttributes {
+    typescript: TypescriptAttributes
+    generic: GenericAttributes
+    validator: 'zod' | 'ajv' | undefined
+    isGenerated: boolean
 }
 
 export class Node {
@@ -45,15 +54,18 @@ export class Node {
     public declare _name?: string | undefined
     public declare _sourcePath?: string | undefined
 
-    public _attributes: {
-        typescript: TypescriptAttributes
-        generic: GenericAttributes
-    } = {
+    public _attributes: NodeAttributes = {
         typescript: {} as TypescriptAttributes,
         generic: {} as GenericAttributes,
+        validator: undefined,
+        isGenerated: !constants.migrate,
     }
 
     public _definition: ThereforeNodeDefinition<this['infer']> = {}
+
+    public _origin: {
+        zod?: ZodType
+    } = {}
 
     public _isCommutative = true
 
@@ -98,15 +110,19 @@ export class Node {
     }
 
     public validator(validator: Partial<ValidatorOptions> = {}): this {
-        this._definition.validator = { ...this._definition.validator, ...validator }
+        this._definition._validator = { ...this._definition._validator, ...validator }
         return this
+    }
+
+    public get _validator(): 'zod' | 'ajv' {
+        return this._attributes.validator ?? constants.migrateToValidator ?? constants.defaultValidator
     }
 
     protected static _clone<T extends Node>(obj: T) {
         const clone = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj) as T
         clone._id = id()
         // on clone we erase the validator options, as we don't want to copy that over to the new instance
-        clone._definition = omit({ ...clone._definition }, ['validator'])
+        clone._definition = omit({ ...clone._definition }, ['_validator'])
         clone._attributes = structuredClone(clone._attributes)
         return clone
     }

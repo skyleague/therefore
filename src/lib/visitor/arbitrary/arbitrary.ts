@@ -16,6 +16,8 @@ import {
     base64,
     boolean,
     constant,
+    cuid2Arbitrary,
+    cuidArbitrary,
     date,
     datetime,
     dependentArbitrary,
@@ -27,7 +29,7 @@ import {
     json,
     memoize,
     memoizeArbitrary,
-    next,
+    nanoidArbitrary,
     nullable,
     object,
     oneOf,
@@ -41,7 +43,7 @@ import {
     uuidv4Arbitrary,
 } from '@skyleague/axioms'
 import { expand } from 'regex-to-strings'
-import type { ZodSchema } from 'zod'
+import type { ZodFirstPartySchemaTypes, ZodSchema, ZodString } from 'zod'
 import type { RecordType } from '../../primitives/record/record.js'
 import { $ref } from '../../primitives/ref/ref.js'
 
@@ -76,62 +78,229 @@ export function buildContext(): ArbitraryContext {
     return context
 }
 
-export const regexArbitrary = (regex: string | RegExp): Arbitrary<string> => {
+export const regexArbitrary = (regex: string | RegExp): Dependent<string> => {
     const it = expand(regex).getIterator()
     return dependentArbitrary(() => ({
-        value: next(it).right as string,
+        value: it.next().value as string,
         children: [],
     }))
 }
 
 export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryContext> = {
-    string: ({ _options: options }) => {
-        if (options.format === 'date') {
-            return date()
-        }
-        if (options.format === 'date-time') {
-            return datetime().map((x) => x.toISOString())
-        }
-        if (options.format === 'time') {
-            return datetime().map((x) => x.toISOString().split('T')[1])
-        }
-        if (options.format === 'hostname') {
-            return domain()
-        }
-        if (options.format === 'email') {
-            return email()
-        }
-        if (options.format === 'uuid') {
-            return uuidv4Arbitrary()
-        }
-        if (options.format === 'uri') {
-            return uri()
-        }
-        if (options.format === 'ipv4') {
-            return ipv4()
-        }
-        if (options.format === 'ipv6') {
-            return ipv6()
-        }
-        if (options.format === 'base64') {
-            return base64({ minLength: options.minLength, maxLength: options.maxLength })
-        }
+    string: ({ _options: options, _origin: { zod } }) => {
+        let strArbitrary: Dependent<string> | undefined
 
-        if (options.format === 'ulid') {
-            return ulidArbitrary()
+        if (options.format === 'date') {
+            strArbitrary = date()
+        } else if (options.format === 'date-time') {
+            strArbitrary = datetime().map((x) => x.toISOString())
+
+            let allowOffset = true
+            let allowLocal = false
+            let precision: number | undefined
+            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+                const zodString = zod as ZodString
+                const zodDatetime = zodString._def.checks?.find((check) => check.kind === 'datetime')
+                if (zodDatetime) {
+                    allowOffset = zodDatetime.offset
+                    allowLocal = zodDatetime?.local === true
+                    precision = zodDatetime.precision ?? undefined
+                }
+            }
+            if (precision !== undefined) {
+                strArbitrary = strArbitrary.chain((x) => {
+                    const [hms] = x.split('.') ?? []
+                    if (precision === 0) {
+                        return constant(`${hms}Z`)
+                    }
+                    return array(integer({ min: 0, max: 9 }), { minLength: precision, maxLength: precision }).map(
+                        (digits) => `${hms}.${digits.join('')}Z`,
+                    )
+                })
+            }
+            strArbitrary = tuple(
+                strArbitrary,
+                boolean(),
+                !allowLocal ? constant(false) : boolean(),
+                integer({ min: -12, max: 12 }),
+                integer({ min: 0, max: 59 }),
+            ).map(([x, useZ, useLocal, h, m]) => {
+                if (useZ) {
+                    return x
+                }
+                if (useLocal) {
+                    return x.replace('Z', '')
+                }
+                const sign = h < 0 ? '-' : '+'
+                return allowOffset
+                    ? `${x.replace('Z', '')}${sign}${Math.abs(h).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
+                    : x
+            })
+        } else if (options.format === 'time') {
+            // biome-ignore lint/style/noNonNullAssertion: the T in the ISO string is always present
+            strArbitrary = datetime().map((x) => x.toISOString().split('T')[1]!)
+
+            const allowOffset = true
+            let forceLocal = false
+            let precision: number | undefined
+            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+                const zodString = zod as ZodString
+
+                const zodTime = zodString._def.checks?.find((check) => check.kind === 'time')
+                if (zodTime) {
+                    precision = zodTime.precision ?? undefined
+                }
+
+                forceLocal = true
+            }
+            if (precision !== undefined) {
+                strArbitrary = strArbitrary.chain((x) => {
+                    const [hms] = x.split('.') ?? []
+                    if (precision === 0) {
+                        return constant(`${hms}Z`)
+                    }
+                    return array(integer({ min: 0, max: 9 }), { minLength: precision, maxLength: precision }).map(
+                        (digits) => `${hms}.${digits.join('')}Z`,
+                    )
+                })
+            }
+
+            strArbitrary = tuple(strArbitrary, boolean(), integer({ min: -12, max: 12 }), integer({ min: 0, max: 59 })).map(
+                ([x, useZ, h, m]) => {
+                    if (useZ && !forceLocal) {
+                        return x
+                    }
+                    if (forceLocal) {
+                        return x.replace('Z', '')
+                    }
+                    const sign = h < 0 ? '-' : '+'
+                    return allowOffset
+                        ? `${x.replace('Z', '')}${sign}${Math.abs(h).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
+                        : x
+                },
+            )
+        } else if (options.format === 'hostname') {
+            strArbitrary = domain()
+        } else if (options.format === 'email') {
+            strArbitrary = email({ format: 'restricted' })
+        } else if (options.format === 'uuid') {
+            strArbitrary = uuidv4Arbitrary()
+        } else if (options.format === 'uri') {
+            strArbitrary = uri()
+        } else if (options.format === 'ipv4') {
+            strArbitrary = ipv4()
+        } else if (options.format === 'ipv6') {
+            strArbitrary = ipv6()
+        } else if (options.format === 'base64') {
+            strArbitrary = base64({ minLength: options.minLength, maxLength: options.maxLength })
+        } else if (options.format === 'ulid') {
+            strArbitrary = ulidArbitrary()
+        } else if (options.format === 'duration') {
+            strArbitrary = tuple(
+                integer({ min: 0, max: 99 }), // years
+                integer({ min: 0, max: 11 }), // months
+                integer({ min: 0, max: 30 }), // days
+                integer({ min: 0, max: 23 }), // hours
+                integer({ min: 0, max: 59 }), // minutes
+                integer({ min: 0, max: 59 }), // seconds
+            ).map(([y, m, d, h, min, s]) => `P${y}Y${m}M${d}DT${h}H${min}M${s}S`)
         }
 
         const { minLength, maxLength, ...restArbitrary } = options.arbitrary ?? {}
         if (options.regex !== undefined) {
-            return regexArbitrary(options.regex)
+            strArbitrary = regexArbitrary(options.regex)
         }
-        const min = minLength ?? options.minLength
-        const max = maxLength ?? options.maxLength
-        return string({
-            minLength: min === undefined || max === undefined ? min : Math.min(min, max),
-            maxLength: min === undefined || max === undefined ? max : Math.max(min, max),
-            ...restArbitrary,
-        })
+
+        if (strArbitrary === undefined) {
+            const min = minLength ?? options.minLength
+            const max = maxLength ?? options.maxLength
+            strArbitrary = string({
+                minLength: min === undefined || max === undefined ? min : Math.min(min, max),
+                maxLength: min === undefined || max === undefined ? max : Math.max(min, max),
+                ...restArbitrary,
+            })
+        }
+
+        if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+            const zodString = zod as ZodString
+            const startsWith = zodString._def.checks.find((c) => c.kind === 'startsWith')
+            if (startsWith !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${startsWith.value}${x}`)
+            }
+            const endsWith = zodString._def.checks.find((c) => c.kind === 'endsWith')
+            if (endsWith !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${x}${endsWith.value}`)
+            }
+            const includes = zodString._def.checks.find((c) => c.kind === 'includes')
+            if (includes !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${x}${includes.value}`)
+            }
+
+            const trim = zodString._def.checks.find((c) => c.kind === 'trim')
+            if (trim !== undefined) {
+                strArbitrary = strArbitrary.map((x) => x.trim())
+            }
+
+            const toLowerCase = zodString._def.checks.find((c) => c.kind === 'toLowerCase')
+            if (toLowerCase !== undefined) {
+                strArbitrary = strArbitrary.map((x) => x.toLowerCase())
+            }
+
+            const toUpperCase = zodString._def.checks.find((c) => c.kind === 'toUpperCase')
+            if (toUpperCase !== undefined) {
+                strArbitrary = strArbitrary.map((x) => x.toUpperCase())
+            }
+
+            const nanoid = zodString._def.checks.find((c) => c.kind === 'nanoid')
+            if (nanoid !== undefined) {
+                strArbitrary = nanoidArbitrary()
+            }
+
+            const cuid = zodString._def.checks.find((c) => c.kind === 'cuid')
+            if (cuid !== undefined) {
+                strArbitrary = cuidArbitrary()
+            }
+
+            const cuid2 = zodString._def.checks.find((c) => c.kind === 'cuid2')
+            if (cuid2 !== undefined) {
+                strArbitrary = cuid2Arbitrary()
+            }
+
+            const emoji = zodString._def.checks.find((c) => c.kind === 'emoji')
+            if (emoji !== undefined) {
+                // Common emoji ranges
+                const emojiRanges = [
+                    [0x1f300, 0x1f9ff], // Miscellaneous Symbols and Pictographs, Emoticons, Transport/Map Symbols...
+                    [0x2600, 0x26ff], // Miscellaneous Symbols
+                    [0x2700, 0x27bf], // Dingbats
+                    [0xfe00, 0xfe0f], // Variation Selectors
+                    [0x1f1e6, 0x1f1ff], // Regional Indicator Symbols
+                ] as const
+
+                strArbitrary = oneOf(
+                    ...emojiRanges.map(([min, max]) => integer({ min, max }).map((x) => String.fromCodePoint(x))),
+                ).filter((s) => /^(\p{Extended_Pictographic}|\p{Emoji_Component})+$/u.test(s))
+            }
+
+            const cidr = zodString._def.checks.find((c) => c.kind === 'cidr')
+            if (cidr !== undefined) {
+                const version = cidr.version
+                if (version === 'v4') {
+                    strArbitrary = tuple(ipv4(), integer({ min: 0, max: 32 })).map(([ip, prefix]) => `${ip}/${prefix}`)
+                } else {
+                    strArbitrary = tuple(ipv6(), integer({ min: 0, max: 128 })).map(([ip, prefix]) => `${ip}/${prefix}`)
+                }
+            }
+
+            const base64url = zodString._def.checks.find((c) => c.kind === 'base64url')
+            if (base64url !== undefined) {
+                strArbitrary = base64({ minLength: options.minLength, maxLength: options.maxLength }).map((x) =>
+                    x.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_').replace(/\r?\n/g, ''),
+                )
+            }
+        }
+
+        return strArbitrary
     },
 
     number: ({ _options: options }) => {
@@ -211,7 +380,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
                         return set(
                             {
                                 value: (): Tree<string> => ({
-                                    value: next(regex).right as string,
+                                    value: regex.next().value as string,
                                     children: [],
                                 }),
                             },

@@ -126,7 +126,7 @@ export class StringType extends NodeTrait {
 
     public ulid() {
         this._options.format = 'ulid'
-        this._options.regex = /^[0-9A-HJKMNP-TV-Z]{26}$/
+        // this._options.regex = /^[0-9A-HJKMNP-TV-Z]{26}$/
         return this
     }
 

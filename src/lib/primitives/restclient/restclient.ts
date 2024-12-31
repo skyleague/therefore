@@ -7,6 +7,7 @@ import { type Hooks, Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
 
 import path from 'node:path'
+import { omit } from '@skyleague/axioms'
 
 export interface RestClientOptions {
     filename?: string | undefined
@@ -62,7 +63,18 @@ export interface RestClientOptions {
      * openapiv3).
      */
     transformOpenapi?: (openapi: OpenapiV3) => OpenapiV3
+    /**
+     * The client to use for the rest client.
+     *
+     * @defaultValue 'got'
+     */
     client?: 'got' | 'ky'
+    /**
+     * Whether to use zod for the rest client.
+     *
+     * @defaultValue ajv
+     */
+    validator?: 'zod' | 'ajv'
 }
 
 export class RestclientType extends Node {
@@ -76,7 +88,7 @@ export class RestclientType extends Node {
 
     private constructor(builder: RestClientBuilder, options: SchemaOptions<RestClientOptions>) {
         super({
-            ...options,
+            ...omit(options, ['validator']),
             description: builder.openapi.info.description,
         })
         this._options = options
@@ -87,7 +99,13 @@ export class RestclientType extends Node {
         }
 
         this._children = builder.children
-        this._connections = builder.children
+        this._connections = [...builder.connections, ...builder.children]
+        this._attributes.validator = builder.options.validator
+        this._attributes.isGenerated = true
+
+        for (const child of this._connections) {
+            child._attributes.isGenerated = true
+        }
     }
 
     public static async from(definition: OpenapiV3, options: SchemaOptions<RestClientOptions>) {
@@ -113,6 +131,7 @@ export class RestclientType extends Node {
 
                 if (this._options.useEither !== false) {
                     const instance = EitherHelper.from({ sourcePath: newSourcePath, client: this._builder.options.client })
+                    instance._attributes.validator = this._attributes.validator
                     node._children?.push(instance)
                     node._connections?.push(instance)
                 }
@@ -125,6 +144,9 @@ export class RestclientType extends Node {
             {
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 type: 'typescript',
+                subtype: undefined,
+                isGenerated: () => true,
+                isTypeOnly: false,
                 definition: (node, context) => {
                     return this._builder.definition(node, context)
                 },

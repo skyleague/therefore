@@ -4,6 +4,7 @@ import { Ajv } from 'ajv'
 import addFormats, { type FormatName } from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
 import camelcase from 'camelcase'
+import { References } from '../../../commands/generate/output/references.js'
 import type {
     JsonAnnotations,
     JsonAnyInstance,
@@ -17,9 +18,9 @@ import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import { References } from '../../output/references.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import type { StringFormat } from '../../primitives/string/string.js'
+import type { DiscriminatedUnionType } from '../../primitives/union/union.js'
 import { ajvOptions } from '../../primitives/validator/validator.js'
 
 export interface JsonSchemaWalkerContext {
@@ -31,6 +32,7 @@ export interface JsonSchemaWalkerContext {
     references: References<'generic'>
     formats: Set<string>
     target: 'draft-07' | 'openapi3'
+    hasDiscriminator: boolean
     transform: (node: Node, schema: Partial<JsonSchema>) => JsonSchema
     render: (node: Node) => JsonSchema
 }
@@ -55,6 +57,7 @@ export function buildContext(
         references,
         target: target,
         formats: new Set(),
+        hasDiscriminator: false,
         transform: (node, schema): JsonSchema => {
             const { type, ...other } = schema
             const value = omitUndefined({
@@ -258,14 +261,33 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             enum: values,
         }
     },
-    union: ({ _children }, ctx) => {
+    union: (node, ctx) => {
+        const { _children } = node
         const children = _children.map((u) => ctx.render(u))
+        const discriminatorProperty = (node as DiscriminatedUnionType)._discriminator
+        const discriminator = discriminatorProperty !== undefined ? { propertyName: discriminatorProperty } : undefined
+        ctx.hasDiscriminator ||= discriminator !== undefined
         if (
             ctx.branch !== undefined &&
             hasNullablePrimitive(ctx.branch) &&
             children.find((c) => c.type === 'null') === undefined
         ) {
             if (ctx.target === 'openapi3') {
+                if (discriminator !== undefined) {
+                    return {
+                        type: 'object',
+                        oneOf: [
+                            ...children,
+                            {
+                                // like really?!
+                                type: 'string',
+                                enum: [null],
+                                nullable: true,
+                            },
+                        ],
+                        discriminator,
+                    }
+                }
                 return {
                     anyOf: [
                         ...children,
@@ -278,10 +300,27 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
                     ],
                 }
             }
+
+            if (discriminator !== undefined) {
+                return {
+                    type: 'object',
+                    oneOf: [...children, { type: 'null' }],
+                    discriminator,
+                }
+            }
             return {
                 anyOf: [...children, { type: 'null' }],
             }
         }
+
+        if (discriminator !== undefined) {
+            return {
+                type: 'object',
+                oneOf: children,
+                discriminator,
+            }
+        }
+
         return {
             anyOf: children,
         }
@@ -343,7 +382,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
         return {
             type: asType('object', ctx),
             properties: Object.keys(shape).length > 0 ? properties : undefined,
-            required: required.length > 0 ? required.sort((a, b) => a.localeCompare(b)) : undefined,
+            required: required.length > 0 ? required.toSorted((a, b) => a.localeCompare(b)) : undefined,
             additionalProperties:
                 isObject(additionalProperties) && Object.keys(additionalProperties).length === 0 ? true : additionalProperties,
             patternProperties,
@@ -477,7 +516,7 @@ export function toJsonSchema<Compile extends boolean = true>(
         definition.$defs = context.definitions
     }
     if (compile !== false) {
-        const ajv = new Ajv(context.ajv)
+        const ajv = new Ajv({ ...context.ajv, discriminator: context.hasDiscriminator })
         if (context.formats.size > 0 && formats) {
             addFormats.default(ajv, { formats: [...context.formats] as FormatName[] })
         }

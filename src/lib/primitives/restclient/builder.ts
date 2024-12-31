@@ -1,37 +1,24 @@
-import type { RestClientOptions } from './restclient.js'
-import { type MappableSecurityScheme, toSecurityDeclaration, toSecurityHook } from './security.js'
-
-import { jsonPointer } from '../../../common/json/json.js'
-import type { JsonSchema } from '../../../json.js'
-import type { OpenapiV3, Operation, Parameter, PathItem, RequestBody, Response, Responses } from '../../../types/openapi.type.js'
-import { Node } from '../../cst/node.js'
-import { JSDoc } from '../../visitor/typescript/jsdoc.js'
-import { asString, objectProperty } from '../../visitor/typescript/literal.js'
-import type { TypescriptWalkerContext } from '../../visitor/typescript/typescript.js'
-import { createWriter } from '../../writer.js'
-
-import {
-    collect,
-    entriesOf,
-    groupBy,
-    identity,
-    isDefined,
-    keysOf,
-    memoize,
-    omitUndefined,
-    pick,
-    unique,
-    valuesOf,
-} from '@skyleague/axioms'
+import { entriesOf, isDefined, keysOf, memoize, omitUndefined, pick, unique, valuesOf } from '@skyleague/axioms'
 import camelCase from 'camelcase'
 import type CodeBlockWriter from 'code-block-writer'
 import { capitalize, singularize } from 'inflection'
 import * as pointer from 'jsonpointer'
 import converter from 'swagger2openapi'
+import { sanitizeTypescriptTypeName } from '../../../commands/generate/output/typescript.js'
+import { jsonPointer } from '../../../common/json/json.js'
+import type { JsonSchema } from '../../../json.js'
+import type { OpenapiV3, Operation, Parameter, PathItem, RequestBody, Response, Responses } from '../../../types/openapi.type.js'
+import { constants } from '../../constants.js'
 import type { TypescriptOutput } from '../../cst/cst.js'
-import { ajvSymbols, gotSymbols, httpSymbols, kySymbols } from '../../cst/module.js'
-import { sanitizeTypescriptTypeName } from '../../output/typescript.js'
+import { ajvSymbols, gotSymbols, httpSymbols, kySymbols, zodSymbols } from '../../cst/module.js'
+import { Node } from '../../cst/node.js'
+import { JSDoc } from '../../visitor/typescript/jsdoc.js'
+import { asString, objectProperty } from '../../visitor/typescript/literal.js'
+import type { TypescriptAjvWalkerContext } from '../../visitor/typescript/typescript-ajv.js'
+import { createWriter } from '../../writer.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
+import type { RestClientOptions } from './restclient.js'
+import { type MappableSecurityScheme, toSecurityDeclaration, toSecurityHook } from './security.js'
 
 const methodToName: Record<string, string> = {
     get: 'get',
@@ -136,11 +123,23 @@ export interface ResponseBodies {
     responseType?: 'json' | 'text' | undefined
 }
 
-export const parseString = '{ parse: (x: unknown) => ({ right: x }) }'
-export const parseUnknown = '{ parse: (x: unknown) => ({ right: x }) }'
+export const parseString = {
+    ajv: '{ parse: (x: unknown) => ({ right: x }) }',
+    zod: '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+}
+export const parseUnknown = {
+    ajv: '{ parse: (x: unknown) => ({ right: x }) }',
+    zod: '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+}
+export const isStringIs = {
+    ajv: '{is: (x: unknown): x is string => true}',
+    zod: '{parse: (x: unknown): string => x as string}',
+}
 
-export const isStringIs = '{is: (x: unknown): x is string => true}'
-export const isUnknownIs = '{is: (x: unknown): x is unknown => true}'
+export const isUnknownIs = {
+    ajv: '{is: (x: unknown): x is unknown => true}',
+    zod: '{parse: (x: unknown): unknown => x}',
+}
 
 export interface AsPathItem {
     httpMethod: string
@@ -160,29 +159,41 @@ export class EitherHelper extends Node {
         return [
             {
                 type: 'typescript' as const,
+                subtype: undefined,
+                isTypeOnly: true,
+                isGenerated: () => true,
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
                     const IncomingHttpHeaders =
                         this.client === 'ky' ? 'Headers' : reference(httpSymbols.IncomingHttpHeadersNode())
-                    const DefinedError = reference(ajvSymbols.DefinedError())
                     const HeaderVar = this.client === 'ky' ? 'HeaderResponse' : 'Headers'
 
+                    const writer = createWriter()
+                        .writeLine(
+                            "export type Status<Major> = Major extends string ? Major extends `1${number}`? 'informational': Major extends `2${number}` ? 'success' : Major extends `3${number}` ? 'redirection' : Major extends `4${number}` ? 'client-error' : 'server-error' : undefined",
+                        )
+                        .writeLine(
+                            `export interface SuccessResponse<StatusCode extends string, T> { success: true; statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeaders}; right: T }`,
+                        )
+                        .writeLine(
+                            `export interface FailureResponse<StatusCode = string, T = unknown, Where = never, ${HeaderVar} = ${IncomingHttpHeaders}> {`,
+                        )
+                        .writeLine('success: false')
+                        .writeLine('statusCode: StatusCode')
+                        .writeLine('status: Status<StatusCode>')
+                        .writeLine(`headers: ${HeaderVar}`)
+                    if (this._validator === 'ajv') {
+                        const DefinedError = reference(ajvSymbols.DefinedError())
+                        writer.writeLine(`validationErrors: ${DefinedError}[] | undefined`)
+                    } else if (this._validator === 'zod') {
+                        const ZodError = reference(zodSymbols.ZodError())
+                        writer.writeLine(`error: ${ZodError}<T> | undefined`)
+                    }
                     return (
-                        createWriter()
-                            .writeLine(
-                                "export type Status<Major> = Major extends string ? Major extends `1${number}`? 'informational': Major extends `2${number}` ? 'success' : Major extends `3${number}` ? 'redirection' : Major extends `4${number}` ? 'client-error' : 'server-error' : undefined",
-                            )
-                            .writeLine(
-                                `export interface SuccessResponse<StatusCode extends string, T> { statusCode: StatusCode; status: Status<StatusCode>; headers: ${IncomingHttpHeaders}; right: T }`,
-                            )
-                            .writeLine(`export interface FailureResponse<StatusCode = string, T = unknown, Where = never, ${HeaderVar} = ${IncomingHttpHeaders}> {
-                    statusCode: StatusCode
-                    status: Status<StatusCode>
-                    headers: ${HeaderVar}
-                    validationErrors: ${DefinedError}[] | undefined
-                    left: T
-                    where: Where
-                }`)
+                        writer
+                            .writeLine('left: T')
+                            .writeLine('where: Where')
+                            .writeLine('}')
                             // .writeLine('type ParseInt<T> = T extends `${infer N extends number}` ? N : never')
                             // .writeLine('type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9')
                             .writeLine('export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = `${Major}${number}`')
@@ -210,7 +221,7 @@ export class EitherHelper extends Node {
 
 export class RestClientBuilder {
     public openapi: OpenapiV3
-    public options: Omit<RestClientOptions, 'filename'>
+    public options: Required<Omit<RestClientOptions, 'filename'>>
     public references = new Map<string, () => Node>()
     public connections: Node[] = []
     public pathItems: AsPathItem[]
@@ -239,7 +250,7 @@ export class RestClientBuilder {
     private constructor(
         openapi: OpenapiV3,
         {
-            transformOpenapi = identity,
+            transformOpenapi = (x) => x,
             preferOperationId = true,
             useEither = true,
             explicitContentNegotiation = false,
@@ -249,6 +260,7 @@ export class RestClientBuilder {
             compile = true,
             formats = true,
             client = 'got',
+            validator = constants.defaultValidator,
         }: Partial<RestClientOptions> = {},
     ) {
         this.openapi = openapi
@@ -263,6 +275,7 @@ export class RestClientBuilder {
             compile,
             formats,
             client,
+            validator,
         }
         this.pathItems = this._pathItems
 
@@ -295,7 +308,7 @@ export class RestClientBuilder {
         }
     }
 
-    public definition(node: Node, { declare, reference, value }: TypescriptWalkerContext): string {
+    public definition(node: Node, { declare, reference, value }: TypescriptAjvWalkerContext): string {
         const writer = createWriter()
         const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeadersNode()))
 
@@ -318,19 +331,19 @@ export class RestClientBuilder {
                             .writeLine('return Promise.resolve(_body)')
                             .writeLine('}')
                             .toString()
-                        request.variableName ??= `_body.right as ${reference(request.schema)}`
+                        request.variableName ??= '_body.right' //`_body.right as ${reference(request.schema)}`
                     } else {
                         requestValidationStr = `this.validateRequestBody(${value(request.schema)}, ${request.name})`
                     }
                 }
-                const parameters: Parameter[] = collect(
+                const parameters: Parameter[] = Iterator.from(
                     unique(
                         [...(operation.parameters ?? []), ...(pathItem.parameters ?? [])]
                             .map((parameter) => jsonPointer({ schema: this.openapi, ptr: parameter }) as Parameter | undefined)
                             .filter(isDefined),
                         (a, b) => a.name === b.name && a.in === b.in,
                     ),
-                )
+                ).toArray()
 
                 let clientDecl = 'this.client'
                 const authMethods: string[] = []
@@ -581,16 +594,16 @@ export class RestClientBuilder {
                                                 writer.write(
                                                     `${statusCodeLiteral}: ${
                                                         responseType === 'text' || responseType === undefined
-                                                            ? parseString
-                                                            : parseUnknown
+                                                            ? parseString[this.options.validator]
+                                                            : parseUnknown[this.options.validator]
                                                     },`,
                                                 )
                                             } else {
                                                 writer.write(
                                                     `${statusCodeLiteral}: ${
                                                         responseType === 'text' || responseType === undefined
-                                                            ? isStringIs
-                                                            : isUnknownIs
+                                                            ? isStringIs[this.options.validator]
+                                                            : isUnknownIs[this.options.validator]
                                                     },`,
                                                 )
                                             }
@@ -613,7 +626,7 @@ export class RestClientBuilder {
             }
 
             if (this.hasAwaitResponse) {
-                writer.writeLine(this.writeAwaitResponse(reference))
+                writer.writeLine(this.writeAwaitResponse(reference, this.options.validator))
             }
 
             this.writeAuthenticator({ reference, writer })
@@ -622,7 +635,7 @@ export class RestClientBuilder {
         return writer.toString()
     }
 
-    private writeAwaitResponse(reference: (node: Node) => string) {
+    private writeAwaitResponse(reference: (node: Node) => string, validator: 'ajv' | 'zod') {
         const statusAccessor = this.options.client === 'ky' ? 'status' : 'statusCode'
         const _body = this.options.client === 'ky' ? '_body' : 'result.body'
 
@@ -632,13 +645,20 @@ export class RestClientBuilder {
             const DefinedError = reference(ajvSymbols.DefinedError())
             writer
                 .newLine()
-                .writeLine(
-                    `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } } | undefined>>(response: `,
+                .conditionalWriteLine(
+                    validator === 'ajv',
+                    `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } }>>(response: `,
                 )
+            if (validator === 'zod') {
+                const SafeParseReturnType = reference(zodSymbols.SafeParseReturnType())
+                writer.writeLine(
+                    `public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => ${SafeParseReturnType}<unknown, I> }>>(response: `,
+                )
+            }
 
             if (this.options.client === 'got') {
                 const Response = reference(this._client.Response())
-                writer.writeLine(`${RequestPromise}<${Response}<I>>`)
+                writer.writeLine(`${RequestPromise}<NoInfer<${Response}<I>>>`)
             }
 
             return writer
@@ -658,25 +678,84 @@ export class RestClientBuilder {
                             `const status = result.${statusAccessor} < 200 ? 'informational' : result.${statusAccessor} < 300 ? 'success' : result.${statusAccessor} < 400 ? 'redirection' : result.${statusAccessor} < 500 ? 'client-error' : 'server-error'`,
                         )
                         .writeLine(`const validator = schemas[result.${statusAccessor}] ?? schemas.default`)
-                        .writeLine(`const body = validator?.parse?.(${_body})`)
-                        .writeLine(`if (result.${statusAccessor} < 200 || result.${statusAccessor} >= 300)`)
-                        .block(() => {
-                            writer.writeLine(
-                                `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : ${_body}, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } `,
+                    if (validator === 'ajv') {
+                        writer
+                            .writeLine(`const body = validator?.parse?.(${_body})`)
+                            .writeLine(`if (result.${statusAccessor} < 200 || result.${statusAccessor} >= 300)`)
+                            .block(() => {
+                                writer.writeLine(
+                                    `return {success: false as const, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: body !== undefined && 'right' in body ? body.right : ${_body}, validationErrors: body !== undefined && 'left' in body ? body.left : undefined, where: 'response:statuscode' } `,
+                                )
+                            })
+                            .writeLine("if (body === undefined || 'left' in body)")
+                            .block(() => {
+                                writer.writeLine(
+                                    `return {success: body === undefined, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: ${_body}, validationErrors: body?.left, where: 'response:body' }`,
+                                )
+                            })
+                            .writeLine(
+                                `return {success: true as const, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, right: ${_body} }`,
                             )
-                        })
-                        .writeLine("if (body === undefined || 'left' in body)")
-                        .block(() => {
-                            writer.writeLine(
-                                `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: ${_body}, validationErrors: body?.left, where: 'response:body' }`,
+                    } else if (validator === 'zod') {
+                        writer
+                            .writeLine(`const body = validator?.safeParse?.(${_body})`)
+                            .writeLine(`if (result.${statusAccessor} < 200 || result.${statusAccessor} >= 300)`)
+                            .block(() => {
+                                writer.writeLine(
+                                    `return {success: false as const, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: body?.success ? body.data : ${_body}, error: body !== undefined && !body.success ? body.error : undefined, where: 'response:statuscode' } `,
+                                )
+                            })
+                            .writeLine('if (body === undefined || !body.success)')
+                            .block(() => {
+                                writer.writeLine(
+                                    `return {success: body === undefined, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, left: ${_body}, error: body?.error, where: 'response:body' }`,
+                                )
+                            })
+                            .writeLine(
+                                `return {success: true as const, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, right: body.data }`,
                             )
-                        })
+                    }
+                })
+                .toString()
+        }
+
+        if (this.options.validator === 'zod') {
+            writer
+                .newLine()
+                .writeLine(
+                    'public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: unknown) => I }>>(response: ',
+                )
+
+            if (this.options.client === 'got') {
+                const Response = reference(this._client.Response())
+                writer.writeLine(`${RequestPromise}<${Response}>`)
+            }
+
+            return writer
+                .conditionalWrite(this.options.client === 'ky', `${RequestPromise}`)
+                .write(', schemas: S')
+                .conditionalWrite(this.options.client === 'ky', ', responseType?: "json" | "text"')
+                .write(')')
+                .block(() => {
+                    writer
                         .writeLine(
-                            `return {statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, right: ${_body} }`,
+                            'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never',
+                        )
+                        .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
+                        .writeLine('const result = await response')
+                        .conditionalWriteLine(
+                            this.options.client === 'ky',
+                            'const _body = responseType !== undefined ? result[responseType](): result.text()',
+                        )
+                        .writeLine(`const schema = schemas[result.${statusAccessor}] ?? schemas.default`)
+                        .writeLine(`const body = schema?.parse?.(${_body}) ?? ${_body}`)
+                        .writeLine(
+                            `return {statusCode: result.${statusAccessor}, headers: result.headers, body: body as InferSchemaType<S[keyof Pick<S, FilterStartingWith<keyof S, '2' | 'default'>>]> }`,
                         )
                 })
                 .toString()
         }
+
         writer
             .newLine()
             .writeLine(
@@ -716,21 +795,50 @@ export class RestClientBuilder {
     private writeValidateRequestBody(reference: (node: Node) => string) {
         const writer = createWriter()
         if (this.options.useEither) {
-            const DefinedError = reference(ajvSymbols.DefinedError())
+            if (this.options.validator === 'ajv') {
+                const DefinedError = reference(ajvSymbols.DefinedError())
+                return writer
+                    .newLine()
+                    .writeLine('public validateRequestBody<Body>(')
+                    .writeLine(
+                        `parser: { parse: (o: unknown) => { left: ${DefinedError}[] } | { right: Body } }, body: unknown )`,
+                    )
+                    .block(() => {
+                        writer.writeLine('const _body = parser.parse(body)')
+                        writer.writeLine("if ('left' in _body)").block(() => {
+                            writer.writeLine(
+                                "return {success: false as const, statusCode: undefined, status: undefined, headers: undefined, left: body, validationErrors: _body.left, where: 'request:body' } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>",
+                            )
+                        })
+                        writer.writeLine('return _body')
+                    })
+                    .toString()
+            }
+            if (this.options.validator === 'zod') {
+                const SafeParseReturnType = reference(zodSymbols.SafeParseReturnType())
+                return writer
+                    .newLine()
+                    .writeLine('public validateRequestBody<Body>(')
+                    .writeLine(`parser: { safeParse: (o: unknown) => ${SafeParseReturnType}<unknown, Body> }, body: unknown )`)
+                    .write(": {right: Body } | FailureResponse<undefined, unknown, 'request:body', undefined>")
+                    .block(() => {
+                        writer.writeLine('const _body = parser.safeParse(body)')
+                        writer.writeLine('if (!_body.success)').block(() => {
+                            writer.writeLine(
+                                "return {success: false as const, statusCode: undefined, status: undefined, headers: undefined, left: body, error: _body.error, where: 'request:body' } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>",
+                            )
+                        })
+                        writer.writeLine('return {right: _body.data}')
+                    })
+                    .toString()
+            }
+        }
+        if (this.options.validator === 'zod') {
             return writer
                 .newLine()
-                .writeLine(
-                    `public validateRequestBody<Parser extends { parse: (o: unknown) => { left: ${DefinedError}[] } | { right: Body } }, Body>(`,
-                )
-                .writeLine('parser: Parser, body: unknown )')
+                .writeLine('public validateRequestBody<Body>( parser: { parse: (o: unknown) => Body }, body: unknown )')
                 .block(() => {
-                    writer.writeLine('const _body = parser.parse(body)')
-                    writer.writeLine("if ('left' in _body)").block(() => {
-                        writer.writeLine(
-                            "return {statusCode: undefined, status: undefined, headers: undefined, left: body, validationErrors: _body.left, where: 'request:body' } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>",
-                        )
-                    })
-                    writer.writeLine('return _body')
+                    writer.writeLine('return parser.parse(body)')
                 })
                 .toString()
         }
@@ -750,7 +858,11 @@ export class RestClientBuilder {
         reference,
         value,
         writer,
-    }: { value: TypescriptWalkerContext['value']; reference: TypescriptWalkerContext['reference']; writer: CodeBlockWriter }) {
+    }: {
+        value: TypescriptAjvWalkerContext['value']
+        reference: TypescriptAjvWalkerContext['reference']
+        writer: CodeBlockWriter
+    }) {
         const { prefixUrl, defaultValue } = this.prefixConfiguration
         const { authDeclaration, hasAuth } = this.security({ reference })
 
@@ -820,7 +932,7 @@ export class RestClientBuilder {
     public writeAuthenticator({
         reference,
         writer,
-    }: { reference: TypescriptWalkerContext['reference']; writer: CodeBlockWriter }) {
+    }: { reference: TypescriptAjvWalkerContext['reference']; writer: CodeBlockWriter }) {
         const { securities } = this.security({ reference })
         if (securities.length > 0) {
             for (const sec of securities) {
@@ -867,10 +979,12 @@ export class RestClientBuilder {
                 name,
                 document: this.openapi,
                 references: this.references,
-                connections: this.connections,
                 exportAllSymbols: true,
+                validator: this.options.validator,
+                formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
+            this.connections.push(...(therefore._connections ?? []))
             if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore._type)) {
                 const validator = this.asValidator(therefore, { assert: !this.options.useEither })
                 return {
@@ -907,10 +1021,12 @@ export class RestClientBuilder {
                 name,
                 document: this.openapi,
                 references: this.references,
-                connections: this.connections,
                 exportAllSymbols: true,
+                validator: this.options.validator,
+                formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
+            this.connections.push(...(therefore._connections ?? []))
             const validator = this.asValidator(therefore, { assert: !this.options.useEither })
 
             if (this.options.client === 'ky') {
@@ -994,10 +1110,13 @@ export class RestClientBuilder {
                     name,
                     document: this.openapi,
                     references: this.references,
-                    connections: this.connections,
                     exportAllSymbols: true,
+                    validator: this.options.validator,
+                    formats: this.options.formats,
                     ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
                 })
+
+                this.connections.push(...(therefore._connections ?? []))
                 const validator = this.asValidator(therefore, { assert: !this.options.useEither })
                 found = {
                     statusCode,
@@ -1064,13 +1183,13 @@ export class RestClientBuilder {
     }
 
     private asValidator(node: Node, { assert = false }: { assert?: boolean } = {}): Node {
-        node._definition.validator ??= { assert }
-        node._definition.validator.assert ||= assert
+        node._definition._validator ??= { assert }
+        node._definition._validator.assert ||= assert
         if (this.options.compile !== undefined) {
-            node._definition.validator.compile = this.options.compile
+            node._definition._validator.compile = this.options.compile
         }
         if (this.options.formats !== undefined) {
-            node._definition.validator.formats = this.options.formats
+            node._definition._validator.formats = this.options.formats
         }
         return node
     }
@@ -1145,7 +1264,7 @@ export class RestClientBuilder {
         return { prefixUrl: args.join(' | '), defaultValue: defaultValues.length === 1 ? defaultValues[0] : undefined }
     }
 
-    private _security = ({ reference }: { reference: TypescriptWalkerContext['reference'] }) => {
+    private _security = ({ reference }: { reference: TypescriptAjvWalkerContext['reference'] }) => {
         const securityRequirements = this.openapi.components?.securitySchemes
         const clientType = reference(this._client.type())
         const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
@@ -1192,7 +1311,7 @@ export class RestClientBuilder {
     }
     private _securityCache: ReturnType<RestClientBuilder['_security']> | undefined
 
-    public security({ reference }: { reference: TypescriptWalkerContext['reference'] }) {
+    public security({ reference }: { reference: TypescriptAjvWalkerContext['reference'] }) {
         if (!this._securityCache) {
             this._securityCache = this._security({ reference })
         }
@@ -1230,10 +1349,11 @@ export class RestClientBuilder {
                 return undefined
             })
             .filter(isDefined)
-            .sort((a, b) => a.method.localeCompare(b.method))
+            .toSorted((a, b) => a.method.localeCompare(b.method))
 
         // deduplicate methods by operation first
-        const _groupedByOperation = valuesOf(groupBy(pathItems, (x) => x.method))
+        const _groupedByOperation = valuesOf(Object.groupBy(pathItems, (x) => x.method))
+            .filter((x) => x !== undefined)
             .filter((x) => x.length > 1)
             .map((x) => {
                 for (const item of x) {
@@ -1241,7 +1361,8 @@ export class RestClientBuilder {
                 }
                 return x
             })
-        const _groupedByNumber = valuesOf(groupBy(pathItems, (x) => x.method))
+        const _groupedByNumber = valuesOf(Object.groupBy(pathItems, (x) => x.method))
+            .filter((x) => x !== undefined)
             .filter((x) => x.length > 1)
             .map((x) => {
                 for (const [i, item] of x.entries()) {

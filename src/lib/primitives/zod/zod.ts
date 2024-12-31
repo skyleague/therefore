@@ -15,10 +15,11 @@ import { $optional } from '../optional/optional.js'
 import { $record, type RecordType } from '../record/record.js'
 import { $string, type StringType } from '../string/string.js'
 import { $tuple, type TupleType } from '../tuple/tuple.js'
-import { $union } from '../union/union.js'
+import { $union, DiscriminatedUnionType } from '../union/union.js'
 import { $unknown } from '../unknown/unknown.js'
 
 export interface ZodWalkerContext {
+    keepOriginalSchema: boolean
     cache: WeakMap<ZodFirstPartySchemaTypes, Node>
     render: (node: ZodFirstPartySchemaTypes, ctx?: Partial<ZodWalkerContext>) => Node
 }
@@ -37,11 +38,14 @@ export function buildContext(options: Partial<ZodWalkerContext> = {}): ZodWalker
             if (node._def.description) {
                 value._definition.description = node._def.description
             }
-
+            if (context.keepOriginalSchema) {
+                value._origin.zod = node
+            }
             context.cache.set(node, value)
 
             return value
         },
+        keepOriginalSchema: true,
         ...options,
     } satisfies ZodWalkerContext
     return context
@@ -65,8 +69,9 @@ const stringVisitor: {
     max: (x, kind: { kind: 'max'; value: number; message?: string }) => {
         return x.maxLength(kind.value)
     },
-    includes: (_x, _kind: { kind: 'includes'; value: string; position?: number; message?: string }) => {
-        throw new Error('Function not implemented.')
+    includes: (x, _kind: { kind: 'includes'; value: string; position?: number; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        return x
     },
     url: (x, _kind: { kind: 'url'; message?: string }) => {
         return x.uri()
@@ -101,45 +106,72 @@ const stringVisitor: {
     regex: (x, kind: { kind: 'regex'; regex: RegExp; message?: string }) => {
         return x.regex(kind.regex)
     },
-    toLowerCase: (_x, _kind: { kind: 'toLowerCase'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    toLowerCase: (x, _kind: { kind: 'toLowerCase'; message?: string }) => {
+        // is a validation transformation feature, we dont do anything with that
+        // throw new Error('Function not implemented.')
+        return x
     },
-    toUpperCase: (_x, _kind: { kind: 'toUpperCase'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    toUpperCase: (x, _kind: { kind: 'toUpperCase'; message?: string }) => {
+        // is a validation transformation feature, we dont do anything with that
+        // throw new Error('Function not implemented.')
+        return x
     },
-    trim: (_x, _kind: { kind: 'trim'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    trim: (x, _kind: { kind: 'trim'; message?: string }) => {
+        // is a validation transformation feature, we dont do anything with that
+        // throw new Error('Function not implemented.'
+        return x
     },
-    endsWith: (_x, _kind: { kind: 'endsWith'; value: string; message?: string }) => {
-        throw new Error('Function not implemented.')
+    endsWith: (x, _kind: { kind: 'endsWith'; value: string; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.'
+        return x
     },
-    startsWith: (_x, _kind: { kind: 'startsWith'; value: string; message?: string }) => {
-        throw new Error('Function not implemented.')
+    startsWith: (x, _kind: { kind: 'startsWith'; value: string; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
-    emoji: (_x, _kind: { kind: 'emoji'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    emoji: (x, _kind: { kind: 'emoji'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
-    nanoid: (_x, _kind: { kind: 'nanoid'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    nanoid: (x, _kind: { kind: 'nanoid'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
-    cuid: (_x, _kind: { kind: 'cuid'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    cuid: (x, _kind: { kind: 'cuid'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
-    cuid2: (_x, _kind: { kind: 'cuid2'; message?: string }) => {
-        throw new Error('Function not implemented.')
+    cuid2: (x, _kind: { kind: 'cuid2'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
     ip: (x, kind: { kind: 'ip'; version?: IpVersion; message?: string }) => {
         if (kind.version === 'v4') {
             return x.ipv4()
         }
-        if (kind.version === 'v6') {
-            return x.ipv6()
-        }
-        // @todo support both
-        return x
+        return x.ipv6()
     },
     duration: (x, _kind: { kind: 'duration'; message?: string }) => {
         return x.duration()
+    },
+    jwt: (_x, _kind: { kind: 'jwt'; message?: string }) => {
+        throw new Error('Function not implemented.')
+    },
+    cidr: (x, _kind: { kind: 'cidr'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
+    },
+    base64url: (x, _kind: { kind: 'base64url'; message?: string }) => {
+        // supported through the arbitrary visitor by using the original node directly
+        // throw new Error('Function not implemented.')
+        return x
     },
 }
 
@@ -264,8 +296,14 @@ export const zodVisitor: {
         // biome-ignore lint/suspicious/noExplicitAny: we'll cast it away
         return $union(node._def.options.map((x: any) => ctx.render(x as ZodFirstPartySchemaTypes)))
     },
-    ZodDiscriminatedUnion: () => {
-        throw new Error('Function not implemented.')
+    ZodDiscriminatedUnion: (node, ctx) => {
+        const union = new DiscriminatedUnionType(
+            // biome-ignore lint/suspicious/noExplicitAny: we'll cast it away
+            node._def.options.map((x: any) => ctx.render(x as ZodFirstPartySchemaTypes)),
+            {},
+        )
+        union._discriminator = node._def.discriminator
+        return union
     },
     ZodIntersection: (node, ctx) => {
         // biome-ignore lint/suspicious/noExplicitAny: we'll cast it away
@@ -276,7 +314,10 @@ export const zodVisitor: {
         let value = $tuple(node._def.items.map((x: any) => ctx.render(x as ZodFirstPartySchemaTypes)))
 
         if (node._def.rest) {
-            value = value.rest(ctx.render(node._def.rest as ZodFirstPartySchemaTypes)) as unknown as TupleType
+            value = value.rest(ctx.render(node._def.rest as ZodFirstPartySchemaTypes)) as unknown as TupleType<
+                [Node, ...Node[]],
+                undefined
+            >
         }
 
         return value
@@ -341,8 +382,11 @@ export const zodVisitor: {
 
 export function $zod(
     node: ZodFirstPartySchemaTypes,
-    { cache = new WeakMap() }: { cache?: WeakMap<ZodFirstPartySchemaTypes, Node> } = {},
+    {
+        cache = new WeakMap(),
+        keepOriginalSchema = true,
+    }: { cache?: WeakMap<ZodFirstPartySchemaTypes, Node>; keepOriginalSchema?: boolean } = {},
 ): Node {
-    const context = buildContext({ cache })
+    const context = buildContext({ cache, keepOriginalSchema })
     return context.render(node)
 }

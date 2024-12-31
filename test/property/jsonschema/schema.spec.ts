@@ -1,12 +1,12 @@
-import { asyncForAll, constant, forAll, groupBy, omitUndefined, tuple } from '@skyleague/axioms'
+import { asyncForAll, constant, forAll, omitUndefined, tuple } from '@skyleague/axioms'
 import { type AnySchema, ValidationError } from 'ajv'
 import { Ajv } from 'ajv'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
+import { GenericFileOutput } from '../../../src/commands/generate/output/generic.js'
+import { TypescriptFileOutput } from '../../../src/commands/generate/output/typescript.js'
 import type * as JSONSchema from '../../../src/json.js'
 import { defaultAjvConfig } from '../../../src/lib/ajv/defaults.js'
-import { GenericFileOutput } from '../../../src/lib/output/generic.js'
-import { TypescriptFileOutput } from '../../../src/lib/output/typescript.js'
 import { $jsonschema } from '../../../src/lib/primitives/jsonschema/jsonschema.js'
 import { arbitrary } from '../../../src/lib/visitor/arbitrary/arbitrary.js'
 import { toJsonSchema } from '../../../src/lib/visitor/jsonschema/jsonschema.js'
@@ -26,7 +26,7 @@ function extendSchemaCoverage(schema: JSONSchema.JsonSchema) {
     // as the specified anyOf
     const anyOf = value.anyOf
     if (anyOf !== undefined && anyOf.length > 1) {
-        const typeGroups = groupBy(
+        const typeGroups = Object.groupBy(
             anyOf.flatMap((x) => x.type),
             (x) => {
                 if (x === 'number' || x === 'integer') {
@@ -101,7 +101,7 @@ it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> th
                 allowIntersection: true,
                 dereference: false,
                 // make our own lives a whole lot easier
-                validator: {
+                _validator: {
                     ajv: { useDefaults: false },
                 },
             })
@@ -172,7 +172,7 @@ it.each(['draft-07', 'openapi3'] as const)('%s - value to literal', async (targe
                     allowIntersection: true,
                     dereference: false,
                     // make our own lives a whole lot easier
-                    validator: {
+                    _validator: {
                         ajv: { useDefaults: false },
                     },
                 })

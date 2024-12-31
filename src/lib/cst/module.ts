@@ -60,6 +60,12 @@ export const ajvFormatsSymbols = {
     FormatName: moduleSymbol('ajv-formats', 'FormatName'),
 }
 
+export const zodSymbols = {
+    z: moduleSymbol('zod', 'z'),
+    SafeParseReturnType: moduleSymbol('zod', 'SafeParseReturnType'),
+    ZodError: moduleSymbol('zod', 'ZodError'),
+}
+
 export const httpSymbols = {
     IncomingHttpHeadersNode: moduleSymbol('node:http', 'IncomingHttpHeaders'),
 }

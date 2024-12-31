@@ -6,7 +6,7 @@
 
 export const introspection = {
     __schema: {
-        queryType: { name: 'Query' },
+        queryType: { name: 'Query', kind: 'OBJECT' },
         mutationType: null,
         subscriptionType: null,
         types: [

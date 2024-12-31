@@ -1,4 +1,4 @@
-import { all, isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
+import { isString, mapValues, memoize, omitUndefined } from '@skyleague/axioms'
 import { minifyIntrospectionQuery } from '@urql/introspection'
 import {
     GraphQLBoolean,
@@ -23,12 +23,12 @@ import {
     lexicographicSortSchema,
     printSchema,
 } from 'graphql'
+import type { References } from '../../../commands/generate/output/references.js'
 import { replaceExtension } from '../../../common/template/path.js'
 import { type GenericOutput, type TypescriptOutput, isNode } from '../../cst/cst.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import { Node } from '../../cst/node.js'
 import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
-import type { References } from '../../output/references.js'
 import type { ObjectType } from '../object/object.js'
 import { GraphqlFieldType } from './field.js'
 
@@ -122,7 +122,7 @@ export const graphqlVisitor: ThereforeVisitor<GraphQLOutputType & GraphQLInputTy
             })
         }
         const values = node.enum
-        if (all(values, isString)) {
+        if (values.every(isString)) {
             return new GraphQLEnumType({
                 name: references.hardlink(node, 'symbolName'),
                 values: Object.fromEntries(values.filter(isString).map((value) => [value, { value }] as const)),
@@ -338,6 +338,9 @@ export class GraphQLSchemaType extends Node {
             },
             {
                 type: 'typescript',
+                subtype: undefined,
+                isGenerated: () => true,
+                isTypeOnly: false,
                 definition: (node, context) => {
                     // biome-ignore lint/style/noNonNullAssertion: is set on evaluation in the other output
                     context.references.from(this._genericReferences!)

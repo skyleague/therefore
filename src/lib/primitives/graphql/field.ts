@@ -59,6 +59,8 @@ export class GraphqlFieldType extends NodeTrait {
         return [
             {
                 type: 'typescript',
+                subtype: undefined,
+                isTypeOnly: true,
                 definition: (node, { declare, reference }) => {
                     if (this.args !== undefined) {
                         const argument = this.argsChildren()

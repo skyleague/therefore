@@ -1,12 +1,20 @@
-import { XKCD } from '../../../examples/restclients/xkcd/xkcd.client.js'
-import type { Comic } from '../../../examples/restclients/xkcd/xkcd.type.js'
+import { XKCD } from '../../../examples/restclients/ajv/xkcd/xkcd.client.js'
+import type { Comic } from '../../../examples/restclients/ajv/xkcd/xkcd.type.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
 
 import { describe, expect, it } from 'vitest'
 
-it(' output generation', async () => {
+it('output generation - ajv', async () => {
     expect(
-        await compileOutput(['examples/restclients/xkcd/xkcd.schema.ts'], {
+        await compileOutput(['examples/restclients/ajv/xkcd/xkcd.schema.ts'], {
+            cwd: process.cwd(),
+        }),
+    ).toMatchSnapshot()
+})
+
+it('output generation - zod', async () => {
+    expect(
+        await compileOutput(['examples/restclients/zod/xkcd/xkcd.schema.ts'], {
             cwd: process.cwd(),
         }),
     ).toMatchSnapshot()
