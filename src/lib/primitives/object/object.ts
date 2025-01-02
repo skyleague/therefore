@@ -81,6 +81,10 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         mask: (keyof Shape)[]
         origin: ObjectType
     }
+    protected declare _extended?: {
+        origin: ObjectType
+        extends: Shape
+    }
 
     public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
@@ -110,6 +114,11 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 ...extra,
             },
         })
+        clone._extended = {
+            extends: extra as unknown as Shape,
+            origin: this as ObjectType,
+        }
+        clone._children.push(clone._extended.origin)
         return clone as unknown as ObjectType<Simplify<Shape & Extra>>
     }
 
@@ -124,6 +133,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
             mask: properties,
             origin: this as ObjectType,
         }
+        clone._children.push(clone._picked.origin)
         return clone as unknown as ObjectType<Simplify<Pick<Shape, Key>>>
     }
 
@@ -134,7 +144,6 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
             mask: properties,
             origin: this as ObjectType,
         }
-
         clone._children.push(clone._omitted.origin)
         return clone as unknown as ObjectType<Simplify<Omit<Shape, Key>>>
     }
@@ -229,8 +238,8 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
 }
 
 export class _OmitType extends ObjectType {
-    public declare _omitted: {
-        mask: (keyof Shape)[]
+    public declare _omitted?: {
+        mask: string[]
         origin: ObjectType
     }
 }
@@ -238,6 +247,13 @@ export class _OmitType extends ObjectType {
 export class _PickType extends ObjectType {
     public declare _picked: {
         mask: (keyof Shape)[]
+        origin: ObjectType
+    }
+}
+
+export class _ExtendType extends ObjectType {
+    public declare _extended?: {
+        extends: ObjectType['shape']
         origin: ObjectType
     }
 }
