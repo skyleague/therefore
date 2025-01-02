@@ -31,9 +31,9 @@ export const Pet = z.object({
     category: Category.optional(),
     id: z.number().int().optional(),
     name: z.string(),
-    photoUrls: z.array(z.string()),
+    photoUrls: z.string().array(),
     status: z.enum(['available', 'pending', 'sold']).describe('pet status in the store').optional(),
-    tags: z.array(Tag).optional(),
+    tags: Tag.array().optional(),
 })
 
 export const ApiResponse = z.object({
@@ -42,11 +42,11 @@ export const ApiResponse = z.object({
     type: z.string().optional(),
 })
 
-export const CreateUsersWithListInputRequest = z.array(User)
+export const CreateUsersWithListInputRequest = User.array()
 
-export const FindPetsByStatusResponse = z.array(Pet)
+export const FindPetsByStatusResponse = Pet.array()
 
-export const FindPetsByTagsResponse = z.array(Pet)
+export const FindPetsByTagsResponse = Pet.array()
 
 export const GetInventoryResponse = z.record(z.number().int().optional())
 

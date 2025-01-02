@@ -34,7 +34,7 @@ export const File = z.object({})
 export const OBErrorResponse1 = z
     .object({
         Code: z.string().min(1).max(40).describe('High level textual error code, to help categorize the errors.'),
-        Errors: z.array(OBError1).nonempty(),
+        Errors: OBError1.array().nonempty(),
         Id: z
             .string()
             .min(1)

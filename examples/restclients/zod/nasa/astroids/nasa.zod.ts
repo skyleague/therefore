@@ -48,7 +48,7 @@ export const LibraryItem = z
         completionDate: z.string().describe('Date the library item was completed.').optional(),
         description: z.string().describe('Description of the library item.').optional(),
         externalUrl: z.string().describe('External URL for the library item.').optional(),
-        files: z.array(File).describe('List of files associated with the library item.').optional(),
+        files: File.array().describe('List of files associated with the library item.').optional(),
         id: z.number().int().describe('Unique identifier for the library item.').optional(),
         publishedBy: z.string().describe('Publisher of the library item.').optional(),
         publishedDate: z.string().describe('Date the library item was published.').optional(),
@@ -75,8 +75,7 @@ export const GetApiByResponse200 = z.object({
 export const Project = z
     .object({
         acronym: z.string().describe('Abbreviated name of the project.').optional(),
-        additionalTas: z
-            .array(TechnologyArea)
+        additionalTas: TechnologyArea.array()
             .describe('List of additional and cross-cutting technology areas associated with the project.')
             .optional(),
         benefits: z
@@ -85,24 +84,20 @@ export const Project = z
                 'Describes the benefits offered to NASA funded and planned missions, unfunded or planned missions, commercial space industry, and to the nation.',
             )
             .optional(),
-        closeoutDocuments: z
-            .array(CloseoutDocument)
+        closeoutDocuments: CloseoutDocument.array()
             .describe('List of document files or links to the project final report closeout documentation.')
             .optional(),
         closeoutSummary: z.string().describe('The project closeout summary excerpt.').optional(),
-        coFundingPartners: z
-            .array(Organization)
+        coFundingPartners: Organization.array()
             .describe(
                 'Other government agencies, NASA Mission Directoratres, universities, or commercial entities performing contributing resources to this project.',
             )
             .optional(),
-        coInvestigators: z
-            .array(CoInvestigator)
+        coInvestigators: CoInvestigator.array()
             .describe('Names of the additional investigators who are scientists or engineers for this project.')
             .optional(),
         description: z.string().describe('A detailed description of the project.').optional(),
-        destinations: z
-            .array(Destination)
+        destinations: Destination.array()
             .describe('List of the NASA destinations the technology on this project helps achieve.')
             .optional(),
         endDate: z.string().describe('The month and year the project is expected to complete its work.').optional(),
@@ -113,25 +108,20 @@ export const Project = z
             .describe('ISO 8601 full-date in the format YYYY-MM-DD describing the last time this project was updated.')
             .optional(),
         leadOrganization: Organization.optional(),
-        libraryItems: z.array(LibraryItem).describe('List of library items in the project library.').optional(),
-        primaryTas: z
-            .array(TechnologyArea)
+        libraryItems: LibraryItem.array().describe('List of library items in the project library.').optional(),
+        primaryTas: TechnologyArea.array()
             .describe('List of primary technolgy areas (from the NASA Technology Roadmap) associated with the project.')
             .optional(),
-        principalInvestigators: z
-            .array(PrincipalInvestigator)
+        principalInvestigators: PrincipalInvestigator.array()
             .describe('Names of the Principal Investigators who are the lead scientists or engineers for this project.')
             .optional(),
-        programDirectors: z
-            .array(ProgramDirector)
+        programDirectors: ProgramDirector.array()
             .describe('Names of the Program Directors responsible for the management of this project.')
             .optional(),
-        programManagers: z
-            .array(ProgramManager)
+        programManagers: ProgramManager.array()
             .describe('Names of the Program Managers responsible for the management of this project.')
             .optional(),
-        projectManagers: z
-            .array(ProjectManager)
+        projectManagers: ProjectManager.array()
             .describe('Names of the Project Managers responsible for the management of this project.')
             .optional(),
         responsibleMissionDirectorateOrOffice: z
@@ -148,8 +138,7 @@ export const Project = z
             .string()
             .describe('The supported mission type (Projected Mission, Planned Mission, or Pull).')
             .optional(),
-        supportingOrganizations: z
-            .array(Organization)
+        supportingOrganizations: Organization.array()
             .describe('The supporting organizations for this project that are conducting work on the project.')
             .optional(),
         technologyMaturityCurrent: z
@@ -166,8 +155,7 @@ export const Project = z
             .optional(),
         title: z.string().describe('Title of the project.').optional(),
         website: z.string().describe('The URL for the associated website.').optional(),
-        workLocations: z
-            .array(WorkLocation)
+        workLocations: WorkLocation.array()
             .describe('States and territories with people performing work on this project.')
             .optional(),
     })

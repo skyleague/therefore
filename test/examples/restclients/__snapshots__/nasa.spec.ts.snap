@@ -784,7 +784,7 @@ export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = \`\${Major}\$
 
 import { z } from 'zod'
 
-export const GetApodResponse = z.array(z.unknown())
+export const GetApodResponse = z.unknown().array()
 
 export type GetApodResponse = z.infer<typeof GetApodResponse>
 
@@ -956,7 +956,7 @@ export const LibraryItem = z.object({
     completionDate: z.string().describe('Date the library item was completed.').optional(),
     description: z.string().describe('Description of the library item.').optional(),
     externalUrl: z.string().describe('External URL for the library item.').optional(),
-    files: z.array(File).describe('List of files associated with the library item.').optional(),
+    files: File.array().describe('List of files associated with the library item.').optional(),
     id: z.number().int().describe('Unique identifier for the library item.').optional(),
     publishedBy: z.string().describe('Publisher of the library item.').optional(),
     publishedDate: z.string().describe('Date the library item was published.').optional(),
@@ -977,36 +977,36 @@ export const GetApiByResponse200 = z.object({
 
 export const Project = z.object({
     acronym: z.string().describe('Abbreviated name of the project.').optional(),
-    additionalTas: z.array(TechnologyArea).describe('List of additional and cross-cutting technology areas associated with the project.').optional(),
+    additionalTas: TechnologyArea.array().describe('List of additional and cross-cutting technology areas associated with the project.').optional(),
     benefits: z.string().describe('Describes the benefits offered to NASA funded and planned missions, unfunded or planned missions, commercial space industry, and to the nation.').optional(),
-    closeoutDocuments: z.array(CloseoutDocument).describe('List of document files or links to the project final report closeout documentation.').optional(),
+    closeoutDocuments: CloseoutDocument.array().describe('List of document files or links to the project final report closeout documentation.').optional(),
     closeoutSummary: z.string().describe('The project closeout summary excerpt.').optional(),
-    coFundingPartners: z.array(Organization).describe('Other government agencies, NASA Mission Directoratres, universities, or commercial entities performing contributing resources to this project.').optional(),
-    coInvestigators: z.array(CoInvestigator).describe('Names of the additional investigators who are scientists or engineers for this project.').optional(),
+    coFundingPartners: Organization.array().describe('Other government agencies, NASA Mission Directoratres, universities, or commercial entities performing contributing resources to this project.').optional(),
+    coInvestigators: CoInvestigator.array().describe('Names of the additional investigators who are scientists or engineers for this project.').optional(),
     description: z.string().describe('A detailed description of the project.').optional(),
-    destinations: z.array(Destination).describe('List of the NASA destinations the technology on this project helps achieve.').optional(),
+    destinations: Destination.array().describe('List of the NASA destinations the technology on this project helps achieve.').optional(),
     endDate: z.string().describe('The month and year the project is expected to complete its work.').optional(),
     id: z.number().int().describe('Unique identifier for the project.').optional(),
     lastUpdated: z.string().date().describe('ISO 8601 full-date in the format YYYY-MM-DD describing the last time this project was updated.').optional(),
     leadOrganization: Organization.optional(),
-    libraryItems: z.array(LibraryItem).describe('List of library items in the project library.').optional(),
-    primaryTas: z.array(TechnologyArea).describe('List of primary technolgy areas (from the NASA Technology Roadmap) associated with the project.').optional(),
-    principalInvestigators: z.array(PrincipalInvestigator).describe('Names of the Principal Investigators who are the lead scientists or engineers for this project.').optional(),
-    programDirectors: z.array(ProgramDirector).describe('Names of the Program Directors responsible for the management of this project.').optional(),
-    programManagers: z.array(ProgramManager).describe('Names of the Program Managers responsible for the management of this project.').optional(),
-    projectManagers: z.array(ProjectManager).describe('Names of the Project Managers responsible for the management of this project.').optional(),
+    libraryItems: LibraryItem.array().describe('List of library items in the project library.').optional(),
+    primaryTas: TechnologyArea.array().describe('List of primary technolgy areas (from the NASA Technology Roadmap) associated with the project.').optional(),
+    principalInvestigators: PrincipalInvestigator.array().describe('Names of the Principal Investigators who are the lead scientists or engineers for this project.').optional(),
+    programDirectors: ProgramDirector.array().describe('Names of the Program Directors responsible for the management of this project.').optional(),
+    programManagers: ProgramManager.array().describe('Names of the Program Managers responsible for the management of this project.').optional(),
+    projectManagers: ProjectManager.array().describe('Names of the Project Managers responsible for the management of this project.').optional(),
     responsibleMissionDirectorateOrOffice: z.string().describe('The NASA Mission Directorate or Office that is the primary funding source for this project.').optional(),
     responsibleProgram: z.string().describe('The NASA program that is the primary funding source for this project.').optional(),
     startDate: z.string().describe('The month and year the project was authorized to proceed.').optional(),
     status: z.string().describe('Indicates whether the project is currently active, completed, or canceled.').optional(),
     supportedMissionType: z.string().describe('The supported mission type (Projected Mission, Planned Mission, or Pull).').optional(),
-    supportingOrganizations: z.array(Organization).describe('The supporting organizations for this project that are conducting work on the project.').optional(),
+    supportingOrganizations: Organization.array().describe('The supporting organizations for this project that are conducting work on the project.').optional(),
     technologyMaturityCurrent: z.string().describe('The current technology maturity (technology readiness level) of the project.').optional(),
     technologyMaturityEnd: z.string().describe('The estimated technology maturity (technology readiness level) of the project at its end.').optional(),
     technologyMaturityStart: z.string().describe('The technology maturity (technology readiness level) of the project at its beginning.').optional(),
     title: z.string().describe('Title of the project.').optional(),
     website: z.string().describe('The URL for the associated website.').optional(),
-    workLocations: z.array(WorkLocation).describe('States and territories with people performing work on this project.').optional(),
+    workLocations: WorkLocation.array().describe('States and territories with people performing work on this project.').optional(),
 }).describe('Top-level TechPort object representing a NASA technology project and its associated data.')
 
 export type GetApiByResponse200 = z.infer<typeof GetApiByResponse200>

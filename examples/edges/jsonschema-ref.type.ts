@@ -41,9 +41,9 @@ type Foo2 = string
 
 type Foo = string
 
-type Keys2 = Foo[]
+type Keys2 = Foo2[]
 
-type Keys = Foo2[]
+type Keys = Foo[]
 
 /**
  * Loan repayment executed
