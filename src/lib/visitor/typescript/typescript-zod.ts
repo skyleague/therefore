@@ -328,7 +328,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                 }
             }
         } else {
-            writer.write(`${context.value(zodSymbols.z())}.array(${context.render(element)})`)
+            writer.write(`${context.render(element)}.array()`)
 
             if (options.minItems !== undefined && options.maxItems !== undefined && options.minItems === options.maxItems) {
                 writer.write(`.length(${options.minItems})`)

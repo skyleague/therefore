@@ -26,9 +26,9 @@ export const ModelWithDictionary = z
 
 export const ModelWithArray = z
     .object({
-        prop: z.array(ModelWithString).optional(),
-        propWithFile: z.array(z.unknown()).optional(),
-        propWithNumber: z.array(z.number()).optional(),
+        prop: ModelWithString.array().optional(),
+        propWithFile: z.unknown().array().optional(),
+        propWithNumber: z.number().array().optional(),
     })
     .describe('This is a model with one property containing an array')
 
@@ -60,9 +60,9 @@ export const ModelWithBoolean = z
 
 export const ModelWithArrayReadOnlyAndWriteOnly = z
     .object({
-        prop: z.array(ModelWithReadOnlyAndWriteOnly).optional(),
-        propWithFile: z.array(z.unknown()).optional(),
-        propWithNumber: z.array(z.number()).optional(),
+        prop: ModelWithReadOnlyAndWriteOnly.array().optional(),
+        propWithFile: z.unknown().array().optional(),
+        propWithNumber: z.number().array().optional(),
     })
     .describe('This is a model with one property containing an array')
 
@@ -82,7 +82,7 @@ export const NonAsciiString = z
     .string()
     .describe('A string with non-ascii (unicode) characters valid in typescript identifiers (æøåÆØÅöÔèÈ字符串)')
 
-export const ArrayWithStrings = z.array(z.string()).describe('This is a simple array with strings').default(['test'])
+export const ArrayWithStrings = z.string().array().describe('This is a simple array with strings').default(['test'])
 
 export const CallWithDuplicateResponsesResponse200 = z.intersection(ModelWithBoolean, ModelWithInteger)
 
@@ -93,7 +93,7 @@ export const CallWithResponseAndNoContentResponseResponse200 = z.number()
 export const CallWithResponsesResponse200 = z.object({
     '@namespace.integer': z.number().int().optional(),
     '@namespace.string': z.string().optional(),
-    value: z.array(ModelWithString).optional(),
+    value: ModelWithString.array().optional(),
 })
 
 export const ComplexParamsRequest = z.object({
@@ -103,8 +103,8 @@ export const ComplexParamsRequest = z.object({
         .max(64)
         .regex(/^[a-zA-Z0-9_]*$/)
         .nullable(),
-    listOfModels: z.array(ModelWithString).nullable().optional(),
-    listOfStrings: z.array(z.string()).nullable().optional(),
+    listOfModels: ModelWithString.array().nullable().optional(),
+    listOfStrings: z.string().array().nullable().optional(),
     name: z.string().max(255).nullable(),
     parameters: z.union([ModelWithString, ModelWithEnum, ModelWithArray, ModelWithDictionary]),
     type: z.enum(['Monkey', 'Horse', 'Bird']),
@@ -116,9 +116,9 @@ export const ComplexParamsRequest = z.object({
         .optional(),
 })
 
-export const ComplexTypesResponse = z.array(ModelWithString)
+export const ComplexTypesResponse = ModelWithString.array()
 
-export const DictionaryWithArray = z.record(z.array(ModelWithString).optional()).describe('This is a complex dictionary')
+export const DictionaryWithArray = z.record(ModelWithString.array().optional()).describe('This is a complex dictionary')
 
 export const Hey = z.string().describe('Model with number-only name')
 
@@ -176,7 +176,7 @@ export const MultipartRequestRequest = z.object({
     data: ModelWithString.nullable().optional(),
 })
 
-export const NonAsciiResponse = z.array(NonAsciiString)
+export const NonAsciiResponse = NonAsciiString.array()
 
 export const OperationApiSimpleResponse200 = z.number()
 

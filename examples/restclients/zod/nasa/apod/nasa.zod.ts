@@ -6,6 +6,6 @@
 
 import { z } from 'zod'
 
-export const GetApodResponse = z.array(z.unknown())
+export const GetApodResponse = z.unknown().array()
 
 export type GetApodResponse = z.infer<typeof GetApodResponse>

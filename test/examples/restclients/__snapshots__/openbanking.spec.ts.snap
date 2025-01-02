@@ -509,7 +509,7 @@ export const File = z.object({
 
 export const OBErrorResponse1 = z.object({
     Code: z.string().min(1).max(40).describe('High level textual error code, to help categorize the errors.'),
-    Errors: z.array(OBError1).nonempty(),
+    Errors: OBError1.array().nonempty(),
     Id: z.string().min(1).max(40).describe('A unique reference for the error instance, for audit purposes, in case of unknown/unclassified errors.').optional(),
     Message: z.string().min(1).max(500).describe(\`Brief Error message, e.g., 'There is something wrong with the request parameters provided'\`),
 }).describe('An array of detail error codes, and messages, and URLs to documentation to help remediation.')
