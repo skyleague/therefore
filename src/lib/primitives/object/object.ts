@@ -8,6 +8,7 @@ import { EnumType } from '../enum/enum.js'
 
 import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
+import type { Shape } from '../../../../examples/runtypes/shapes.type.js'
 import { $optional, OptionalType } from '../optional/optional.js'
 
 export type ObjectShape<Shape extends Record<string, Node> = Record<string, Node>> = {
@@ -71,6 +72,16 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     protected declare element?: Node | undefined
     protected declare key?: Node | undefined
     protected declare patternProperties?: Record<string, Node> | undefined
+
+    protected declare _omitted?: {
+        mask: (keyof Shape)[]
+        origin: ObjectType
+    }
+    protected declare _picked?: {
+        mask: (keyof Shape)[]
+        origin: ObjectType
+    }
+
     public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
     public declare input: ShapeToInput<Shape>
@@ -109,12 +120,22 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     public pick<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Pick<Shape, Key>>> {
         const clone = ObjectType._clone(this)
         clone._from({ shape: pick(this.shape, properties) as unknown as Shape })
+        clone._picked = {
+            mask: properties,
+            origin: this as ObjectType,
+        }
         return clone as unknown as ObjectType<Simplify<Pick<Shape, Key>>>
     }
 
     public omit<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Omit<Shape, Key>>> {
         const clone = ObjectType._clone(this)
         clone._from({ shape: omit(this.shape, properties) as unknown as Shape })
+        clone._omitted = {
+            mask: properties,
+            origin: this as ObjectType,
+        }
+
+        clone._children.push(clone._omitted.origin)
         return clone as unknown as ObjectType<Simplify<Omit<Shape, Key>>>
     }
 
@@ -155,6 +176,14 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 isTypeOnly: true,
                 definition: (node, context) => {
                     if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node) && !this.key) {
+                        const omitType = node as _OmitType
+                        if (omitType._omitted !== undefined && omitType._omitted.origin._name !== undefined) {
+                            return `${context.declare('type', node)} = ${context.render(node)}`
+                        }
+                        const pickType = node as _PickType
+                        if (pickType._picked !== undefined && pickType._picked.origin._name !== undefined) {
+                            return `${context.declare('type', node)} = ${context.render(node)}`
+                        }
                         return `${context.declare('interface', node)} ${context.render(node)}`
                     }
                     return `${context.declare('type', node)} = ${context.render(node)}`
@@ -196,6 +225,20 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
             ...Object.values(this.patternProperties ?? {}),
             ...(this.element !== undefined ? [this.element] : []),
         ]
+    }
+}
+
+export class _OmitType extends ObjectType {
+    public declare _omitted: {
+        mask: (keyof Shape)[]
+        origin: ObjectType
+    }
+}
+
+export class _PickType extends ObjectType {
+    public declare _picked: {
+        mask: (keyof Shape)[]
+        origin: ObjectType
     }
 }
 

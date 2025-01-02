@@ -10,6 +10,7 @@ import { walkTherefore } from '../../cst/visitor.js'
 import type { EnumType } from '../../primitives/enum/enum.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import { NullableType } from '../../primitives/nullable/nullable.js'
+import type { _OmitType, _PickType } from '../../primitives/object/object.js'
 import { OptionalType } from '../../primitives/optional/optional.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { $ref } from '../../primitives/ref/ref.js'
@@ -167,6 +168,25 @@ export const typescriptAjvVisitor: ThereforeVisitor<string, TypescriptAjvWalkerC
         const { element, key } = node as RecordType
         const { patternProperties } = node as JSONObjectType
         const writer = createWriter()
+
+        const omitType = node as _OmitType
+        if (omitType._omitted !== undefined && omitType._omitted.origin._name !== undefined) {
+            writer.writeLine(
+                `Omit<${context.reference(omitType._omitted.origin)}, ${omitType._omitted.mask.map((m) => `'${m}'`).join(', ')}>`,
+            )
+
+            return writer.toString()
+        }
+
+        const pickType = node as _PickType
+        if (pickType._picked !== undefined && pickType._picked.origin._name !== undefined) {
+            writer.writeLine(
+                `Pick<${context.reference(pickType._picked.origin)}, ${pickType._picked.mask.map((m) => `'${m}'`).join(', ')}>`,
+            )
+
+            return writer.toString()
+        }
+
         writer.block(() => {
             for (const [name, property] of Object.entries(shape)) {
                 const { _definition, _output } = property
