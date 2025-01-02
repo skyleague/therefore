@@ -2,7 +2,7 @@ import { Nothing, isJust, isRight } from '@skyleague/axioms'
 import fastGlob from 'fast-glob'
 
 import fs from 'node:fs/promises'
-import { posix as pathPosix, resolve } from 'node:path'
+import { posix as pathPosix, relative, resolve } from 'node:path'
 
 export async function expandGlobs({
     patterns,
@@ -38,7 +38,7 @@ export async function expandGlobs({
                         return fastGlob.escapePath(pathPosix.normalize(pattern))
                     }
                     if (eitherStat.right.isDirectory()) {
-                        return `${fastGlob.escapePath(pathPosix.normalize(pathPosix.relative(cwd, absolutePath)))}/**/*${extension}`
+                        return `${fastGlob.escapePath(pathPosix.normalize(relative(cwd, absolutePath)))}/**/*${extension}`
                     }
 
                     return Nothing
