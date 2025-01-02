@@ -323,7 +323,11 @@ export const zodVisitor: {
         return value
     },
     ZodRecord: (node, ctx) => {
-        return $record(ctx.render(node._def.valueType as ZodFirstPartySchemaTypes))
+        const record = $record(ctx.render(node._def.valueType as ZodFirstPartySchemaTypes))
+        if (node._def.keyType._def.typeName !== 'ZodString') {
+            ;(record as RecordType).key = ctx.render(node._def.keyType as ZodFirstPartySchemaTypes)
+        }
+        return record
     },
     ZodMap: () => {
         throw new Error('Function not implemented.')

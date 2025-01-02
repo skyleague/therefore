@@ -69,6 +69,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     }
 
     protected declare element?: Node | undefined
+    protected declare key?: Node | undefined
     protected declare patternProperties?: Record<string, Node> | undefined
     public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
@@ -153,7 +154,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 subtype: 'ajv',
                 isTypeOnly: true,
                 definition: (node, context) => {
-                    if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node)) {
+                    if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node) && !this.key) {
                         return `${context.declare('interface', node)} ${context.render(node)}`
                     }
                     return `${context.declare('type', node)} = ${context.render(node)}`

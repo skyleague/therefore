@@ -164,7 +164,7 @@ export const typescriptAjvVisitor: ThereforeVisitor<string, TypescriptAjvWalkerC
     },
     object: (node, context) => {
         const { shape } = node
-        const { element } = node as RecordType
+        const { element, key } = node as RecordType
         const { patternProperties } = node as JSONObjectType
         const writer = createWriter()
         writer.block(() => {
@@ -179,7 +179,7 @@ export const typescriptAjvVisitor: ThereforeVisitor<string, TypescriptAjvWalkerC
                 }
             }
             const indices: [string, string][] = []
-            const commonIndex = '[k: string]'
+            const commonIndex = key !== undefined ? `[k in ${context.render(key)}]` : '[k: string]'
             if (element !== undefined) {
                 indices.push([commonIndex, context.render(new OptionalType(element))])
             }
