@@ -2,6 +2,7 @@ import { References } from '../../../commands/generate/output/references.js'
 import { zodSymbols } from '../../cst/module.js'
 import type { Node } from '../../cst/node.js'
 import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
+import type { _OmitType, _PickType } from '../../primitives/object/object.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { createWriter } from '../../writer.js'
 import type { DefinedTypescriptOutput } from './cst.js'
@@ -273,8 +274,30 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         const { element } = node as RecordType
         const writer = createWriter()
 
-        // If it's a pure record type with no other properties
-        if (Object.keys(shape).length === 0 && element !== undefined) {
+        const omitType = node as _OmitType
+        const pickType = node as _PickType
+        if (omitType._omitted !== undefined) {
+            if (omitType._omitted.origin._name !== undefined) {
+                writer.writeLine(
+                    `${context.value(omitType._omitted.origin)}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                )
+            } else {
+                writer.writeLine(
+                    `${context.render(omitType._omitted.origin)}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                )
+            }
+        } else if (pickType._picked !== undefined) {
+            if (pickType._picked.origin._name !== undefined) {
+                writer.writeLine(
+                    `${context.value(pickType._picked.origin)}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                )
+            } else {
+                writer.writeLine(
+                    `${context.render(pickType._picked.origin)}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                )
+            }
+        } else if (Object.keys(shape).length === 0 && element !== undefined) {
+            // If it's a pure record type with no other properties
             // Zod uses .record() for key-value mappings
             writer.write(`${context.value(zodSymbols.z())}.record(${context.render(element)}.optional())`)
         } else {

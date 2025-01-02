@@ -3,6 +3,7 @@ import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
+import type { _OmitType, _PickType } from '../../primitives/object/object.js'
 import { $ref } from '../../primitives/ref/ref.js'
 import { therefore } from '../../primitives/therefore.js'
 
@@ -91,7 +92,14 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
                 }
             }
 
-            node._from({})
+            const omitType = node as unknown as _OmitType
+            if (omitType._omitted !== undefined) {
+                walkTherefore(omitType._omitted.origin, autoRefVisitor)
+            }
+            const pickType = node as unknown as _PickType
+            if (pickType._picked !== undefined) {
+                walkTherefore(pickType._picked.origin, autoRefVisitor)
+            }
 
             return node
         },
