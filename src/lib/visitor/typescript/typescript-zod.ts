@@ -2,7 +2,7 @@ import { References } from '../../../commands/generate/output/references.js'
 import { zodSymbols } from '../../cst/module.js'
 import type { Node } from '../../cst/node.js'
 import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
-import type { _OmitType, _PickType } from '../../primitives/object/object.js'
+import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { createWriter } from '../../writer.js'
 import type { DefinedTypescriptOutput } from './cst.js'
@@ -278,6 +278,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
 
         const omitType = node as _OmitType
         const pickType = node as _PickType
+        const extendType = node as _ExtendType
         if (omitType._omitted !== undefined) {
             if (omitType._omitted.origin._name !== undefined) {
                 writer.writeLine(
@@ -297,6 +298,26 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                 writer.writeLine(
                     `${context.render(pickType._picked.origin)}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
                 )
+            }
+        } else if (extendType._extended !== undefined) {
+            if (extendType._extended.origin._name !== undefined) {
+                writer
+                    .write(`${context.value(extendType._extended.origin)}.extend(`)
+                    .inlineBlock(() => {
+                        for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
+                            writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
+                        }
+                    })
+                    .write(')')
+            } else {
+                writer
+                    .write(`${context.render(extendType._extended.origin)}.extend(`)
+                    .inlineBlock(() => {
+                        for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
+                            writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
+                        }
+                    })
+                    .write(')')
             }
         } else if (Object.keys(shape).length === 0 && element !== undefined) {
             // If it's a pure record type with no other properties
