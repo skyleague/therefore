@@ -166,7 +166,9 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         if (options.maxLength !== undefined && options.maxLength === options.minLength) {
             writer.write(`.length(${options.maxLength})`)
         } else {
-            if (options.minLength !== undefined) {
+            if (options.minLength === 1) {
+                writer.write('.nonempty()')
+            } else if (options.minLength !== undefined) {
                 writer.write(`.min(${options.minLength})`)
             }
             if (options.maxLength !== undefined) {

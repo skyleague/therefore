@@ -10,14 +10,14 @@ export const OBError1 = z.object({
     ErrorCode: z.string().describe('Low level textual error code, e.g., UK.OBIE.Field.Missing'),
     Message: z
         .string()
-        .min(1)
+        .nonempty()
         .max(500)
         .describe(
             `A description of the error that occurred. e.g., 'A mandatory field isn't supplied' or 'RequestedExecutionDateTime must be in future'\\nOBIE doesn't standardise this field`,
         ),
     Path: z
         .string()
-        .min(1)
+        .nonempty()
         .max(500)
         .describe(
             'Recommended but optional reference to the JSON Path of the field with error, e.g., Data.Initiation.InstructedAmount.Currency',
@@ -33,17 +33,17 @@ export const File = z.object({})
 
 export const OBErrorResponse1 = z
     .object({
-        Code: z.string().min(1).max(40).describe('High level textual error code, to help categorize the errors.'),
+        Code: z.string().nonempty().max(40).describe('High level textual error code, to help categorize the errors.'),
         Errors: OBError1.array().nonempty(),
         Id: z
             .string()
-            .min(1)
+            .nonempty()
             .max(40)
             .describe('A unique reference for the error instance, for audit purposes, in case of unknown/unclassified errors.')
             .optional(),
         Message: z
             .string()
-            .min(1)
+            .nonempty()
             .max(500)
             .describe(`Brief Error message, e.g., 'There is something wrong with the request parameters provided'`),
     })
