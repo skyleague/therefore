@@ -55,6 +55,9 @@ export function buildTypescriptZodContext({
             return writer.toString()
         },
         render: (node, ctx: Partial<TypescriptZodWalkerContext> = {}) => {
+            if ('_toZod' in node && node._toZod !== undefined) {
+                return context.render(node._toZod)
+            }
             return walkTherefore(node, typescriptZodVisitor, { ...context, ...ctx })
         },
         declare: (declType: string, node) => asZodDeclaration(declType, node, { exportSymbol, references }),

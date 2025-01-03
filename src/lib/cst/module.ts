@@ -23,7 +23,16 @@ export class ModuleNode extends Node {
     }
 
     public override get _output() {
-        return []
+        return [
+            {
+                type: 'typescript' as const,
+                subtype: undefined,
+                isTypeOnly: true,
+                definition: () => {
+                    return this._attributes.typescript.symbolName
+                },
+            },
+        ]
     }
 }
 
