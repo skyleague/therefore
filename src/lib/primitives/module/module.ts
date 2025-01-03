@@ -1,5 +1,6 @@
 import { moduleSymbol } from '../../cst/module.js'
+import { $ref } from '../ref/ref.js'
 
 export function $moduleRef(module: string, path: string) {
-    return moduleSymbol(module, path)()
+    return $ref(moduleSymbol(module, path)())
 }
