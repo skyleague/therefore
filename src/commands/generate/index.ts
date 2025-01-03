@@ -29,14 +29,19 @@ export function builder(yargs: Argv) {
             choices: ['zod'],
             default: undefined,
         })
+        .option('interop', {
+            default: false,
+            type: 'boolean',
+        })
 }
 
 export async function handler(argv: ReturnType<typeof builder>['argv']): Promise<void> {
-    const { files = [], 'ignore-pattern': ignorePatterns, clean, 'migrate-to': migrateTo } = await argv
+    const { files = [], 'ignore-pattern': ignorePatterns, clean, 'migrate-to': migrateTo, interop } = await argv
 
     if (migrateTo) {
         constants.migrateToValidator = migrateTo as 'zod' | 'ajv'
         constants.migrate = true
+        constants.generateInterop = interop
     }
     await generate({
         globs: files.map((f) => f.toString()),
