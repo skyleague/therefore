@@ -3,7 +3,7 @@ import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
-import type { _OmitType, _PickType } from '../../primitives/object/object.js'
+import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import { $ref } from '../../primitives/ref/ref.js'
 import { therefore } from '../../primitives/therefore.js'
 
@@ -99,6 +99,17 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
             const pickType = node as unknown as _PickType
             if (pickType._picked !== undefined) {
                 walkTherefore(pickType._picked.origin, autoRefVisitor)
+            }
+            const extendType = node as unknown as _ExtendType
+            if (extendType._extended !== undefined) {
+                walkTherefore(extendType._extended.origin, autoRefVisitor)
+                for (const [k, v] of entriesOf(extendType._extended.extends ?? [])) {
+                    if (symbols.has(v) && v._canReference !== false) {
+                        extendType._extended.extends[k] = $ref(v)
+                    } else {
+                        walkTherefore(v, autoRefVisitor)
+                    }
+                }
             }
 
             return node
