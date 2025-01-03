@@ -291,7 +291,11 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         .write(')')
                     return writer.toString()
                 },
-                enabled: (node) => constants.migrate && constants.migrateToValidator === 'zod' && !node._attributes.isGenerated,
+                enabled: (node) =>
+                    constants.migrate &&
+                    constants.migrateToValidator === 'zod' &&
+                    !node._attributes.isGenerated &&
+                    constants.generateInterop,
                 targetPath: ({ _sourcePath: sourcePath }) => {
                     return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
                 },
