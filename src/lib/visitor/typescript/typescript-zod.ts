@@ -15,7 +15,7 @@ export interface TypescriptZodWalkerContext {
     locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
     exportKeyword: string | undefined
     property: string | undefined
-    render: (node: Node, ctx?: Partial<TypescriptZodWalkerContext>) => string
+    render: (node: Node, ctx?: Partial<TypescriptZodWalkerContext>, options?: { allowToZod: boolean }) => string
     declare: (declType: string, node: Node) => string
     reference: (node: Node) => string
     transform: (node: Node, schema: string) => string
@@ -54,15 +54,15 @@ export function buildTypescriptZodContext({
 
             return writer.toString()
         },
-        render: (node, ctx: Partial<TypescriptZodWalkerContext> = {}) => {
-            if ('_toZod' in node && node._toZod !== undefined) {
+        render: (node, ctx: Partial<TypescriptZodWalkerContext> = {}, { allowToZod = false }: { allowToZod?: boolean } = {}) => {
+            if (node._toZod !== undefined && allowToZod && node._type === 'object') {
                 return context.render(node._toZod)
             }
             return walkTherefore(node, typescriptZodVisitor, { ...context, ...ctx })
         },
         declare: (declType: string, node) => asZodDeclaration(declType, node, { exportSymbol, references }),
-        reference: (node) => references.reference(node, 'referenceName'),
-        value: (node) => references.reference(node, 'referenceName', { tag: 'value' }),
+        reference: (node) => references.reference(node._toZod ?? node, 'referenceName'),
+        value: (node) => references.reference(node._toZod ?? node, 'referenceName', { tag: 'value' }),
     }
 
     // we always use this one
@@ -289,7 +289,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                 )
             } else {
                 writer.writeLine(
-                    `${context.render(omitType._omitted.origin)}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                    `${context.render(omitType._omitted.origin, undefined, { allowToZod: true })}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
                 )
             }
         } else if (pickType._picked !== undefined) {
@@ -299,7 +299,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                 )
             } else {
                 writer.writeLine(
-                    `${context.render(pickType._picked.origin)}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
+                    `${context.render(pickType._picked.origin, undefined, { allowToZod: true })}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
                 )
             }
         } else if (extendType._extended !== undefined) {
@@ -314,7 +314,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                     .write(')')
             } else {
                 writer
-                    .write(`${context.render(extendType._extended.origin)}.extend(`)
+                    .write(`${context.render(extendType._extended.origin, undefined, { allowToZod: true })}.extend(`)
                     .inlineBlock(() => {
                         for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
                             writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
@@ -322,6 +322,8 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                     })
                     .write(')')
             }
+        } else if (node._toZod !== undefined) {
+            return context.render(node._toZod)
         } else if (Object.keys(shape).length === 0 && element !== undefined) {
             // If it's a pure record type with no other properties
             // Zod uses .record() for key-value mappings
