@@ -461,12 +461,9 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
  *
  * @group Arbitrary
  */
-export function arbitrary<S extends ZodSchema | Schema<unknown>>(
-    schema: S,
-): S extends ZodSchema ? Dependent<S['_output']> : S extends Schema<infer T> ? Dependent<T> : never
-export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'>): Dependent<T>
-export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
+export function arbitrary<S extends Schema<unknown>>(schema: S): S extends Schema<infer T> ? Dependent<T> : never
 export function arbitrary<T extends ZodSchema>(schema: T): Dependent<T['_output']>
+export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
 export function arbitrary<T extends TSchema>(schema: T): Dependent<Infer<T>>
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T }) | TSchema): Dependent<T> {
     const context = buildContext()

@@ -305,7 +305,11 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 subtype: 'zod',
                 isTypeOnly: true,
                 // isGenerated: () => false,
-                enabled: (node) => node._attributes.isGenerated && node._attributes.validator === 'zod',
+                enabled: (node) =>
+                    (node._attributes.isGenerated && node._attributes.validator === 'zod') ||
+                    (!constants.generateInterop &&
+                        constants.migrateToValidator === 'zod' &&
+                        node._attributes.validator === undefined),
                 definition: (_, context) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
