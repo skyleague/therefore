@@ -53,6 +53,7 @@ export class Node {
 
     public declare _name?: string | undefined
     public declare _sourcePath?: string | undefined
+    public declare _toZod?: Node | undefined
 
     public _attributes: NodeAttributes = {
         typescript: {} as TypescriptAttributes,
