@@ -9,13 +9,6 @@ import { validate as CartValidator } from './schemas/cart.schema.js'
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
-export interface Cart {
-    id: string
-    items: CartItem[]
-    createdAt: string
-    updatedAt: string
-}
-
 export const Cart = {
     validate: CartValidator as ValidateFunction<Cart>,
     get schema() {
@@ -32,3 +25,10 @@ export const Cart = {
         return { left: (Cart.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Cart {
+    id: string
+    items: CartItem[]
+    createdAt: string
+    updatedAt: string
+}

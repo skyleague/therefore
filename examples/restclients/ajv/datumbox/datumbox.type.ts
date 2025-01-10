@@ -21,17 +21,6 @@ import { validate as TextExtractionRequestValidator } from './schemas/text-extra
 import { validate as TopicClassificationRequestValidator } from './schemas/topic-classification-request.schema.js'
 import { validate as TwitterSentimentAnalysisRequestValidator } from './schemas/twitter-sentiment-analysis-request.schema.js'
 
-export interface AdultContentDetectionRequest {
-    /**
-     * Your API Key
-     */
-    api_key: string
-    /**
-     * The text that you want to analyze. It should not contain HTML tags.
-     */
-    text?: string | undefined
-}
-
 export const AdultContentDetectionRequest = {
     validate: AdultContentDetectionRequestValidator as ValidateFunction<AdultContentDetectionRequest>,
     get schema() {
@@ -49,7 +38,7 @@ export const AdultContentDetectionRequest = {
     },
 } as const
 
-export interface CommercialDetectionRequest {
+export interface AdultContentDetectionRequest {
     /**
      * Your API Key
      */
@@ -77,19 +66,15 @@ export const CommercialDetectionRequest = {
     },
 } as const
 
-export interface DocumentSimilarityRequest {
+export interface CommercialDetectionRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The second text. It should not contain HTML tags.
+     * The text that you want to analyze. It should not contain HTML tags.
      */
-    copy?: string | undefined
-    /**
-     * The first text. It should not contain HTML tags.
-     */
-    original?: string | undefined
+    text?: string | undefined
 }
 
 export const DocumentSimilarityRequest = {
@@ -109,15 +94,19 @@ export const DocumentSimilarityRequest = {
     },
 } as const
 
-export interface EducationalDetectionRequest {
+export interface DocumentSimilarityRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text that you want to analyze. It should not contain HTML tags.
+     * The second text. It should not contain HTML tags.
      */
-    text?: string | undefined
+    copy?: string | undefined
+    /**
+     * The first text. It should not contain HTML tags.
+     */
+    original?: string | undefined
 }
 
 export const EducationalDetectionRequest = {
@@ -137,7 +126,7 @@ export const EducationalDetectionRequest = {
     },
 } as const
 
-export interface GenderDetectionRequest {
+export interface EducationalDetectionRequest {
     /**
      * Your API Key
      */
@@ -165,15 +154,11 @@ export const GenderDetectionRequest = {
     },
 } as const
 
-export interface KeywordExtractionRequest {
+export interface GenderDetectionRequest {
     /**
      * Your API Key
      */
     api_key: string
-    /**
-     * The number of keyword combinations (n-grams) that you wish to extract.
-     */
-    n?: number | undefined
     /**
      * The text that you want to analyze. It should not contain HTML tags.
      */
@@ -197,11 +182,15 @@ export const KeywordExtractionRequest = {
     },
 } as const
 
-export interface LanguageDetectionRequest {
+export interface KeywordExtractionRequest {
     /**
      * Your API Key
      */
     api_key: string
+    /**
+     * The number of keyword combinations (n-grams) that you wish to extract.
+     */
+    n?: number | undefined
     /**
      * The text that you want to analyze. It should not contain HTML tags.
      */
@@ -225,7 +214,7 @@ export const LanguageDetectionRequest = {
     },
 } as const
 
-export interface ReadabilityAssessmentRequest {
+export interface LanguageDetectionRequest {
     /**
      * Your API Key
      */
@@ -253,7 +242,7 @@ export const ReadabilityAssessmentRequest = {
     },
 } as const
 
-export interface SentimentAnalysisRequest {
+export interface ReadabilityAssessmentRequest {
     /**
      * Your API Key
      */
@@ -281,7 +270,7 @@ export const SentimentAnalysisRequest = {
     },
 } as const
 
-export interface SpamDetectionRequest {
+export interface SentimentAnalysisRequest {
     /**
      * Your API Key
      */
@@ -309,7 +298,7 @@ export const SpamDetectionRequest = {
     },
 } as const
 
-export interface SubjectivityAnalysisRequest {
+export interface SpamDetectionRequest {
     /**
      * Your API Key
      */
@@ -337,13 +326,13 @@ export const SubjectivityAnalysisRequest = {
     },
 } as const
 
-export interface TextExtractionRequest {
+export interface SubjectivityAnalysisRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The HTML source of the webpage.
+     * The text that you want to analyze. It should not contain HTML tags.
      */
     text?: string | undefined
 }
@@ -365,13 +354,13 @@ export const TextExtractionRequest = {
     },
 } as const
 
-export interface TopicClassificationRequest {
+export interface TextExtractionRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text that you want to analyze. It should not contain HTML tags.
+     * The HTML source of the webpage.
      */
     text?: string | undefined
 }
@@ -393,13 +382,13 @@ export const TopicClassificationRequest = {
     },
 } as const
 
-export interface TwitterSentimentAnalysisRequest {
+export interface TopicClassificationRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text of the tweet that we evaluate.
+     * The text that you want to analyze. It should not contain HTML tags.
      */
     text?: string | undefined
 }
@@ -420,3 +409,14 @@ export const TwitterSentimentAnalysisRequest = {
         return { left: (TwitterSentimentAnalysisRequest.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface TwitterSentimentAnalysisRequest {
+    /**
+     * Your API Key
+     */
+    api_key: string
+    /**
+     * The text of the tweet that we evaluate.
+     */
+    text?: string | undefined
+}

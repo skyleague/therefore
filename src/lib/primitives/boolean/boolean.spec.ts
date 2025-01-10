@@ -42,6 +42,7 @@ it('example', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {
           "jsonschema": {
@@ -55,6 +56,7 @@ it('example', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "boolean",
       }
     `)
@@ -70,6 +72,7 @@ it('default', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {
           "default": true,
@@ -78,6 +81,7 @@ it('default', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "boolean",
       }
     `)

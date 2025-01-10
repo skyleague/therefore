@@ -6,17 +6,35 @@
 
 import { z } from 'zod'
 
+export type ModelWithString = z.infer<typeof ModelWithString>
+
 export const ModelWithString = z
     .object({
         prop: z.string().describe('This is a simple string property').optional(),
     })
     .describe('This is a model with one string property')
 
+export type ModelWithReadOnlyAndWriteOnly = z.infer<typeof ModelWithReadOnlyAndWriteOnly>
+
 export const ModelWithReadOnlyAndWriteOnly = z.object({
     bar: z.string(),
     baz: z.string(),
     foo: z.string(),
 })
+
+export const ModelWithInteger = z
+    .object({
+        prop: z.number().int().describe('This is a simple number property').optional(),
+    })
+    .describe('This is a model with one number property')
+
+export type ModelWithBoolean = z.infer<typeof ModelWithBoolean>
+
+export const ModelWithBoolean = z
+    .object({
+        prop: z.boolean().describe('This is a simple boolean property').optional(),
+    })
+    .describe('This is a model with one boolean property')
 
 export const ModelWithDictionary = z
     .object({
@@ -46,18 +64,6 @@ export const ModelWithEnum = z
     })
     .describe('This is a model with one enum')
 
-export const ModelWithInteger = z
-    .object({
-        prop: z.number().int().describe('This is a simple number property').optional(),
-    })
-    .describe('This is a model with one number property')
-
-export const ModelWithBoolean = z
-    .object({
-        prop: z.boolean().describe('This is a simple boolean property').optional(),
-    })
-    .describe('This is a model with one boolean property')
-
 export const ModelWithArrayReadOnlyAndWriteOnly = z
     .object({
         prop: ModelWithReadOnlyAndWriteOnly.array().optional(),
@@ -65,6 +71,8 @@ export const ModelWithArrayReadOnlyAndWriteOnly = z
         propWithNumber: z.number().array().optional(),
     })
     .describe('This is a model with one property containing an array')
+
+export type ModelThatExtends = z.infer<typeof ModelThatExtends>
 
 export const ModelThatExtends = z
     .object({})
@@ -82,19 +90,31 @@ export const NonAsciiString = z
     .string()
     .describe('A string with non-ascii (unicode) characters valid in typescript identifiers (æøåÆØÅöÔèÈ字符串)')
 
+export type ArrayWithStrings = z.infer<typeof ArrayWithStrings>
+
 export const ArrayWithStrings = z.string().array().describe('This is a simple array with strings').default(['test'])
+
+export type CallWithDuplicateResponsesResponse200 = z.infer<typeof CallWithDuplicateResponsesResponse200>
 
 export const CallWithDuplicateResponsesResponse200 = z.intersection(ModelWithBoolean, ModelWithInteger)
 
+export type CallWithParametersRequest = z.infer<typeof CallWithParametersRequest>
+
 export const CallWithParametersRequest = z.object({})
 
+export type CallWithResponseAndNoContentResponseResponse200 = z.infer<typeof CallWithResponseAndNoContentResponseResponse200>
+
 export const CallWithResponseAndNoContentResponseResponse200 = z.number()
+
+export type CallWithResponsesResponse200 = z.infer<typeof CallWithResponsesResponse200>
 
 export const CallWithResponsesResponse200 = z.object({
     '@namespace.integer': z.number().int().optional(),
     '@namespace.string': z.string().optional(),
     value: ModelWithString.array().optional(),
 })
+
+export type ComplexParamsRequest = z.infer<typeof ComplexParamsRequest>
 
 export const ComplexParamsRequest = z.object({
     enabled: z.boolean().default(true).optional(),
@@ -116,21 +136,35 @@ export const ComplexParamsRequest = z.object({
         .optional(),
 })
 
+export type ComplexTypesResponse = z.infer<typeof ComplexTypesResponse>
+
 export const ComplexTypesResponse = ModelWithString.array()
+
+export type DictionaryWithArray = z.infer<typeof DictionaryWithArray>
 
 export const DictionaryWithArray = z.record(ModelWithString.array().optional()).describe('This is a complex dictionary')
 
+export type Hey = z.infer<typeof Hey>
+
 export const Hey = z.string().describe('Model with number-only name')
+
+export type Import = z.infer<typeof Import>
 
 export const Import = z.string().describe('Model with restricted keyword name')
 
+export type ImportRequest = z.infer<typeof ImportRequest>
+
 export const ImportRequest = z.union([ModelWithReadOnlyAndWriteOnly, ModelWithArrayReadOnlyAndWriteOnly])
+
+export type ModelFromZendesk = z.infer<typeof ModelFromZendesk>
 
 export const ModelFromZendesk = z
     .string()
     .describe(
         '`Comment` or `VoiceComment`. The JSON object for adding voice comments to tickets is different. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets)',
     )
+
+export type ModelThatExtendsExtends = z.infer<typeof ModelThatExtendsExtends>
 
 export const ModelThatExtendsExtends = z
     .object({})
@@ -144,6 +178,8 @@ export const ModelThatExtendsExtends = z
         }),
     )
     .describe('This is a model that extends another model')
+
+export type ModelWithOneOfEnum = z.infer<typeof ModelWithOneOfEnum>
 
 export const ModelWithOneOfEnum = z.union([
     z.object({
@@ -165,91 +201,55 @@ export const ModelWithOneOfEnum = z.union([
     }),
 ])
 
+export type ModelWithStringError = z.infer<typeof ModelWithStringError>
+
 export const ModelWithStringError = z
     .object({
         prop: z.string().describe('This is a simple string property').optional(),
     })
     .describe('This is a model with one string property')
 
+export type MultipartRequestRequest = z.infer<typeof MultipartRequestRequest>
+
 export const MultipartRequestRequest = z.object({
     content: z.string().optional(),
     data: ModelWithString.nullable().optional(),
 })
 
+export type NonAsciiResponse = z.infer<typeof NonAsciiResponse>
+
 export const NonAsciiResponse = NonAsciiString.array()
 
+export type OperationApiSimpleResponse200 = z.infer<typeof OperationApiSimpleResponse200>
+
 export const OperationApiSimpleResponse200 = z.number()
+
+export type PostCallWithOptionalParamRequest = z.infer<typeof PostCallWithOptionalParamRequest>
 
 export const PostCallWithOptionalParamRequest = z.object({
     offset: z.number().nullable().optional(),
 })
 
-export const PostCallWithOptionalParamResponse200 = z.number()
-
-export const TypesResponse200 = z.number()
-
-export const TypesResponse201 = z.string()
-
-export const TypesResponse202 = z.boolean()
-
-export const TypesResponse203 = z.object({})
-
-export const UploadFileResponse = z.boolean()
-
-export type ArrayWithStrings = z.infer<typeof ArrayWithStrings>
-
-export type CallWithDuplicateResponsesResponse200 = z.infer<typeof CallWithDuplicateResponsesResponse200>
-
-export type CallWithParametersRequest = z.infer<typeof CallWithParametersRequest>
-
-export type CallWithResponseAndNoContentResponseResponse200 = z.infer<typeof CallWithResponseAndNoContentResponseResponse200>
-
-export type CallWithResponsesResponse200 = z.infer<typeof CallWithResponsesResponse200>
-
-export type ComplexParamsRequest = z.infer<typeof ComplexParamsRequest>
-
-export type ComplexTypesResponse = z.infer<typeof ComplexTypesResponse>
-
-export type DictionaryWithArray = z.infer<typeof DictionaryWithArray>
-
-export type Hey = z.infer<typeof Hey>
-
-export type Import = z.infer<typeof Import>
-
-export type ImportRequest = z.infer<typeof ImportRequest>
-
-export type ModelFromZendesk = z.infer<typeof ModelFromZendesk>
-
-export type ModelThatExtends = z.infer<typeof ModelThatExtends>
-
-export type ModelThatExtendsExtends = z.infer<typeof ModelThatExtendsExtends>
-
-export type ModelWithBoolean = z.infer<typeof ModelWithBoolean>
-
-export type ModelWithOneOfEnum = z.infer<typeof ModelWithOneOfEnum>
-
-export type ModelWithReadOnlyAndWriteOnly = z.infer<typeof ModelWithReadOnlyAndWriteOnly>
-
-export type ModelWithString = z.infer<typeof ModelWithString>
-
-export type ModelWithStringError = z.infer<typeof ModelWithStringError>
-
-export type MultipartRequestRequest = z.infer<typeof MultipartRequestRequest>
-
-export type NonAsciiResponse = z.infer<typeof NonAsciiResponse>
-
-export type OperationApiSimpleResponse200 = z.infer<typeof OperationApiSimpleResponse200>
-
-export type PostCallWithOptionalParamRequest = z.infer<typeof PostCallWithOptionalParamRequest>
-
 export type PostCallWithOptionalParamResponse200 = z.infer<typeof PostCallWithOptionalParamResponse200>
+
+export const PostCallWithOptionalParamResponse200 = z.number()
 
 export type TypesResponse200 = z.infer<typeof TypesResponse200>
 
+export const TypesResponse200 = z.number()
+
 export type TypesResponse201 = z.infer<typeof TypesResponse201>
+
+export const TypesResponse201 = z.string()
 
 export type TypesResponse202 = z.infer<typeof TypesResponse202>
 
+export const TypesResponse202 = z.boolean()
+
 export type TypesResponse203 = z.infer<typeof TypesResponse203>
 
+export const TypesResponse203 = z.object({})
+
 export type UploadFileResponse = z.infer<typeof UploadFileResponse>
+
+export const UploadFileResponse = z.boolean()

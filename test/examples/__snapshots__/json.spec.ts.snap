@@ -15,10 +15,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as JsonAdvValidator } from './schemas/json-adv.schema.js'
 import { validate as JsonValidator } from './schemas/json.schema.js'
 
-export type Json = (string | null | boolean | number | {
-    [k: string]: (Json | undefined)
-} | (Json)[])
-
 export const Json = {
     validate: JsonValidator as ValidateFunction<Json>,
     get schema() { return Json.validate.schema},
@@ -34,7 +30,9 @@ export const Json = {
 } as const
 
 
-export type JsonAdv = JsonLocal
+export type Json = (string | null | boolean | number | {
+    [k: string]: (Json | undefined)
+} | (Json)[])
 
 export const JsonAdv = {
     validate: JsonAdvValidator as ValidateFunction<JsonAdv>,
@@ -50,6 +48,8 @@ export const JsonAdv = {
     },
 } as const
 
+
+export type JsonAdv = JsonLocal
 
 type JsonLocal = (string | null | boolean | number | {
     [k: string]: (JsonAdv | undefined)
@@ -98,8 +98,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as SimpleValidator } from './schemas/simple.schema.js'
 
-export type Simple = (number | (Simple)[])
-
 export const Simple = {
     validate: SimpleValidator as ValidateFunction<Simple>,
     get schema() { return Simple.validate.schema},
@@ -114,6 +112,8 @@ export const Simple = {
     },
 } as const
 
+
+export type Simple = (number | (Simple)[])
 
 ",
   },

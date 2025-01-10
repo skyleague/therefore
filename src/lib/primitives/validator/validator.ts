@@ -16,7 +16,7 @@ import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
-import { validatedSymbol } from '../therefore.js'
+import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
 
 export function ajvOptions(node?: Node): Options {
     return structuredClone({
@@ -76,7 +76,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
     public declare infer: T['infer']
     public declare intrinsic: Intrinsic<T>
 
-    public constructor(node: ConstExpr<T>) {
+    protected constructor(node: ConstExpr<T>) {
         super({})
         const evaluatedNode = evaluate(node)
 
@@ -92,6 +92,8 @@ export class ValidatorType<T extends Node = Node> extends Node {
         this._connections = [evaluatedNode]
         this._attributes.validator = this._children[0]._attributes.validator
         this._attributes.isGenerated = this._children[0]._attributes.isGenerated
+
+        evaluatedNode._attributes.validatorType = this
     }
 
     public override _hooks: Partial<Hooks> = {
@@ -113,7 +115,15 @@ export class ValidatorType<T extends Node = Node> extends Node {
     }
 
     public static _root(symbol: Node) {
-        return symbol._definition._validator !== undefined && !(validatedSymbol in symbol) ? new ValidatorType(symbol) : symbol
+        if (symbol._attributes.validatorType !== undefined) {
+            return symbol
+        }
+        if (symbol._type === 'validator') {
+            return symbol
+        }
+        return symbol._definition._validator !== undefined || (symbol._attributes.validator === 'zod' && symbol._isRecurrent)
+            ? new ValidatorType(symbol)
+            : symbol
     }
 
     public override get _output(): (TypescriptOutput | GenericOutput)[] {
@@ -303,20 +313,46 @@ export class ValidatorType<T extends Node = Node> extends Node {
             {
                 type: 'typescript',
                 subtype: 'zod',
-                isTypeOnly: true,
-                // isGenerated: () => false,
+                isTypeOnly: false,
                 enabled: (node) =>
                     (node._attributes.isGenerated && node._attributes.validator === 'zod') ||
                     (!constants.generateInterop &&
                         constants.migrateToValidator === 'zod' &&
                         node._attributes.validator === undefined),
-                definition: (_, context) => {
+                definition: (symbol, context) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
                     const symbolName = context.references.reference(child, 'symbolName')
                     this._attributes.typescript.symbolName = symbolName
                     this._attributes.typescript.referenceName = context.reference(this)
-                    return `export type ${symbolName} = z.infer<typeof ${symbolName}>`
+
+                    const writer = createWriter()
+                    if (child._isRecurrent) {
+                        const typeContext = buildTypescriptZodTypeContext({
+                            symbol,
+                            exportSymbol: true,
+                            references: context.references,
+                            locals: context.locals,
+                        })
+                        writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
+                    } else {
+                        writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                    }
+
+                    if (child._attributes.validator === 'zod') {
+                        if (child._isRecurrent) {
+                            writer
+                                .write(
+                                    `${context.declare('const', child)}: ${context.reference(zodSymbols.ZodType())}<${context.reference(child)}> = `,
+                                )
+                                // .write('z.lazy(() => ')
+                                .write(context.render(child))
+                            // .write(')')
+                        } else {
+                            // writer.write(`${context.declare('const', child)} = `).write(context.render(child))
+                        }
+                    }
+                    return writer.toString()
                 },
             },
             {

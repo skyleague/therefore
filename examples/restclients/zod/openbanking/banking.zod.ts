@@ -29,7 +29,11 @@ export const OBError1 = z.object({
         .optional(),
 })
 
+export type File = z.infer<typeof File>
+
 export const File = z.object({})
+
+export type OBErrorResponse1 = z.infer<typeof OBErrorResponse1>
 
 export const OBErrorResponse1 = z
     .object({
@@ -48,7 +52,3 @@ export const OBErrorResponse1 = z
             .describe(`Brief Error message, e.g., 'There is something wrong with the request parameters provided'`),
     })
     .describe('An array of detail error codes, and messages, and URLs to documentation to help remediation.')
-
-export type File = z.infer<typeof File>
-
-export type OBErrorResponse1 = z.infer<typeof OBErrorResponse1>

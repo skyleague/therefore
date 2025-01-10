@@ -15,16 +15,6 @@ export interface Attributes {
 
 export type Email = string
 
-export type MyUnion =
-    | {
-          status: 'success'
-          data: string
-      }
-    | {
-          status: 'failed'
-          error: unknown
-      }
-
 export const MyUnion = {
     validate: MyUnionValidator as ValidateFunction<MyUnion>,
     get schema() {
@@ -41,6 +31,16 @@ export const MyUnion = {
         return { left: (MyUnion.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export type MyUnion =
+    | {
+          status: 'success'
+          data: string
+      }
+    | {
+          status: 'failed'
+          error: unknown
+      }
 
 export type Users = ValidatedUser[]
 

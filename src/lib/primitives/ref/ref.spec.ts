@@ -51,6 +51,7 @@ it('expand', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           RecordType {
@@ -59,6 +60,7 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               StringType {
@@ -67,12 +69,14 @@ it('expand', () => {
                   "isGenerated": true,
                   "typescript": {},
                   "validator": undefined,
+                  "validatorType": undefined,
                 },
                 "_definition": {},
                 "_id": "1",
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
+                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -81,6 +85,7 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "object",
             "element": StringType {
               "_attributes": {
@@ -88,12 +93,14 @@ it('expand', () => {
                 "isGenerated": true,
                 "typescript": {},
                 "validator": undefined,
+                "validatorType": undefined,
               },
               "_definition": {},
               "_id": "1",
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
+              "_recurrentCache": undefined,
               "_type": "string",
             },
             "shape": {},
@@ -112,6 +119,7 @@ it('expand', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "ref",
       }
     `)
@@ -126,6 +134,7 @@ it('self reference', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -134,12 +143,14 @@ it('self reference', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "5",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
           NodeTrait {
@@ -148,6 +159,7 @@ it('self reference', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               NodeTrait {
@@ -156,6 +168,7 @@ it('self reference', () => {
                   "isGenerated": true,
                   "typescript": {},
                   "validator": undefined,
+                  "validatorType": undefined,
                 },
                 "_children": [
                   [Function],
@@ -173,6 +186,7 @@ it('self reference', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
+                "_recurrentCache": undefined,
                 "_type": "ref",
               },
             ],
@@ -181,6 +195,7 @@ it('self reference', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
@@ -188,6 +203,7 @@ it('self reference', () => {
                 "isGenerated": true,
                 "typescript": {},
                 "validator": undefined,
+                "validatorType": undefined,
               },
               "_children": [
                 [Function],
@@ -205,6 +221,7 @@ it('self reference', () => {
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
+              "_recurrentCache": undefined,
               "_type": "ref",
             },
           },
@@ -214,6 +231,7 @@ it('self reference', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               [Function],
@@ -231,6 +249,7 @@ it('self reference', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "ref",
           },
         ],
@@ -239,6 +258,7 @@ it('self reference', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)
@@ -254,6 +274,7 @@ it('uuid reference', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -262,12 +283,14 @@ it('uuid reference', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -284,6 +307,7 @@ it('uuid reference', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "ref",
       }
     `)
@@ -298,6 +322,7 @@ it('description ', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -306,12 +331,14 @@ it('description ', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "4",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
           NodeTrait {
@@ -320,6 +347,7 @@ it('description ', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               NodeTrait {
@@ -328,6 +356,7 @@ it('description ', () => {
                   "isGenerated": true,
                   "typescript": {},
                   "validator": undefined,
+                  "validatorType": undefined,
                 },
                 "_children": [
                   [Function],
@@ -348,6 +377,7 @@ it('description ', () => {
                 "_name": "json",
                 "_options": {},
                 "_origin": {},
+                "_recurrentCache": undefined,
                 "_type": "ref",
               },
             ],
@@ -356,6 +386,7 @@ it('description ', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
@@ -363,6 +394,7 @@ it('description ', () => {
                 "isGenerated": true,
                 "typescript": {},
                 "validator": undefined,
+                "validatorType": undefined,
               },
               "_children": [
                 [Function],
@@ -383,6 +415,7 @@ it('description ', () => {
               "_name": "json",
               "_options": {},
               "_origin": {},
+              "_recurrentCache": undefined,
               "_type": "ref",
             },
           },
@@ -392,6 +425,7 @@ it('description ', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)

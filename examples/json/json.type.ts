@@ -9,16 +9,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as JsonAdvValidator } from './schemas/json-adv.schema.js'
 import { validate as JsonValidator } from './schemas/json.schema.js'
 
-export type Json =
-    | string
-    | null
-    | boolean
-    | number
-    | {
-          [k: string]: Json | undefined
-      }
-    | Json[]
-
 export const Json = {
     validate: JsonValidator as ValidateFunction<Json>,
     get schema() {
@@ -36,7 +26,15 @@ export const Json = {
     },
 } as const
 
-export type JsonAdv = JsonLocal
+export type Json =
+    | string
+    | null
+    | boolean
+    | number
+    | {
+          [k: string]: Json | undefined
+      }
+    | Json[]
 
 export const JsonAdv = {
     validate: JsonAdvValidator as ValidateFunction<JsonAdv>,
@@ -54,6 +52,8 @@ export const JsonAdv = {
         return { left: (JsonAdv.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export type JsonAdv = JsonLocal
 
 type JsonLocal =
     | string

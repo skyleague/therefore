@@ -138,7 +138,13 @@ export function compileModuleExports(modules: ThereforeModules): ThereforeOutput
 
     const output: ThereforeOutput = {}
     for (const [_, symbols] of Object.entries(modules)) {
+        const handledSymbols = new WeakSet<Node>()
         for (const symbol of symbols) {
+            if (handledSymbols.has(symbol)) {
+                continue
+            }
+            handledSymbols.add(symbol)
+
             const hasSourcePath = (node: Node): node is SourceNode => '_sourcePath' in node
             if (!hasSourcePath(symbol)) {
                 throw new Error('Can only load symbols that have a well defined export path')

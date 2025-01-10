@@ -19,19 +19,19 @@ import type { DefinedTypescriptOutput } from './cst.js'
 import { JSDoc } from './jsdoc.js'
 import { stringLiteral, toLiteral } from './literal.js'
 
-export interface TypescriptAjvWalkerContext {
+export interface TypescriptTypeWalkerContext {
     symbol?: Node | undefined
     references: References<'typescript'>
     locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
     exportKeyword: string | undefined
     property: string | undefined
-    render: (node: Node, ctx?: Partial<TypescriptAjvWalkerContext>) => string
+    render: (node: Node, ctx?: Partial<TypescriptTypeWalkerContext>) => string
     declare: (declType: string, node: Node) => string
     reference: (node: Node) => string
     value: (node: Node) => string
 }
 
-export function buildTypescriptAjvContext({
+export function buildTypescriptTypeContext({
     symbol,
     references = new References('typescript'),
     locals = [],
@@ -41,19 +41,19 @@ export function buildTypescriptAjvContext({
     references?: References<'typescript'> | undefined
     locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][] | undefined
     exportSymbol: boolean
-}): TypescriptAjvWalkerContext {
-    const context: TypescriptAjvWalkerContext = {
+}): TypescriptTypeWalkerContext {
+    const context: TypescriptTypeWalkerContext = {
         symbol,
         references,
         locals,
         exportKeyword: exportSymbol ? 'export ' : '',
         property: undefined,
-        render: (node, ctx: Partial<TypescriptAjvWalkerContext> = {}) =>
-            walkTherefore(node, typescriptAjvVisitor, { ...context, ...ctx }),
-        declare: (declType: string, node) => asAjvDeclaration(declType, node, { exportSymbol, references }),
+        render: (node, ctx: Partial<TypescriptTypeWalkerContext> = {}) =>
+            walkTherefore(node, typescriptTypeVisitor, { ...context, ...ctx }),
+        declare: (declType: string, node) => asTypeDeclaration(declType, node, { exportSymbol, references }),
         reference: (node) => references.reference(node, 'referenceName'),
         value: (node) => references.reference(node, 'referenceName', { tag: 'value' }),
-    } satisfies TypescriptAjvWalkerContext
+    } satisfies TypescriptTypeWalkerContext
     return context
 }
 
@@ -111,7 +111,7 @@ const isSmall = (t: Node) => {
     return false
 }
 
-export const toMaybePrimitive = (node: OptionalType | NullableType, context: TypescriptAjvWalkerContext) => {
+export const toMaybePrimitive = (node: OptionalType | NullableType, context: TypescriptTypeWalkerContext) => {
     let field: Node = node
     while (field instanceof OptionalType || field instanceof NullableType) {
         field = field.unwrap()
@@ -136,7 +136,7 @@ export const toMaybePrimitive = (node: OptionalType | NullableType, context: Typ
     return type
 }
 
-export const typescriptAjvVisitor: ThereforeVisitor<string, TypescriptAjvWalkerContext> = {
+export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalkerContext> = {
     optional: (node, context) => {
         return toMaybePrimitive(node, context)
     },
@@ -298,7 +298,7 @@ export const typescriptAjvVisitor: ThereforeVisitor<string, TypescriptAjvWalkerC
     },
 }
 
-export function asAjvDeclaration(
+export function asTypeDeclaration(
     declType: string,
     obj: Node,
     { exportSymbol, references }: { exportSymbol: boolean; references: References<'typescript'> },

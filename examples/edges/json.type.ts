@@ -9,10 +9,6 @@ import type { DefinedError } from 'ajv'
 
 import ValidatorSchema from './schemas/validator.schema.json' with { type: 'json' }
 
-export interface Validator {
-    foo: string
-}
-
 export const Validator = {
     validate: new Ajv({
         strict: true,
@@ -38,3 +34,7 @@ export const Validator = {
         return { left: (Validator.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Validator {
+    foo: string
+}

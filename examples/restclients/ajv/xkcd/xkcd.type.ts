@@ -9,20 +9,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as ComicValidator } from './schemas/comic.schema.js'
 
-export interface Comic {
-    alt?: string | undefined
-    day?: string | undefined
-    img?: string | undefined
-    link?: string | undefined
-    month?: string | undefined
-    news?: string | undefined
-    num?: number | undefined
-    safe_title?: string | undefined
-    title?: string | undefined
-    transcript?: string | undefined
-    year?: string | undefined
-}
-
 export const Comic = {
     validate: ComicValidator as ValidateFunction<Comic>,
     get schema() {
@@ -44,3 +30,17 @@ export const Comic = {
         return { left: (Comic.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Comic {
+    alt?: string | undefined
+    day?: string | undefined
+    img?: string | undefined
+    link?: string | undefined
+    month?: string | undefined
+    news?: string | undefined
+    num?: number | undefined
+    safe_title?: string | undefined
+    title?: string | undefined
+    transcript?: string | undefined
+    year?: string | undefined
+}

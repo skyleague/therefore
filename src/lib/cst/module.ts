@@ -73,6 +73,7 @@ export const zodSymbols = {
     z: moduleSymbol('zod', 'z'),
     SafeParseReturnType: moduleSymbol('zod', 'SafeParseReturnType'),
     ZodError: moduleSymbol('zod', 'ZodError'),
+    ZodType: moduleSymbol('zod', 'ZodType'),
 }
 
 export const httpSymbols = {

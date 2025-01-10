@@ -4,7 +4,7 @@ import type { ThereforeOutputType } from '../../commands/generate/output/types.j
 import type { JsonAnnotations } from '../../json.js'
 import type { ValidatorOptions } from '../primitives/validator/validator.js'
 import type { DefinedTypescriptOutput } from '../visitor/typescript/cst.js'
-import type { TypescriptAjvWalkerContext } from '../visitor/typescript/typescript-ajv.js'
+import type { TypescriptTypeWalkerContext } from '../visitor/typescript/typescript-type.js'
 import type { Node, SourceNode } from './node.js'
 
 export type ThereforeExpr = Node | (() => Node)
@@ -23,8 +23,8 @@ export interface TypescriptOutput extends ThereforeOutputFile {
         references?: References<'typescript'>
         locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
         exportSymbol: boolean
-    }) => TypescriptAjvWalkerContext
-    definition?: (node: Node, context: TypescriptAjvWalkerContext) => string | undefined
+    }) => TypescriptTypeWalkerContext
+    definition?: (node: Node, context: TypescriptTypeWalkerContext) => string | undefined
     isGenerated?: (node: Node) => boolean
     subtype: 'zod' | 'ajv' | undefined
     isTypeOnly: boolean

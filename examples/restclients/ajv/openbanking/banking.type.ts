@@ -9,8 +9,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as FileValidator } from './schemas/file.schema.js'
 import { validate as OBErrorResponse1Validator } from './schemas/ob-error-response1.schema.js'
 
-export interface File {}
-
 export const File = {
     validate: FileValidator as ValidateFunction<File>,
     get schema() {
@@ -27,6 +25,8 @@ export const File = {
         return { left: (File.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface File {}
 
 export interface OBError1 {
     /**
@@ -48,6 +48,23 @@ export interface OBError1 {
     Url?: string | undefined
 }
 
+export const OBErrorResponse1 = {
+    validate: OBErrorResponse1Validator as ValidateFunction<OBErrorResponse1>,
+    get schema() {
+        return OBErrorResponse1.validate.schema
+    },
+    get errors() {
+        return OBErrorResponse1.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is OBErrorResponse1 => OBErrorResponse1.validate(o) === true,
+    parse: (o: unknown): { right: OBErrorResponse1 } | { left: DefinedError[] } => {
+        if (OBErrorResponse1.is(o)) {
+            return { right: o }
+        }
+        return { left: (OBErrorResponse1.errors ?? []) as DefinedError[] }
+    },
+} as const
+
 /**
  * An array of detail error codes, and messages, and URLs to documentation to help remediation.
  */
@@ -66,20 +83,3 @@ export interface OBErrorResponse1 {
      */
     Message: string
 }
-
-export const OBErrorResponse1 = {
-    validate: OBErrorResponse1Validator as ValidateFunction<OBErrorResponse1>,
-    get schema() {
-        return OBErrorResponse1.validate.schema
-    },
-    get errors() {
-        return OBErrorResponse1.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is OBErrorResponse1 => OBErrorResponse1.validate(o) === true,
-    parse: (o: unknown): { right: OBErrorResponse1 } | { left: DefinedError[] } => {
-        if (OBErrorResponse1.is(o)) {
-            return { right: o }
-        }
-        return { left: (OBErrorResponse1.errors ?? []) as DefinedError[] }
-    },
-} as const

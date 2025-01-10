@@ -14,17 +14,6 @@ import { validate as PersonValidator } from './schemas/person.schema.js'
 import { validate as SalesPersonValidator } from './schemas/sales-person.schema.js'
 import { validate as SelfReferenceValidator } from './schemas/self-reference.schema.js'
 
-export interface Defaults {
-    /**
-     * @default 42
-     */
-    int?: number | undefined
-    /**
-     * @default 'foobar'
-     */
-    str?: string | undefined
-}
-
 export const Defaults = {
     validate: DefaultsValidator as ValidateFunction<Defaults>,
     get schema() {
@@ -47,8 +36,15 @@ export const Defaults = {
     },
 } as const
 
-export interface Keyword {
-    foo?: [string, string, string, string, ...string[]] | undefined
+export interface Defaults {
+    /**
+     * @default 42
+     */
+    int?: number | undefined
+    /**
+     * @default 'foobar'
+     */
+    str?: string | undefined
 }
 
 export const Keyword = {
@@ -73,8 +69,8 @@ export const Keyword = {
     },
 } as const
 
-export interface Named {
-    foo?: [string, ...string[]] | undefined
+export interface Keyword {
+    foo?: [string, string, string, string, ...string[]] | undefined
 }
 
 export const Named = {
@@ -99,13 +95,8 @@ export const Named = {
     },
 } as const
 
-export interface Person {
-    /**
-     * The person's first name.
-     */
-    firstName: string
-    lastName: string
-    age: number
+export interface Named {
+    foo?: [string, ...string[]] | undefined
 }
 
 export const Person = {
@@ -125,9 +116,14 @@ export const Person = {
     },
 } as const
 
-export type SalesPerson = {
-    sales: number
-} & Person
+export interface Person {
+    /**
+     * The person's first name.
+     */
+    firstName: string
+    lastName: string
+    age: number
+}
 
 export const SalesPerson = {
     validate: SalesPersonValidator as ValidateFunction<SalesPerson>,
@@ -146,10 +142,9 @@ export const SalesPerson = {
     },
 } as const
 
-export interface SelfReference {
-    bar?: SelfReference | undefined
-    foo?: string | undefined
-}
+export type SalesPerson = {
+    sales: number
+} & Person
 
 export const SelfReference = {
     validate: SelfReferenceValidator as ValidateFunction<SelfReference>,
@@ -172,3 +167,8 @@ export const SelfReference = {
         return { left: (SelfReference.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface SelfReference {
+    bar?: SelfReference | undefined
+    foo?: string | undefined
+}

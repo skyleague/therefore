@@ -37,6 +37,7 @@ it('expand', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -45,12 +46,14 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -59,6 +62,7 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)
@@ -72,6 +76,7 @@ it('example', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -80,12 +85,14 @@ it('example', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -100,6 +107,7 @@ it('example', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)
@@ -113,6 +121,7 @@ it('default', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -121,12 +130,14 @@ it('default', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -137,6 +148,7 @@ it('default', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)

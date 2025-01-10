@@ -8,7 +8,7 @@ import type { Node, SourceNode } from '../../../lib/cst/node.js'
 import type { GeneratorHooks } from '../../../lib/primitives/therefore.js'
 import { generateNode, loadNode } from '../../../lib/visitor/prepass/prepass.js'
 import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../../../lib/visitor/typescript/cst.js'
-import type { TypescriptAjvWalkerContext } from '../../../lib/visitor/typescript/typescript-ajv.js'
+import type { TypescriptTypeWalkerContext } from '../../../lib/visitor/typescript/typescript-type.js'
 import { createWriter } from '../../../lib/writer.js'
 import { generatedBy } from '../constants.js'
 import { type Prettier, formatContent } from '../format.js'
@@ -110,7 +110,7 @@ export class TypescriptFileOutput {
         render = false,
     }: {
         symbol: Node
-        context?: TypescriptAjvWalkerContext
+        context?: TypescriptTypeWalkerContext
         render?: boolean
     }) {
         for (const hook of TypescriptFileOutput.hooks.onLoad ?? []) {
@@ -156,7 +156,7 @@ export class TypescriptFileOutput {
         symbol: Node
         output: DefinedTypescriptOutput
         exportSymbol?: boolean
-        context?: TypescriptAjvWalkerContext
+        context?: TypescriptTypeWalkerContext
     }) {
         if (this.seen.has(symbol._id)) {
             return
@@ -371,53 +371,80 @@ export class TypescriptFileOutput {
     }
 
     private sortContentTopologically(): (readonly [Node, string, DefinedTypescriptOutput])[] {
-        // Build in and out graphs
         const inGraph = new Map<string, Set<string>>()
         const outGraph = new Map<string, Set<string>>()
         const allNodes = new Map<string, Node>()
+        const nodeToRoot = new Map<string, string>()
 
-        // Map node IDs to their corresponding output entries
-        const nodeOutputs = new Map<string, DefinedTypescriptOutput>()
-        for (const entry of this.content) {
-            nodeOutputs.set(entry[0]._id, entry[2])
+        // Map content nodes as root nodes
+        const rootNodes = new Set(this.content.map(([node]) => node._id))
+
+        // Track validator relationships
+        const validatorToType = new Map<string, string>()
+
+        // Find validator relationships and combine them
+        for (const [node] of this.content) {
+            if (node._type === 'validator' && node._children?.[0]) {
+                const validatedType = node._children[0]
+                validatorToType.set(node._id, validatedType._id)
+                // If the validated type is also a root, combine them
+                if (rootNodes.has(validatedType._id)) {
+                    rootNodes.delete(node._id)
+                }
+            }
         }
 
-        // Helper to ensure sets exist for a node
-        const initNode = (id: string) => {
-            if (!inGraph.has(id)) {
-                inGraph.set(id, new Set())
-            }
-            if (!outGraph.has(id)) {
-                outGraph.set(id, new Set())
-            }
-            return id
+        // Only initialize root nodes
+        for (const rootId of rootNodes) {
+            inGraph.set(rootId, new Set())
+            outGraph.set(rootId, new Set())
         }
 
-        // Build the graph in a single pass
-        const buildGraph = (node: Node, visited = new Set<string>()) => {
+        const buildGraph = (node: Node, rootId: string | undefined = undefined, visited = new Set<string>()) => {
             if (visited.has(node._id)) {
                 return
             }
             visited.add(node._id)
 
+            // If we hit another root node, create the edge and stop traversing this branch
+            if (rootNodes.has(node._id) && rootId && node._id !== rootId) {
+                // Check if this is a type-only relationship
+                const isTypeOnly = this.content.find(([n]) => n._id === node._id)?.[2].isTypeOnly
+                if (!isTypeOnly) {
+                    // If this is a validator, use its validated type's ID instead
+                    const effectiveNodeId = validatorToType.get(node._id) ?? node._id
+                    // If the target is a validator's type, also add edge to its validator
+                    const validatorId = Array.from(validatorToType.entries()).find(
+                        ([, typeId]) => typeId === effectiveNodeId,
+                    )?.[0]
+
+                    outGraph.get(rootId)?.add(effectiveNodeId)
+                    inGraph.get(effectiveNodeId)?.add(rootId)
+
+                    if (validatorId) {
+                        outGraph.get(effectiveNodeId)?.add(validatorId)
+                        inGraph.get(validatorId)?.add(effectiveNodeId)
+                    }
+                }
+                return
+            }
+
+            // If this is a root node or we don't have a root yet, use this as root
+            const currentRoot = rootNodes.has(node._id) ? node._id : rootId
+            if (currentRoot) {
+                nodeToRoot.set(node._id, currentRoot)
+            }
+
             allNodes.set(node._id, node)
-            initNode(node._id)
 
             if (node._connections) {
                 for (const conn of node._connections) {
-                    initNode(conn._id)
-                    buildGraph(conn, visited)
+                    buildGraph(conn, currentRoot, visited)
                 }
             }
             if (node._children) {
                 for (const conn of node._children) {
-                    initNode(conn._id)
-                    // Add edges in both directions
-                    if (node._id !== conn._id && nodeOutputs.get(conn._id)?.isTypeOnly !== true) {
-                        outGraph.get(node._id)?.add(conn._id)
-                        inGraph.get(conn._id)?.add(node._id)
-                    }
-                    buildGraph(conn, visited)
+                    buildGraph(conn, currentRoot, visited)
                 }
             }
         }
@@ -429,7 +456,7 @@ export class TypescriptFileOutput {
 
         // Kahn's algorithm
         const queue = Array.from(inGraph.entries())
-            .filter(([_, ins]) => ins.size === 0)
+            .filter(([id, ins]) => ins.size === 0 && this.content.some(([node]) => node._id === id))
             .map(([id]) => id)
             .toSorted((a, b) => {
                 const aNode = allNodes.get(a)
@@ -441,6 +468,7 @@ export class TypescriptFileOutput {
             })
 
         const sorted: (readonly [Node, string, DefinedTypescriptOutput])[] = []
+        const processedValidatedTypes = new Set<string>()
 
         while (queue.length > 0) {
             // biome-ignore lint/style/noNonNullAssertion: we know the queue is not empty
@@ -448,11 +476,22 @@ export class TypescriptFileOutput {
             const contentItem = this.content.find(([node]) => node._id === nodeId)
             if (contentItem) {
                 sorted.push(contentItem)
+                // If this was a validated type, add its validator to the queue immediately after
+                const validatorId = Array.from(validatorToType.entries()).find(([, typeId]) => typeId === nodeId)?.[0]
+                if (validatorId) {
+                    processedValidatedTypes.add(nodeId)
+                    queue.unshift(validatorId)
+                }
             }
 
             // Process outgoing edges
             const neighbors = outGraph.get(nodeId) ?? new Set()
             for (const neighbor of neighbors) {
+                // Skip validators if their type hasn't been processed yet
+                // biome-ignore lint/style/noNonNullAssertion: we know the neighbor is a validator
+                if (validatorToType.get(neighbor) && !processedValidatedTypes.has(validatorToType.get(neighbor)!)) {
+                    continue
+                }
                 inGraph.get(neighbor)?.delete(nodeId)
                 if (inGraph.get(neighbor)?.size === 0) {
                     queue.push(neighbor)

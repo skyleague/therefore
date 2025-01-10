@@ -10,10 +10,6 @@ import { validate as DepValidator } from './schemas/dep.schema.js'
 import { validate as HeadersValidator } from './schemas/headers.schema.js'
 import { validate as QueryValidator } from './schemas/query.schema.js'
 
-export interface Dep {
-    authorization: string
-}
-
 export const Dep = {
     validate: DepValidator as ValidateFunction<Dep>,
     get schema() {
@@ -31,7 +27,7 @@ export const Dep = {
     },
 } as const
 
-export interface Headers {
+export interface Dep {
     authorization: string
 }
 
@@ -52,8 +48,8 @@ export const Headers = {
     },
 } as const
 
-export interface Query {
-    limit: number
+export interface Headers {
+    authorization: string
 }
 
 export const Query = {
@@ -72,3 +68,7 @@ export const Query = {
         return { left: (Query.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Query {
+    limit: number
+}

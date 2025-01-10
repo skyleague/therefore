@@ -12,6 +12,7 @@ it('string', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -20,12 +21,14 @@ it('string', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -33,6 +36,7 @@ it('string', () => {
         "_id": "2",
         "_isCommutative": true,
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "optional",
       }
     `)
@@ -46,6 +50,7 @@ it('string expanded', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -54,12 +59,14 @@ it('string expanded', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -67,6 +74,7 @@ it('string expanded', () => {
         "_id": "2",
         "_isCommutative": true,
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "optional",
       }
     `)
