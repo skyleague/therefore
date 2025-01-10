@@ -9,8 +9,6 @@ import type { DefinedError } from 'ajv'
 
 import CombinedSchema from './schemas/combined.schema.json' with { type: 'json' }
 
-export type Combined = Reference1 | Reference2
-
 export const Combined = {
     validate: new Ajv({
         strict: true,
@@ -36,6 +34,8 @@ export const Combined = {
         return { left: (Combined.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export type Combined = Reference1 | Reference2
 
 type Foo2 = string
 

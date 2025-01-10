@@ -266,6 +266,7 @@ it('expand', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           StringType {
@@ -274,12 +275,14 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -288,6 +291,7 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "foo": StringType {
@@ -296,12 +300,14 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         },
@@ -314,6 +320,7 @@ it('expand', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           ObjectType {
@@ -322,6 +329,7 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [],
             "_definition": {},
@@ -329,6 +337,7 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {},
           },
@@ -338,6 +347,7 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "foo": ObjectType {
@@ -346,6 +356,7 @@ it('expand', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [],
             "_definition": {},
@@ -353,6 +364,7 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {},
           },
@@ -369,6 +381,7 @@ it('example', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [],
         "_definition": {
@@ -384,6 +397,7 @@ it('example', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {},
       }
@@ -401,6 +415,7 @@ it('default', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [],
         "_definition": {
@@ -412,6 +427,7 @@ it('default', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {},
       }
@@ -454,6 +470,7 @@ it('complex', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           NodeTrait {
@@ -462,6 +479,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               StringType {
@@ -470,12 +488,14 @@ it('complex', () => {
                   "isGenerated": true,
                   "typescript": {},
                   "validator": undefined,
+                  "validatorType": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
+                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -488,6 +508,7 @@ it('complex', () => {
               "minItems": 1,
             },
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "array",
             "element": StringType {
               "_attributes": {
@@ -495,12 +516,14 @@ it('complex', () => {
                 "isGenerated": true,
                 "typescript": {},
                 "validator": undefined,
+                "validatorType": undefined,
               },
               "_definition": {},
               "_id": "2",
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
+              "_recurrentCache": undefined,
               "_type": "string",
             },
           },
@@ -510,6 +533,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
@@ -518,6 +542,7 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
           BooleanType {
@@ -526,6 +551,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {
               "default": false,
@@ -535,6 +561,7 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -545,6 +572,7 @@ it('complex', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "booleans": BooleanType {
@@ -553,6 +581,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {
               "default": false,
@@ -562,6 +591,7 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "boolean",
           },
           "ids": NodeTrait {
@@ -570,6 +600,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_children": [
               StringType {
@@ -578,12 +609,14 @@ it('complex', () => {
                   "isGenerated": true,
                   "typescript": {},
                   "validator": undefined,
+                  "validatorType": undefined,
                 },
                 "_definition": {},
                 "_id": "2",
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
+                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -596,6 +629,7 @@ it('complex', () => {
               "minItems": 1,
             },
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "array",
             "element": StringType {
               "_attributes": {
@@ -603,12 +637,14 @@ it('complex', () => {
                 "isGenerated": true,
                 "typescript": {},
                 "validator": undefined,
+                "validatorType": undefined,
               },
               "_definition": {},
               "_id": "2",
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
+              "_recurrentCache": undefined,
               "_type": "string",
             },
           },
@@ -618,6 +654,7 @@ it('complex', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {
               "description": "The URL patterns for web pages that are allowed to connect. This does not affect content scripts. If left empty or unspecified, no web pages can connect.",
@@ -626,6 +663,7 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "string",
           },
         },

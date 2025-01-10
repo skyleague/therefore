@@ -17,12 +17,6 @@ import { validate as OrderValidator } from './schemas/order.schema.js'
 import { validate as PetValidator } from './schemas/pet.schema.js'
 import { validate as UserValidator } from './schemas/user.schema.js'
 
-export interface ApiResponse {
-    code?: number | undefined
-    message?: string | undefined
-    type?: string | undefined
-}
-
 export const ApiResponse = {
     validate: ApiResponseValidator as ValidateFunction<ApiResponse>,
     get schema() {
@@ -45,12 +39,16 @@ export const ApiResponse = {
     },
 } as const
 
+export interface ApiResponse {
+    code?: number | undefined
+    message?: string | undefined
+    type?: string | undefined
+}
+
 export interface Category {
     id?: number | undefined
     name?: string | undefined
 }
-
-export type CreateUsersWithListInputRequest = User[]
 
 export const CreateUsersWithListInputRequest = {
     validate: CreateUsersWithListInputRequestValidator as ValidateFunction<CreateUsersWithListInputRequest>,
@@ -74,7 +72,7 @@ export const CreateUsersWithListInputRequest = {
     },
 } as const
 
-export type FindPetsByStatusResponse = Pet[]
+export type CreateUsersWithListInputRequest = User[]
 
 export const FindPetsByStatusResponse = {
     validate: FindPetsByStatusResponseValidator as ValidateFunction<FindPetsByStatusResponse>,
@@ -98,7 +96,7 @@ export const FindPetsByStatusResponse = {
     },
 } as const
 
-export type FindPetsByTagsResponse = Pet[]
+export type FindPetsByStatusResponse = Pet[]
 
 export const FindPetsByTagsResponse = {
     validate: FindPetsByTagsResponseValidator as ValidateFunction<FindPetsByTagsResponse>,
@@ -122,9 +120,7 @@ export const FindPetsByTagsResponse = {
     },
 } as const
 
-export interface GetInventoryResponse {
-    [k: string]: number | undefined
-}
+export type FindPetsByTagsResponse = Pet[]
 
 export const GetInventoryResponse = {
     validate: GetInventoryResponseValidator as ValidateFunction<GetInventoryResponse>,
@@ -148,7 +144,9 @@ export const GetInventoryResponse = {
     },
 } as const
 
-export type LoginUserResponse = string
+export interface GetInventoryResponse {
+    [k: string]: number | undefined
+}
 
 export const LoginUserResponse = {
     validate: LoginUserResponseValidator as ValidateFunction<LoginUserResponse>,
@@ -172,17 +170,7 @@ export const LoginUserResponse = {
     },
 } as const
 
-export interface Order {
-    complete?: boolean | undefined
-    id?: number | undefined
-    petId?: number | undefined
-    quantity?: number | undefined
-    shipDate?: string | undefined
-    /**
-     * Order Status
-     */
-    status?: 'placed' | 'approved' | 'delivered' | undefined
-}
+export type LoginUserResponse = string
 
 export const Order = {
     validate: OrderValidator as ValidateFunction<Order>,
@@ -206,16 +194,16 @@ export const Order = {
     },
 } as const
 
-export interface Pet {
-    category?: Category | undefined
+export interface Order {
+    complete?: boolean | undefined
     id?: number | undefined
-    name: string
-    photoUrls: string[]
+    petId?: number | undefined
+    quantity?: number | undefined
+    shipDate?: string | undefined
     /**
-     * pet status in the store
+     * Order Status
      */
-    status?: 'available' | 'pending' | 'sold' | undefined
-    tags?: Tag[] | undefined
+    status?: 'placed' | 'approved' | 'delivered' | undefined
 }
 
 export const Pet = {
@@ -240,23 +228,21 @@ export const Pet = {
     },
 } as const
 
+export interface Pet {
+    category?: Category | undefined
+    id?: number | undefined
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold' | undefined
+    tags?: Tag[] | undefined
+}
+
 export interface Tag {
     id?: number | undefined
     name?: string | undefined
-}
-
-export interface User {
-    email?: string | undefined
-    firstName?: string | undefined
-    id?: number | undefined
-    lastName?: string | undefined
-    password?: string | undefined
-    phone?: string | undefined
-    username?: string | undefined
-    /**
-     * User Status
-     */
-    userStatus?: number | undefined
 }
 
 export const User = {
@@ -280,3 +266,17 @@ export const User = {
         return { left: (User.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface User {
+    email?: string | undefined
+    firstName?: string | undefined
+    id?: number | undefined
+    lastName?: string | undefined
+    password?: string | undefined
+    phone?: string | undefined
+    username?: string | undefined
+    /**
+     * User Status
+     */
+    userStatus?: number | undefined
+}

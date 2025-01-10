@@ -9,10 +9,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as BarValidator } from './schemas/bar.schema.js'
 import { validate as FooValidator } from './schemas/foo.schema.js'
 
-export interface Bar {
-    bar?: string | undefined
-}
-
 export const Bar = {
     validate: BarValidator as ValidateFunction<Bar>,
     get schema() {
@@ -30,8 +26,8 @@ export const Bar = {
     },
 } as const
 
-export interface Foo {
-    foo?: Bar | undefined
+export interface Bar {
+    bar?: string | undefined
 }
 
 export const Foo = {
@@ -50,3 +46,7 @@ export const Foo = {
         return { left: (Foo.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Foo {
+    foo?: Bar | undefined
+}

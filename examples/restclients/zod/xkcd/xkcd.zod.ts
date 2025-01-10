@@ -6,6 +6,8 @@
 
 import { z } from 'zod'
 
+export type Comic = z.infer<typeof Comic>
+
 export const Comic = z.object({
     alt: z.string().optional(),
     day: z.string().optional(),
@@ -19,5 +21,3 @@ export const Comic = z.object({
     transcript: z.string().optional(),
     year: z.string().optional(),
 })
-
-export type Comic = z.infer<typeof Comic>

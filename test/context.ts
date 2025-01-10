@@ -1,7 +1,7 @@
-import { buildTypescriptAjvContext } from '../src/lib/visitor/typescript/typescript-ajv.js'
+import { buildTypescriptTypeContext } from '../src/lib/visitor/typescript/typescript-type.js'
 
-export const mockTypescriptContext = (options: Partial<Parameters<typeof buildTypescriptAjvContext>[0]> = {}) =>
-    buildTypescriptAjvContext({
+export const mockTypescriptContext = (options: Partial<Parameters<typeof buildTypescriptTypeContext>[0]> = {}) =>
+    buildTypescriptTypeContext({
         exportSymbol: false,
         ...options,
     })

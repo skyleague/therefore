@@ -25,11 +25,6 @@ type Readme = 'none' | string
  */
 type Src = string | string[]
 
-/**
- * Specify the path to the theme that should be used.
- */
-export type Theme = 'default' | 'minimal' | string
-
 export const Theme = {
     validate: ThemeValidator as ValidateFunction<Theme>,
     get schema() {
@@ -44,6 +39,28 @@ export const Theme = {
             return { right: o }
         }
         return { left: (Theme.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * Specify the path to the theme that should be used.
+ */
+export type Theme = 'default' | 'minimal' | string
+
+export const Typedoc = {
+    validate: TypedocValidator as ValidateFunction<Typedoc>,
+    get schema() {
+        return Typedoc.validate.schema
+    },
+    get errors() {
+        return Typedoc.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
+    parse: (o: unknown): { right: Typedoc } | { left: DefinedError[] } => {
+        if (Typedoc.is(o)) {
+            return { right: o }
+        }
+        return { left: (Typedoc.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -202,20 +219,3 @@ export interface Typedoc {
      */
     tsconfig: string
 }
-
-export const Typedoc = {
-    validate: TypedocValidator as ValidateFunction<Typedoc>,
-    get schema() {
-        return Typedoc.validate.schema
-    },
-    get errors() {
-        return Typedoc.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
-    parse: (o: unknown): { right: Typedoc } | { left: DefinedError[] } => {
-        if (Typedoc.is(o)) {
-            return { right: o }
-        }
-        return { left: (Typedoc.errors ?? []) as DefinedError[] }
-    },
-} as const

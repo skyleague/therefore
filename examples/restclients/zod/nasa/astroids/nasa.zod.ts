@@ -16,15 +16,6 @@ export const File = z
 
 export const WorkLocation = z.string().describe('A state/territory where work on this project is performed.')
 
-export const Organization = z
-    .object({
-        acronym: z.string().describe('The acronym of the organization.').optional(),
-        city: z.string().describe('The city in which the organization is located.').optional(),
-        name: z.string().describe('The name of the organization.').optional(),
-        state: z.string().describe('The state in which the organization is located.').optional(),
-    })
-    .describe('A NASA center/facility associated with an project.')
-
 export const ProjectManager = z.string().describe('The name of a Project Manager responsible for management of an project.')
 
 export const ProgramManager = z.string().describe('The name of a Program Manager responsible for management of an project.')
@@ -34,14 +25,6 @@ export const ProgramDirector = z.string().describe('The name of a Program Direct
 export const PrincipalInvestigator = z
     .string()
     .describe('The name of the Principal Investigator who is a lead scientist or engineer for an project.')
-
-export const TechnologyArea = z
-    .object({
-        code: z.string().describe('The code identifier for the Technology Area.').optional(),
-        id: z.number().int().describe('Unique identifier for the Technology Area.').optional(),
-        name: z.string().describe('The name of the Technology Area.').optional(),
-    })
-    .describe('The Technology Area for a given technology that corresponds to the NASA Technology Roadmap.')
 
 export const LibraryItem = z
     .object({
@@ -63,14 +46,35 @@ export const Destination = z
 
 export const CoInvestigator = z.string().describe('The name of an investigator who is a scientist or engineer for an project.')
 
+export const Organization = z
+    .object({
+        acronym: z.string().describe('The acronym of the organization.').optional(),
+        city: z.string().describe('The city in which the organization is located.').optional(),
+        name: z.string().describe('The name of the organization.').optional(),
+        state: z.string().describe('The state in which the organization is located.').optional(),
+    })
+    .describe('A NASA center/facility associated with an project.')
+
 export const CloseoutDocument = z
     .string()
     .describe('Represents a file hyperlink or external hyperlink to a project closeout final report artifact.')
+
+export const TechnologyArea = z
+    .object({
+        code: z.string().describe('The code identifier for the Technology Area.').optional(),
+        id: z.number().int().describe('Unique identifier for the Technology Area.').optional(),
+        name: z.string().describe('The name of the Technology Area.').optional(),
+    })
+    .describe('The Technology Area for a given technology that corresponds to the NASA Technology Roadmap.')
+
+export type GetApiByResponse200 = z.infer<typeof GetApiByResponse200>
 
 export const GetApiByResponse200 = z.object({
     id: z.number().int().optional(),
     lastUpdated: z.string().optional(),
 })
+
+export type Project = z.infer<typeof Project>
 
 export const Project = z
     .object({
@@ -160,7 +164,3 @@ export const Project = z
             .optional(),
     })
     .describe('Top-level TechPort object representing a NASA technology project and its associated data.')
-
-export type GetApiByResponse200 = z.infer<typeof GetApiByResponse200>
-
-export type Project = z.infer<typeof Project>

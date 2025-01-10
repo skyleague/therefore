@@ -14,7 +14,7 @@ import { ajvSymbols, gotSymbols, httpSymbols, kySymbols, zodSymbols } from '../.
 import { Node } from '../../cst/node.js'
 import { JSDoc } from '../../visitor/typescript/jsdoc.js'
 import { asString, objectProperty } from '../../visitor/typescript/literal.js'
-import type { TypescriptAjvWalkerContext } from '../../visitor/typescript/typescript-ajv.js'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
 import { createWriter } from '../../writer.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
 import type { RestClientOptions } from './restclient.js'
@@ -308,7 +308,7 @@ export class RestClientBuilder {
         }
     }
 
-    public definition(node: Node, { declare, reference, value }: TypescriptAjvWalkerContext): string {
+    public definition(node: Node, { declare, reference, value }: TypescriptTypeWalkerContext): string {
         const writer = createWriter()
         const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeadersNode()))
 
@@ -859,8 +859,8 @@ export class RestClientBuilder {
         value,
         writer,
     }: {
-        value: TypescriptAjvWalkerContext['value']
-        reference: TypescriptAjvWalkerContext['reference']
+        value: TypescriptTypeWalkerContext['value']
+        reference: TypescriptTypeWalkerContext['reference']
         writer: CodeBlockWriter
     }) {
         const { prefixUrl, defaultValue } = this.prefixConfiguration
@@ -932,7 +932,7 @@ export class RestClientBuilder {
     public writeAuthenticator({
         reference,
         writer,
-    }: { reference: TypescriptAjvWalkerContext['reference']; writer: CodeBlockWriter }) {
+    }: { reference: TypescriptTypeWalkerContext['reference']; writer: CodeBlockWriter }) {
         const { securities } = this.security({ reference })
         if (securities.length > 0) {
             for (const sec of securities) {
@@ -1264,7 +1264,7 @@ export class RestClientBuilder {
         return { prefixUrl: args.join(' | '), defaultValue: defaultValues.length === 1 ? defaultValues[0] : undefined }
     }
 
-    private _security = ({ reference }: { reference: TypescriptAjvWalkerContext['reference'] }) => {
+    private _security = ({ reference }: { reference: TypescriptTypeWalkerContext['reference'] }) => {
         const securityRequirements = this.openapi.components?.securitySchemes
         const clientType = reference(this._client.type())
         const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
@@ -1311,7 +1311,7 @@ export class RestClientBuilder {
     }
     private _securityCache: ReturnType<RestClientBuilder['_security']> | undefined
 
-    public security({ reference }: { reference: TypescriptAjvWalkerContext['reference'] }) {
+    public security({ reference }: { reference: TypescriptTypeWalkerContext['reference'] }) {
         if (!this._securityCache) {
             this._securityCache = this._security({ reference })
         }

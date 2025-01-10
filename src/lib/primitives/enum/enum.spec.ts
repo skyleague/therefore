@@ -42,6 +42,7 @@ it('values', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -49,6 +50,7 @@ it('values', () => {
         "_isNamed": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "enum",
         "enum": [
           "1",
@@ -73,6 +75,7 @@ it('named', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -80,6 +83,7 @@ it('named', () => {
         "_isNamed": true,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "enum",
         "enum": {
           "foo": "bar",

@@ -89,20 +89,6 @@ import type { DefinedError } from 'ajv'
 
 import ComicSchema from './schemas/comic.schema.json' with { type: "json" }
 
-export interface Comic {
-    alt?: (string | null | undefined)
-    day?: (string | null | undefined)
-    img?: (string | null | undefined)
-    link?: (string | null | undefined)
-    month?: (string | null | undefined)
-    news?: (string | null | undefined)
-    num?: (number | null | undefined)
-    safe_title?: (string | null | undefined)
-    title?: (string | null | undefined)
-    transcript?: (string | null | undefined)
-    year?: (string | null | undefined)
-}
-
 export const Comic = {
     validate: new Ajv({"strict":true,"strictSchema":false,"strictTypes":true,"strictTuples":false,"useDefaults":true,"logger":false,"loopRequired":5,"loopEnum":5,"multipleOfPrecision":4,"code":{"esm":true}}).compile<Comic>(ComicSchema),
     schema: ComicSchema,
@@ -122,6 +108,20 @@ export const Comic = {
     },
 } as const
 
+
+export interface Comic {
+    alt?: (string | null | undefined)
+    day?: (string | null | undefined)
+    img?: (string | null | undefined)
+    link?: (string | null | undefined)
+    month?: (string | null | undefined)
+    news?: (string | null | undefined)
+    num?: (number | null | undefined)
+    safe_title?: (string | null | undefined)
+    title?: (string | null | undefined)
+    transcript?: (string | null | undefined)
+    year?: (string | null | undefined)
+}
 
 ",
     "examples/restclients/ajv/xkcd/nullable/schemas/comic.schema.json": "{
@@ -291,20 +291,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as ComicValidator } from './schemas/comic.schema.js'
 
-export interface Comic {
-    alt?: (string | undefined)
-    day?: (string | undefined)
-    img?: (string | undefined)
-    link?: (string | undefined)
-    month?: (string | undefined)
-    news?: (string | undefined)
-    num?: (number | undefined)
-    safe_title?: (string | undefined)
-    title?: (string | undefined)
-    transcript?: (string | undefined)
-    year?: (string | undefined)
-}
-
 export const Comic = {
     validate: ComicValidator as ValidateFunction<Comic>,
     get schema() { return Comic.validate.schema},
@@ -324,6 +310,20 @@ export const Comic = {
     },
 } as const
 
+
+export interface Comic {
+    alt?: (string | undefined)
+    day?: (string | undefined)
+    img?: (string | undefined)
+    link?: (string | undefined)
+    month?: (string | undefined)
+    news?: (string | undefined)
+    num?: (number | undefined)
+    safe_title?: (string | undefined)
+    title?: (string | undefined)
+    transcript?: (string | undefined)
+    year?: (string | undefined)
+}
 
 ",
   },
@@ -416,6 +416,9 @@ export class XKCDNullable {
 
 import { z } from 'zod'
 
+export type Comic = z.infer<typeof Comic>
+
+
 export const Comic = z.object({
     alt: z.string().nullable().optional(),
     day: z.string().nullable().optional(),
@@ -429,8 +432,6 @@ export const Comic = z.object({
     transcript: z.string().nullable().optional(),
     year: z.string().nullable().optional(),
 })
-
-export type Comic = z.infer<typeof Comic>
 
 ",
     "examples/restclients/zod/xkcd/xkcd.client.ts": "/**
@@ -515,6 +516,9 @@ export class XKCD {
 
 import { z } from 'zod'
 
+export type Comic = z.infer<typeof Comic>
+
+
 export const Comic = z.object({
     alt: z.string().optional(),
     day: z.string().optional(),
@@ -528,8 +532,6 @@ export const Comic = z.object({
     transcript: z.string().optional(),
     year: z.string().optional(),
 })
-
-export type Comic = z.infer<typeof Comic>
 
 ",
   },

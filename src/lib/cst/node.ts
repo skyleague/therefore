@@ -5,7 +5,7 @@ import type { JsonSchema } from '../../json.js'
 import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
 import type { DefaultType } from '../primitives/optional/default.js'
-import type { ValidatorOptions } from '../primitives/validator/validator.js'
+import type { ValidatorOptions, ValidatorType } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
 
@@ -29,6 +29,7 @@ export interface NodeAttributes {
     typescript: TypescriptAttributes
     generic: GenericAttributes
     validator: 'zod' | 'ajv' | undefined
+    validatorType: ValidatorType | undefined
     isGenerated: boolean
 }
 
@@ -59,6 +60,7 @@ export class Node {
         typescript: {} as TypescriptAttributes,
         generic: {} as GenericAttributes,
         validator: undefined,
+        validatorType: undefined,
         isGenerated: !constants.migrate,
     }
 
@@ -117,6 +119,41 @@ export class Node {
 
     public get _validator(): 'zod' | 'ajv' {
         return this._attributes.validator ?? constants.migrateToValidator ?? constants.defaultValidator
+    }
+
+    private _recurrentCache?: boolean
+
+    public get _isRecurrent(): boolean {
+        // Memoize the result since the graph structure won't change after initialization
+        if (this._recurrentCache === undefined) {
+            // Use a DFS with a visited set to detect cycles in the node graph
+            const visited = new Set<Node>()
+            const stack = new Set<Node>()
+
+            const hasRecursion = (node: Node, root: Node): boolean => {
+                if (node === root && stack.has(node)) {
+                    return true
+                }
+                if (visited.has(node)) {
+                    return false
+                }
+
+                visited.add(node)
+                stack.add(node)
+
+                for (const child of node._children ?? []) {
+                    if (hasRecursion(child, root)) {
+                        return true
+                    }
+                }
+
+                stack.delete(node)
+                return false
+            }
+
+            this._recurrentCache = hasRecursion(this, this)
+        }
+        return this._recurrentCache
     }
 
     protected static _clone<T extends Node>(obj: T) {

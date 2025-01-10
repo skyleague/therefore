@@ -6,12 +6,12 @@
 
 import { z } from 'zod'
 
+export type ConvertApiRequest = z.infer<typeof ConvertApiRequest>
+
 export const ConvertApiRequest = z.object({
     url: z.string().optional(),
 })
 
-export const ConvertApiResponse = z.object({})
-
-export type ConvertApiRequest = z.infer<typeof ConvertApiRequest>
-
 export type ConvertApiResponse = z.infer<typeof ConvertApiResponse>
+
+export const ConvertApiResponse = z.object({})

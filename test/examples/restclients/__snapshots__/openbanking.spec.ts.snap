@@ -203,9 +203,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as FileValidator } from './schemas/file.schema.js'
 import { validate as OBErrorResponse1Validator } from './schemas/ob-error-response1.schema.js'
 
-export interface File {
-}
-
 export const File = {
     validate: FileValidator as ValidateFunction<File>,
     get schema() { return File.validate.schema},
@@ -220,6 +217,9 @@ export const File = {
     },
 } as const
 
+
+export interface File {
+}
 
 export interface OBError1 {
     /**
@@ -241,6 +241,21 @@ export interface OBError1 {
     Url?: (string | undefined)
 }
 
+export const OBErrorResponse1 = {
+    validate: OBErrorResponse1Validator as ValidateFunction<OBErrorResponse1>,
+    get schema() { return OBErrorResponse1.validate.schema},
+    get errors() { return OBErrorResponse1.validate.errors ?? undefined },
+    is: (o: unknown): o is OBErrorResponse1 => OBErrorResponse1.validate(o) === true,
+    parse: (o: unknown): { right: OBErrorResponse1 } | { left: DefinedError[] } => 
+    {
+        if(OBErrorResponse1.is(o)) {
+            return { right: o }
+        }
+        return { left: (OBErrorResponse1.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+
 /**
  * An array of detail error codes, and messages, and URLs to documentation to help remediation.
  */
@@ -259,21 +274,6 @@ export interface OBErrorResponse1 {
      */
     Message: string
 }
-
-export const OBErrorResponse1 = {
-    validate: OBErrorResponse1Validator as ValidateFunction<OBErrorResponse1>,
-    get schema() { return OBErrorResponse1.validate.schema},
-    get errors() { return OBErrorResponse1.validate.errors ?? undefined },
-    is: (o: unknown): o is OBErrorResponse1 => OBErrorResponse1.validate(o) === true,
-    parse: (o: unknown): { right: OBErrorResponse1 } | { left: DefinedError[] } => 
-    {
-        if(OBErrorResponse1.is(o)) {
-            return { right: o }
-        }
-        return { left: (OBErrorResponse1.errors ?? []) as DefinedError[] }
-    },
-} as const
-
 
 ",
     "examples/restclients/ajv/openbanking/schemas/file.schema.js": "/* eslint-disable */
@@ -504,8 +504,14 @@ export const OBError1 = z.object({
     Url: z.string().describe('URL to help remediate the problem, or provide more information, or to API Reference, or help etc').optional(),
 })
 
+export type File = z.infer<typeof File>
+
+
 export const File = z.object({
 })
+
+export type OBErrorResponse1 = z.infer<typeof OBErrorResponse1>
+
 
 export const OBErrorResponse1 = z.object({
     Code: z.string().nonempty().max(40).describe('High level textual error code, to help categorize the errors.'),
@@ -513,10 +519,6 @@ export const OBErrorResponse1 = z.object({
     Id: z.string().nonempty().max(40).describe('A unique reference for the error instance, for audit purposes, in case of unknown/unclassified errors.').optional(),
     Message: z.string().nonempty().max(500).describe(\`Brief Error message, e.g., 'There is something wrong with the request parameters provided'\`),
 }).describe('An array of detail error codes, and messages, and URLs to documentation to help remediation.')
-
-export type File = z.infer<typeof File>
-
-export type OBErrorResponse1 = z.infer<typeof OBErrorResponse1>
 
 ",
   },

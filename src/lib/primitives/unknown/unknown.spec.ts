@@ -14,6 +14,7 @@ it('simple', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -22,6 +23,7 @@ it('simple', () => {
           "restrictToJson": false,
         },
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "unknown",
       }
     `)

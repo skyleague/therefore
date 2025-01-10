@@ -5,7 +5,7 @@ import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import type { TypescriptOutput } from '../../cst/cst.js'
 import type { Node } from '../../cst/node.js'
-import { buildTypescriptAjvContext } from './typescript-ajv.js'
+import { buildTypescriptTypeContext } from './typescript-type.js'
 import { buildTypescriptZodContext } from './typescript-zod.js'
 
 const defaultZodOutput = (node: Node) => {
@@ -44,6 +44,9 @@ const defaultZodOutput = (node: Node) => {
             }
         },
         definition: (self, context) => {
+            if (self._isRecurrent) {
+                return undefined
+            }
             return `${context.declare('const', self)} = ${context.render(self)}`
         },
         enabled: (node) => node._validator === 'zod',
@@ -68,7 +71,7 @@ const defaultAjvOutput = (_: Node) => {
             locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
             exportSymbol: boolean
         }) =>
-            buildTypescriptAjvContext({
+            buildTypescriptTypeContext({
                 symbol,
                 exportSymbol,
                 references,

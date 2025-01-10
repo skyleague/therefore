@@ -9,13 +9,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as CreateConnectTokenRequestValidator } from './schemas/create-connect-token-request.schema.js'
 import { validate as CreateConnectTokenResponseValidator } from './schemas/create-connect-token-response.schema.js'
 
-export interface CreateConnectTokenRequest {
-    client_id: string
-    client_secret: string
-    grant_type: 'client_credentials'
-    scope: string
-}
-
 export const CreateConnectTokenRequest = {
     validate: CreateConnectTokenRequestValidator as ValidateFunction<CreateConnectTokenRequest>,
     get schema() {
@@ -33,11 +26,11 @@ export const CreateConnectTokenRequest = {
     },
 } as const
 
-export interface CreateConnectTokenResponse {
-    access_token: string
-    expires_in: number
-    scope?: string | undefined
-    token_type?: 'Bearer' | undefined
+export interface CreateConnectTokenRequest {
+    client_id: string
+    client_secret: string
+    grant_type: 'client_credentials'
+    scope: string
 }
 
 export const CreateConnectTokenResponse = {
@@ -56,3 +49,10 @@ export const CreateConnectTokenResponse = {
         return { left: (CreateConnectTokenResponse.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface CreateConnectTokenResponse {
+    access_token: string
+    expires_in: number
+    scope?: string | undefined
+    token_type?: 'Bearer' | undefined
+}

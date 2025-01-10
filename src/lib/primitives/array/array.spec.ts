@@ -17,6 +17,7 @@ it('simple', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           BooleanType {
@@ -25,12 +26,14 @@ it('simple', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -39,6 +42,7 @@ it('simple', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
@@ -46,12 +50,14 @@ it('simple', () => {
             "isGenerated": true,
             "typescript": {},
             "validator": undefined,
+            "validatorType": undefined,
           },
           "_definition": {},
           "_id": "1",
           "_isCommutative": true,
           "_options": {},
           "_origin": {},
+          "_recurrentCache": undefined,
           "_type": "boolean",
         },
       }
@@ -66,6 +72,7 @@ it('simple unexpanded', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_children": [
           BooleanType {
@@ -74,12 +81,14 @@ it('simple unexpanded', () => {
               "isGenerated": true,
               "typescript": {},
               "validator": undefined,
+              "validatorType": undefined,
             },
             "_definition": {},
             "_id": "2",
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
+            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -88,6 +97,7 @@ it('simple unexpanded', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
@@ -95,12 +105,14 @@ it('simple unexpanded', () => {
             "isGenerated": true,
             "typescript": {},
             "validator": undefined,
+            "validatorType": undefined,
           },
           "_definition": {},
           "_id": "2",
           "_isCommutative": true,
           "_options": {},
           "_origin": {},
+          "_recurrentCache": undefined,
           "_type": "boolean",
         },
       }

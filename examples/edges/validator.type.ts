@@ -8,10 +8,6 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as ValidatorValidator } from './schemas/validator.schema.js'
 
-export interface Validator {
-    foo: string
-}
-
 export const Validator = {
     validate: ValidatorValidator as ValidateFunction<Validator>,
     get schema() {
@@ -28,3 +24,7 @@ export const Validator = {
         return { left: (Validator.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Validator {
+    foo: string
+}

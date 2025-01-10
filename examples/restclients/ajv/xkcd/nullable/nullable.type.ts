@@ -9,20 +9,6 @@ import type { DefinedError } from 'ajv'
 
 import ComicSchema from './schemas/comic.schema.json' with { type: 'json' }
 
-export interface Comic {
-    alt?: string | null | undefined
-    day?: string | null | undefined
-    img?: string | null | undefined
-    link?: string | null | undefined
-    month?: string | null | undefined
-    news?: string | null | undefined
-    num?: number | null | undefined
-    safe_title?: string | null | undefined
-    title?: string | null | undefined
-    transcript?: string | null | undefined
-    year?: string | null | undefined
-}
-
 export const Comic = {
     validate: new Ajv({
         strict: true,
@@ -53,3 +39,17 @@ export const Comic = {
         return { left: (Comic.errors ?? []) as DefinedError[] }
     },
 } as const
+
+export interface Comic {
+    alt?: string | null | undefined
+    day?: string | null | undefined
+    img?: string | null | undefined
+    link?: string | null | undefined
+    month?: string | null | undefined
+    news?: string | null | undefined
+    num?: number | null | undefined
+    safe_title?: string | null | undefined
+    title?: string | null | undefined
+    transcript?: string | null | undefined
+    year?: string | null | undefined
+}

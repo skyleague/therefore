@@ -21,6 +21,7 @@ it('pattern', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -29,6 +30,7 @@ it('pattern', () => {
           "regex": /foo/,
         },
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)
@@ -46,6 +48,7 @@ it('format', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -54,6 +57,7 @@ it('format', () => {
           "format": "date",
         },
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)
@@ -73,6 +77,7 @@ it('all', () => {
           "isGenerated": true,
           "typescript": {},
           "validator": undefined,
+          "validatorType": undefined,
         },
         "_definition": {},
         "_id": "1",
@@ -83,6 +88,7 @@ it('all', () => {
           "regex": /foo/,
         },
         "_origin": {},
+        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)

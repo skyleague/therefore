@@ -4,8 +4,6 @@ import { loadNode } from '../visitor/prepass/prepass.js'
 import { ValidatorType } from './validator/validator.js'
 import type { ZodSchema } from './zod/type.js'
 
-export const validatedSymbol = Symbol('validated')
-
 export interface GeneratorHooks {
     onLoad: ((node: Node) => void)[]
     onExport: ((node: Node) => void)[]
@@ -31,7 +29,7 @@ export class Therefore {
         sourcePath: string
         sourceSymbol: string | undefined
     }) {
-        const root = ValidatorType._root(symbol)
+        const root = ValidatorType._root(loadNode(symbol))
         symbol._sourcePath = sourcePath
         root._sourcePath = sourcePath
         if (sourceSymbol !== undefined) {
@@ -50,10 +48,9 @@ export class Therefore {
         }
 
         for (const hook of [...(evaluated._hooks?.onExport ?? []), ...this.generators.flatMap((g) => g.hooks?.onExport ?? [])]) {
-            hook(evaluated)
+            // biome-ignore lint/suspicious/noExplicitAny: type instantiation is too deep here
+            hook(evaluated as any)
         }
-        ;(symbol as unknown as { [validatedSymbol]: boolean })[validatedSymbol] = true
-
         return evaluated
     }
 

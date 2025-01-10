@@ -6,15 +6,21 @@
 
 import { z } from 'zod'
 
+export type AdultContentDetectionRequest = z.infer<typeof AdultContentDetectionRequest>
+
 export const AdultContentDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type CommercialDetectionRequest = z.infer<typeof CommercialDetectionRequest>
+
 export const CommercialDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
+
+export type DocumentSimilarityRequest = z.infer<typeof DocumentSimilarityRequest>
 
 export const DocumentSimilarityRequest = z.object({
     api_key: z.string().describe('Your API Key'),
@@ -22,15 +28,21 @@ export const DocumentSimilarityRequest = z.object({
     original: z.string().describe('The first text. It should not contain HTML tags.').optional(),
 })
 
+export type EducationalDetectionRequest = z.infer<typeof EducationalDetectionRequest>
+
 export const EducationalDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type GenderDetectionRequest = z.infer<typeof GenderDetectionRequest>
+
 export const GenderDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
+
+export type KeywordExtractionRequest = z.infer<typeof KeywordExtractionRequest>
 
 export const KeywordExtractionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
@@ -44,70 +56,58 @@ export const KeywordExtractionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type LanguageDetectionRequest = z.infer<typeof LanguageDetectionRequest>
+
 export const LanguageDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
+
+export type ReadabilityAssessmentRequest = z.infer<typeof ReadabilityAssessmentRequest>
 
 export const ReadabilityAssessmentRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type SentimentAnalysisRequest = z.infer<typeof SentimentAnalysisRequest>
+
 export const SentimentAnalysisRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
+
+export type SpamDetectionRequest = z.infer<typeof SpamDetectionRequest>
 
 export const SpamDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type SubjectivityAnalysisRequest = z.infer<typeof SubjectivityAnalysisRequest>
+
 export const SubjectivityAnalysisRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
+
+export type TextExtractionRequest = z.infer<typeof TextExtractionRequest>
 
 export const TextExtractionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The HTML source of the webpage.').optional(),
 })
 
+export type TopicClassificationRequest = z.infer<typeof TopicClassificationRequest>
+
 export const TopicClassificationRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
+export type TwitterSentimentAnalysisRequest = z.infer<typeof TwitterSentimentAnalysisRequest>
+
 export const TwitterSentimentAnalysisRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text of the tweet that we evaluate.').optional(),
 })
-
-export type AdultContentDetectionRequest = z.infer<typeof AdultContentDetectionRequest>
-
-export type CommercialDetectionRequest = z.infer<typeof CommercialDetectionRequest>
-
-export type DocumentSimilarityRequest = z.infer<typeof DocumentSimilarityRequest>
-
-export type EducationalDetectionRequest = z.infer<typeof EducationalDetectionRequest>
-
-export type GenderDetectionRequest = z.infer<typeof GenderDetectionRequest>
-
-export type KeywordExtractionRequest = z.infer<typeof KeywordExtractionRequest>
-
-export type LanguageDetectionRequest = z.infer<typeof LanguageDetectionRequest>
-
-export type ReadabilityAssessmentRequest = z.infer<typeof ReadabilityAssessmentRequest>
-
-export type SentimentAnalysisRequest = z.infer<typeof SentimentAnalysisRequest>
-
-export type SpamDetectionRequest = z.infer<typeof SpamDetectionRequest>
-
-export type SubjectivityAnalysisRequest = z.infer<typeof SubjectivityAnalysisRequest>
-
-export type TextExtractionRequest = z.infer<typeof TextExtractionRequest>
-
-export type TopicClassificationRequest = z.infer<typeof TopicClassificationRequest>
-
-export type TwitterSentimentAnalysisRequest = z.infer<typeof TwitterSentimentAnalysisRequest>

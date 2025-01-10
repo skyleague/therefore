@@ -7,7 +7,7 @@ import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/
 import { $ref } from '../../primitives/ref/ref.js'
 import { therefore } from '../../primitives/therefore.js'
 
-export function loadNode<T extends Node>(obj: T & { loaded?: true }): T & { loaded?: true } {
+export function loadNode<T extends Node>(obj: T & { _loaded?: true }): T & { _loaded?: true } {
     const seen = new WeakSet()
     const loadedVisitor: ThereforeVisitor<Node> = {
         default: (node) => {
@@ -26,9 +26,9 @@ export function loadNode<T extends Node>(obj: T & { loaded?: true }): T & { load
         },
     }
 
-    if (obj.loaded !== true) {
-        const evaluated: T & { loaded?: true } = walkTherefore(obj, loadedVisitor) as unknown as T & { loaded?: true }
-        evaluated.loaded = true
+    if (obj._loaded !== true) {
+        const evaluated: T & { _loaded?: true } = walkTherefore(obj, loadedVisitor) as unknown as T & { _loaded?: true }
+        evaluated._loaded = true
         return evaluated
     }
     return obj
