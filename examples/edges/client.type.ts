@@ -9,6 +9,12 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as GetEmployeesResponseDefaultValidator } from './schemas/get-employees-response-default.schema.js'
 import { validate as GetEmployeesResponse200Validator } from './schemas/get-employees-response200.schema.js'
 
+export interface GetEmployeesResponse200 {
+    fullTime?: boolean | undefined
+    id?: number | undefined
+    name?: string | undefined
+}
+
 export const GetEmployeesResponse200 = {
     validate: GetEmployeesResponse200Validator as ValidateFunction<GetEmployeesResponse200>,
     get schema() {
@@ -26,7 +32,7 @@ export const GetEmployeesResponse200 = {
     },
 } as const
 
-export interface GetEmployeesResponse200 {
+export interface GetEmployeesResponseDefault {
     fullTime?: boolean | undefined
     id?: number | undefined
     name?: string | undefined
@@ -48,9 +54,3 @@ export const GetEmployeesResponseDefault = {
         return { left: (GetEmployeesResponseDefault.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface GetEmployeesResponseDefault {
-    fullTime?: boolean | undefined
-    id?: number | undefined
-    name?: string | undefined
-}

@@ -21,6 +21,100 @@ import OrderSchema from './schemas/order.schema.json' with { type: 'json' }
 import PetSchema from './schemas/pet.schema.json' with { type: 'json' }
 import UserSchema from './schemas/user.schema.json' with { type: 'json' }
 
+export interface User {
+    email?: string | undefined
+    firstName?: string | undefined
+    id?: number | undefined
+    lastName?: string | undefined
+    password?: string | undefined
+    phone?: string | undefined
+    username?: string | undefined
+    /**
+     * User Status
+     */
+    userStatus?: number | undefined
+}
+
+export const User = {
+    validate: new Ajv({
+        strict: true,
+        strictSchema: false,
+        strictTypes: true,
+        strictTuples: false,
+        useDefaults: true,
+        logger: false,
+        loopRequired: 5,
+        loopEnum: 5,
+        multipleOfPrecision: 4,
+        code: { esm: true },
+    }).compile<User>(UserSchema),
+    schema: UserSchema,
+    get errors() {
+        return User.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is User => User.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!User.validate(o)) {
+            throw new ValidationError(User.errors ?? [])
+        }
+    },
+    parse: (o: unknown): { right: User } | { left: DefinedError[] } => {
+        if (User.is(o)) {
+            return { right: o }
+        }
+        return { left: (User.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface Pet {
+    category?: Category | undefined
+    id?: number | undefined
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold' | undefined
+    tags?: Tag[] | undefined
+}
+
+export const Pet = {
+    validate: new Ajv({
+        strict: true,
+        strictSchema: false,
+        strictTypes: true,
+        strictTuples: false,
+        useDefaults: true,
+        logger: false,
+        loopRequired: 5,
+        loopEnum: 5,
+        multipleOfPrecision: 4,
+        code: { esm: true },
+    }).compile<Pet>(PetSchema),
+    schema: PetSchema,
+    get errors() {
+        return Pet.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Pet => Pet.validate(o) === true,
+    assert: (o: unknown) => {
+        if (!Pet.validate(o)) {
+            throw new ValidationError(Pet.errors ?? [])
+        }
+    },
+    parse: (o: unknown): { right: Pet } | { left: DefinedError[] } => {
+        if (Pet.is(o)) {
+            return { right: o }
+        }
+        return { left: (Pet.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface ApiResponse {
+    code?: number | undefined
+    message?: string | undefined
+    type?: string | undefined
+}
+
 export const ApiResponse = {
     validate: new Ajv({
         strict: true,
@@ -52,16 +146,12 @@ export const ApiResponse = {
     },
 } as const
 
-export interface ApiResponse {
-    code?: number | undefined
-    message?: string | undefined
-    type?: string | undefined
-}
-
 export interface Category {
     id?: number | undefined
     name?: string | undefined
 }
+
+export type CreateUsersWithListInputRequest = User[]
 
 export const CreateUsersWithListInputRequest = {
     validate: new Ajv({
@@ -94,7 +184,7 @@ export const CreateUsersWithListInputRequest = {
     },
 } as const
 
-export type CreateUsersWithListInputRequest = User[]
+export type FindPetsByStatusResponse = Pet[]
 
 export const FindPetsByStatusResponse = {
     validate: new Ajv({
@@ -127,7 +217,7 @@ export const FindPetsByStatusResponse = {
     },
 } as const
 
-export type FindPetsByStatusResponse = Pet[]
+export type FindPetsByTagsResponse = Pet[]
 
 export const FindPetsByTagsResponse = {
     validate: new Ajv({
@@ -160,7 +250,9 @@ export const FindPetsByTagsResponse = {
     },
 } as const
 
-export type FindPetsByTagsResponse = Pet[]
+export interface GetInventoryResponse {
+    [k: string]: number | undefined
+}
 
 export const GetInventoryResponse = {
     validate: new Ajv({
@@ -193,9 +285,7 @@ export const GetInventoryResponse = {
     },
 } as const
 
-export interface GetInventoryResponse {
-    [k: string]: number | undefined
-}
+export type LoginUserResponse = string
 
 export const LoginUserResponse = {
     validate: new Ajv({
@@ -228,7 +318,17 @@ export const LoginUserResponse = {
     },
 } as const
 
-export type LoginUserResponse = string
+export interface Order {
+    complete?: boolean | undefined
+    id?: number | undefined
+    petId?: number | undefined
+    quantity?: number | undefined
+    shipDate?: string | undefined
+    /**
+     * Order Status
+     */
+    status?: 'placed' | 'approved' | 'delivered' | undefined
+}
 
 export const Order = {
     validate: addFormats
@@ -266,107 +366,7 @@ export const Order = {
     },
 } as const
 
-export interface Order {
-    complete?: boolean | undefined
-    id?: number | undefined
-    petId?: number | undefined
-    quantity?: number | undefined
-    shipDate?: string | undefined
-    /**
-     * Order Status
-     */
-    status?: 'placed' | 'approved' | 'delivered' | undefined
-}
-
-export const Pet = {
-    validate: new Ajv({
-        strict: true,
-        strictSchema: false,
-        strictTypes: true,
-        strictTuples: false,
-        useDefaults: true,
-        logger: false,
-        loopRequired: 5,
-        loopEnum: 5,
-        multipleOfPrecision: 4,
-        code: { esm: true },
-    }).compile<Pet>(PetSchema),
-    schema: PetSchema,
-    get errors() {
-        return Pet.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Pet => Pet.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!Pet.validate(o)) {
-            throw new ValidationError(Pet.errors ?? [])
-        }
-    },
-    parse: (o: unknown): { right: Pet } | { left: DefinedError[] } => {
-        if (Pet.is(o)) {
-            return { right: o }
-        }
-        return { left: (Pet.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface Pet {
-    category?: Category | undefined
-    id?: number | undefined
-    name: string
-    photoUrls: string[]
-    /**
-     * pet status in the store
-     */
-    status?: 'available' | 'pending' | 'sold' | undefined
-    tags?: Tag[] | undefined
-}
-
 export interface Tag {
     id?: number | undefined
     name?: string | undefined
-}
-
-export const User = {
-    validate: new Ajv({
-        strict: true,
-        strictSchema: false,
-        strictTypes: true,
-        strictTuples: false,
-        useDefaults: true,
-        logger: false,
-        loopRequired: 5,
-        loopEnum: 5,
-        multipleOfPrecision: 4,
-        code: { esm: true },
-    }).compile<User>(UserSchema),
-    schema: UserSchema,
-    get errors() {
-        return User.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is User => User.validate(o) === true,
-    assert: (o: unknown) => {
-        if (!User.validate(o)) {
-            throw new ValidationError(User.errors ?? [])
-        }
-    },
-    parse: (o: unknown): { right: User } | { left: DefinedError[] } => {
-        if (User.is(o)) {
-            return { right: o }
-        }
-        return { left: (User.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface User {
-    email?: string | undefined
-    firstName?: string | undefined
-    id?: number | undefined
-    lastName?: string | undefined
-    password?: string | undefined
-    phone?: string | undefined
-    username?: string | undefined
-    /**
-     * User Status
-     */
-    userStatus?: number | undefined
 }

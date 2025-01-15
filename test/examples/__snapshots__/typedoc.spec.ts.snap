@@ -32,20 +32,9 @@ import { validate as ThemeValidator } from './schemas/theme.schema.js'
 import { validate as TypedocValidator } from './schemas/typedoc.schema.js'
 
 /**
- * Specify the npm plugins that should be loaded. Omit to load all installed plugins.
+ * Specify the path to the theme that should be used.
  */
-type Plugin = ((string)[])
-
-/**
- * Path to the readme file that should be displayed on the index page. Pass none to disable the index page and start the documentation on the globals page.
- */
-type Readme = ('none' | string)
-
-/**
- * The sources files from which to build documentation.
- * DEPRECATED: Use inputFiles instead.
- */
-type Src = (string | (string)[])
+export type Theme = ('default' | 'minimal' | string)
 
 export const Theme = {
     validate: ThemeValidator as ValidateFunction<Theme>,
@@ -63,24 +52,20 @@ export const Theme = {
 
 
 /**
- * Specify the path to the theme that should be used.
+ * Specify the npm plugins that should be loaded. Omit to load all installed plugins.
  */
-export type Theme = ('default' | 'minimal' | string)
+type Plugin = ((string)[])
 
-export const Typedoc = {
-    validate: TypedocValidator as ValidateFunction<Typedoc>,
-    get schema() { return Typedoc.validate.schema},
-    get errors() { return Typedoc.validate.errors ?? undefined },
-    is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
-    parse: (o: unknown): { right: Typedoc } | { left: DefinedError[] } => 
-    {
-        if(Typedoc.is(o)) {
-            return { right: o }
-        }
-        return { left: (Typedoc.errors ?? []) as DefinedError[] }
-    },
-} as const
+/**
+ * Path to the readme file that should be displayed on the index page. Pass none to disable the index page and start the documentation on the globals page.
+ */
+type Readme = ('none' | string)
 
+/**
+ * The sources files from which to build documentation.
+ * DEPRECATED: Use inputFiles instead.
+ */
+type Src = (string | (string)[])
 
 /**
  * JSON Schema for typedoc.json
@@ -237,6 +222,21 @@ export interface Typedoc {
      */
     tsconfig: string
 }
+
+export const Typedoc = {
+    validate: TypedocValidator as ValidateFunction<Typedoc>,
+    get schema() { return Typedoc.validate.schema},
+    get errors() { return Typedoc.validate.errors ?? undefined },
+    is: (o: unknown): o is Typedoc => Typedoc.validate(o) === true,
+    parse: (o: unknown): { right: Typedoc } | { left: DefinedError[] } => 
+    {
+        if(Typedoc.is(o)) {
+            return { right: o }
+        }
+        return { left: (Typedoc.errors ?? []) as DefinedError[] }
+    },
+} as const
+
 
 ",
   },

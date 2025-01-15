@@ -487,6 +487,17 @@ import { validate as TextExtractionRequestValidator } from './schemas/text-extra
 import { validate as TopicClassificationRequestValidator } from './schemas/topic-classification-request.schema.js'
 import { validate as TwitterSentimentAnalysisRequestValidator } from './schemas/twitter-sentiment-analysis-request.schema.js'
 
+export interface AdultContentDetectionRequest {
+    /**
+     * Your API Key
+     */
+    api_key: string
+    /**
+     * The text that you want to analyze. It should not contain HTML tags.
+     */
+    text?: (string | undefined)
+}
+
 export const AdultContentDetectionRequest = {
     validate: AdultContentDetectionRequestValidator as ValidateFunction<AdultContentDetectionRequest>,
     get schema() { return AdultContentDetectionRequest.validate.schema},
@@ -502,7 +513,7 @@ export const AdultContentDetectionRequest = {
 } as const
 
 
-export interface AdultContentDetectionRequest {
+export interface CommercialDetectionRequest {
     /**
      * Your API Key
      */
@@ -528,15 +539,19 @@ export const CommercialDetectionRequest = {
 } as const
 
 
-export interface CommercialDetectionRequest {
+export interface DocumentSimilarityRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text that you want to analyze. It should not contain HTML tags.
+     * The second text. It should not contain HTML tags.
      */
-    text?: (string | undefined)
+    copy?: (string | undefined)
+    /**
+     * The first text. It should not contain HTML tags.
+     */
+    original?: (string | undefined)
 }
 
 export const DocumentSimilarityRequest = {
@@ -554,19 +569,15 @@ export const DocumentSimilarityRequest = {
 } as const
 
 
-export interface DocumentSimilarityRequest {
+export interface EducationalDetectionRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The second text. It should not contain HTML tags.
+     * The text that you want to analyze. It should not contain HTML tags.
      */
-    copy?: (string | undefined)
-    /**
-     * The first text. It should not contain HTML tags.
-     */
-    original?: (string | undefined)
+    text?: (string | undefined)
 }
 
 export const EducationalDetectionRequest = {
@@ -584,7 +595,7 @@ export const EducationalDetectionRequest = {
 } as const
 
 
-export interface EducationalDetectionRequest {
+export interface GenderDetectionRequest {
     /**
      * Your API Key
      */
@@ -610,11 +621,15 @@ export const GenderDetectionRequest = {
 } as const
 
 
-export interface GenderDetectionRequest {
+export interface KeywordExtractionRequest {
     /**
      * Your API Key
      */
     api_key: string
+    /**
+     * The number of keyword combinations (n-grams) that you wish to extract.
+     */
+    n?: (number | undefined)
     /**
      * The text that you want to analyze. It should not contain HTML tags.
      */
@@ -636,15 +651,11 @@ export const KeywordExtractionRequest = {
 } as const
 
 
-export interface KeywordExtractionRequest {
+export interface LanguageDetectionRequest {
     /**
      * Your API Key
      */
     api_key: string
-    /**
-     * The number of keyword combinations (n-grams) that you wish to extract.
-     */
-    n?: (number | undefined)
     /**
      * The text that you want to analyze. It should not contain HTML tags.
      */
@@ -666,7 +677,7 @@ export const LanguageDetectionRequest = {
 } as const
 
 
-export interface LanguageDetectionRequest {
+export interface ReadabilityAssessmentRequest {
     /**
      * Your API Key
      */
@@ -692,7 +703,7 @@ export const ReadabilityAssessmentRequest = {
 } as const
 
 
-export interface ReadabilityAssessmentRequest {
+export interface SentimentAnalysisRequest {
     /**
      * Your API Key
      */
@@ -718,7 +729,7 @@ export const SentimentAnalysisRequest = {
 } as const
 
 
-export interface SentimentAnalysisRequest {
+export interface SpamDetectionRequest {
     /**
      * Your API Key
      */
@@ -744,7 +755,7 @@ export const SpamDetectionRequest = {
 } as const
 
 
-export interface SpamDetectionRequest {
+export interface SubjectivityAnalysisRequest {
     /**
      * Your API Key
      */
@@ -770,13 +781,13 @@ export const SubjectivityAnalysisRequest = {
 } as const
 
 
-export interface SubjectivityAnalysisRequest {
+export interface TextExtractionRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text that you want to analyze. It should not contain HTML tags.
+     * The HTML source of the webpage.
      */
     text?: (string | undefined)
 }
@@ -796,13 +807,13 @@ export const TextExtractionRequest = {
 } as const
 
 
-export interface TextExtractionRequest {
+export interface TopicClassificationRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The HTML source of the webpage.
+     * The text that you want to analyze. It should not contain HTML tags.
      */
     text?: (string | undefined)
 }
@@ -822,13 +833,13 @@ export const TopicClassificationRequest = {
 } as const
 
 
-export interface TopicClassificationRequest {
+export interface TwitterSentimentAnalysisRequest {
     /**
      * Your API Key
      */
     api_key: string
     /**
-     * The text that you want to analyze. It should not contain HTML tags.
+     * The text of the tweet that we evaluate.
      */
     text?: (string | undefined)
 }
@@ -847,17 +858,6 @@ export const TwitterSentimentAnalysisRequest = {
     },
 } as const
 
-
-export interface TwitterSentimentAnalysisRequest {
-    /**
-     * Your API Key
-     */
-    api_key: string
-    /**
-     * The text of the tweet that we evaluate.
-     */
-    text?: (string | undefined)
-}
 
 ",
     "examples/restclients/ajv/datumbox/schemas/adult-content-detection-request.schema.js": "/* eslint-disable */
@@ -1448,15 +1448,12 @@ export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = \`\${Major}\$
 
 import { z } from 'zod'
 
-export type AdultContentDetectionRequest = z.infer<typeof AdultContentDetectionRequest>
-
-
 export const AdultContentDetectionRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type CommercialDetectionRequest = z.infer<typeof CommercialDetectionRequest>
+export type AdultContentDetectionRequest = z.infer<typeof AdultContentDetectionRequest>
 
 
 export const CommercialDetectionRequest = z.object({
@@ -1464,7 +1461,7 @@ export const CommercialDetectionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type DocumentSimilarityRequest = z.infer<typeof DocumentSimilarityRequest>
+export type CommercialDetectionRequest = z.infer<typeof CommercialDetectionRequest>
 
 
 export const DocumentSimilarityRequest = z.object({
@@ -1473,7 +1470,7 @@ export const DocumentSimilarityRequest = z.object({
     original: z.string().describe('The first text. It should not contain HTML tags.').optional(),
 })
 
-export type EducationalDetectionRequest = z.infer<typeof EducationalDetectionRequest>
+export type DocumentSimilarityRequest = z.infer<typeof DocumentSimilarityRequest>
 
 
 export const EducationalDetectionRequest = z.object({
@@ -1481,7 +1478,7 @@ export const EducationalDetectionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type GenderDetectionRequest = z.infer<typeof GenderDetectionRequest>
+export type EducationalDetectionRequest = z.infer<typeof EducationalDetectionRequest>
 
 
 export const GenderDetectionRequest = z.object({
@@ -1489,7 +1486,7 @@ export const GenderDetectionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type KeywordExtractionRequest = z.infer<typeof KeywordExtractionRequest>
+export type GenderDetectionRequest = z.infer<typeof GenderDetectionRequest>
 
 
 export const KeywordExtractionRequest = z.object({
@@ -1498,7 +1495,7 @@ export const KeywordExtractionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type LanguageDetectionRequest = z.infer<typeof LanguageDetectionRequest>
+export type KeywordExtractionRequest = z.infer<typeof KeywordExtractionRequest>
 
 
 export const LanguageDetectionRequest = z.object({
@@ -1506,7 +1503,7 @@ export const LanguageDetectionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type ReadabilityAssessmentRequest = z.infer<typeof ReadabilityAssessmentRequest>
+export type LanguageDetectionRequest = z.infer<typeof LanguageDetectionRequest>
 
 
 export const ReadabilityAssessmentRequest = z.object({
@@ -1514,7 +1511,7 @@ export const ReadabilityAssessmentRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type SentimentAnalysisRequest = z.infer<typeof SentimentAnalysisRequest>
+export type ReadabilityAssessmentRequest = z.infer<typeof ReadabilityAssessmentRequest>
 
 
 export const SentimentAnalysisRequest = z.object({
@@ -1522,7 +1519,7 @@ export const SentimentAnalysisRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type SpamDetectionRequest = z.infer<typeof SpamDetectionRequest>
+export type SentimentAnalysisRequest = z.infer<typeof SentimentAnalysisRequest>
 
 
 export const SpamDetectionRequest = z.object({
@@ -1530,7 +1527,7 @@ export const SpamDetectionRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type SubjectivityAnalysisRequest = z.infer<typeof SubjectivityAnalysisRequest>
+export type SpamDetectionRequest = z.infer<typeof SpamDetectionRequest>
 
 
 export const SubjectivityAnalysisRequest = z.object({
@@ -1538,7 +1535,7 @@ export const SubjectivityAnalysisRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type TextExtractionRequest = z.infer<typeof TextExtractionRequest>
+export type SubjectivityAnalysisRequest = z.infer<typeof SubjectivityAnalysisRequest>
 
 
 export const TextExtractionRequest = z.object({
@@ -1546,7 +1543,7 @@ export const TextExtractionRequest = z.object({
     text: z.string().describe('The HTML source of the webpage.').optional(),
 })
 
-export type TopicClassificationRequest = z.infer<typeof TopicClassificationRequest>
+export type TextExtractionRequest = z.infer<typeof TextExtractionRequest>
 
 
 export const TopicClassificationRequest = z.object({
@@ -1554,13 +1551,16 @@ export const TopicClassificationRequest = z.object({
     text: z.string().describe('The text that you want to analyze. It should not contain HTML tags.').optional(),
 })
 
-export type TwitterSentimentAnalysisRequest = z.infer<typeof TwitterSentimentAnalysisRequest>
+export type TopicClassificationRequest = z.infer<typeof TopicClassificationRequest>
 
 
 export const TwitterSentimentAnalysisRequest = z.object({
     api_key: z.string().describe('Your API Key'),
     text: z.string().describe('The text of the tweet that we evaluate.').optional(),
 })
+
+export type TwitterSentimentAnalysisRequest = z.infer<typeof TwitterSentimentAnalysisRequest>
+
 
 ",
   },

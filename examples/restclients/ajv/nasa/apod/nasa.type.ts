@@ -8,6 +8,8 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as GetApodResponseValidator } from './schemas/get-apod-response.schema.js'
 
+export type GetApodResponse = unknown[]
+
 export const GetApodResponse = {
     validate: GetApodResponseValidator as ValidateFunction<GetApodResponse>,
     get schema() {
@@ -24,5 +26,3 @@ export const GetApodResponse = {
         return { left: (GetApodResponse.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export type GetApodResponse = unknown[]

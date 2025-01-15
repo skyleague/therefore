@@ -8,6 +8,13 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as ProfileValidator } from './schemas/profile.schema.js'
 
+export interface Profile {
+    /**
+     * @default false
+     */
+    enableTestVariable: boolean
+}
+
 export const Profile = {
     validate: ProfileValidator as ValidateFunction<Profile>,
     get schema() {
@@ -24,10 +31,3 @@ export const Profile = {
         return { left: (Profile.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface Profile {
-    /**
-     * @default false
-     */
-    enableTestVariable: boolean
-}

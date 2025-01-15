@@ -11,6 +11,10 @@ import { validate as RectangleValidator } from './schemas/rectangle.schema.js'
 import { validate as ShapeValidator } from './schemas/shape.schema.js'
 import { validate as SquareValidator } from './schemas/square.schema.js'
 
+export interface Circle {
+    radius: number
+}
+
 export const Circle = {
     validate: CircleValidator as ValidateFunction<Circle>,
     get schema() {
@@ -28,8 +32,9 @@ export const Circle = {
     },
 } as const
 
-export interface Circle {
-    radius: number
+export interface Rectangle {
+    width: number
+    height: number
 }
 
 export const Rectangle = {
@@ -49,29 +54,9 @@ export const Rectangle = {
     },
 } as const
 
-export interface Rectangle {
-    width: number
-    height: number
+export interface Square {
+    size: number
 }
-
-export const Shape = {
-    validate: ShapeValidator as ValidateFunction<Shape>,
-    get schema() {
-        return Shape.validate.schema
-    },
-    get errors() {
-        return Shape.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Shape => Shape.validate(o) === true,
-    parse: (o: unknown): { right: Shape } | { left: DefinedError[] } => {
-        if (Shape.is(o)) {
-            return { right: o }
-        }
-        return { left: (Shape.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export type Shape = Square | Rectangle | Circle
 
 export const Square = {
     validate: SquareValidator as ValidateFunction<Square>,
@@ -90,6 +75,21 @@ export const Square = {
     },
 } as const
 
-export interface Square {
-    size: number
-}
+export type Shape = Square | Rectangle | Circle
+
+export const Shape = {
+    validate: ShapeValidator as ValidateFunction<Shape>,
+    get schema() {
+        return Shape.validate.schema
+    },
+    get errors() {
+        return Shape.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Shape => Shape.validate(o) === true,
+    parse: (o: unknown): { right: Shape } | { left: DefinedError[] } => {
+        if (Shape.is(o)) {
+            return { right: o }
+        }
+        return { left: (Shape.errors ?? []) as DefinedError[] }
+    },
+} as const

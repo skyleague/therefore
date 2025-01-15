@@ -42,6 +42,11 @@ export interface File {
     url?: string | undefined
 }
 
+export interface GetApiByResponse200 {
+    id?: number | undefined
+    lastUpdated?: string | undefined
+}
+
 export const GetApiByResponse200 = {
     validate: GetApiByResponse200Validator as ValidateFunction<GetApiByResponse200>,
     get schema() {
@@ -58,11 +63,6 @@ export const GetApiByResponse200 = {
         return { left: (GetApiByResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface GetApiByResponse200 {
-    id?: number | undefined
-    lastUpdated?: string | undefined
-}
 
 /**
  * Represents a specific library item that is part of this project.
@@ -142,23 +142,6 @@ export type ProgramDirector = string
  * The name of a Program Manager responsible for management of an project.
  */
 export type ProgramManager = string
-
-export const Project = {
-    validate: ProjectValidator as ValidateFunction<Project>,
-    get schema() {
-        return Project.validate.schema
-    },
-    get errors() {
-        return Project.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Project => Project.validate(o) === true,
-    parse: (o: unknown): { right: Project } | { left: DefinedError[] } => {
-        if (Project.is(o)) {
-            return { right: o }
-        }
-        return { left: (Project.errors ?? []) as DefinedError[] }
-    },
-} as const
 
 /**
  * Top-level TechPort object representing a NASA technology project and its associated data.
@@ -286,6 +269,23 @@ export interface Project {
      */
     workLocations?: WorkLocation[] | undefined
 }
+
+export const Project = {
+    validate: ProjectValidator as ValidateFunction<Project>,
+    get schema() {
+        return Project.validate.schema
+    },
+    get errors() {
+        return Project.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Project => Project.validate(o) === true,
+    parse: (o: unknown): { right: Project } | { left: DefinedError[] } => {
+        if (Project.is(o)) {
+            return { right: o }
+        }
+        return { left: (Project.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 /**
  * The name of a Project Manager responsible for management of an project.

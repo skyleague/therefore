@@ -9,6 +9,8 @@ import type { DefinedError } from 'ajv'
 
 import CombinedSchema from './schemas/combined.schema.json' with { type: 'json' }
 
+export type Combined = Reference1 | Reference2
+
 export const Combined = {
     validate: new Ajv({
         strict: true,
@@ -35,15 +37,13 @@ export const Combined = {
     },
 } as const
 
-export type Combined = Reference1 | Reference2
-
 type Foo2 = string
 
 type Foo = string
 
-type Keys2 = Foo2[]
+type Keys2 = Foo[]
 
-type Keys = Foo[]
+type Keys = Foo2[]
 
 /**
  * Loan repayment executed

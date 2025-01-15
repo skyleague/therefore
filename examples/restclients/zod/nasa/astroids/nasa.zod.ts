@@ -67,14 +67,12 @@ export const TechnologyArea = z
     })
     .describe('The Technology Area for a given technology that corresponds to the NASA Technology Roadmap.')
 
-export type GetApiByResponse200 = z.infer<typeof GetApiByResponse200>
-
 export const GetApiByResponse200 = z.object({
     id: z.number().int().optional(),
     lastUpdated: z.string().optional(),
 })
 
-export type Project = z.infer<typeof Project>
+export type GetApiByResponse200 = z.infer<typeof GetApiByResponse200>
 
 export const Project = z
     .object({
@@ -164,3 +162,5 @@ export const Project = z
             .optional(),
     })
     .describe('Top-level TechPort object representing a NASA technology project and its associated data.')
+
+export type Project = z.infer<typeof Project>

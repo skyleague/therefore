@@ -86,23 +86,6 @@ type ContentSecurityPolicy = string
 
 type ExtensionVoicesArrayEventTypesArray = 'start' | 'word' | 'sentence' | 'marker' | 'end' | 'error'
 
-export const Extension = {
-    validate: ExtensionValidator as ValidateFunction<Extension>,
-    get schema() {
-        return Extension.validate.schema
-    },
-    get errors() {
-        return Extension.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Extension => Extension.validate(o) === true,
-    parse: (o: unknown): { right: Extension } | { left: DefinedError[] } => {
-        if (Extension.is(o)) {
-            return { right: o }
-        }
-        return { left: (Extension.errors ?? []) as DefinedError[] }
-    },
-} as const
-
 /**
  * JSON schema for Google Chrome extension manifest files
  */
@@ -415,6 +398,23 @@ export interface Extension {
         system_indicator: unknown
     }
 }
+
+export const Extension = {
+    validate: ExtensionValidator as ValidateFunction<Extension>,
+    get schema() {
+        return Extension.validate.schema
+    },
+    get errors() {
+        return Extension.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Extension => Extension.validate(o) === true,
+    parse: (o: unknown): { right: Extension } | { left: DefinedError[] } => {
+        if (Extension.is(o)) {
+            return { right: o }
+        }
+        return { left: (Extension.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 interface ExtensionFileBrowserHandlersArray {
     /**
