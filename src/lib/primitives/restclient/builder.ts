@@ -1040,9 +1040,7 @@ export class RestClientBuilder {
                             [
                                 'const _form = new FormData()',
                                 `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
-                                '    if (value instanceof Blob || value instanceof File) {',
-                                '        _form.append(key, value)',
-                                '    } else if (value !== null && value !== undefined) {',
+                                '    if (value !== null && value !== undefined) {',
                                 '        _form.append(key, value as string)',
                                 '    }',
                                 '}',
