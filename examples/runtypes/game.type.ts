@@ -43,6 +43,8 @@ export interface Ship {
     crew: CrewMember[]
 }
 
+export type SpaceObject = Asteroid | Planet | Ship
+
 export const SpaceObject = {
     validate: SpaceObjectValidator as ValidateFunction<SpaceObject>,
     get schema() {
@@ -59,7 +61,5 @@ export const SpaceObject = {
         return { left: (SpaceObject.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export type SpaceObject = Asteroid | Planet | Ship
 
 type Vector = [number, number, number]

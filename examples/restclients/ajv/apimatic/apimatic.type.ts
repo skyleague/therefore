@@ -9,6 +9,10 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as ConvertApiRequestValidator } from './schemas/convert-api-request.schema.js'
 import { validate as ConvertApiResponseValidator } from './schemas/convert-api-response.schema.js'
 
+export interface ConvertApiRequest {
+    url?: string | undefined
+}
+
 export const ConvertApiRequest = {
     validate: ConvertApiRequestValidator as ValidateFunction<ConvertApiRequest>,
     get schema() {
@@ -26,9 +30,7 @@ export const ConvertApiRequest = {
     },
 } as const
 
-export interface ConvertApiRequest {
-    url?: string | undefined
-}
+export interface ConvertApiResponse {}
 
 export const ConvertApiResponse = {
     validate: ConvertApiResponseValidator as ValidateFunction<ConvertApiResponse>,
@@ -46,5 +48,3 @@ export const ConvertApiResponse = {
         return { left: (ConvertApiResponse.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface ConvertApiResponse {}

@@ -9,6 +9,13 @@ import type { DefinedError } from 'ajv'
 
 import CartItemSchema from './schemas/cart-item.schema.json' with { type: 'json' }
 
+export interface CartItem {
+    id: string
+    name: string
+    price: number
+    size?: Size | undefined
+}
+
 export const CartItem = {
     validate: new Ajv({
         strict: true,
@@ -34,12 +41,5 @@ export const CartItem = {
         return { left: (CartItem.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface CartItem {
-    id: string
-    name: string
-    price: number
-    size?: Size | undefined
-}
 
 export type Size = 'XS' | 'S' | 'M' | 'L' | 'XL'

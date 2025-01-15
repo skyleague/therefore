@@ -376,62 +376,44 @@ export class TypescriptFileOutput {
         const allNodes = new Map<string, Node>()
         const nodeToRoot = new Map<string, string>()
 
-        // Map content nodes as root nodes
         const rootNodes = new Set(this.content.map(([node]) => node._id))
-
-        // Track validator relationships
         const validatorToType = new Map<string, string>()
+        const validatedToValidator = new Map<string, string>()
 
         // Find validator relationships and combine them
         for (const [node] of this.content) {
             if (node._type === 'validator' && node._children?.[0]) {
                 const validatedType = node._children[0]
                 validatorToType.set(node._id, validatedType._id)
-                // If the validated type is also a root, combine them
+                validatedToValidator.set(validatedType._id, node._id)
+                nodeToRoot.set(validatedType._id, node._id)
                 if (rootNodes.has(validatedType._id)) {
-                    rootNodes.delete(node._id)
+                    rootNodes.delete(validatedType._id)
                 }
             }
         }
 
-        // Only initialize root nodes
+        // Initialize root nodes in graphs
         for (const rootId of rootNodes) {
             inGraph.set(rootId, new Set())
             outGraph.set(rootId, new Set())
         }
 
-        const buildGraph = (node: Node, rootId: string | undefined = undefined, visited = new Set<string>()) => {
+        // Phase 1: Map nodes to their root nodes
+        const mapNodesToRoots = (node: Node, rootId: string | undefined = undefined, visited = new Set<string>()) => {
             if (visited.has(node._id)) {
                 return
             }
             visited.add(node._id)
 
-            // If we hit another root node, create the edge and stop traversing this branch
-            if (rootNodes.has(node._id) && rootId && node._id !== rootId) {
-                // Check if this is a type-only relationship
-                const isTypeOnly = this.content.find(([n]) => n._id === node._id)?.[2].isTypeOnly
-                if (!isTypeOnly) {
-                    // If this is a validator, use its validated type's ID instead
-                    const effectiveNodeId = validatorToType.get(node._id) ?? node._id
-                    // If the target is a validator's type, also add edge to its validator
-                    const validatorId = Array.from(validatorToType.entries()).find(
-                        ([, typeId]) => typeId === effectiveNodeId,
-                    )?.[0]
-
-                    outGraph.get(rootId)?.add(effectiveNodeId)
-                    inGraph.get(effectiveNodeId)?.add(rootId)
-
-                    if (validatorId) {
-                        outGraph.get(effectiveNodeId)?.add(validatorId)
-                        inGraph.get(validatorId)?.add(effectiveNodeId)
-                    }
-                }
+            // If we hit a root node that isn't our starting point, stop traversing
+            if (rootId && rootNodes.has(node._id) && node._id !== rootId) {
                 return
             }
 
-            // If this is a root node or we don't have a root yet, use this as root
-            const currentRoot = rootNodes.has(node._id) ? node._id : rootId
-            if (currentRoot) {
+            const connection = validatedToValidator.get(node._id) ?? node._id
+            const currentRoot = rootNodes.has(connection) ? connection : rootId
+            if (currentRoot && !nodeToRoot.has(node._id)) {
                 nodeToRoot.set(node._id, currentRoot)
             }
 
@@ -439,19 +421,78 @@ export class TypescriptFileOutput {
 
             if (node._connections) {
                 for (const conn of node._connections) {
-                    buildGraph(conn, currentRoot, visited)
+                    if (!rootNodes.has(conn._id)) {
+                        mapNodesToRoots(conn, currentRoot, visited)
+                    }
                 }
             }
             if (node._children) {
-                for (const conn of node._children) {
-                    buildGraph(conn, currentRoot, visited)
+                for (const child of node._children) {
+                    mapNodesToRoots(child, currentRoot, visited)
                 }
             }
         }
 
-        // Build the graph
-        for (const [node] of this.content) {
-            buildGraph(node)
+        // Phase 2: Build dependency graphs between root nodes
+        const buildDependencyGraph = (node: Node, visited = new Set<string>()) => {
+            if (visited.has(node._id)) {
+                return
+            }
+            visited.add(node._id)
+
+            const nodeRootId = nodeToRoot.get(node._id)
+            if (!nodeRootId) {
+                return
+            }
+
+            const processConnection = (conn: Node) => {
+                const connRootId = nodeToRoot.get(conn._id)
+                if (connRootId && connRootId !== nodeRootId) {
+                    const isTypeOnly = this.content.find(([n]) => n._id === connRootId)?.[2].isTypeOnly
+                    if (!isTypeOnly) {
+                        const effectiveNodeId = nodeToRoot.get(connRootId) ?? connRootId
+                        const validatorId = Array.from(validatorToType.entries()).find(
+                            ([, typeId]) => typeId === effectiveNodeId,
+                        )?.[0]
+
+                        outGraph.get(nodeRootId)?.add(effectiveNodeId)
+                        inGraph.get(effectiveNodeId)?.add(nodeRootId)
+
+                        if (validatorId) {
+                            outGraph.get(effectiveNodeId)?.add(validatorId)
+                            inGraph.get(validatorId)?.add(effectiveNodeId)
+                        }
+                    }
+                }
+            }
+
+            if (node._connections) {
+                for (const conn of node._connections) {
+                    processConnection(conn)
+                    buildDependencyGraph(conn, visited)
+                }
+            }
+            if (node._children) {
+                for (const child of node._children) {
+                    processConnection(child)
+                    buildDependencyGraph(child, visited)
+                }
+            }
+        }
+
+        // Execute both phases
+        for (const rootId of rootNodes) {
+            const rootNode = this.content.find(([node]) => node._id === rootId)?.[0]
+            if (rootNode) {
+                mapNodesToRoots(rootNode)
+            }
+        }
+
+        for (const rootId of rootNodes) {
+            const rootNode = this.content.find(([node]) => node._id === rootId)?.[0]
+            if (rootNode) {
+                buildDependencyGraph(rootNode)
+            }
         }
 
         // Kahn's algorithm
@@ -477,7 +518,7 @@ export class TypescriptFileOutput {
             if (contentItem) {
                 sorted.push(contentItem)
                 // If this was a validated type, add its validator to the queue immediately after
-                const validatorId = Array.from(validatorToType.entries()).find(([, typeId]) => typeId === nodeId)?.[0]
+                const validatorId = validatorToType.get(nodeId)
                 if (validatorId) {
                     processedValidatedTypes.add(nodeId)
                     queue.unshift(validatorId)
@@ -489,9 +530,9 @@ export class TypescriptFileOutput {
             for (const neighbor of neighbors) {
                 // Skip validators if their type hasn't been processed yet
                 // biome-ignore lint/style/noNonNullAssertion: we know the neighbor is a validator
-                if (validatorToType.get(neighbor) && !processedValidatedTypes.has(validatorToType.get(neighbor)!)) {
-                    continue
-                }
+                // if (validatorToType.get(neighbor) && !processedValidatedTypes.has(validatorToType.get(neighbor)!)) {
+                //     continue
+                // }
                 inGraph.get(neighbor)?.delete(nodeId)
                 if (inGraph.get(neighbor)?.size === 0) {
                     queue.push(neighbor)
@@ -502,7 +543,7 @@ export class TypescriptFileOutput {
 
         // Check for cycles and handle remaining nodes
         if (sorted.length !== this.content.length) {
-            console.error('Circular dependencies detected in the type definitions')
+            console.error('Circular dependencies detected in the type definitions', this.path)
             const processedIds = new Set(sorted.map(([node]) => node._id))
             const remaining = this.content.filter(([node]) => !processedIds.has(node._id))
             sorted.push(...remaining)

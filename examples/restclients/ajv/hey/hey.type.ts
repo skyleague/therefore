@@ -36,6 +36,115 @@ import { validate as TypesResponse202Validator } from './schemas/types-response2
 import { validate as TypesResponse203Validator } from './schemas/types-response203.schema.js'
 import { validate as UploadFileResponseValidator } from './schemas/upload-file-response.schema.js'
 
+/**
+ * This is a model with one string property
+ */
+export interface ModelWithString {
+    /**
+     * This is a simple string property
+     */
+    prop?: string | undefined
+}
+
+export const ModelWithString = {
+    validate: ModelWithStringValidator as ValidateFunction<ModelWithString>,
+    get schema() {
+        return ModelWithString.validate.schema
+    },
+    get errors() {
+        return ModelWithString.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ModelWithString => ModelWithString.validate(o) === true,
+    parse: (o: unknown): { right: ModelWithString } | { left: DefinedError[] } => {
+        if (ModelWithString.is(o)) {
+            return { right: o }
+        }
+        return { left: (ModelWithString.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * This is a model with one boolean property
+ */
+export interface ModelWithBoolean {
+    /**
+     * This is a simple boolean property
+     */
+    prop?: boolean | undefined
+}
+
+export const ModelWithBoolean = {
+    validate: ModelWithBooleanValidator as ValidateFunction<ModelWithBoolean>,
+    get schema() {
+        return ModelWithBoolean.validate.schema
+    },
+    get errors() {
+        return ModelWithBoolean.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ModelWithBoolean => ModelWithBoolean.validate(o) === true,
+    parse: (o: unknown): { right: ModelWithBoolean } | { left: DefinedError[] } => {
+        if (ModelWithBoolean.is(o)) {
+            return { right: o }
+        }
+        return { left: (ModelWithBoolean.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface ModelWithReadOnlyAndWriteOnly {
+    bar: string
+    baz: string
+    foo: string
+}
+
+export const ModelWithReadOnlyAndWriteOnly = {
+    validate: ModelWithReadOnlyAndWriteOnlyValidator as ValidateFunction<ModelWithReadOnlyAndWriteOnly>,
+    get schema() {
+        return ModelWithReadOnlyAndWriteOnly.validate.schema
+    },
+    get errors() {
+        return ModelWithReadOnlyAndWriteOnly.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ModelWithReadOnlyAndWriteOnly => ModelWithReadOnlyAndWriteOnly.validate(o) === true,
+    parse: (o: unknown): { right: ModelWithReadOnlyAndWriteOnly } | { left: DefinedError[] } => {
+        if (ModelWithReadOnlyAndWriteOnly.is(o)) {
+            return { right: o }
+        }
+        return { left: (ModelWithReadOnlyAndWriteOnly.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * This is a model that extends another model
+ */
+export type ModelThatExtends = {} & ModelWithString & {
+        propExtendsA?: string | undefined
+        propExtendsB?: ModelWithString | undefined
+    }
+
+export const ModelThatExtends = {
+    validate: ModelThatExtendsValidator as ValidateFunction<ModelThatExtends>,
+    get schema() {
+        return ModelThatExtends.validate.schema
+    },
+    get errors() {
+        return ModelThatExtends.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ModelThatExtends => ModelThatExtends.validate(o) === true,
+    parse: (o: unknown): { right: ModelThatExtends } | { left: DefinedError[] } => {
+        if (ModelThatExtends.is(o)) {
+            return { right: o }
+        }
+        return { left: (ModelThatExtends.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
+ * This is a simple array with strings
+ *
+ * @default ['test']
+ */
+export type ArrayWithStrings = string[]
+
 export const ArrayWithStrings = {
     validate: ArrayWithStringsValidator as ValidateFunction<ArrayWithStrings>,
     get schema() {
@@ -53,12 +162,7 @@ export const ArrayWithStrings = {
     },
 } as const
 
-/**
- * This is a simple array with strings
- *
- * @default ['test']
- */
-export type ArrayWithStrings = string[]
+export type CallWithDuplicateResponsesResponse200 = ModelWithBoolean & ModelWithInteger
 
 export const CallWithDuplicateResponsesResponse200 = {
     validate: CallWithDuplicateResponsesResponse200Validator as ValidateFunction<CallWithDuplicateResponsesResponse200>,
@@ -77,7 +181,7 @@ export const CallWithDuplicateResponsesResponse200 = {
     },
 } as const
 
-export type CallWithDuplicateResponsesResponse200 = ModelWithBoolean & ModelWithInteger
+export interface CallWithParametersRequest {}
 
 export const CallWithParametersRequest = {
     validate: CallWithParametersRequestValidator as ValidateFunction<CallWithParametersRequest>,
@@ -96,7 +200,7 @@ export const CallWithParametersRequest = {
     },
 } as const
 
-export interface CallWithParametersRequest {}
+export type CallWithResponseAndNoContentResponseResponse200 = number
 
 export const CallWithResponseAndNoContentResponseResponse200 = {
     validate:
@@ -117,7 +221,11 @@ export const CallWithResponseAndNoContentResponseResponse200 = {
     },
 } as const
 
-export type CallWithResponseAndNoContentResponseResponse200 = number
+export interface CallWithResponsesResponse200 {
+    '@namespace.integer'?: number | undefined
+    '@namespace.string'?: string | undefined
+    value?: ModelWithString[] | undefined
+}
 
 export const CallWithResponsesResponse200 = {
     validate: CallWithResponsesResponse200Validator as ValidateFunction<CallWithResponsesResponse200>,
@@ -133,29 +241,6 @@ export const CallWithResponsesResponse200 = {
             return { right: o }
         }
         return { left: (CallWithResponsesResponse200.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface CallWithResponsesResponse200 {
-    '@namespace.integer'?: number | undefined
-    '@namespace.string'?: string | undefined
-    value?: ModelWithString[] | undefined
-}
-
-export const ComplexParamsRequest = {
-    validate: ComplexParamsRequestValidator as ValidateFunction<ComplexParamsRequest>,
-    get schema() {
-        return ComplexParamsRequest.validate.schema
-    },
-    get errors() {
-        return ComplexParamsRequest.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ComplexParamsRequest => ComplexParamsRequest.validate(o) === true,
-    parse: (o: unknown): { right: ComplexParamsRequest } | { left: DefinedError[] } => {
-        if (ComplexParamsRequest.is(o)) {
-            return { right: o }
-        }
-        return { left: (ComplexParamsRequest.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -178,6 +263,25 @@ export interface ComplexParamsRequest {
         | undefined
 }
 
+export const ComplexParamsRequest = {
+    validate: ComplexParamsRequestValidator as ValidateFunction<ComplexParamsRequest>,
+    get schema() {
+        return ComplexParamsRequest.validate.schema
+    },
+    get errors() {
+        return ComplexParamsRequest.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ComplexParamsRequest => ComplexParamsRequest.validate(o) === true,
+    parse: (o: unknown): { right: ComplexParamsRequest } | { left: DefinedError[] } => {
+        if (ComplexParamsRequest.is(o)) {
+            return { right: o }
+        }
+        return { left: (ComplexParamsRequest.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export type ComplexTypesResponse = ModelWithString[]
+
 export const ComplexTypesResponse = {
     validate: ComplexTypesResponseValidator as ValidateFunction<ComplexTypesResponse>,
     get schema() {
@@ -195,7 +299,12 @@ export const ComplexTypesResponse = {
     },
 } as const
 
-export type ComplexTypesResponse = ModelWithString[]
+/**
+ * This is a complex dictionary
+ */
+export interface DictionaryWithArray {
+    [k: string]: ModelWithString[] | undefined
+}
 
 export const DictionaryWithArray = {
     validate: DictionaryWithArrayValidator as ValidateFunction<DictionaryWithArray>,
@@ -215,11 +324,9 @@ export const DictionaryWithArray = {
 } as const
 
 /**
- * This is a complex dictionary
+ * Model with number-only name
  */
-export interface DictionaryWithArray {
-    [k: string]: ModelWithString[] | undefined
-}
+export type Hey = string
 
 export const Hey = {
     validate: HeyValidator as ValidateFunction<Hey>,
@@ -239,9 +346,9 @@ export const Hey = {
 } as const
 
 /**
- * Model with number-only name
+ * Model with restricted keyword name
  */
-export type Hey = string
+export type Import = string
 
 export const Import = {
     validate: ImportValidator as ValidateFunction<Import>,
@@ -260,10 +367,7 @@ export const Import = {
     },
 } as const
 
-/**
- * Model with restricted keyword name
- */
-export type Import = string
+export type ImportRequest = ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
 
 export const ImportRequest = {
     validate: ImportRequestValidator as ValidateFunction<ImportRequest>,
@@ -282,7 +386,10 @@ export const ImportRequest = {
     },
 } as const
 
-export type ImportRequest = ModelWithReadOnlyAndWriteOnly | ModelWithArrayReadOnlyAndWriteOnly
+/**
+ * `Comment` or `VoiceComment`. The JSON object for adding voice comments to tickets is different. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets)
+ */
+export type ModelFromZendesk = string
 
 export const ModelFromZendesk = {
     validate: ModelFromZendeskValidator as ValidateFunction<ModelFromZendesk>,
@@ -302,33 +409,12 @@ export const ModelFromZendesk = {
 } as const
 
 /**
- * `Comment` or `VoiceComment`. The JSON object for adding voice comments to tickets is different. See [Adding voice comments to tickets](/documentation/ticketing/managing-tickets/adding-voice-comments-to-tickets)
- */
-export type ModelFromZendesk = string
-
-export const ModelThatExtends = {
-    validate: ModelThatExtendsValidator as ValidateFunction<ModelThatExtends>,
-    get schema() {
-        return ModelThatExtends.validate.schema
-    },
-    get errors() {
-        return ModelThatExtends.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ModelThatExtends => ModelThatExtends.validate(o) === true,
-    parse: (o: unknown): { right: ModelThatExtends } | { left: DefinedError[] } => {
-        if (ModelThatExtends.is(o)) {
-            return { right: o }
-        }
-        return { left: (ModelThatExtends.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-/**
  * This is a model that extends another model
  */
-export type ModelThatExtends = {} & ModelWithString & {
-        propExtendsA?: string | undefined
-        propExtendsB?: ModelWithString | undefined
+export type ModelThatExtendsExtends = {} & ModelWithString &
+    ModelThatExtends & {
+        propExtendsC?: string | undefined
+        propExtendsD?: ModelWithString | undefined
     }
 
 export const ModelThatExtendsExtends = {
@@ -349,15 +435,6 @@ export const ModelThatExtendsExtends = {
 } as const
 
 /**
- * This is a model that extends another model
- */
-export type ModelThatExtendsExtends = {} & ModelWithString &
-    ModelThatExtends & {
-        propExtendsC?: string | undefined
-        propExtendsD?: ModelWithString | undefined
-    }
-
-/**
  * This is a model with one property containing an array
  */
 export interface ModelWithArray {
@@ -373,33 +450,6 @@ export interface ModelWithArrayReadOnlyAndWriteOnly {
     prop?: ModelWithReadOnlyAndWriteOnly[] | undefined
     propWithFile?: unknown[] | undefined
     propWithNumber?: number[] | undefined
-}
-
-export const ModelWithBoolean = {
-    validate: ModelWithBooleanValidator as ValidateFunction<ModelWithBoolean>,
-    get schema() {
-        return ModelWithBoolean.validate.schema
-    },
-    get errors() {
-        return ModelWithBoolean.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ModelWithBoolean => ModelWithBoolean.validate(o) === true,
-    parse: (o: unknown): { right: ModelWithBoolean } | { left: DefinedError[] } => {
-        if (ModelWithBoolean.is(o)) {
-            return { right: o }
-        }
-        return { left: (ModelWithBoolean.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-/**
- * This is a model with one boolean property
- */
-export interface ModelWithBoolean {
-    /**
-     * This is a simple boolean property
-     */
-    prop?: boolean | undefined
 }
 
 /**
@@ -441,23 +491,6 @@ export interface ModelWithInteger {
     prop?: number | undefined
 }
 
-export const ModelWithOneOfEnum = {
-    validate: ModelWithOneOfEnumValidator as ValidateFunction<ModelWithOneOfEnum>,
-    get schema() {
-        return ModelWithOneOfEnum.validate.schema
-    },
-    get errors() {
-        return ModelWithOneOfEnum.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ModelWithOneOfEnum => ModelWithOneOfEnum.validate(o) === true,
-    parse: (o: unknown): { right: ModelWithOneOfEnum } | { left: DefinedError[] } => {
-        if (ModelWithOneOfEnum.is(o)) {
-            return { right: o }
-        }
-        return { left: (ModelWithOneOfEnum.errors ?? []) as DefinedError[] }
-    },
-} as const
-
 export type ModelWithOneOfEnum =
     | {
           foo: 'Bar'
@@ -477,50 +510,27 @@ export type ModelWithOneOfEnum =
           foo: 'Corge'
       }
 
-export const ModelWithReadOnlyAndWriteOnly = {
-    validate: ModelWithReadOnlyAndWriteOnlyValidator as ValidateFunction<ModelWithReadOnlyAndWriteOnly>,
+export const ModelWithOneOfEnum = {
+    validate: ModelWithOneOfEnumValidator as ValidateFunction<ModelWithOneOfEnum>,
     get schema() {
-        return ModelWithReadOnlyAndWriteOnly.validate.schema
+        return ModelWithOneOfEnum.validate.schema
     },
     get errors() {
-        return ModelWithReadOnlyAndWriteOnly.validate.errors ?? undefined
+        return ModelWithOneOfEnum.validate.errors ?? undefined
     },
-    is: (o: unknown): o is ModelWithReadOnlyAndWriteOnly => ModelWithReadOnlyAndWriteOnly.validate(o) === true,
-    parse: (o: unknown): { right: ModelWithReadOnlyAndWriteOnly } | { left: DefinedError[] } => {
-        if (ModelWithReadOnlyAndWriteOnly.is(o)) {
+    is: (o: unknown): o is ModelWithOneOfEnum => ModelWithOneOfEnum.validate(o) === true,
+    parse: (o: unknown): { right: ModelWithOneOfEnum } | { left: DefinedError[] } => {
+        if (ModelWithOneOfEnum.is(o)) {
             return { right: o }
         }
-        return { left: (ModelWithReadOnlyAndWriteOnly.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface ModelWithReadOnlyAndWriteOnly {
-    bar: string
-    baz: string
-    foo: string
-}
-
-export const ModelWithString = {
-    validate: ModelWithStringValidator as ValidateFunction<ModelWithString>,
-    get schema() {
-        return ModelWithString.validate.schema
-    },
-    get errors() {
-        return ModelWithString.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ModelWithString => ModelWithString.validate(o) === true,
-    parse: (o: unknown): { right: ModelWithString } | { left: DefinedError[] } => {
-        if (ModelWithString.is(o)) {
-            return { right: o }
-        }
-        return { left: (ModelWithString.errors ?? []) as DefinedError[] }
+        return { left: (ModelWithOneOfEnum.errors ?? []) as DefinedError[] }
     },
 } as const
 
 /**
  * This is a model with one string property
  */
-export interface ModelWithString {
+export interface ModelWithStringError {
     /**
      * This is a simple string property
      */
@@ -544,14 +554,9 @@ export const ModelWithStringError = {
     },
 } as const
 
-/**
- * This is a model with one string property
- */
-export interface ModelWithStringError {
-    /**
-     * This is a simple string property
-     */
-    prop?: string | undefined
+export interface MultipartRequestRequest {
+    content?: string | undefined
+    data?: ModelWithString | null | undefined
 }
 
 export const MultipartRequestRequest = {
@@ -571,10 +576,7 @@ export const MultipartRequestRequest = {
     },
 } as const
 
-export interface MultipartRequestRequest {
-    content?: string | undefined
-    data?: ModelWithString | null | undefined
-}
+export type NonAsciiResponse = NonAsciiString[]
 
 export const NonAsciiResponse = {
     validate: NonAsciiResponseValidator as ValidateFunction<NonAsciiResponse>,
@@ -593,12 +595,12 @@ export const NonAsciiResponse = {
     },
 } as const
 
-export type NonAsciiResponse = NonAsciiString[]
-
 /**
  * A string with non-ascii (unicode) characters valid in typescript identifiers (æøåÆØÅöÔèÈ字符串)
  */
 export type NonAsciiString = string
+
+export type OperationApiSimpleResponse200 = number
 
 export const OperationApiSimpleResponse200 = {
     validate: OperationApiSimpleResponse200Validator as ValidateFunction<OperationApiSimpleResponse200>,
@@ -617,7 +619,9 @@ export const OperationApiSimpleResponse200 = {
     },
 } as const
 
-export type OperationApiSimpleResponse200 = number
+export interface PostCallWithOptionalParamRequest {
+    offset?: number | null | undefined
+}
 
 export const PostCallWithOptionalParamRequest = {
     validate: PostCallWithOptionalParamRequestValidator as ValidateFunction<PostCallWithOptionalParamRequest>,
@@ -636,9 +640,7 @@ export const PostCallWithOptionalParamRequest = {
     },
 } as const
 
-export interface PostCallWithOptionalParamRequest {
-    offset?: number | null | undefined
-}
+export type PostCallWithOptionalParamResponse200 = number
 
 export const PostCallWithOptionalParamResponse200 = {
     validate: PostCallWithOptionalParamResponse200Validator as ValidateFunction<PostCallWithOptionalParamResponse200>,
@@ -657,7 +659,7 @@ export const PostCallWithOptionalParamResponse200 = {
     },
 } as const
 
-export type PostCallWithOptionalParamResponse200 = number
+export type TypesResponse200 = number
 
 export const TypesResponse200 = {
     validate: TypesResponse200Validator as ValidateFunction<TypesResponse200>,
@@ -676,7 +678,7 @@ export const TypesResponse200 = {
     },
 } as const
 
-export type TypesResponse200 = number
+export type TypesResponse201 = string
 
 export const TypesResponse201 = {
     validate: TypesResponse201Validator as ValidateFunction<TypesResponse201>,
@@ -695,7 +697,7 @@ export const TypesResponse201 = {
     },
 } as const
 
-export type TypesResponse201 = string
+export type TypesResponse202 = boolean
 
 export const TypesResponse202 = {
     validate: TypesResponse202Validator as ValidateFunction<TypesResponse202>,
@@ -714,7 +716,7 @@ export const TypesResponse202 = {
     },
 } as const
 
-export type TypesResponse202 = boolean
+export interface TypesResponse203 {}
 
 export const TypesResponse203 = {
     validate: TypesResponse203Validator as ValidateFunction<TypesResponse203>,
@@ -733,7 +735,7 @@ export const TypesResponse203 = {
     },
 } as const
 
-export interface TypesResponse203 {}
+export type UploadFileResponse = boolean
 
 export const UploadFileResponse = {
     validate: UploadFileResponseValidator as ValidateFunction<UploadFileResponse>,
@@ -751,5 +753,3 @@ export const UploadFileResponse = {
         return { left: (UploadFileResponse.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export type UploadFileResponse = boolean

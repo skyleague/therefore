@@ -23,6 +23,6 @@ export const BusinessRelationModel: ZodType<BusinessRelationModel> = z.object({
         .optional(),
 })
 
-export type GetBusinessesResponse = z.infer<typeof GetBusinessesResponse>
-
 export const GetBusinessesResponse = BusinessRelationModel.array()
+
+export type GetBusinessesResponse = z.infer<typeof GetBusinessesResponse>

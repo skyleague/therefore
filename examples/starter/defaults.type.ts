@@ -8,6 +8,13 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as DefaultsValidator } from './schemas/defaults.schema.js'
 
+export interface Defaults {
+    /**
+     * @default false
+     */
+    foo: boolean
+}
+
 export const Defaults = {
     validate: DefaultsValidator as ValidateFunction<Defaults>,
     get schema() {
@@ -24,10 +31,3 @@ export const Defaults = {
         return { left: (Defaults.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface Defaults {
-    /**
-     * @default false
-     */
-    foo: boolean
-}

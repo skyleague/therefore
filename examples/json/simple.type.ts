@@ -8,6 +8,8 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as SimpleValidator } from './schemas/simple.schema.js'
 
+export type Simple = number | Simple[]
+
 export const Simple = {
     validate: SimpleValidator as ValidateFunction<Simple>,
     get schema() {
@@ -24,5 +26,3 @@ export const Simple = {
         return { left: (Simple.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export type Simple = number | Simple[]

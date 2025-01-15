@@ -14,6 +14,43 @@ import { validate as PersonValidator } from './schemas/person.schema.js'
 import { validate as SalesPersonValidator } from './schemas/sales-person.schema.js'
 import { validate as SelfReferenceValidator } from './schemas/self-reference.schema.js'
 
+export interface Person {
+    /**
+     * The person's first name.
+     */
+    firstName: string
+    lastName: string
+    age: number
+}
+
+export const Person = {
+    validate: PersonValidator as ValidateFunction<Person>,
+    get schema() {
+        return Person.validate.schema
+    },
+    get errors() {
+        return Person.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Person => Person.validate(o) === true,
+    parse: (o: unknown): { right: Person } | { left: DefinedError[] } => {
+        if (Person.is(o)) {
+            return { right: o }
+        }
+        return { left: (Person.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface Defaults {
+    /**
+     * @default 42
+     */
+    int?: number | undefined
+    /**
+     * @default 'foobar'
+     */
+    str?: string | undefined
+}
+
 export const Defaults = {
     validate: DefaultsValidator as ValidateFunction<Defaults>,
     get schema() {
@@ -36,15 +73,8 @@ export const Defaults = {
     },
 } as const
 
-export interface Defaults {
-    /**
-     * @default 42
-     */
-    int?: number | undefined
-    /**
-     * @default 'foobar'
-     */
-    str?: string | undefined
+export interface Keyword {
+    foo?: [string, string, string, string, ...string[]] | undefined
 }
 
 export const Keyword = {
@@ -69,8 +99,8 @@ export const Keyword = {
     },
 } as const
 
-export interface Keyword {
-    foo?: [string, string, string, string, ...string[]] | undefined
+export interface Named {
+    foo?: [string, ...string[]] | undefined
 }
 
 export const Named = {
@@ -95,35 +125,9 @@ export const Named = {
     },
 } as const
 
-export interface Named {
-    foo?: [string, ...string[]] | undefined
-}
-
-export const Person = {
-    validate: PersonValidator as ValidateFunction<Person>,
-    get schema() {
-        return Person.validate.schema
-    },
-    get errors() {
-        return Person.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Person => Person.validate(o) === true,
-    parse: (o: unknown): { right: Person } | { left: DefinedError[] } => {
-        if (Person.is(o)) {
-            return { right: o }
-        }
-        return { left: (Person.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface Person {
-    /**
-     * The person's first name.
-     */
-    firstName: string
-    lastName: string
-    age: number
-}
+export type SalesPerson = {
+    sales: number
+} & Person
 
 export const SalesPerson = {
     validate: SalesPersonValidator as ValidateFunction<SalesPerson>,
@@ -142,9 +146,10 @@ export const SalesPerson = {
     },
 } as const
 
-export type SalesPerson = {
-    sales: number
-} & Person
+export interface SelfReference {
+    bar?: SelfReference | undefined
+    foo?: string | undefined
+}
 
 export const SelfReference = {
     validate: SelfReferenceValidator as ValidateFunction<SelfReference>,
@@ -167,8 +172,3 @@ export const SelfReference = {
         return { left: (SelfReference.errors ?? []) as DefinedError[] }
     },
 } as const
-
-export interface SelfReference {
-    bar?: SelfReference | undefined
-    foo?: string | undefined
-}

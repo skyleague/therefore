@@ -216,6 +216,10 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as ConvertApiRequestValidator } from './schemas/convert-api-request.schema.js'
 import { validate as ConvertApiResponseValidator } from './schemas/convert-api-response.schema.js'
 
+export interface ConvertApiRequest {
+    url?: (string | undefined)
+}
+
 export const ConvertApiRequest = {
     validate: ConvertApiRequestValidator as ValidateFunction<ConvertApiRequest>,
     get schema() { return ConvertApiRequest.validate.schema},
@@ -231,8 +235,7 @@ export const ConvertApiRequest = {
 } as const
 
 
-export interface ConvertApiRequest {
-    url?: (string | undefined)
+export interface ConvertApiResponse {
 }
 
 export const ConvertApiResponse = {
@@ -249,9 +252,6 @@ export const ConvertApiResponse = {
     },
 } as const
 
-
-export interface ConvertApiResponse {
-}
 
 ",
     "examples/restclients/ajv/apimatic/schemas/convert-api-request.schema.js": "/* eslint-disable */
@@ -487,18 +487,18 @@ export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = \`\${Major}\$
 
 import { z } from 'zod'
 
-export type ConvertApiRequest = z.infer<typeof ConvertApiRequest>
-
-
 export const ConvertApiRequest = z.object({
     url: z.string().optional(),
 })
 
-export type ConvertApiResponse = z.infer<typeof ConvertApiResponse>
+export type ConvertApiRequest = z.infer<typeof ConvertApiRequest>
 
 
 export const ConvertApiResponse = z.object({
 })
+
+export type ConvertApiResponse = z.infer<typeof ConvertApiResponse>
+
 
 ",
   },

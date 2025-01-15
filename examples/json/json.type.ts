@@ -9,32 +9,7 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 import { validate as JsonAdvValidator } from './schemas/json-adv.schema.js'
 import { validate as JsonValidator } from './schemas/json.schema.js'
 
-export const Json = {
-    validate: JsonValidator as ValidateFunction<Json>,
-    get schema() {
-        return Json.validate.schema
-    },
-    get errors() {
-        return Json.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Json => Json.validate(o) === true,
-    parse: (o: unknown): { right: Json } | { left: DefinedError[] } => {
-        if (Json.is(o)) {
-            return { right: o }
-        }
-        return { left: (Json.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export type Json =
-    | string
-    | null
-    | boolean
-    | number
-    | {
-          [k: string]: Json | undefined
-      }
-    | Json[]
+export type JsonAdv = JsonLocal
 
 export const JsonAdv = {
     validate: JsonAdvValidator as ValidateFunction<JsonAdv>,
@@ -53,7 +28,32 @@ export const JsonAdv = {
     },
 } as const
 
-export type JsonAdv = JsonLocal
+export type Json =
+    | string
+    | null
+    | boolean
+    | number
+    | {
+          [k: string]: Json | undefined
+      }
+    | Json[]
+
+export const Json = {
+    validate: JsonValidator as ValidateFunction<Json>,
+    get schema() {
+        return Json.validate.schema
+    },
+    get errors() {
+        return Json.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is Json => Json.validate(o) === true,
+    parse: (o: unknown): { right: Json } | { left: DefinedError[] } => {
+        if (Json.is(o)) {
+            return { right: o }
+        }
+        return { left: (Json.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 type JsonLocal =
     | string

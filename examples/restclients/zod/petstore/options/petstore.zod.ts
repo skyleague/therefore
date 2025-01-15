@@ -16,8 +16,6 @@ export const Category = z.object({
     name: z.string().optional(),
 })
 
-export type User = z.infer<typeof User>
-
 export const User = z.object({
     email: z.string().optional(),
     firstName: z.string().optional(),
@@ -29,7 +27,7 @@ export const User = z.object({
     userStatus: z.number().int().describe('User Status').optional(),
 })
 
-export type Pet = z.infer<typeof Pet>
+export type User = z.infer<typeof User>
 
 export const Pet = z.object({
     category: Category.optional(),
@@ -40,7 +38,7 @@ export const Pet = z.object({
     tags: Tag.array().optional(),
 })
 
-export type ApiResponse = z.infer<typeof ApiResponse>
+export type Pet = z.infer<typeof Pet>
 
 export const ApiResponse = z.object({
     code: z.number().int().optional(),
@@ -48,27 +46,27 @@ export const ApiResponse = z.object({
     type: z.string().optional(),
 })
 
-export type CreateUsersWithListInputRequest = z.infer<typeof CreateUsersWithListInputRequest>
+export type ApiResponse = z.infer<typeof ApiResponse>
 
 export const CreateUsersWithListInputRequest = User.array()
 
-export type FindPetsByStatusResponse = z.infer<typeof FindPetsByStatusResponse>
+export type CreateUsersWithListInputRequest = z.infer<typeof CreateUsersWithListInputRequest>
 
 export const FindPetsByStatusResponse = Pet.array()
 
-export type FindPetsByTagsResponse = z.infer<typeof FindPetsByTagsResponse>
+export type FindPetsByStatusResponse = z.infer<typeof FindPetsByStatusResponse>
 
 export const FindPetsByTagsResponse = Pet.array()
 
-export type GetInventoryResponse = z.infer<typeof GetInventoryResponse>
+export type FindPetsByTagsResponse = z.infer<typeof FindPetsByTagsResponse>
 
 export const GetInventoryResponse = z.record(z.number().int().optional())
 
-export type LoginUserResponse = z.infer<typeof LoginUserResponse>
+export type GetInventoryResponse = z.infer<typeof GetInventoryResponse>
 
 export const LoginUserResponse = z.string()
 
-export type Order = z.infer<typeof Order>
+export type LoginUserResponse = z.infer<typeof LoginUserResponse>
 
 export const Order = z.object({
     complete: z.boolean().optional(),
@@ -78,3 +76,5 @@ export const Order = z.object({
     shipDate: z.string().datetime({ offset: true }).optional(),
     status: z.enum(['placed', 'approved', 'delivered']).describe('Order Status').optional(),
 })
+
+export type Order = z.infer<typeof Order>
