@@ -49,12 +49,12 @@ type Keys = Foo2[]
  * Loan repayment executed
  */
 export interface Reference1 {
-    keys: Keys2
+    keys: Keys
 }
 
 /**
  * Loan repayment executed
  */
 export interface Reference2 {
-    keys: Keys
+    keys: Keys2
 }
