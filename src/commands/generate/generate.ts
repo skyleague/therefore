@@ -1,12 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { isFailure, isFunction, mapTry } from '@skyleague/axioms'
-import type { Schema } from '@typeschema/main'
-import { isNode } from '../../lib/cst/cst.js'
 import type { Node, SourceNode } from '../../lib/cst/node.js'
-import { $ref } from '../../lib/primitives/ref/ref.js'
-import { therefore } from '../../lib/primitives/therefore.js'
+import { Therefore, therefore } from '../../lib/primitives/therefore.js'
 import { ValidatorType } from '../../lib/primitives/validator/validator.js'
 import { autoRef, generateNode } from '../../lib/visitor/prepass/prepass.js'
 import { type Prettier, formatBiomeFiles, maybeLoadPrettier } from './format.js'
@@ -15,98 +10,27 @@ import { GenericFileOutput } from './output/generic.js'
 import type { ThereforeOutput } from './output/types.js'
 import { TypescriptFileOutput } from './output/typescript.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-async function requireModule(module: string): Promise<Record<string, Node | unknown>> {
-    const relative = path.relative(__dirname, module).replace(/\\/g, '/')
-
-    const mod = (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
-    return (mod.default ?? mod) as Record<string, Node | unknown>
-}
-
-export function loadNodes({
-    sourceSymbol,
-    node,
-    sourcePath,
-    seen = new Set<string>(),
-}: {
-    sourceSymbol: string | undefined
-    node: Node
-    sourcePath: string
-    seen?: Set<string>
-}): Node[] {
-    if (seen.has(node._id)) {
-        return []
-    }
-
-    const evaluated = therefore.exportSymbol({ symbol: node, sourcePath, sourceSymbol })
-
-    seen.add(evaluated._id)
-
-    // DFS on hypergraph
-    const nodes: Node[] = []
-    for (const connection of evaluated._connections ?? []) {
-        nodes.push(
-            ...loadNodes({
-                sourceSymbol: undefined,
-                node: connection,
-                sourcePath: evaluated._sourcePath,
-                seen,
-            }),
-        )
-    }
-    nodes.push(evaluated)
-
-    return nodes
-}
-
-export async function scanModule({
-    entry,
-    sourcePath,
-    basePath: _,
-    require = requireModule,
-}: {
-    entry: string
-    sourcePath: string
-    basePath: string
-    require?: (module: string) => Promise<Record<string, Node | Schema | unknown>>
-}) {
-    const module = await require(entry)
-
-    const exports: Node[] = []
-
-    for (const [nodeName, nodePromise] of Object.entries(module)) {
-        let node = await nodePromise
-
-        if (isFunction(node)) {
-            node = await mapTry(node, (x) => x())
-        }
-        if (!isNode(node)) {
-            node = await mapTry(node, (x) => $ref(x as Schema))
-            if (isFailure(node)) {
-                continue
-            }
-        }
-        const evaluated = loadNodes({ sourceSymbol: nodeName, node: node as Node, sourcePath })
-
-        exports.push(...evaluated)
-    }
-
-    console.log(` - found ${[...new Set(exports.map((e) => e._name))].join(', ')}`)
-
-    return exports
-}
 type SrcPath = string
 type ThereforeModules = Record<SrcPath, Node[]>
 export async function scanModules({ files, basePath }: { files: string[]; basePath: string }): Promise<ThereforeModules> {
     const modules: ThereforeModules = {}
+    const seenNodes = new WeakSet<Node>()
 
+    const sourceFiles = new Set<string>()
+
+    // First phase: Collect source paths and create empty arrays
+    for (const entry of files) {
+        const sourcePath = path.resolve(basePath, entry)
+        console.log(`Scanning ${entry}`)
+        sourceFiles.add(sourcePath)
+    }
+
+    // Second phase: Scan modules and collect nodes
     const moduleNodes = (
         await Promise.all(
-            files.map((entry) => {
+            Iterator.from(sourceFiles).map((entry) => {
                 const sourcePath = path.resolve(basePath, entry)
-                console.log(`Scanning ${entry}`)
-
-                return scanModule({ entry, basePath, sourcePath })
+                return Therefore.scanModule({ entry, sourcePath, seenNodes, sourceFiles })
             }),
         )
     ).flat()

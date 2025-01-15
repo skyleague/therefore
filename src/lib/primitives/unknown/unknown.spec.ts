@@ -17,6 +17,7 @@ it('simple', () => {
           "validatorType": undefined,
         },
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {

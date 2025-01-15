@@ -15,8 +15,6 @@ import type { SchemaAsNode } from './node.js'
 import type { RefOptions } from './type.js'
 import { RefType } from './type.js'
 
-export const cache = new WeakMap()
-
 /**
  * Create a new `RefType` instance with the given options.
  *

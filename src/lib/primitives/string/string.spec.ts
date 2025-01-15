@@ -24,6 +24,7 @@ it('pattern', () => {
           "validatorType": undefined,
         },
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {
@@ -51,6 +52,7 @@ it('format', () => {
           "validatorType": undefined,
         },
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {
@@ -80,6 +82,7 @@ it('all', () => {
           "validatorType": undefined,
         },
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {

@@ -8,6 +8,7 @@ import type { DefaultType } from '../primitives/optional/default.js'
 import type { ValidatorOptions, ValidatorType } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
+import { type NodeTrace, getGuessedTrace } from './trace.js'
 
 export const definitionKeys = keysOf({
     description: true,
@@ -41,6 +42,7 @@ export class Node {
     public declare _connections?: Node[] | undefined
     public declare _canReference?: boolean | undefined
     public declare _hooks?: Hooks | undefined
+    public declare _guessedTrace?: NodeTrace | undefined
     public get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return undefined
     }
@@ -95,6 +97,8 @@ export class Node {
             // biome-ignore lint/performance/noDelete: we need to delete the name from the definition
             delete definition.name
         }
+
+        this._guessedTrace = getGuessedTrace()
     }
 
     public describe(description: string): this {
