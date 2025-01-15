@@ -52,6 +52,7 @@ it('example', () => {
             ],
           },
         },
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {},
@@ -77,6 +78,7 @@ it('default', () => {
         "_definition": {
           "default": true,
         },
+        "_guessedTrace": undefined,
         "_id": "1",
         "_isCommutative": true,
         "_options": {},

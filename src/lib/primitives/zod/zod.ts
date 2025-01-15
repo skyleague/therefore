@@ -1,6 +1,7 @@
 import { mapValues } from '@skyleague/axioms'
-import type { IpVersion, ZodFirstPartySchemaTypes, ZodNumber, ZodString } from 'zod'
+import type { IpVersion, ZodFirstPartySchemaTypes, ZodNumber, ZodString, z } from 'zod'
 import type { Node } from '../../cst/node.js'
+import { type NodeTrace, getGuessedTrace } from '../../cst/trace.js'
 import { $array } from '../array/array.js'
 import { $boolean } from '../boolean/boolean.js'
 import { $const } from '../const/const.js'
@@ -18,6 +19,42 @@ import { $tuple, type TupleType } from '../tuple/tuple.js'
 import { $union, DiscriminatedUnionType } from '../union/union.js'
 import { $unknown } from '../unknown/unknown.js'
 
+declare module 'zod' {
+    interface ZodType {
+        _guessedTrace?: NodeTrace | undefined
+    }
+}
+
+export function extendsZodWithTracing(zod: typeof z) {
+    // Define the _def property if it doesn't exist
+    Object.defineProperty(zod.ZodType.prototype, '_def', {
+        configurable: true,
+        enumerable: true,
+        get() {
+            return this.__def
+        },
+        set(value) {
+            // Only set source if it hasn't been set before
+            if (!Object.getOwnPropertyDescriptor(this, '_guessedTrace')) {
+                const source = getGuessedTrace()
+                Object.defineProperty(this, '_guessedTrace', {
+                    value: source,
+                    enumerable: true,
+                    configurable: true,
+                    writable: true,
+                })
+            }
+            this.__def = value
+        },
+    })
+}
+
+try {
+    extendsZodWithTracing(await import('zod'))
+} catch {
+    // ignore
+}
+
 export interface ZodWalkerContext {
     keepOriginalSchema: boolean
     cache: WeakMap<ZodFirstPartySchemaTypes, Node>
@@ -26,7 +63,7 @@ export interface ZodWalkerContext {
 
 export function buildContext(options: Partial<ZodWalkerContext> = {}): ZodWalkerContext {
     const context: ZodWalkerContext = {
-        cache: new Map(),
+        cache: options.cache ?? new Map(),
         render: (node, ctx: Partial<ZodWalkerContext> = {}): Node => {
             if (context.cache.has(node)) {
                 return context.cache.get(node) as Node
@@ -42,6 +79,10 @@ export function buildContext(options: Partial<ZodWalkerContext> = {}): ZodWalker
                 value._origin.zod = node
             }
             context.cache.set(node, value)
+
+            if (node._guessedTrace) {
+                value._guessedTrace = node._guessedTrace
+            }
 
             return value
         },

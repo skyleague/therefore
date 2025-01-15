@@ -1,8 +1,6 @@
-import { generate } from './generate.js'
-
-import { constants } from '../../lib/constants.js'
-
 import type { Argv } from 'yargs'
+import { constants } from '../../lib/constants.js'
+import { generate } from './generate.js'
 
 export function builder(yargs: Argv) {
     return yargs

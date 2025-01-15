@@ -72,6 +72,7 @@ it('expand', () => {
                   "validatorType": undefined,
                 },
                 "_definition": {},
+                "_guessedTrace": undefined,
                 "_id": "1",
                 "_isCommutative": true,
                 "_options": {},
@@ -81,6 +82,7 @@ it('expand', () => {
               },
             ],
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
@@ -96,6 +98,7 @@ it('expand', () => {
                 "validatorType": undefined,
               },
               "_definition": {},
+              "_guessedTrace": undefined,
               "_id": "1",
               "_isCommutative": true,
               "_options": {},
@@ -107,6 +110,7 @@ it('expand', () => {
           },
         ],
         "_definition": {},
+        "_guessedTrace": undefined,
         "_hooks": {
           "onGenerate": [
             [Function],
@@ -146,6 +150,7 @@ it('self reference', () => {
               "validatorType": undefined,
             },
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "5",
             "_isCommutative": true,
             "_options": {},
@@ -174,6 +179,7 @@ it('self reference', () => {
                   [Function],
                 ],
                 "_definition": {},
+                "_guessedTrace": undefined,
                 "_hooks": {
                   "onGenerate": [
                     [Function],
@@ -191,6 +197,7 @@ it('self reference', () => {
               },
             ],
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
@@ -209,6 +216,7 @@ it('self reference', () => {
                 [Function],
               ],
               "_definition": {},
+              "_guessedTrace": undefined,
               "_hooks": {
                 "onGenerate": [
                   [Function],
@@ -237,6 +245,7 @@ it('self reference', () => {
               [Function],
             ],
             "_definition": {},
+            "_guessedTrace": undefined,
             "_hooks": {
               "onGenerate": [
                 [Function],
@@ -254,6 +263,7 @@ it('self reference', () => {
           },
         ],
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "4",
         "_isCommutative": false,
         "_options": {},
@@ -286,6 +296,7 @@ it('uuid reference', () => {
               "validatorType": undefined,
             },
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "1",
             "_isCommutative": true,
             "_options": {},
@@ -295,6 +306,7 @@ it('uuid reference', () => {
           },
         ],
         "_definition": {},
+        "_guessedTrace": undefined,
         "_hooks": {
           "onGenerate": [
             [Function],
@@ -334,6 +346,7 @@ it('description ', () => {
               "validatorType": undefined,
             },
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "4",
             "_isCommutative": true,
             "_options": {},
@@ -364,6 +377,7 @@ it('description ', () => {
                 "_definition": {
                   "description": "foo array",
                 },
+                "_guessedTrace": undefined,
                 "_hooks": {
                   "onGenerate": [
                     [Function],
@@ -382,6 +396,7 @@ it('description ', () => {
               },
             ],
             "_definition": {},
+            "_guessedTrace": undefined,
             "_id": "2",
             "_isCommutative": false,
             "_options": {},
@@ -402,6 +417,7 @@ it('description ', () => {
               "_definition": {
                 "description": "foo array",
               },
+              "_guessedTrace": undefined,
               "_hooks": {
                 "onGenerate": [
                   [Function],
@@ -421,6 +437,7 @@ it('description ', () => {
           },
         ],
         "_definition": {},
+        "_guessedTrace": undefined,
         "_id": "3",
         "_isCommutative": false,
         "_options": {},

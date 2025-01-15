@@ -528,11 +528,6 @@ export class TypescriptFileOutput {
             // Process outgoing edges
             const neighbors = outGraph.get(nodeId) ?? new Set()
             for (const neighbor of neighbors) {
-                // Skip validators if their type hasn't been processed yet
-                // biome-ignore lint/style/noNonNullAssertion: we know the neighbor is a validator
-                // if (validatorToType.get(neighbor) && !processedValidatedTypes.has(validatorToType.get(neighbor)!)) {
-                //     continue
-                // }
                 inGraph.get(neighbor)?.delete(nodeId)
                 if (inGraph.get(neighbor)?.size === 0) {
                     queue.push(neighbor)
