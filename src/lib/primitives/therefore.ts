@@ -1,5 +1,7 @@
 import 'tsx'
 import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { isFunction, mapTry } from '@skyleague/axioms'
 import { isFailure } from '@skyleague/axioms'
 import type { Schema } from '@typeschema/main'
@@ -16,12 +18,11 @@ import { $ref } from './ref/ref.js'
 import { ValidatorType } from './validator/validator.js'
 import type { ZodSchema } from './zod/type.js'
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 async function requireModule(module: string): Promise<Record<string, Node | unknown>> {
-    // const relative = path.relative(__dirname, module).replace(/\\/g, '/')
-    // (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
-
-    const mod = await import(module.replace(/\.ts$/, '.js'))
+    const relative = path.relative(__dirname, module).replace(/\\/g, '/')
+    const mod = (await import(relative.startsWith('.') ? relative : `./${relative}`)) as Record<string, unknown>
+    // const mod = await import(module.replace(/\.ts$/, '.js'))
     return (mod.default ?? mod) as Record<string, Node | unknown>
 }
 
