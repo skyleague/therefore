@@ -172,7 +172,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         const omitType = node as _OmitType
         if (omitType._omitted !== undefined && omitType._omitted.origin._name !== undefined) {
             writer.writeLine(
-                `Omit<${context.reference(omitType._omitted.origin)}, ${omitType._omitted.mask.map((m) => `'${m}'`).join(', ')}>`,
+                `Omit<${context.reference(omitType._omitted.origin)}, ${omitType._omitted.mask.map((m) => `'${m}'`).join(' | ')}>`,
             )
 
             return writer.toString()
@@ -181,7 +181,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         const pickType = node as _PickType
         if (pickType._picked !== undefined && pickType._picked.origin._name !== undefined) {
             writer.writeLine(
-                `Pick<${context.reference(pickType._picked.origin)}, ${pickType._picked.mask.map((m) => `'${m}'`).join(', ')}>`,
+                `Pick<${context.reference(pickType._picked.origin)}, ${pickType._picked.mask.map((m) => `'${m}'`).join(' | ')}>`,
             )
 
             return writer.toString()
