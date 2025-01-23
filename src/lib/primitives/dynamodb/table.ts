@@ -3,21 +3,40 @@ import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { Node } from '../../cst/node.js'
 import { createWriter } from '../../writer.js'
 import type { ObjectType, ShapeToInfer } from '../object/object.js'
+import { $entity } from './entity.js'
 import { dynamodbSymbols } from './symbols.js'
 
+export type IndexDefinition<Pk extends string, NonKeyAttributes extends string[], Sk extends string | undefined = undefined> =
+    | {
+          pk: Pk
+          sk?: Sk
+          projectionType: 'INCLUDE'
+          nonKeyAttributes: NonKeyAttributes
+      }
+    | {
+          pk: Pk
+          sk?: Sk
+          projectionType: 'KEYS_ONLY' | 'ALL'
+      }
 export interface DynamoDbTableDefinition<
     Entity extends ObjectType = ObjectType,
     Pk extends keyof Entity['infer'] & string = keyof Entity['infer'] & string, //'pk',
+    Sk extends keyof Entity['infer'] & string = keyof Entity['infer'] & string, //'sk',
     CreatedAt extends keyof Entity['infer'] & string = keyof Entity['infer'] & string, //'createdAt',
     UpdatedAt extends keyof Entity['infer'] & string = keyof Entity['infer'] & string, //'updatedAt',
     EntityType extends keyof Entity['infer'] & string = keyof Entity['infer'] & string, //'entityType',
+    Indexes extends Record<string, IndexDefinition<string, string[], string | undefined>> = Record<
+        string,
+        IndexDefinition<string, string[], string | undefined>
+    >,
 > {
     pk: Pk
-    sk?: string
+    sk?: Sk
     tableName?: string
     createdAt?: CreatedAt
     updatedAt?: UpdatedAt
     entityType?: EntityType
+    indexes?: Indexes
 }
 
 export class DynamoDbTableType<
@@ -47,7 +66,7 @@ export class DynamoDbTableType<
     public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return [
             {
-                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.table.ts'),
+                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.client.ts'),
                 type: 'typescript',
                 definition: (node, context) => {
                     const DynamoDBDocument = context.reference(dynamodbSymbols.DynamoDBDocument())
@@ -63,18 +82,20 @@ export class DynamoDbTableType<
                         tableWriter.newLine().writeLine(`public client: ${DynamoDBDocument}`)
 
                         tableWriter
-                            .newLine()
-                            .write('public constructor(')
-                            .inlineBlock(() => {
-                                tableWriter.writeLine('client')
-                            })
-                            .write(':')
-                            .inlineBlock(() => {
-                                tableWriter.writeLine(`client: ${DynamoDBDocument}`)
-                            })
-                            .write(')')
+                            .blankLine()
+                            .write('public constructor({')
+                            .write('client,')
+                            .conditionalWrite(this.definition.tableName === undefined, 'tableName,')
+                            .write('} : {')
+                            .write(`client: ${DynamoDBDocument};`)
+                            .conditionalWrite(this.definition.tableName === undefined, 'tableName: string;')
+                            .write('})')
                             .block(() => {
                                 tableWriter.writeLine('this.client = client')
+                                tableWriter.conditionalWrite(
+                                    this.definition.tableName === undefined,
+                                    'this.tableName = tableName',
+                                )
                             })
                     })
 
@@ -83,6 +104,12 @@ export class DynamoDbTableType<
             },
             ...(super._output ?? []),
         ]
+    }
+
+    public entity<Shape extends ObjectType, const EntityType extends string>(
+        args: Omit<Parameters<typeof $entity<Shape, EntityType, typeof this>>[0], 'table'>,
+    ) {
+        return $entity({ table: this, ...args })
     }
 }
 

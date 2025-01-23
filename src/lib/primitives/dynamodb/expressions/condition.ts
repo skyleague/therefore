@@ -1,8 +1,8 @@
-import { type ConstExpr, evaluate } from '@skyleague/axioms'
+import { evaluate } from '@skyleague/axioms'
 import type { Node } from '../../../cst/node.js'
 import type { ObjectType } from '../../object/object.js'
-import type { OptionalType } from '../../optional/optional.js'
-import type { DynamodbExpressionContext, FormattedConstOperand } from './context.js'
+import { type DynamodbOperand, type FormattedOperand, PathOperand, ValueOperand } from './attributes.js'
+import type { DynamodbExpressionContext } from './context.js'
 
 type ConditionExpression =
     | Condition
@@ -61,112 +61,69 @@ class OrCondition extends Condition {
     }
 }
 
-type Operand<Shape extends Node> =
-    | (Shape extends OptionalType<infer S> ? Operand<S> : PathOperand<Shape>)
-    | ValueOperand
-    | ConstExpr<string | number | boolean | FormattedConstOperand>
-class PathOperand<Shape extends Node> {
-    public operand: string
-    public originalKey: string
-    public shape: Shape
-    public _context: DynamodbExpressionContext
-    public constructor(operand: string, originalKey: string, shape: Shape, context: DynamodbExpressionContext) {
-        this.operand = operand
-        this.originalKey = originalKey
-        this.shape = shape
-        this._context = context
+class ConditionPathOperand<Shape extends Node> extends PathOperand<Shape> {
+    public eq(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} = ${this._ref(value)}`, [this.originalKey])
     }
 
-    public _ref(value: Operand<Shape> | undefined): string {
-        if (value === undefined) {
-            throw new Error('operand is required')
-        }
-        if (value instanceof ValueOperand) {
-            value.setSchema(this.shape)
-            return value.operand
-        }
-        if (value instanceof PathOperand) {
-            return value.operand
-        }
-        return this._context.addConstValue({ value })
+    public gt(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} > ${this._ref(value)}`, [this.originalKey])
     }
 
-    public eq(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} = ${this._ref(value)}`, [this.originalKey])
+    public lt(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} < ${this._ref(value)}`, [this.originalKey])
     }
 
-    public gt(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} > ${this._ref(value)}`, [this.originalKey])
+    public gte(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} >= ${this._ref(value)}`, [this.originalKey])
     }
 
-    public lt(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} < ${this._ref(value)}`, [this.originalKey])
+    public lte(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} <= ${this._ref(value)}`, [this.originalKey])
     }
 
-    public gte(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} >= ${this._ref(value)}`, [this.originalKey])
+    public neq(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`${this.image} <> ${this._ref(value)}`, [this.originalKey])
     }
 
-    public lte(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} <= ${this._ref(value)}`, [this.originalKey])
+    public between(a: DynamodbOperand<Shape>, b: DynamodbOperand<Shape>) {
+        return new Condition(`${this.image} BETWEEN ${this._ref(a)} AND ${this._ref(b)}`, [this.originalKey])
     }
 
-    public neq(value: Operand<Shape> | undefined) {
-        return new Condition(`${this.operand} <> ${this._ref(value)}`, [this.originalKey])
+    public in(values: DynamodbOperand<Shape>[]) {
+        return new Condition(`${this.image} IN (${values.map((v) => this._ref(v)).join(', ')})`, [this.originalKey])
     }
 
-    public between(a: Operand<Shape>, b: Operand<Shape>) {
-        return new Condition(`${this.operand} BETWEEN ${this._ref(a)} AND ${this._ref(b)}`, [this.originalKey])
-    }
-
-    public in(values: Operand<Shape>[]) {
-        return new Condition(`${this.operand} IN (${values.map((v) => this._ref(v)).join(', ')})`, [this.originalKey])
-    }
-
-    public beginsWith(value: Operand<Shape> | undefined) {
-        return new Condition(`begins_with(${this.operand}, ${this._ref(value)})`, [this.originalKey])
+    public beginsWith(value: DynamodbOperand<Shape> | undefined) {
+        return new Condition(`begins_with(${this.image}, ${this._ref(value)})`, [this.originalKey])
     }
 
     public exists() {
-        return new Condition(`attribute_exists(${this.operand})`, [this.originalKey])
+        return new Condition(`attribute_exists(${this.image})`, [this.originalKey])
     }
 
     public notExists() {
-        return new Condition(`attribute_not_exists(${this.operand})`, [this.originalKey])
+        return new Condition(`attribute_not_exists(${this.image})`, [this.originalKey])
     }
 
     public hasType(type: 'S' | 'N' | 'B' | 'SS' | 'NS' | 'BS' | 'M' | 'L' | 'NULL') {
-        return new Condition(`attribute_type(${this.operand}, ${type})`, [this.originalKey])
+        return new Condition(`attribute_type(${this.image}, ${type})`, [this.originalKey])
     }
 
-    public contains(value: ValueOperand) {
-        return new Condition(`contains(${this.operand}, ${this._ref(value)})`, [this.originalKey])
+    public contains(value: ValueOperand | FormattedOperand) {
+        return new Condition(`contains(${this.image}, ${this._ref(value)})`, [this.originalKey])
     }
 
     public size() {
-        return new ValueOperand(`size(${this.operand})`, '_', this._context)
+        return new ValueOperand(`size(${this.image})`, '_', this._context)
     }
 }
 
-class ValueOperand {
-    public operand: string
-    public _inputKey: string
-    public _context: DynamodbExpressionContext
-    public constructor(operand: string, inputKey: string, context: DynamodbExpressionContext) {
-        this.operand = operand
-        this._context = context
-        this._inputKey = inputKey
-    }
-
-    public setSchema(schema: Node) {
-        this._context.addInputSchema({ key: this._inputKey, schema })
-    }
-}
-
-export type ConditionBuilder<T extends ObjectType> = (
-    existing: { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> },
-    input: Record<string, ValueOperand>,
-) => ConditionExpression
+export type ConditionBuilder<T extends ObjectType> = (args: {
+    existing: { [k in keyof T['infer']]-?: ConditionPathOperand<T['shape'][k]> }
+    input: Record<string, ValueOperand>
+    context: DynamodbExpressionContext<T>
+}) => ConditionExpression
 
 export function conditionExpression<T extends ObjectType>({
     build,
@@ -175,11 +132,11 @@ export function conditionExpression<T extends ObjectType>({
     build: ConditionBuilder<T>
     context: DynamodbExpressionContext<NoInfer<T>>
 }) {
-    const existing = new Proxy({} as { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }, {
+    const existing = new Proxy({} as { [k in keyof T['infer']]-?: ConditionPathOperand<T['shape'][k]> }, {
         get: (_, key: string) => {
             const path = context.attributeName({ key })
 
-            return new PathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: true }), context)
+            return new ConditionPathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: true }), context)
         },
     })
     const input = new Proxy({} as Record<string, Exclude<ValueOperand, undefined>>, {
@@ -187,7 +144,7 @@ export function conditionExpression<T extends ObjectType>({
             return new ValueOperand(context.attributeValue({ key }), key, context)
         },
     })
-    const expression = Condition.from(build(existing, input))
+    const expression = Condition.from(build({ existing, input, context }))
     return {
         expression: expression.expression,
         comparands: expression.comparands,

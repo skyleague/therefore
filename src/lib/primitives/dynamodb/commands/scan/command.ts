@@ -1,180 +1,151 @@
 import type { ScanCommand, ScanCommandInput } from '@aws-sdk/lib-dynamodb'
-import { isDefined, omitUndefined } from '@skyleague/axioms'
-import camelcase from 'camelcase'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
-import { Node } from '../../../../cst/node.js'
+import type { Node } from '../../../../cst/node.js'
+import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
 import { createWriter } from '../../../../writer.js'
-import { $object, type ObjectType } from '../../../object/object.js'
+import type { ObjectType } from '../../../object/object.js'
 import type { DynamoDbEntityType } from '../../entity.js'
-import { type ConditionBuilder, conditionExpression } from '../../expressions/condition.js'
-import { DynamodbExpressionContext } from '../../expressions/context.js'
-import { type ProjectionBuilder, projectionExpression } from '../../expressions/projection.js'
+import type { ConditionBuilder } from '../../expressions/condition.js'
+import type { ProjectionBuilder } from '../../expressions/projection.js'
 import {} from '../../expressions/update.js'
 import { dynamodbSymbols } from '../../symbols.js'
+import { DynamodbBaseCommandType, type OmitExpressions, type OmitLegacyOptions } from '../base.js'
 
 type Builders<Entity extends DynamoDbEntityType> = {
     projection?: ProjectionBuilder<Entity['shape']>
     filter?: ConditionBuilder<Entity['shape']>
 }
 
-type CommandOptions = Omit<
-    { [k in keyof ScanCommandInput]?: ScanCommandInput[k] extends string | number ? ScanCommandInput[k] : never },
-    'TableName' | 'ProjectionExpression'
->
-
-export class DynamodbScanCommandType<Entity extends DynamoDbEntityType = DynamoDbEntityType> extends Node {
-    public override _type = 'dynamodb:command:scan' as const
-    public override _canReference?: boolean = false
-    public declare infer: ScanCommand
-
-    public entity: Entity
-
-    public builders: Builders<Entity>
-
-    public _input: ObjectType
-    public _projection: ReturnType<typeof projectionExpression> | undefined
-    public _filter: ReturnType<typeof conditionExpression> | undefined
-    public _context: DynamodbExpressionContext<Entity['shape']>
-    public _result: ObjectType | undefined
-    public _commandOptions: Partial<ScanCommandInput>
-
-    public constructor(
-        entity: Entity,
-        commandName: string,
-        builders: Builders<Entity>,
-        commandOptions: CommandOptions | undefined,
-    ) {
-        super()
-        this.entity = entity
-        this.builders = builders
-        this._context = new DynamodbExpressionContext(entity.shape)
-        this._commandOptions = omitUndefined(commandOptions ?? {})
-
-        let parentName: string | undefined
-
-        if (builders.projection !== undefined) {
-            this._projection = projectionExpression({ build: builders.projection, context: this._context })
-            this._result = this._projection.schema
-            this._result._transform = {
-                symbolName: (name) => `${parentName ?? name}Result`,
+type IndexesOf<Entity extends DynamoDbEntityType> = NonNullable<Entity['table']['definition']['indexes']>
+type GetIndex<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>> = IndexesOf<Entity>[Index]
+type IndexPick<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>> = (
+    GetIndex<Entity, Index> extends {
+        projectionType: 'INCLUDE'
+        nonKeyAttributes: infer NonKeyAttributes extends (keyof Entity['shape']['shape'])[]
+        pk: infer Pk extends keyof Entity['shape']['shape']
+        sk?: infer Sk extends keyof Entity['shape']['shape']
+    }
+        ? Pick<Entity['shape']['shape'], NonKeyAttributes[number] | Pk | Sk>
+        : GetIndex<Entity, Index> extends {
+                projectionType: 'KEYS_ONLY'
+                pk: infer Pk extends keyof Entity['shape']['shape']
+                sk?: infer Sk extends keyof Entity['shape']['shape']
             }
-        }
-        if (builders.filter !== undefined) {
-            this._filter = conditionExpression({ build: builders.filter, context: this._context })
-        }
+          ? Pick<
+                Entity['shape']['shape'],
+                Pk | Sk | NonNullable<Entity['table']['definition']['pk'] | Entity['table']['definition']['sk']>
+            >
+          : Entity['shape']['shape']
+) extends infer Picked extends Record<string, Node>
+    ? ObjectType<Picked>
+    : never
+type IndexBuilders<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>> = {
+    projection?: ProjectionBuilder<IndexPick<Entity, Index>>
+    filter?: ConditionBuilder<IndexPick<Entity, Index>>
+}
 
-        this._input = $object(this._context._inputSchema)
-        this._input._transform = { symbolName: (name) => `${parentName ?? name}Input` }
+type CommandOptions = Omit<OmitLegacyOptions<OmitExpressions<ScanCommandInput>>, 'TableName'>
 
-        this._transform ??= {}
-        this._transform.symbolName = (name) => {
-            parentName = name
-            return `${camelcase(name)}Command`
-        }
-        this._connections = [this._result ?? this.entity.shape, this._input].filter(isDefined)
-        this._children = [this._result, this._input].filter(isDefined)
+export interface DynamodbScanCommandOptions<
+    Entity extends DynamoDbEntityType,
+    Index extends keyof IndexesOf<Entity> | undefined,
+> {
+    entity: Entity
+    expressions?: (Index extends string ? IndexBuilders<Entity, Index> : Builders<Entity>) | undefined
+    commandOptions?: CommandOptions | undefined
+    scope: 'entity' | 'table'
+    index?: Index
+}
 
-        if (entity._commands[commandName] !== undefined) {
-            throw new Error(`Command with name ${commandName} already exists`)
-        }
-        entity._commands[commandName] = this as unknown as DynamodbScanCommandType
+export class DynamodbScanCommandType<
+    Entity extends DynamoDbEntityType = DynamoDbEntityType,
+    Index extends keyof IndexesOf<Entity> | undefined = undefined,
+> extends DynamodbBaseCommandType<ScanCommand, CommandOptions, Entity> {
+    public override _type = 'dynamodb:command:scan' as const
+    public _scope: 'entity' | 'table'
+    public _index: Index | undefined
+
+    public constructor({ expressions, commandOptions = {}, entity, index, scope }: DynamodbScanCommandOptions<Entity, Index>) {
+        super({ entity, commandOptions })
+        this._scope = scope
+        this._index = index
+        this._dynamodb.needsGenerator = true
+
+        this._builder.addProjectionExpression(expressions?.projection as never)
+        this._builder.addFilterExpression(expressions?.filter as never)
+
+        this._builder.addIndexResult(entity, entity.table.definition.indexes?.[index as string])
+        this._builder.addInput(this._builder.context._inputSchema)
     }
 
     public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return [
             {
-                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.table.ts'),
+                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
                 definition: (node, context) => {
-                    const ScanCommandInput = context.reference(dynamodbSymbols.ScanCommandInput())
-
-                    const commandWriter = createWriter()
-                    commandWriter
-                        .write(context.declare('const', node))
-                        .write(' = ')
-                        .write('(')
-                        .block(() => {
-                            commandWriter.writeLine('tableName,')
-                            if (Object.keys(this._input.shape).length > 0) {
-                                commandWriter.write('input: ').block(() => {
-                                    for (const key of Object.keys(this._input.shape).sort()) {
-                                        commandWriter.writeLine(`${key},`)
-                                    }
-                                })
-                            }
-                        })
-                        .write(':')
-                        .block(() => {
-                            commandWriter.writeLine('tableName: string,')
-                            if (Object.keys(this._input.shape).length > 0) {
-                                commandWriter.writeLine(`input: ${context.reference(this._input)}`)
-                            }
-                        })
-                        .write(`): ${ScanCommandInput} => `)
-                        .block(() => {
-                            commandWriter.write('return').block(() => {
-                                commandWriter.writeLine('TableName: tableName,')
-
-                                if (
-                                    Object.keys(this._context._attributeValues).length > 0 ||
-                                    Object.keys(this._context._attributeConstValues).length > 0
-                                ) {
-                                    commandWriter
-                                        .writeLine('ExpressionAttributeValues: ')
-                                        .block(() => {
-                                            for (const [input, alias] of Object.entries(this._context._attributeValues)) {
-                                                commandWriter.writeLine(`${JSON.stringify(alias)}: ${input},`)
-                                            }
-                                            for (const [alias, input] of Object.entries(this._context._attributeConstValues)) {
-                                                commandWriter.writeLine(`${JSON.stringify(alias)}: ${input},`)
-                                            }
-                                        })
-                                        .write(',')
-                                }
-                                if (Object.keys(this._context._attributeNames).length > 0) {
-                                    commandWriter
-                                        .writeLine('ExpressionAttributeNames: ')
-                                        .block(() => {
-                                            for (const [input, alias] of Object.entries(this._context._attributeNames)) {
-                                                commandWriter.writeLine(`${JSON.stringify(alias)}: ${JSON.stringify(input)},`)
-                                            }
-                                        })
-                                        .write(',')
-                                }
-                                if (this._projection !== undefined) {
-                                    commandWriter.writeLine(
-                                        `ProjectionExpression: ${JSON.stringify(this._projection.expression)},`,
-                                    )
-                                }
-                                if (this._filter !== undefined) {
-                                    commandWriter.writeLine(`FilterExpression: ${JSON.stringify(this._filter.expression)},`)
-                                }
-
-                                if (Object.entries(this._commandOptions).filter(([_, v]) => v !== undefined).length > 0) {
-                                    commandWriter.blankLine().writeLine('// Extra options')
-                                    for (const [key, value] of Object.entries(this._commandOptions)) {
-                                        commandWriter.writeLine(
-                                            `${key}: ${typeof value === 'string' ? JSON.stringify(value) : value},`,
-                                        )
-                                    }
-                                }
-                            })
-                        })
-
-                    return commandWriter.toString()
+                    const self = this
+                    return this._builder.writeCommand({
+                        node,
+                        context,
+                        commandInput: context.reference(dynamodbSymbols.ScanCommandInput()),
+                        commandLines: function* () {
+                            yield self._builder.writeFilterExpression()
+                            yield self._builder.writeProjectionExpression()
+                            yield self._builder.writeAttributeNames()
+                            yield self._builder.writeAttributeValues()
+                            yield ''
+                            yield self._builder.writeCommandOptions(self._commandOptions)
+                        },
+                    })
                 },
             },
             ...(super._output ?? []),
         ]
     }
+
+    public override buildHandler(context: TypescriptWalkerContext): string {
+        const self = this
+        return this._buildHandler({
+            context,
+            commandLines: function* () {
+                const paginateScan = context.value(dynamodbSymbols.paginateScan())
+                const writer = createWriter()
+
+                writer.write(`for await (const page of ${paginateScan}({ client: this.table.client }, command))`).block(() => {
+                    writer.write('for (const item of (page.Items ?? [])) ').block(() => {
+                        writer.writeLine(
+                            `yield { ...${context.value(self._builder.result ?? self.entity.shape)}.parse(item), status: 'success' as const, $response: page }`,
+                        )
+                    })
+                })
+
+                yield writer.toString()
+            },
+        })
+    }
 }
 
 export function $scanCommand<Entity extends DynamoDbEntityType>(
-    entity: Entity,
-    commandName: string,
-    builders: Builders<Entity>,
-    commandOptions?: CommandOptions,
+    args: Omit<DynamodbScanCommandOptions<Entity, undefined>, 'scope' | 'index'>,
 ) {
-    return new DynamodbScanCommandType<Entity>(entity, commandName, builders, commandOptions)
+    return new DynamodbScanCommandType<Entity, undefined>({ ...args, scope: 'entity' })
+}
+export function $scanIndexCommand<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>>(
+    args: Omit<DynamodbScanCommandOptions<Entity, Index>, 'scope' | 'index'> & { index: Index },
+) {
+    return new DynamodbScanCommandType<Entity, Index>({ ...args, scope: 'entity' })
+}
+
+export function $scanTableCommand<Entity extends DynamoDbEntityType>(
+    args: Omit<DynamodbScanCommandOptions<Entity, undefined>, 'scope' | 'index'>,
+) {
+    return new DynamodbScanCommandType<Entity, undefined>({ ...args, scope: 'table' })
+}
+
+export function $scanTableIndexCommand<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>>(
+    args: Omit<DynamodbScanCommandOptions<Entity, Index>, 'scope' | 'index'> & { index: Index },
+) {
+    return new DynamodbScanCommandType<Entity, Index>({ ...args, scope: 'table' })
 }

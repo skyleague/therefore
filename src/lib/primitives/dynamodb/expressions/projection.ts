@@ -1,5 +1,6 @@
 import type { Node } from '../../../cst/node.js'
 import { $object, type ObjectType } from '../../object/object.js'
+import { PathOperand } from './attributes.js'
 import type { DynamodbExpressionContext } from './context.js'
 
 type ProjectionExpression = [PathOperand<Node>, ...PathOperand<Node>[]]
@@ -14,29 +15,18 @@ class Projection {
 
     public static from(projection: ProjectionExpression): Projection {
         return new Projection(
-            projection.map((x) => x.operand).join(', '),
+            projection.map((x) => x.image).join(', '),
             $object(
-                Object.fromEntries(projection.map((x) => [x._context.lookupAttributeName({ path: x.operand }), x.shape])),
+                Object.fromEntries(projection.map((x) => [x._context.lookupAttributeName({ path: x.image }), x.shape])),
             ).validator(),
         )
     }
 }
 
-class PathOperand<Shape extends Node> {
-    public operand: string
-    public shape: Shape
-    public _context: DynamodbExpressionContext
-    public constructor(operand: string, shape: Shape, context: DynamodbExpressionContext) {
-        this.operand = operand
-        this.shape = shape
-        this._context = context
-    }
-}
-
-export type ProjectionBuilder<T extends ObjectType> = (
-    existing: { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> },
-    // input: Record<string, ValueOperand>,
-) => ProjectionExpression
+export type ProjectionBuilder<T extends ObjectType> = (args: {
+    existing: { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }
+    context: DynamodbExpressionContext<T>
+}) => ProjectionExpression
 
 export function projectionExpression<T extends ObjectType>({
     build,
@@ -49,10 +39,10 @@ export function projectionExpression<T extends ObjectType>({
         get: (_, key: string) => {
             const path = context.attributeName({ key })
 
-            return new PathOperand(path, context.getShapeSchema({ key, shouldUnwrap: true }), context)
+            return new PathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: false }), context)
         },
     })
-    const expression = build(existing)
+    const expression = build({ existing, context })
     const projection = Projection.from(expression)
 
     return {

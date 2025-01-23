@@ -1,40 +1,36 @@
-import type { GetCommand, GetCommandInput } from '@aws-sdk/lib-dynamodb'
+import type { DeleteCommand, DeleteCommandInput } from '@aws-sdk/lib-dynamodb'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
 import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
 import { createWriter } from '../../../../writer.js'
 import type { DynamoDbEntityType } from '../../entity.js'
-import {} from '../../expressions/condition.js'
-import type { ProjectionBuilder } from '../../expressions/projection.js'
-import {} from '../../expressions/update.js'
+import type { ConditionBuilder } from '../../expressions/condition.js'
 import { dynamodbSymbols } from '../../symbols.js'
 import { DynamodbBaseCommandType, type OmitExpressions, type OmitLegacyOptions } from '../base.js'
 
 type Builders<Entity extends DynamoDbEntityType> = {
-    projection?: ProjectionBuilder<Entity['shape']>
+    condition?: ConditionBuilder<Entity['shape']>
 }
 
-type CommandOptions = Omit<OmitLegacyOptions<OmitExpressions<GetCommandInput>>, 'Key' | 'TableName'>
+type CommandOptions = Omit<OmitLegacyOptions<OmitExpressions<DeleteCommandInput>>, 'Key' | 'TableName'>
 
-export interface DynamodbGetItemCommandOptions<Entity extends DynamoDbEntityType> {
+export interface DynamodbDeleteItemCommandOptions<Entity extends DynamoDbEntityType> {
     entity: Entity
     expressions?: Builders<Entity> | undefined
     commandOptions?: CommandOptions | undefined
 }
 
-export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = DynamoDbEntityType> extends DynamodbBaseCommandType<
-    GetCommand,
-    CommandOptions,
-    Entity
-> {
-    public override _type = 'dynamodb:command:get-item' as const
+export class DynamodbDeleteItemCommandType<
+    Entity extends DynamoDbEntityType = DynamoDbEntityType,
+> extends DynamodbBaseCommandType<DeleteCommand, CommandOptions, Entity> {
+    public override _type = 'dynamodb:command:delete-item' as const
 
-    public constructor({ entity, commandOptions = {}, expressions = {} }: DynamodbGetItemCommandOptions<Entity>) {
+    public constructor({ entity, commandOptions = {}, expressions = {} }: DynamodbDeleteItemCommandOptions<Entity>) {
         super({ entity, commandOptions })
         this.entity = entity
 
         this._builder.addKey(this.entity)
-        this._builder.addProjectionExpression(expressions?.projection)
+        this._builder.addConditionExpression(expressions?.condition)
         this._builder.addInput(this._builder.context._inputSchema)
     }
 
@@ -48,10 +44,10 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
                     return this._builder.writeCommand({
                         node,
                         context,
-                        commandInput: context.reference(dynamodbSymbols.GetCommandInput()),
+                        commandInput: context.reference(dynamodbSymbols.DeleteCommandInput()),
                         commandLines: function* () {
                             yield self._builder.writeKey()
-                            yield self._builder.writeProjectionExpression()
+                            yield self._builder.writeConditionExpression()
                             yield self._builder.writeAttributeNames()
                             yield self._builder.writeAttributeValues()
                             yield ''
@@ -69,17 +65,18 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
         return this._buildHandler({
             context,
             commandLines: function* () {
-                const GetCommand = context.value(dynamodbSymbols.GetCommand())
+                const DeleteCommand = context.value(dynamodbSymbols.DeleteCommand())
 
                 const writer = createWriter()
 
-                writer.writeLine(`const result = await this.table.client.send(new ${GetCommand}(command))`)
-                writer.write('if (result.Item === undefined)').block(() => {
-                    writer.writeLine('return { right: null, $response: result }')
-                })
-                writer.writeLine(
-                    `return { ...${context.value(self._builder.result ?? self.entity.shape)}.parse(result.Item), $response: result }`,
-                )
+                writer.writeLine(`const result = await this.table.client.send(new ${DeleteCommand}(command))`)
+                if (self._commandOptions.ReturnValues === 'ALL_OLD') {
+                    writer.write('if (result.Item !== undefined) ').block(() => {
+                        writer.writeLine(`const data = ${context.value(self.entity.shape)}.parse(result.Item)`)
+                        writer.writeLine('return { ...data, $response: result }')
+                    })
+                }
+                writer.writeLine('return { right: null, $response: result }')
 
                 yield writer.toString()
             },
@@ -87,6 +84,6 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
     }
 }
 
-export function $getItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbGetItemCommandOptions<Entity>) {
-    return new DynamodbGetItemCommandType<Entity>(args)
+export function $deleteItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbDeleteItemCommandOptions<Entity>) {
+    return new DynamodbDeleteItemCommandType<Entity>(args)
 }

@@ -3,6 +3,7 @@ import { moduleSymbol } from '../../cst/module.js'
 export const dynamodbSymbols = {
     DynamoDBDocument: moduleSymbol('@aws-sdk/lib-dynamodb', 'DynamoDBDocument'),
     UpdateCommandInput: moduleSymbol('@aws-sdk/lib-dynamodb', 'UpdateCommandInput'),
+    DeleteCommandInput: moduleSymbol('@aws-sdk/lib-dynamodb', 'DeleteCommandInput'),
     GetCommandInput: moduleSymbol('@aws-sdk/lib-dynamodb', 'GetCommandInput'),
     PutCommandInput: moduleSymbol('@aws-sdk/lib-dynamodb', 'PutCommandInput'),
     ScanCommandInput: moduleSymbol('@aws-sdk/lib-dynamodb', 'ScanCommandInput'),
@@ -10,6 +11,7 @@ export const dynamodbSymbols = {
     GetCommandOutput: moduleSymbol('@aws-sdk/lib-dynamodb', 'GetCommandOutput'),
     DynamoDBServiceException: moduleSymbol('@aws-sdk/client-dynamodb', 'DynamoDBServiceException'),
     UpdateCommand: moduleSymbol('@aws-sdk/lib-dynamodb', 'UpdateCommand'),
+    DeleteCommand: moduleSymbol('@aws-sdk/lib-dynamodb', 'DeleteCommand'),
     GetCommand: moduleSymbol('@aws-sdk/lib-dynamodb', 'GetCommand'),
     PutCommand: moduleSymbol('@aws-sdk/lib-dynamodb', 'PutCommand'),
     ScanCommand: moduleSymbol('@aws-sdk/lib-dynamodb', 'ScanCommand'),

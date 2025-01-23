@@ -4,13 +4,30 @@ import { Node } from '../../cst/node.js'
 import { createWriter } from '../../writer.js'
 import { $const } from '../const/const.js'
 import { $object, type ObjectType, type ShapeToInfer } from '../object/object.js'
-import { DynamodbGetItemCommandType } from './commands/get-item/command.js'
-import { DynamodbPutItemCommandType } from './commands/put-item/command.js'
-import { DynamodbQueryCommandType } from './commands/query/command.js'
-import { DynamodbScanCommandType } from './commands/scan/command.js'
-import { DynamodbUpdateItemCommandType } from './commands/update-item/command.js'
-import { dynamodbSymbols } from './symbols.js'
+import type { DynamodbBaseCommandType } from './commands/base.js'
+import { $deleteItemCommand, type DynamodbDeleteItemCommandOptions } from './commands/delete-item/command.js'
+import { $getItemCommand, type DynamodbGetItemCommandOptions } from './commands/get-item/command.js'
+import { $putItemCommand, type DynamodbPutItemCommandOptions } from './commands/put-item/command.js'
+import {
+    $queryCommand,
+    $queryIndexCommand,
+    $queryTableCommand,
+    $queryTableIndexCommand,
+    type DynamodbQueryCommandOptions,
+} from './commands/query/command.js'
+import {
+    $scanCommand,
+    $scanIndexCommand,
+    $scanTableCommand,
+    $scanTableIndexCommand,
+    type DynamodbScanCommandOptions,
+} from './commands/scan/command.js'
+import { $updateItemCommand, type DynamodbUpdateItemCommandOptions } from './commands/update-item/command.js'
+import { FormattedOperand } from './expressions/attributes.js'
+import type { DynamodbExpressionContext } from './expressions/context.js'
 import type { DynamoDbTableType } from './table.js'
+
+type EntityShape<Shape extends ObjectType, Table extends DynamoDbTableType> = ObjectType<Shape['shape'] & Table['shape']['shape']>
 
 type ShapeFormatString<Shape extends ObjectType> =
     | `${string}${keyof Shape['shape'] & string}${string}`
@@ -27,27 +44,24 @@ export class DynamoDbEntityType<
     public override _canReference?: boolean = false
     public table: Table
     public entityType: EntityType
-    // public shape: ObjectType<
-    //     Shape['shape'] & Table['shape']['shape'] & Record<(typeof this.table)['definition']['entityType'], ConstType<EntityType>>
-    // >
-    public shape: ObjectType<Shape['shape'] & Table['shape']['shape']>
+    public shape: EntityShape<Shape, Table>
     public declare infer: ShapeToInfer<(typeof this.shape)['shape']>
     public _attributeFormatters: Record<string, string> = {}
-    public _commands: Record<
-        string,
-        | DynamodbUpdateItemCommandType
-        | DynamodbGetItemCommandType
-        | DynamodbPutItemCommandType
-        | DynamodbScanCommandType
-        | DynamodbQueryCommandType
-    > = {}
+    public _commands: Record<string, DynamodbBaseCommandType<unknown, unknown>> = {}
 
-    public constructor(
-        table: Table,
-        entityType: EntityType,
-        shape: Shape,
-        keyFormatters: Record<string, ShapeFormatString<Shape>>,
-    ) {
+    public constructor({
+        table,
+        entityType,
+        shape,
+        keyFormatters,
+        attributeFormatters,
+    }: {
+        table: Table
+        entityType: EntityType
+        shape: Shape
+        keyFormatters: Record<string, ShapeFormatString<EntityShape<Shape, Table>>>
+        attributeFormatters: Record<string, ShapeFormatString<EntityShape<Shape, Table>>>
+    }) {
         super()
         this.table = table
         this.entityType = entityType
@@ -61,16 +75,17 @@ export class DynamoDbEntityType<
         this._transform ??= {}
         this._transform.symbolName = (name) => {
             parentName = name
-            return `${name}EntityClient`
+            return `${name}EntityClient`.replace(/EntityEntityClient$/, 'EntityClient')
         }
 
         this._transform
         this.shape._transform ??= {}
-        this.shape._transform.symbolName = (name) => `${parentName ?? name}Entity`
+        this.shape._transform.symbolName = (name) => `${parentName ?? name}Entity`.replace(/EntityEntity$/, 'Entity')
         this._connections = [this.shape]
         this._children = [this.shape]
 
         this._attributeFormatters = {
+            ...attributeFormatters,
             ...keyFormatters,
         }
         Object.defineProperty(this, '_connections', {
@@ -84,18 +99,9 @@ export class DynamoDbEntityType<
     public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return [
             {
-                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.table.ts'),
+                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.client.ts'),
                 type: 'typescript',
                 definition: (node, context) => {
-                    const UpdateCommand = context.value(dynamodbSymbols.UpdateCommand())
-                    const GetCommand = context.value(dynamodbSymbols.GetCommand())
-                    const PutCommand = context.value(dynamodbSymbols.PutCommand())
-                    const _ScanCommand = context.value(dynamodbSymbols.ScanCommand())
-                    const paginateScan = context.value(dynamodbSymbols.paginateScan())
-                    const _QueryCommand = context.value(dynamodbSymbols.QueryCommand())
-                    const paginateQuery = context.value(dynamodbSymbols.paginateQuery())
-                    const DynamoDBServiceException = context.reference(dynamodbSymbols.DynamoDBServiceException())
-
                     const entityWriter = createWriter()
                     entityWriter.write(context.declare('class', node)).block(() => {
                         entityWriter.writeLine(`public entityType = '${this.entityType}' as const`)
@@ -103,168 +109,17 @@ export class DynamoDbEntityType<
 
                         entityWriter
                             .newLine()
-                            .write('public constructor(')
-                            .inlineBlock(() => {
-                                entityWriter.writeLine('table')
-                            })
-                            .write(':')
-                            .inlineBlock(() => {
-                                entityWriter.writeLine(`table: ${context.reference(this.table)}`)
-                            })
-                            .write(')')
+                            .write('public constructor({')
+                            .write('table')
+                            .write('} : {')
+                            .write(`table: ${context.reference(this.table)}`)
+                            .write('})')
                             .block(() => {
                                 entityWriter.writeLine('this.table = table')
                             })
 
-                        for (const [operationId, command] of Object.entries(this._commands).sort()) {
-                            entityWriter
-                                .blankLine()
-                                .write(
-                                    `public async ${command instanceof DynamodbScanCommandType || command instanceof DynamodbQueryCommandType ? '*' : ''}${operationId}(`,
-                                )
-
-                            if (Object.keys(command._input.shape).length > 0) {
-                                entityWriter
-                                    .inlineBlock(() => {
-                                        entityWriter.write('input')
-                                    })
-                                    .write(':')
-                                    .inlineBlock(() => {
-                                        entityWriter.write(`input: ${context.reference(command._input)}`)
-                                    })
-                            }
-
-                            entityWriter.write(')').block(() => {
-                                entityWriter
-                                    .write(`const command = ${context.reference(command)}(`)
-                                    .inlineBlock(() => {
-                                        entityWriter.write('tableName: this.table.tableName,')
-                                        if (Object.keys(command._input.shape).length > 0) {
-                                            entityWriter.write('input,')
-                                        }
-                                    })
-                                    .write(')')
-
-                                entityWriter
-                                    .writeLine('try ')
-                                    .block(() => {
-                                        if (command instanceof DynamodbUpdateItemCommandType) {
-                                            entityWriter.write(
-                                                `const result = await this.table.client.send(new ${UpdateCommand}(command))`,
-                                            )
-
-                                            if (command._commandOptions.ReturnValues === 'ALL_NEW') {
-                                                entityWriter.writeLine(
-                                                    `const data = ${context.value(this.shape)}.parse(result.Attributes ?? {})`,
-                                                )
-                                                entityWriter.writeLine('return { ...data, $response: result }')
-                                            } else if (command._commandOptions.ReturnValues === 'ALL_OLD') {
-                                                entityWriter.write('if (result.Attributes !== undefined) ').block(() => {
-                                                    entityWriter.writeLine(
-                                                        `const data = ${context.value(this.shape)}.parse(result.Attributes)`,
-                                                    )
-                                                    entityWriter.writeLine('return { ...data, $response: result }')
-                                                })
-                                                entityWriter.writeLine('return { right: null, $response: result }')
-                                            } else if (
-                                                command._commandOptions.ReturnValues === 'UPDATED_NEW' ||
-                                                command._commandOptions.ReturnValues === 'UPDATED_OLD'
-                                            ) {
-                                                entityWriter.writeLine(
-                                                    'return { right: data.Attributes ?? null, $response: result }',
-                                                )
-                                            } else {
-                                                entityWriter.writeLine('return { right: null, $response: result }')
-                                            }
-                                        } else if (command instanceof DynamodbGetItemCommandType) {
-                                            entityWriter.writeLine(
-                                                `const result = await this.table.client.send(new ${GetCommand}(command))`,
-                                            )
-                                            entityWriter.write('if (result.Item === undefined)').block(() => {
-                                                entityWriter.writeLine('return { right: null, $response: result }')
-                                            })
-                                            entityWriter.writeLine(
-                                                `return { ...${context.value(command._result ?? this.shape)}.parse(result.Item), $response: result }`,
-                                            )
-                                        } else if (command instanceof DynamodbPutItemCommandType) {
-                                            entityWriter.writeLine(
-                                                `const result = await this.table.client.send(new ${PutCommand}(command))`,
-                                            )
-                                            if (command._commandOptions.ReturnValues === 'ALL_OLD') {
-                                                entityWriter.write('if (result.Item !== undefined) ').block(() => {
-                                                    entityWriter.writeLine(
-                                                        `const data = ${context.value(this.shape)}.parse(result.Item)`,
-                                                    )
-                                                    entityWriter.writeLine('return { ...data, $response: result }')
-                                                })
-                                            } else {
-                                                entityWriter.writeLine('return { right: null, $response: result }')
-                                            }
-                                        } else if (command instanceof DynamodbScanCommandType) {
-                                            entityWriter
-                                                .write(
-                                                    `for await (const page of ${paginateScan}({ client: this.table.client }, command))`,
-                                                )
-                                                .block(() => {
-                                                    entityWriter.writeLine(
-                                                        `const items = (page.Items ?? []).map(x => ${context.value(command._result ?? this.shape)}.parse(x))`,
-                                                    )
-                                                    entityWriter.writeLine(
-                                                        'const rights = items.filter(x => "right" in x).map(x=>x.right)',
-                                                    )
-                                                    entityWriter.writeLine(
-                                                        'const lefts = items.filter(x => "left" in x).map(x=>x.left)',
-                                                    )
-                                                    entityWriter
-                                                        .blankLine()
-                                                        .writeLine('if (lefts.length > 0)')
-                                                        .block(() => {
-                                                            entityWriter.writeLine(
-                                                                'yield { left: rights, validationErrors: lefts, $response: page }',
-                                                            )
-                                                        })
-                                                        .writeLine('else')
-                                                        .block(() => {
-                                                            entityWriter.writeLine('yield { right: rights, $response: page }')
-                                                        })
-                                                })
-                                        } else if (command instanceof DynamodbQueryCommandType) {
-                                            entityWriter
-                                                .write(
-                                                    `for await (const page of ${paginateQuery}({ client: this.table.client }, command))`,
-                                                )
-                                                .block(() => {
-                                                    entityWriter.writeLine(
-                                                        `const items = (page.Items ?? []).map(x => ${context.value(command._result ?? this.shape)}.parse(x))`,
-                                                    )
-                                                    entityWriter.writeLine(
-                                                        'const rights = items.filter(x => "right" in x).map(x=>x.right)',
-                                                    )
-                                                    entityWriter.writeLine(
-                                                        'const lefts = items.filter(x => "left" in x).map(x=>x.left)',
-                                                    )
-                                                    entityWriter
-                                                        .blankLine()
-                                                        .writeLine('if (lefts.length > 0)')
-                                                        .block(() => {
-                                                            entityWriter.writeLine(
-                                                                'yield { left: rights, validationErrors: lefts, $response: page }',
-                                                            )
-                                                        })
-                                                        .writeLine('else')
-                                                        .block(() => {
-                                                            entityWriter.writeLine('yield { right: rights, $response: page }')
-                                                        })
-                                                })
-                                        }
-                                    })
-                                    .write('catch (error) ')
-                                    .block(() => {
-                                        entityWriter.writeLine(
-                                            `${command instanceof DynamodbScanCommandType || command instanceof DynamodbQueryCommandType ? 'yield' : 'return'} { left: error as ${DynamoDBServiceException}, $response: error }`,
-                                        )
-                                    })
-                            })
+                        for (const command of Object.values(this._commands).sort()) {
+                            entityWriter.blankLine().writeLine(command.buildHandler(context))
                         }
                     })
 
@@ -275,14 +130,116 @@ export class DynamoDbEntityType<
         ]
     }
 
-    public getItem<const Method extends string>(_method: Method) {}
+    public formatAttribute(key: string, context: DynamodbExpressionContext) {
+        let formatted = this._attributeFormatters[key] ?? `${key}`
+        const inputKeys: string[] = []
+        for (const [, input] of formatted.matchAll(/\{(\w+)\}/g)) {
+            const schema = context.getShapeSchema({ key: input as string, shouldUnwrap: true })
+            formatted = formatted.replace(`{${input}}`, `$\{${input}\}`)
+            context.addInputSchema({ key: input as string, schema })
+            inputKeys.push(input as string)
+        }
+
+        return new FormattedOperand(formatted, key, inputKeys, context)
+    }
+
+    public getItem<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbGetItemCommandOptions<Entity>['expressions'],
+    ) {
+        return $getItemCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public putItem<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?:
+            | DynamodbPutItemCommandOptions<Entity>['expressions']
+            | Pick<DynamodbPutItemCommandOptions<Entity>, 'expressions' | 'overrides'>,
+    ) {
+        if (typeof expressions === 'object' && ('expressions' in expressions || 'overrides' in expressions)) {
+            return $putItemCommand({ entity: this as unknown as Entity, ...expressions })
+        }
+        return $putItemCommand({ entity: this as unknown as Entity, expressions: expressions as never })
+    }
+
+    public deleteItem<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbDeleteItemCommandOptions<Entity>['expressions'],
+    ) {
+        return $deleteItemCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public query<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbQueryCommandOptions<Entity, undefined>['expressions'],
+    ) {
+        return $queryCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public queryIndex<
+        Index extends keyof NonNullable<Entity['table']['definition']['indexes']>,
+        Entity extends DynamoDbEntityType = typeof this,
+    >(index: Index, expressions?: DynamodbQueryCommandOptions<Entity, Index>['expressions']) {
+        return $queryIndexCommand({ entity: this as unknown as Entity, expressions, index })
+    }
+
+    public queryTable<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbQueryCommandOptions<Entity, undefined>['expressions'],
+    ) {
+        return $queryTableCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public queryTableIndex<
+        Index extends keyof NonNullable<Entity['table']['definition']['indexes']>,
+        Entity extends DynamoDbEntityType = typeof this,
+    >(index: Index, expressions?: DynamodbQueryCommandOptions<Entity, Index>['expressions']) {
+        return $queryTableIndexCommand({ entity: this as unknown as Entity, expressions, index })
+    }
+
+    public scan<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbScanCommandOptions<Entity, undefined>['expressions'],
+    ) {
+        return $scanCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public scanIndex<
+        Index extends keyof NonNullable<Entity['table']['definition']['indexes']>,
+        Entity extends DynamoDbEntityType = typeof this,
+    >(index: Index, expressions?: DynamodbScanCommandOptions<Entity, Index>['expressions']) {
+        return $scanIndexCommand({ entity: this as unknown as Entity, expressions, index })
+    }
+
+    public scanTable<Entity extends DynamoDbEntityType = typeof this>(
+        expressions?: DynamodbScanCommandOptions<Entity, undefined>['expressions'],
+    ) {
+        return $scanTableCommand({ entity: this as unknown as Entity, expressions })
+    }
+
+    public scanTableIndex<
+        Index extends keyof NonNullable<Entity['table']['definition']['indexes']>,
+        Entity extends DynamoDbEntityType = typeof this,
+    >(index: Index, expressions?: DynamodbScanCommandOptions<Entity, Index>['expressions']) {
+        return $scanTableIndexCommand({ entity: this as unknown as Entity, expressions, index })
+    }
+
+    public updateItem<Entity extends DynamoDbEntityType = typeof this>(
+        expressions: DynamodbUpdateItemCommandOptions<Entity>['expressions'],
+    ) {
+        return $updateItemCommand({ entity: this as unknown as Entity, expressions })
+    }
 }
 
-export function $entity<Shape extends ObjectType, const EntityType extends string, Table extends DynamoDbTableType>(
-    table: Table,
-    entityType: EntityType,
-    shape: Shape,
-    keyFormatters: Record<Table['definition']['pk'] | NonNullable<Table['definition']['sk']>, ShapeFormatString<Shape>>,
-) {
-    return new DynamoDbEntityType<Shape, EntityType, Table>(table, entityType, shape, keyFormatters)
+export function $entity<Shape extends ObjectType, const EntityType extends string, Table extends DynamoDbTableType>({
+    table,
+    entityType,
+    shape,
+    keyFormatters,
+    attributeFormatters = {},
+}: {
+    table: Table
+    entityType: EntityType
+    shape: Shape
+    keyFormatters: Record<
+        Table['definition']['pk'] | NonNullable<Table['definition']['sk']>,
+        ShapeFormatString<EntityShape<Shape, Table>>
+    >
+    attributeFormatters?: Record<string, ShapeFormatString<EntityShape<Shape, Table>>>
+}) {
+    return new DynamoDbEntityType<Shape, EntityType, Table>({ table, entityType, shape, keyFormatters, attributeFormatters })
 }
