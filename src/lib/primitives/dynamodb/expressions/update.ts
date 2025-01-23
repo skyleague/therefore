@@ -1,8 +1,8 @@
-import type { ConstExpr } from '@skyleague/axioms'
 import type { Node } from '../../../cst/node.js'
 import { $number, type NumberType } from '../../number/number.js'
 import type { ObjectType } from '../../object/object.js'
 import type { DynamoDbEntityType } from '../entity.js'
+import { type DynamodbOperand, PathOperand, ValueOperand } from './attributes.js'
 import type { DynamodbExpressionContext } from './context.js'
 
 class Update {
@@ -35,54 +35,26 @@ class UpdateAction {
     }
 }
 class SetAction extends UpdateAction {
-    public constructor(operand: PathOperand<Node>, value: Operand<Node> | MathOperand | undefined) {
+    public constructor(operand: UpdatePathOperand<Node>, value: DynamodbOperand<Node> | MathOperand | undefined) {
         super(`${operand.image} = ${operand._ref(value)}`)
     }
 }
 
 class RemoveAction extends UpdateAction {
-    public constructor(operand: PathOperand<Node>) {
+    public constructor(operand: UpdatePathOperand<Node>) {
         super(operand.image)
     }
 }
-// class OptionalOperand<Shape extends Node> extends PathOperand<Shape> {
-//     public operand: PathOperand<Shape>
-//     public constructor(operand: PathOperand<Shape>) {
-//         this.operand = operand
-//     }
-// }
 
-type Operand<Shape extends Node> = PathOperand<Shape> | ValueOperand | ConstExpr<string | number | boolean>
-class PathOperand<Shape extends Node> {
-    public image: string
-    public shape: Shape
-
-    public _context: DynamodbExpressionContext
-    public constructor(operand: string, shape: Shape, context: DynamodbExpressionContext) {
-        this.image = operand
-        this.shape = shape
-        this._context = context
-    }
-
-    public _ref(value: Operand<Node> | MathOperand | undefined): string {
-        if (value === undefined) {
-            throw new Error('operand is required')
-        }
-        if (value instanceof ValueOperand) {
-            value.setSchema(this.shape)
-            return value.image
-        }
+class UpdatePathOperand<Shape extends Node> extends PathOperand<Shape> {
+    public override _ref<S extends Node>(value: DynamodbOperand<S> | MathOperand | undefined): string {
         if (value instanceof MathOperand) {
             return value.image
         }
-        if (value instanceof PathOperand) {
-            return value.image
-        }
 
-        return this._context.addConstValue({ value })
+        return super._ref(value)
     }
-
-    public set(value: Operand<Node> | MathOperand | undefined) {
+    public set(value: DynamodbOperand<Node> | MathOperand | undefined) {
         return new SetAction(this, value)
     }
 
@@ -90,97 +62,75 @@ class PathOperand<Shape extends Node> {
         return new RemoveAction(this)
     }
 
-    public plus(value: Operand<NumberType> | MathOperand | undefined) {
-        return new MathOperand(`${this.image} + ${this._ref(value)}`, this._context)
+    public plus(value: DynamodbOperand<NumberType> | MathOperand | undefined) {
+        return new MathOperand(`${this.image} + ${this._ref(value)}`, this.originalKey, this._context)
     }
 
-    public minus(value: Operand<NumberType> | MathOperand | undefined) {
-        return new MathOperand(`${this.image} - ${this._ref(value)}`, this._context)
+    public minus(value: DynamodbOperand<NumberType> | MathOperand | undefined) {
+        return new MathOperand(`${this.image} - ${this._ref(value)}`, this.originalKey, this._context)
     }
 
-    public ifNotExists(value: Operand<Node> | MathOperand | undefined) {
-        return new PathOperand(`if_not_exists(${this.image}, ${this._ref(value)})`, this.shape, this._context)
+    public ifNotExists(value: DynamodbOperand<Node> | MathOperand | undefined) {
+        return new UpdatePathOperand(
+            `if_not_exists(${this.image}, ${this._ref(value)})`,
+            this.originalKey,
+            this.shape,
+            this._context,
+        )
     }
 
-    public listAppend(value: Operand<Node> | MathOperand | undefined) {
+    public listAppend(value: DynamodbOperand<Node> | MathOperand | undefined) {
         return new ListAppend(this, value, this._context)
     }
 }
 
-class ListAppend<Shape extends Node> extends PathOperand<Shape> implements UpdateAction {
+class ListAppend<Shape extends Node> extends UpdatePathOperand<Shape> implements UpdateAction {
     public _image: string
     get action() {
         return `${this._image} = ${this.image}`
     }
     public constructor(
-        operand: PathOperand<Shape>,
-        value: Operand<Node> | MathOperand | undefined,
+        operand: UpdatePathOperand<Shape>,
+        value: DynamodbOperand<Node> | MathOperand | undefined,
         context: DynamodbExpressionContext,
     ) {
-        super(`list_append(${operand.image}, ${operand._ref(value)})`, operand.shape, context)
+        super(`list_append(${operand.image}, ${operand._ref(value)})`, operand.originalKey, operand.shape, context)
         this._image = operand.image
     }
 }
 
-class ValueOperand {
-    public image: string
-    public _inputKey: string
-    public _context: DynamodbExpressionContext
-    public constructor(operand: string, inputKey: string, context: DynamodbExpressionContext) {
-        this.image = operand
-        this._context = context
-        this._inputKey = inputKey
+class MathOperand extends PathOperand<NumberType> {
+    public constructor(expression: string, originalKey: string, context: DynamodbExpressionContext) {
+        super(expression, originalKey, $number(), context)
     }
 
-    public setSchema(schema: Node) {
-        this._context.addInputSchema({ key: this._inputKey, schema })
-    }
-}
-
-class MathOperand {
-    public image: string
-    public _context: DynamodbExpressionContext
-    public constructor(expression: string, context: DynamodbExpressionContext) {
-        this.image = expression
-        this._context = context
-    }
-
-    public _ref(value: Operand<Node> | MathOperand | undefined): string {
-        if (value === undefined) {
-            throw new Error('operand is required')
-        }
-        if (value instanceof ValueOperand) {
-            value.setSchema($number())
-            return value.image
-        }
+    public override _ref<S extends Node>(value: DynamodbOperand<S> | MathOperand | undefined): string {
         if (value instanceof MathOperand) {
             return value.image
         }
-        if (value instanceof PathOperand) {
-            return value.image
-        }
 
-        return this._context.addConstValue({ value })
+        return super._ref(value)
     }
 
-    public plus(value: Operand<NumberType>) {
-        return new MathOperand(`${this.image} + ${this._ref(value)}`, this._context)
+    public plus(value: DynamodbOperand<NumberType>) {
+        return new MathOperand(`${this.image} + ${this._ref(value)}`, this.originalKey, this._context)
     }
 
-    public minus(value: Operand<NumberType>) {
-        return new MathOperand(`${this.image} - ${this._ref(value)}`, this._context)
+    public minus(value: DynamodbOperand<NumberType>) {
+        return new MathOperand(`${this.image} - ${this._ref(value)}`, this.originalKey, this._context)
     }
 }
 
-export type UpdateBuilder<T extends ObjectType> = (
+export type UpdateBuilder<T extends ObjectType> = (args: {
     existing: {
-        [k in keyof T['infer']]-?: PathOperand<T['shape'][k]>
-    },
-    input: Record<string, ValueOperand>,
-) =>
+        [k in keyof T['infer']]-?: UpdatePathOperand<T['shape'][k]>
+    }
+    input: Record<string, ValueOperand>
+    context: DynamodbExpressionContext<T>
+}) =>
     | UpdateAction[]
     | {
-          [k in keyof T['infer']]?: Operand<T['shape'][k]> | MathOperand | RemoveAction | undefined
+          [k in keyof T['infer']]?: DynamodbOperand<T['shape'][k]> | MathOperand | RemoveAction | undefined
       }
 
 export function updateExpression<T extends ObjectType>({
@@ -192,11 +142,11 @@ export function updateExpression<T extends ObjectType>({
     build: UpdateBuilder<T>
     context: DynamodbExpressionContext<NoInfer<T>>
 }) {
-    const existing = new Proxy({} as { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }, {
+    const existing = new Proxy({} as { [k in keyof T['infer']]-?: UpdatePathOperand<T['shape'][k]> }, {
         get: (_, key: string) => {
             const path = context.attributeName({ key })
 
-            return new PathOperand(path, context.getShapeSchema({ key, shouldUnwrap: true }), context)
+            return new UpdatePathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: true }), context)
         },
     })
     const input = new Proxy({} as Record<string, Exclude<ValueOperand, undefined>>, {
@@ -204,7 +154,7 @@ export function updateExpression<T extends ObjectType>({
             return new ValueOperand(context.attributeValue({ key }), key, context)
         },
     })
-    let expression = build(existing, input)
+    let expression = build({ existing, input, context })
     expression = Array.isArray(expression)
         ? expression
         : Object.entries(expression).map(([key, value]): UpdateAction => {

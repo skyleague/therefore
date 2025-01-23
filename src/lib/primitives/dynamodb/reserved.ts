@@ -573,7 +573,7 @@ const reservedWords = [
     'YEAR',
     'ZONE',
 
-    'CATEGORY',
+    // 'CATEGORY',
 ].map((x) => x.toUpperCase())
 
 export function isReservedWord(word: string): boolean {

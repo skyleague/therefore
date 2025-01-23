@@ -3,6 +3,7 @@ import { $nullable, NullableType } from '../../nullable/nullable.js'
 import type { ObjectType } from '../../object/object.js'
 import { $optional, OptionalType } from '../../optional/optional.js'
 import { isReservedWord } from '../reserved.js'
+import { FormattedOperand } from './attributes.js'
 
 function unwrap(s: Node): Node {
     if (s instanceof OptionalType) {
@@ -12,13 +13,6 @@ function unwrap(s: Node): Node {
         return unwrap(s.unwrap())
     }
     return s
-}
-
-export class FormattedConstOperand {
-    public operand: string
-    public constructor(operand: string) {
-        this.operand = operand
-    }
 }
 
 export class DynamodbExpressionContext<Shape extends ObjectType = ObjectType> {
@@ -36,18 +30,24 @@ export class DynamodbExpressionContext<Shape extends ObjectType = ObjectType> {
         this.shape = shape
     }
 
-    public addConstValue({ value }: { value: unknown }): string {
+    public addConstValue({ inputKey, value }: { value: unknown; inputKey?: string | undefined }): string {
         const constValue =
             value instanceof Function
                 ? `(${value.toString()})()`
-                : value instanceof FormattedConstOperand
-                  ? value.operand
+                : value instanceof FormattedOperand
+                  ? `\`${value.image}\``
                   : JSON.stringify(value)
         const [existing] = Object.entries(this._attributeConstValues).find(([, v]) => v === constValue) ?? []
         if (existing) {
             return existing
         }
-        const image = `:const${Object.keys(this._attributeConstValues).length}`
+        const base = `:${inputKey ?? 'const'}`
+        let image = `${base}0`
+        let i = 0
+        while (image in this._attributeConstValues) {
+            image = `${base}${++i}`
+        }
+
         this._attributeConstValues[image] = constValue
         return image
     }

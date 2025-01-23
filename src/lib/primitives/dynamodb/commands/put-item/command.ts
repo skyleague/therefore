@@ -1,66 +1,42 @@
 import type { PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb'
-import { isDefined, omitUndefined } from '@skyleague/axioms'
-import camelcase from 'camelcase'
+import { omit } from '@skyleague/axioms'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
-import { Node } from '../../../../cst/node.js'
+import type { Node } from '../../../../cst/node.js'
+import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
 import { createWriter } from '../../../../writer.js'
-import { $object, type ObjectType } from '../../../object/object.js'
 import { $string } from '../../../string/string.js'
 import type { DynamoDbEntityType } from '../../entity.js'
-import {} from '../../expressions/condition.js'
-import { DynamodbExpressionContext } from '../../expressions/context.js'
-import type { projectionExpression } from '../../expressions/projection.js'
-import {} from '../../expressions/update.js'
+import type { ConditionBuilder } from '../../expressions/condition.js'
 import { dynamodbSymbols } from '../../symbols.js'
+import { DynamodbBaseCommandType, type OmitExpressions, type OmitLegacyOptions } from '../base.js'
 
-// type Builders<Entity extends DynamoDbEntityType> = {
-//     projection: ProjectionBuilder<Entity['shape']>
-// }
+type Builders<Entity extends DynamoDbEntityType> = {
+    condition?: ConditionBuilder<Entity['shape']>
+}
 
-type CommandOptions = Omit<
-    { [k in keyof PutCommandInput]?: PutCommandInput[k] extends string | number ? PutCommandInput[k] : never },
-    'TableName'
->
+type CommandOptions = Omit<OmitLegacyOptions<OmitExpressions<PutCommandInput>>, 'Key' | 'TableName' | 'Item'>
 
-export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = DynamoDbEntityType> extends Node {
+export interface DynamodbPutItemCommandOptions<Entity extends DynamoDbEntityType> {
+    entity: Entity
+    overrides?: Partial<Entity['infer']>
+    expressions?: Builders<Entity> | undefined
+    commandOptions?: CommandOptions | undefined
+}
+
+export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = DynamoDbEntityType> extends DynamodbBaseCommandType<
+    PutCommand,
+    CommandOptions,
+    Entity
+> {
     public override _type = 'dynamodb:command:put-item' as const
-    public override _canReference?: boolean = false
-    public declare infer: PutCommand
+    public _overrides: Partial<Entity['infer']>
 
-    public entity: Entity
+    public constructor({ entity, expressions, overrides, commandOptions = {} }: DynamodbPutItemCommandOptions<Entity>) {
+        super({ commandOptions, entity })
+        this._overrides = { ...overrides } as Partial<Entity['infer']>
 
-    // public builders: Builders<Entity>
-
-    public _input: ObjectType
-    public _projection: ReturnType<typeof projectionExpression> | undefined
-    public _context: DynamodbExpressionContext<Entity['shape']>
-    public _key: Record<string, string>
-    public _commandOptions: Partial<PutCommandInput>
-
-    public constructor(
-        entity: Entity,
-        commandName: string,
-        // builders: Builders<Entity>,
-        commandOptions: CommandOptions | undefined,
-    ) {
-        super()
-        this.entity = entity
-        // this.builders = builders
-        this._context = new DynamodbExpressionContext(entity.shape)
-        this._commandOptions = omitUndefined(commandOptions ?? {})
-
-        this._key = Object.fromEntries(
-            [entity.table.definition.pk, entity.table.definition.sk].filter(isDefined).map((k) => {
-                let formatted = entity._attributeFormatters[k] ?? k
-                for (const [, input] of formatted.matchAll(/\{(\w+)\}/g)) {
-                    const schema = this._context.getShapeSchema({ key: input as string, shouldUnwrap: true })
-                    formatted = formatted.replace(`{${input}}`, `$\{${input}\}`)
-                    this._context.addInputSchema({ key: input as string, schema })
-                }
-                return [k, formatted]
-            }),
-        )
+        this._builder.addKey(entity)
 
         for (const [key, value] of Object.entries(this.entity.shape.shape)) {
             if (
@@ -72,132 +48,129 @@ export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = Dyna
             ) {
                 continue
             }
-            this._context.addInputSchema({ key, schema: value })
+            this._builder.context.addInputSchema({ key, schema: value })
         }
 
         if (entity.table.definition.createdAt !== undefined) {
-            this._context.addInputSchema({ key: entity.table.definition.createdAt, schema: $string().optional() })
+            this._builder.context.addInputSchema({ key: entity.table.definition.createdAt, schema: $string().optional() })
         }
         if (entity.table.definition.updatedAt !== undefined) {
-            this._context.addInputSchema({ key: entity.table.definition.updatedAt, schema: $string().optional() })
+            this._builder.context.addInputSchema({ key: entity.table.definition.updatedAt, schema: $string().optional() })
         }
 
-        let parentName: string | undefined
+        this._builder.addConditionExpression(expressions?.condition)
 
-        this._input = $object(this._context._inputSchema)
-        this._input._transform = { symbolName: (name) => `${parentName ?? name}Input` }
-
-        this._transform ??= {}
-        this._transform.symbolName = (name) => {
-            parentName = name
-            return `${camelcase(name)}Command`
-        }
-        this._connections = [this._input]
-        this._children = [this._input]
-
-        if (entity._commands[commandName] !== undefined) {
-            throw new Error(`Command with name ${commandName} already exists`)
-        }
-        entity._commands[commandName] = this as unknown as DynamodbPutItemCommandType
+        this._builder.addInput(
+            omit(this._builder.context._inputSchema, Object.keys(this._overrides)) as unknown as Record<string, Node>,
+        )
     }
 
     public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
         return [
             {
-                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.table.ts'),
+                targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
                 definition: (node, context) => {
-                    const PutCommandInput = context.reference(dynamodbSymbols.PutCommandInput())
-
-                    const commandWriter = createWriter()
-                    commandWriter
-                        .write(context.declare('const', node))
-                        .write(' = ')
-                        .write('(')
-                        .block(() => {
-                            commandWriter.writeLine('tableName,')
-                            commandWriter.write('input: ').block(() => {
-                                for (const key of Object.keys(this._input.shape).sort()) {
-                                    commandWriter.writeLine(`${key},`)
-                                }
-                            })
-                        })
-                        .write(':')
-                        .block(() => {
-                            commandWriter.writeLine('tableName: string,')
-                            commandWriter.writeLine(`input: ${context.reference(this._input)}`)
-                        })
-                        .write(`): ${PutCommandInput} => `)
-                        .block(() => {
+                    const self = this
+                    return this._builder.writeCommand({
+                        node,
+                        context,
+                        commandInput: context.reference(dynamodbSymbols.PutCommandInput()),
+                        prefixLines: function* () {
                             if (
-                                this.entity.table.definition.createdAt !== undefined ||
-                                this.entity.table.definition.updatedAt !== undefined
+                                self.entity.table.definition.createdAt !== undefined ||
+                                self.entity.table.definition.updatedAt !== undefined
                             ) {
-                                commandWriter.writeLine('const _now = new Date().toISOString()')
+                                yield 'const _now = new Date().toISOString()'
+                                for (const [key, value] of Object.entries(self._overrides)) {
+                                    yield `const ${key} = ${JSON.stringify(value)}`
+                                }
                             }
-                            commandWriter.write('return').block(() => {
-                                commandWriter.writeLine('TableName: tableName,')
+                        },
+                        commandLines: function* () {
+                            yield self._builder.writeConditionExpression()
 
-                                const hasOptionalValues = Object.values(this._input.shape).some((s) => s._type === 'optional')
-                                commandWriter
-                                    .write('Item: ')
-                                    .write(hasOptionalValues ? 'Object.fromEntries(Object.entries(' : '')
-                                    .block(() => {
-                                        commandWriter.writeLine('// Key elements')
-                                        for (const [key, value] of Object.entries(this._key)) {
-                                            commandWriter.writeLine(`${key}: \`${value}\`,`)
-                                        }
-                                        commandWriter.writeLine(
-                                            `${this.entity.table.definition.entityType}: '${this.entity.entityType}',`,
-                                        )
-                                        if (this.entity.table.definition.createdAt !== undefined) {
-                                            commandWriter.writeLine(
-                                                `${this.entity.table.definition.createdAt}: ${this.entity.table.definition.createdAt} ?? _now,`,
-                                            )
-                                        }
-                                        if (this.entity.table.definition.updatedAt !== undefined) {
-                                            commandWriter.writeLine(
-                                                `${this.entity.table.definition.updatedAt}: ${this.entity.table.definition.updatedAt} ?? _now,`,
-                                            )
-                                        }
+                            const hasOptionalValues = Object.values(self._builder.input?.shape ?? {}).some(
+                                (s) => s._type === 'optional',
+                            )
 
-                                        commandWriter.blankLine().writeLine('// Other properties')
-                                        for (const key of Object.keys(this._input.shape).sort()) {
-                                            if (
-                                                key === this.entity.table.definition.createdAt ||
-                                                key === this.entity.table.definition.updatedAt
-                                            ) {
-                                                continue
-                                            }
-                                            commandWriter.writeLine(`${key},`)
-                                        }
-                                    })
-                                    .write(hasOptionalValues ? ').filter(([,v])=>v!==undefined))' : '')
-
-                                if (Object.entries(this._commandOptions).filter(([_, v]) => v !== undefined).length > 0) {
-                                    commandWriter.blankLine().writeLine('// Extra options')
-                                    for (const [key, value] of Object.entries(this._commandOptions)) {
-                                        commandWriter.writeLine(
-                                            `${key}: ${typeof value === 'string' ? JSON.stringify(value) : value},`,
+                            const itemWriter = createWriter()
+                            itemWriter
+                                .write('Item: ')
+                                .conditionalWrite(hasOptionalValues, 'Object.fromEntries(Object.entries(')
+                                .block(() => {
+                                    itemWriter.writeLine('// Key elements')
+                                    for (const [key, value] of Object.entries(self._builder.key ?? {})) {
+                                        itemWriter.writeLine(`${key}: \`${value.image}\`,`)
+                                    }
+                                    itemWriter.writeLine(
+                                        `${self.entity.table.definition.entityType}: '${self.entity.entityType}',`,
+                                    )
+                                    if (self.entity.table.definition.createdAt !== undefined) {
+                                        itemWriter.writeLine(
+                                            `${self.entity.table.definition.createdAt}: ${self.entity.table.definition.createdAt} ?? _now,`,
                                         )
                                     }
-                                }
-                            })
-                        })
+                                    if (self.entity.table.definition.updatedAt !== undefined) {
+                                        itemWriter.writeLine(
+                                            `${self.entity.table.definition.updatedAt}: ${self.entity.table.definition.updatedAt} ?? _now,`,
+                                        )
+                                    }
 
-                    return commandWriter.toString()
+                                    if (Object.keys(self._overrides).length > 0) {
+                                        itemWriter.blankLine().writeLine('// Explicit properties')
+                                        for (const key in self._overrides) {
+                                            itemWriter.writeLine(`${key},`)
+                                        }
+                                    }
+
+                                    itemWriter.blankLine().writeLine('// Other properties')
+                                    for (const key of Object.keys(self._builder.input?.shape ?? {}).sort()) {
+                                        if (
+                                            key === self.entity.table.definition.createdAt ||
+                                            key === self.entity.table.definition.updatedAt
+                                        ) {
+                                            continue
+                                        }
+                                        itemWriter.writeLine(`${key},`)
+                                    }
+                                })
+                                .conditionalWrite(hasOptionalValues, ').filter(([,v])=>v!==undefined))')
+
+                            yield itemWriter.toString()
+                            yield self._builder.writeCommandOptions(self._commandOptions)
+                        },
+                    })
                 },
             },
             ...(super._output ?? []),
         ]
     }
+
+    public override buildHandler(context: TypescriptWalkerContext): string {
+        const self = this
+        return this._buildHandler({
+            context,
+            commandLines: function* () {
+                const PutCommand = context.value(dynamodbSymbols.PutCommand())
+                const writer = createWriter()
+
+                writer.writeLine(`const result = await this.table.client.send(new ${PutCommand}(command))`)
+                if (self._commandOptions.ReturnValues === 'ALL_OLD') {
+                    writer.write('if (result.Item !== undefined) ').block(() => {
+                        writer.writeLine(`const data = ${context.value(self.entity.shape)}.parse(result.Item)`)
+                        writer.writeLine('return { ...data, $response: result }')
+                    })
+                } else {
+                    writer.writeLine('return { right: null, $response: result }')
+                }
+
+                yield writer.toString()
+            },
+        })
+    }
 }
 
-export function $putItemCommand<Entity extends DynamoDbEntityType>(
-    entity: Entity,
-    commandName: string,
-    // builders: Builders<Entity>,
-    commandOptions?: CommandOptions,
-) {
-    return new DynamodbPutItemCommandType<Entity>(entity, commandName, /*builders,*/ commandOptions)
+export function $putItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbPutItemCommandOptions<Entity>) {
+    return new DynamodbPutItemCommandType<Entity>(args)
 }

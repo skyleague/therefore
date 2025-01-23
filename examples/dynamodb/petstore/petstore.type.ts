@@ -6,105 +6,16 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
-import { validate as GetPetResultValidator } from './schemas/get-pet.schema.js'
-import { validate as ListCategoriesByOwnerResultValidator } from './schemas/list-categories-by-owner.schema.js'
-import { validate as PetEntityValidator } from './schemas/list-pets-by-owner.schema.js'
-import { validate as ListPetsResultValidator } from './schemas/list-pets.schema.js'
+import { validate as PetEntityValidator } from './schemas/create-pet.schema.js'
+import { validate as GetPetResultValidator } from './schemas/get-pet-result.schema.js'
+import { validate as ListCategoriesByOwnerResultValidator } from './schemas/list-categories-by-owner-result.schema.js'
+import { validate as ListPetsBySkResultValidator } from './schemas/list-pets-by-sk-result.schema.js'
+import { validate as ListPetsResultValidator } from './schemas/list-pets-result.schema.js'
 
 interface Category {
     id?: number | undefined
     name?: string | undefined
 }
-
-export interface CreatePetInput {
-    ownerId: string
-    id: number
-    category?: Category | undefined
-    name: string
-    photoUrls: string[]
-    /**
-     * pet status in the store
-     */
-    status?: 'available' | 'pending' | 'sold' | undefined
-    tags?: Tag[] | undefined
-    createdAt?: string | undefined
-    updatedAt?: string | undefined
-}
-
-export interface GetPetResult {
-    name: string
-    category: Category
-}
-
-export const GetPetResult = {
-    validate: GetPetResultValidator as ValidateFunction<GetPetResult>,
-    get schema() {
-        return GetPetResult.validate.schema
-    },
-    get errors() {
-        return GetPetResult.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is GetPetResult => GetPetResult.validate(o) === true,
-    parse: (o: unknown): { right: GetPetResult } | { left: DefinedError[] } => {
-        if (GetPetResult.is(o)) {
-            return { right: o }
-        }
-        return { left: (GetPetResult.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface GetPetInput {
-    ownerId: string
-    id: number
-}
-
-export interface ListCategoriesByOwnerResult {
-    category: Category
-}
-
-export const ListCategoriesByOwnerResult = {
-    validate: ListCategoriesByOwnerResultValidator as ValidateFunction<ListCategoriesByOwnerResult>,
-    get schema() {
-        return ListCategoriesByOwnerResult.validate.schema
-    },
-    get errors() {
-        return ListCategoriesByOwnerResult.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ListCategoriesByOwnerResult => ListCategoriesByOwnerResult.validate(o) === true,
-    parse: (o: unknown): { right: ListCategoriesByOwnerResult } | { left: DefinedError[] } => {
-        if (ListCategoriesByOwnerResult.is(o)) {
-            return { right: o }
-        }
-        return { left: (ListCategoriesByOwnerResult.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface ListCategoriesByOwnerInput {
-    ownerId: string
-}
-
-export interface ListPetsResult {
-    category: Category
-}
-
-export const ListPetsResult = {
-    validate: ListPetsResultValidator as ValidateFunction<ListPetsResult>,
-    get schema() {
-        return ListPetsResult.validate.schema
-    },
-    get errors() {
-        return ListPetsResult.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is ListPetsResult => ListPetsResult.validate(o) === true,
-    parse: (o: unknown): { right: ListPetsResult } | { left: DefinedError[] } => {
-        if (ListPetsResult.is(o)) {
-            return { right: o }
-        }
-        return { left: (ListPetsResult.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-export interface ListPetsInput {}
 
 export interface PetEntity {
     pk: string
@@ -141,14 +52,132 @@ export const PetEntity = {
     },
 } as const
 
+export interface CreatePetInput {
+    ownerId: string
+    id: number
+    category?: Category | undefined
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold' | undefined
+    tags?: Tag[] | undefined
+    createdAt?: string | undefined
+    updatedAt?: string | undefined
+}
+
+export interface GetPetInput {
+    ownerId: string
+    id: number
+}
+
+export const GetPetResult = {
+    validate: GetPetResultValidator as ValidateFunction<GetPetResult>,
+    get schema() {
+        return GetPetResult.validate.schema
+    },
+    get errors() {
+        return GetPetResult.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is GetPetResult => GetPetResult.validate(o) === true,
+    parse: (o: unknown): { right: GetPetResult } | { left: DefinedError[] } => {
+        if (GetPetResult.is(o)) {
+            return { right: o }
+        }
+        return { left: (GetPetResult.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface GetPetResult {
+    name: string
+    category?: Category | undefined
+}
+
+export interface ListCategoriesByOwnerInput {
+    ownerId: string
+}
+
+export const ListCategoriesByOwnerResult = {
+    validate: ListCategoriesByOwnerResultValidator as ValidateFunction<ListCategoriesByOwnerResult>,
+    get schema() {
+        return ListCategoriesByOwnerResult.validate.schema
+    },
+    get errors() {
+        return ListCategoriesByOwnerResult.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ListCategoriesByOwnerResult => ListCategoriesByOwnerResult.validate(o) === true,
+    parse: (o: unknown): { right: ListCategoriesByOwnerResult } | { left: DefinedError[] } => {
+        if (ListCategoriesByOwnerResult.is(o)) {
+            return { right: o }
+        }
+        return { left: (ListCategoriesByOwnerResult.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface ListCategoriesByOwnerResult {
+    category?: Category | undefined
+}
+
+export interface ListPetEntityCollectionInput {
+    ownerId: string
+}
+
 export interface ListPetsByOwnerInput {
     ownerId: string
 }
 
-export interface UpdatePetNameInput {
-    ownerId: string
+export interface ListPetsBySkInput {
     id: number
-    name: string
+}
+
+export const ListPetsBySkResult = {
+    validate: ListPetsBySkResultValidator as ValidateFunction<ListPetsBySkResult>,
+    get schema() {
+        return ListPetsBySkResult.validate.schema
+    },
+    get errors() {
+        return ListPetsBySkResult.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ListPetsBySkResult => ListPetsBySkResult.validate(o) === true,
+    parse: (o: unknown): { right: ListPetsBySkResult } | { left: DefinedError[] } => {
+        if (ListPetsBySkResult.is(o)) {
+            return { right: o }
+        }
+        return { left: (ListPetsBySkResult.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface ListPetsBySkResult {
+    category?: Category | undefined
+    pk: string
+    sk: string
+}
+
+export const ListPetsResult = {
+    validate: ListPetsResultValidator as ValidateFunction<ListPetsResult>,
+    get schema() {
+        return ListPetsResult.validate.schema
+    },
+    get errors() {
+        return ListPetsResult.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ListPetsResult => ListPetsResult.validate(o) === true,
+    parse: (o: unknown): { right: ListPetsResult } | { left: DefinedError[] } => {
+        if (ListPetsResult.is(o)) {
+            return { right: o }
+        }
+        return { left: (ListPetsResult.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+export interface ListPetsResult {
+    category?: Category | undefined
+}
+
+interface Tag {
+    id?: number | undefined
+    name?: string | undefined
 }
 
 export interface UpdatePetName1Input {
@@ -158,7 +187,14 @@ export interface UpdatePetName1Input {
     category: Category
 }
 
-interface Tag {
-    id?: number | undefined
-    name?: string | undefined
+export interface UpdatePetNameInput {
+    ownerId: string
+    id: number
+    name: string
+}
+
+export interface UpsertPetNameInput {
+    ownerId: string
+    id: number
+    name: string
 }
