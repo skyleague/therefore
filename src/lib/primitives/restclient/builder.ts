@@ -17,6 +17,7 @@ import { asString, objectProperty } from '../../visitor/typescript/literal.js'
 import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
 import { createWriter } from '../../writer.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
+import type { AjvValidatorOptions } from '../validator/types.js'
 import type { RestClientOptions } from './restclient.js'
 import { type MappableSecurityScheme, toSecurityDeclaration, toSecurityHook } from './security.js'
 
@@ -153,7 +154,7 @@ export class EitherHelper extends Node {
     public override _type = 'restclient:either' as const
     public override _name = 'restclient:either'
     public override _canReference: false = false
-    public client: 'ky' | 'got' | undefined
+    public builder!: RestClientBuilder
 
     public override get _output(): TypescriptOutput[] {
         return [
@@ -165,8 +166,8 @@ export class EitherHelper extends Node {
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
                 definition: (_: Node, { reference }) => {
                     const IncomingHttpHeaders =
-                        this.client === 'ky' ? 'Headers' : reference(httpSymbols.IncomingHttpHeadersNode())
-                    const HeaderVar = this.client === 'ky' ? 'HeaderResponse' : 'Headers'
+                        this.builder.options.client === 'ky' ? 'Headers' : reference(httpSymbols.IncomingHttpHeadersNode())
+                    const HeaderVar = this.builder.options.client === 'ky' ? 'HeaderResponse' : 'Headers'
 
                     const writer = createWriter()
                         .writeLine(
@@ -182,12 +183,12 @@ export class EitherHelper extends Node {
                         .writeLine('statusCode: StatusCode')
                         .writeLine('status: Status<StatusCode>')
                         .writeLine(`headers: ${HeaderVar}`)
-                    if (this._validator === 'ajv') {
-                        const DefinedError = reference(ajvSymbols.DefinedError())
-                        writer.writeLine(`validationErrors: ${DefinedError}[] | undefined`)
-                    } else if (this._validator === 'zod') {
+                    if (this.builder.options.validator === 'zod') {
                         const ZodError = reference(zodSymbols.ZodError())
                         writer.writeLine(`error: ${ZodError}<T> | undefined`)
+                    } else {
+                        const DefinedError = reference(ajvSymbols.DefinedError())
+                        writer.writeLine(`validationErrors: ${DefinedError}[] | undefined`)
                     }
                     return (
                         writer
@@ -206,7 +207,7 @@ export class EitherHelper extends Node {
     }
 
     private static _cache = new Map<string, EitherHelper>()
-    public static from({ sourcePath, client }: { sourcePath: string; client: 'ky' | 'got' | undefined }) {
+    public static from({ sourcePath, builder }: { sourcePath: string; builder: RestClientBuilder }) {
         if (EitherHelper._cache.has(sourcePath)) {
             // biome-ignore lint/style/noNonNullAssertion: ignore
             return EitherHelper._cache.get(sourcePath)!
@@ -214,7 +215,7 @@ export class EitherHelper extends Node {
         const instance = new EitherHelper({})
         EitherHelper._cache.set(sourcePath, instance)
         instance._sourcePath = sourcePath
-        instance.client = client
+        instance.builder = builder
         return instance
     }
 }
@@ -980,13 +981,13 @@ export class RestClientBuilder {
                 document: this.openapi,
                 references: this.references,
                 exportAllSymbols: true,
-                validator: this.options.validator,
+                validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
                 formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
             this.connections.push(...(therefore._connections ?? []))
             if (!['number', 'string', 'boolean', 'enum', 'integer'].includes(therefore._type)) {
-                const validator = this.asValidator(therefore, { assert: !this.options.useEither })
+                const validator = this.asValidator(therefore)
                 return {
                     schema: validator,
                     mimeType: jsonMimeType,
@@ -1022,12 +1023,12 @@ export class RestClientBuilder {
                 document: this.openapi,
                 references: this.references,
                 exportAllSymbols: true,
-                validator: this.options.validator,
+                validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
                 formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
             this.connections.push(...(therefore._connections ?? []))
-            const validator = this.asValidator(therefore, { assert: !this.options.useEither })
+            const validator = this.asValidator(therefore)
 
             if (this.options.client === 'ky') {
                 if (isMultipart) {
@@ -1109,13 +1110,13 @@ export class RestClientBuilder {
                     document: this.openapi,
                     references: this.references,
                     exportAllSymbols: true,
-                    validator: this.options.validator,
+                    validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
                     formats: this.options.formats,
                     ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
                 })
 
                 this.connections.push(...(therefore._connections ?? []))
-                const validator = this.asValidator(therefore, { assert: !this.options.useEither })
+                const validator = this.asValidator(therefore)
                 found = {
                     statusCode,
                     schema: validator,
@@ -1180,14 +1181,23 @@ export class RestClientBuilder {
         return undefined
     }
 
-    private asValidator(node: Node, { assert = false }: { assert?: boolean } = {}): Node {
-        node._definition._validator ??= { assert }
-        node._definition._validator.assert ||= assert
-        if (this.options.compile !== undefined) {
-            node._definition._validator.compile = this.options.compile
+    private asValidator(node: Node): Node {
+        if (node._attributes.validator === undefined) {
+            if (this.options.validator === 'ajv') {
+                node.validator({ type: this.options.validator, assert: !this.options.useEither })
+            } else {
+                node.validator({ type: this.options.validator })
+            }
         }
-        if (this.options.formats !== undefined) {
-            node._definition._validator.formats = this.options.formats
+        if (this.options.validator === 'ajv') {
+            const validator = node._attributes.validator as AjvValidatorOptions
+
+            if (this.options.compile !== undefined) {
+                validator.compile = this.options.compile
+            }
+            if (this.options.formats !== undefined) {
+                validator.formats = this.options.formats
+            }
         }
         return node
     }

@@ -65,9 +65,6 @@ export function buildTypescriptZodContext({
         reference: (node) => references.reference(node._toZod ?? node, 'referenceName'),
         value: (node) => references.reference(node._toZod ?? node, 'referenceName', { tag: 'value' }),
     }
-
-    // we always use this one
-    context.value(zodSymbols.z())
     return context
 }
 

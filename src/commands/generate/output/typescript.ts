@@ -2,7 +2,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { entriesOf } from '@skyleague/axioms'
 import camelcase from 'camelcase'
-import packageJson from '../../../../package.json' with { type: 'json' }
 import { renderTemplate } from '../../../common/template/template.js'
 import type { Node, SourceNode } from '../../../lib/cst/node.js'
 import type { GeneratorHooks } from '../../../lib/primitives/therefore.js'
@@ -14,8 +13,6 @@ import { generatedBy } from '../constants.js'
 import { type Prettier, formatContent } from '../format.js'
 import { References } from './references.js'
 import type { ThereforeOutput } from './types.js'
-
-const { version } = packageJson
 
 export function sanitizeTypescriptTypeName(symbol: string): string {
     return symbol
@@ -236,7 +233,7 @@ export class TypescriptFileOutput {
         if (this.isGenerated) {
             contents
                 .writeLine('/**')
-                .writeLine(`* ${generatedBy}@v${version}`)
+                .writeLine(`* ${generatedBy}`)
                 .writeLine('* Do not manually touch this')
                 .newLineIfLastNot()
                 .closeComment()
@@ -494,6 +491,21 @@ export class TypescriptFileOutput {
                 buildDependencyGraph(rootNode)
             }
         }
+
+        // Create a mermaid graph visualization for debugging dependency relationships
+        // let mermaidGraph = 'graph TD;\n'
+        // for (const [nodeId, incomingNodes] of inGraph.entries()) {
+        //     const node = this.content.find(([n]) => n._id === nodeId)?.[0]
+        //     const nodeName = node?._name ?? nodeId
+        //     const nodeType = node?._type ?? 'unknown'
+        //     for (const incomingId of incomingNodes) {
+        //         const incomingNode = this.content.find(([n]) => n._id === incomingId)?.[0]
+        //         const incomingName = incomingNode?._name ?? incomingId
+        //         const incomingType = incomingNode?._type ?? 'unknown'
+        //         mermaidGraph += `    ${incomingName}[${incomingName}<br/>${incomingId}<br/>${incomingType}]-->${nodeName}[${nodeName}<br/>${nodeId}<br/>${nodeType}]\n`
+        //     }
+        // }
+        // console.log('\nDependency Graph:\n```mermaid\n' + mermaidGraph + '```\n')
 
         // Kahn's algorithm
         const queue = Array.from(inGraph.entries())

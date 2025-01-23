@@ -1,11 +1,17 @@
-import { keysOf, omit } from '@skyleague/axioms'
+import { keysOf } from '@skyleague/axioms'
 import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
 import type { ZodType } from 'zod'
 import type { JsonSchema } from '../../json.js'
 import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
 import type { DefaultType } from '../primitives/optional/default.js'
-import type { ValidatorOptions, ValidatorType } from '../primitives/validator/validator.js'
+import {
+    type ValidatorInputOptions,
+    type ValidatorOptions,
+    defaultAjvValidatorOptions,
+    defaultZodValidatorOptions,
+} from '../primitives/validator/types.js'
+import type { ValidatorType } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
 import { type NodeTrace, getGuessedTrace } from './trace.js'
@@ -15,7 +21,6 @@ export const definitionKeys = keysOf({
     deprecated: true,
     default: true,
     readonly: true,
-    _validator: true,
     jsonschema: true,
 } satisfies Record<keyof ThereforeNodeDefinition, true>)
 
@@ -29,7 +34,7 @@ export interface Hooks {
 export interface NodeAttributes {
     typescript: TypescriptAttributes
     generic: GenericAttributes
-    validator: 'zod' | 'ajv' | undefined
+    validator: ValidatorInputOptions | undefined
     validatorType: ValidatorType | undefined
     isGenerated: boolean
 }
@@ -116,13 +121,43 @@ export class Node {
         return this
     }
 
-    public validator(validator: Partial<ValidatorOptions> = {}): this {
-        this._definition._validator = { ...this._definition._validator, ...validator }
+    public validator(validator: ValidatorInputOptions | undefined = undefined): this {
+        this._attributes.validator = validator ?? {
+            type: constants.migrateToValidator ?? constants.defaultValidator,
+        }
         return this
     }
 
-    public get _validator(): 'zod' | 'ajv' {
-        return this._attributes.validator ?? constants.migrateToValidator ?? constants.defaultValidator
+    public get _validator(): ValidatorOptions {
+        return Node._validatorOptions(this, this._attributes.validator)
+    }
+
+    private static _validatorOptions(node: Node, options: ValidatorInputOptions | undefined): ValidatorOptions {
+        const defaultValidator = constants.migrateToValidator ?? constants.defaultValidator
+        const validator: ValidatorInputOptions = options ?? {
+            type: defaultValidator,
+        }
+
+        if (validator.type === undefined) {
+            if (node._origin.zod !== undefined) {
+                return { ...defaultZodValidatorOptions, ...validator, type: 'zod' }
+            }
+            return { ...defaultAjvValidatorOptions, ...validator, type: 'ajv' }
+        }
+        if (validator.type === 'ajv') {
+            const options = { ...defaultAjvValidatorOptions, ...validator }
+            if ('schemaFilename' in validator) {
+                options.output = {
+                    ...options.output,
+                    jsonschema: validator.schemaFilename,
+                }
+            }
+            return options
+        }
+        if (validator.type === 'zod') {
+            return { ...defaultZodValidatorOptions, ...validator }
+        }
+        throw new Error(`Unknown default validator: ${defaultValidator}`)
     }
 
     private _recurrentCache?: boolean
@@ -163,8 +198,7 @@ export class Node {
     protected static _clone<T extends Node>(obj: T) {
         const clone = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj) as T
         clone._id = id()
-        // on clone we erase the validator options, as we don't want to copy that over to the new instance
-        clone._definition = omit({ ...clone._definition }, ['_validator'])
+        clone._definition = { ...clone._definition }
         clone._attributes = structuredClone(clone._attributes)
         return clone
     }

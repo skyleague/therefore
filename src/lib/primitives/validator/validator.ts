@@ -17,54 +17,16 @@ import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
 import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
+import { type ValidatorInputOptions, type ValidatorOptions, defaultAjvValidatorOptions } from './types.js'
 
 export function ajvOptions(node?: Node): Options {
+    const validator = node?._validator
+    const ajvOptions = validator?.type === 'ajv' ? validator : defaultAjvValidatorOptions
     return structuredClone({
         ...defaultAjvConfig,
-        ...(node?._definition._validator?.coerce ? { coerceTypes: true } : {}),
-        ...node?._definition._validator?.ajv,
+        ...(ajvOptions.coerce ? { coerceTypes: true } : {}),
+        ...ajvOptions.ajv,
     })
-}
-
-export interface ValidatorOptions {
-    /**
-     * Toggles whether an assert function should be generated.
-     *
-     * @defaultvalue false
-     */
-    assert: boolean
-
-    /**
-     * Toggles whether a parse function should be generated.
-     *
-     * @defaultvalue true
-     */
-    parse: boolean
-
-    /**
-     * Whether the validator should be compiled.
-     *
-     * @defaultValue undefined
-     */
-    compile: boolean
-
-    /**
-     * Whether to coerce the input to the schema.
-     */
-    coerce: boolean
-
-    /**
-     * Whether to check format types with https://ajv.js.org/packages/ajv-formats.html
-     * @defaultValue true
-     */
-    formats: boolean
-
-    /**
-     * The ajv options to use.
-     */
-    ajv?: Options
-
-    schemaFilename?: string
 }
 
 export class ValidatorType<T extends Node = Node> extends Node {
@@ -80,18 +42,12 @@ export class ValidatorType<T extends Node = Node> extends Node {
         super({})
         const evaluatedNode = evaluate(node)
 
-        this._options = {
-            assert: false,
-            compile: true,
-            parse: true,
-            coerce: false,
-            formats: true,
-            ...evaluatedNode._definition._validator,
-        }
+        this._options = evaluatedNode._validator
         this._children = [evaluatedNode]
         this._connections = [evaluatedNode]
         this._attributes.validator = this._children[0]._attributes.validator
         this._attributes.isGenerated = this._children[0]._attributes.isGenerated
+        this._origin = this._children[0]._origin
 
         evaluatedNode._attributes.validatorType = this
     }
@@ -104,12 +60,14 @@ export class ValidatorType<T extends Node = Node> extends Node {
         ],
         onExport: [
             (n) => {
-                const schemaName = decamelize(n._name, { separator: '-' })
+                if (this._options?.type === 'ajv') {
+                    const schemaName = decamelize(n._name, { separator: '-' })
 
-                n._attributes.typescript.schemaPath = path.join(
-                    path.dirname(n._sourcePath),
-                    `./schemas/${schemaName}.schema.js${this._options.compile ? '' : 'on'}`,
-                )
+                    n._attributes.typescript.schemaPath = path.join(
+                        path.dirname(n._sourcePath),
+                        `./schemas/${schemaName}.schema.js${this._options.compile ? '' : 'on'}`,
+                    )
+                }
             },
         ],
     }
@@ -121,9 +79,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
         if (symbol._type === 'validator') {
             return symbol
         }
-        return symbol._definition._validator !== undefined || (symbol._attributes.validator === 'zod' && symbol._isRecurrent)
-            ? new ValidatorType(symbol)
-            : symbol
+        return symbol._attributes.validator !== undefined ? new ValidatorType(symbol) : symbol
     }
 
     public override get _output(): (TypescriptOutput | GenericOutput)[] {
@@ -144,6 +100,11 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         throw new Error('path is undefined, node was not properly initialized.')
                     }
 
+                    const options = this._validator
+                    if (options.type !== 'ajv') {
+                        throw new Error('We expect the validator to be ajv, but it is not.')
+                    }
+
                     const writer = createWriter()
                     const schemaPath = path.relative(path.dirname(symbolPath), typescript.schemaPath ?? '.')
 
@@ -159,7 +120,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     return writer
                         .write(`export const ${symbolName} = `)
                         .inlineBlock(() => {
-                            if (this._options.compile) {
+                            if (options.compile) {
                                 writer
                                     .writeLine(
                                         `validate: ${value(validatorReference())} as ${reference(
@@ -186,7 +147,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
 
                             writer.writeLine(`get errors() { return ${symbolName}.validate.errors ?? undefined },`)
                             writer.writeLine(`is: (o: unknown): o is ${symbolName} => ${symbolName}.validate(o) === true,`)
-                            if (this._options.assert) {
+                            if (options.assert) {
                                 writer
                                     // the full assertion syntax is not yet supported on properties
                                     // https://github.com/microsoft/TypeScript/issues/34523
@@ -201,7 +162,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                     })
                                     .write(',')
                             }
-                            if (this._options.parse) {
+                            if (options.parse) {
                                 const definedErrorReference = reference(ajvSymbols.DefinedError())
                                 writer
                                     .writeLine(
@@ -315,7 +276,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 subtype: 'zod',
                 isTypeOnly: false,
                 enabled: (node) =>
-                    (node._attributes.isGenerated && node._attributes.validator === 'zod') ||
+                    (node._attributes.isGenerated && node._attributes.validator?.type === 'zod') ||
                     (!constants.generateInterop &&
                         constants.migrateToValidator === 'zod' &&
                         node._attributes.validator === undefined),
@@ -326,20 +287,27 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     this._attributes.typescript.symbolName = symbolName
                     this._attributes.typescript.referenceName = context.reference(this)
 
-                    const writer = createWriter()
-                    if (child._isRecurrent) {
-                        const typeContext = buildTypescriptZodTypeContext({
-                            symbol,
-                            exportSymbol: true,
-                            references: context.references,
-                            locals: context.locals,
-                        })
-                        writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
-                    } else {
-                        writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                    const options = this._options
+                    if (options.type !== 'zod') {
+                        throw new Error('We expect the validator to be zod, but it is not.')
                     }
 
-                    if (child._attributes.validator === 'zod') {
+                    const writer = createWriter()
+                    if (options.types) {
+                        if (child._isRecurrent) {
+                            const typeContext = buildTypescriptZodTypeContext({
+                                symbol,
+                                exportSymbol: true,
+                                references: context.references,
+                                locals: context.locals,
+                            })
+                            writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
+                        } else {
+                            writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                        }
+                    }
+
+                    if (child._attributes.validator?.type === 'zod') {
                         if (child._isRecurrent) {
                             writer
                                 .write(
@@ -357,7 +325,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
             },
             {
                 type: 'file',
-                subtype: () => (this._options.compile ? 'typescript' : 'json'),
+                subtype: () => ('compile' in this._options && this._options.compile ? 'typescript' : 'json'),
                 targetPath: () => {
                     if (this._attributes.typescript.schemaPath === undefined) {
                         throw new Error('schemaPath is undefined, node was not properly initialized.')
@@ -365,10 +333,14 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     return this._attributes.typescript.schemaPath
                 },
                 content: (_, { references }) => {
+                    const options = this._options
+                    if (options.type !== 'ajv') {
+                        throw new Error('We expect the validator to be ajv, but it is not.')
+                    }
                     const jsonschema = toJsonSchema(this._children[0], {
-                        compile: this._options.compile,
+                        compile: options.compile,
                         references,
-                        formats: this.formats !== undefined && this._options.formats === true,
+                        formats: options.formats !== undefined && options.formats === true,
                     })
                     this.formats = jsonschema.formats
                     if (jsonschema.compiled) {
@@ -383,17 +355,17 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         fs.rmSync(targetFolder, { force: true, recursive: true })
                     }
                 },
-                prettify: () => !this._options.compile,
-                enabled: () => this._validator === 'ajv',
+                prettify: () => !('compile' in this._options && this._options.compile),
+                enabled: () => this._validator.type === 'ajv' && this._children[0]._attributes.validator !== undefined,
             },
             {
                 type: 'file',
-                enabled: () => this._options.schemaFilename !== undefined && this._validator === 'ajv',
+                enabled: () => this._validator.output?.jsonschema !== undefined,
                 subtype: () => 'json',
                 targetPath: ({ _sourcePath }) => {
                     const dir = path.dirname(_sourcePath)
                     // biome-ignore lint/style/noNonNullAssertion: this is the condition to enable the file
-                    return path.join(dir, this._options.schemaFilename!)
+                    return path.join(dir, this._validator.output!.jsonschema!)
                 },
                 content: (_, { references }) => {
                     const jsonschema = toJsonSchema(this._children[0], {
@@ -424,6 +396,6 @@ export class ValidatorType<T extends Node = Node> extends Node {
  *
  * @group Modifiers
  */
-export function $validator<T extends Node>(node: T, options: Partial<ValidatorOptions> = {}): T {
+export function $validator<T extends Node>(node: T, options?: ValidatorInputOptions): T {
     return node.validator(options)
 }

@@ -22,7 +22,7 @@ describe('restclient', () => {
                 const outputs = defaultTypescriptOutput(ValidatorType._root(child))
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(true)
-                    expect(output.subtype).toBe(child._attributes.validator)
+                    expect(output.subtype).toBe(child._attributes.validator?.type)
                     expect(output.subtype).toBe(validator ?? 'ajv')
                 }
             }
@@ -30,7 +30,7 @@ describe('restclient', () => {
                 const outputs = defaultTypescriptOutput(child)
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(true)
-                    expect(output.subtype).toBe(child._attributes.validator)
+                    expect(output.subtype).toBe(child._attributes.validator?.type)
                     expect(output.subtype).toBe(validator ?? 'ajv')
                 }
             }
@@ -49,20 +49,24 @@ describe('default', () => {
         for (const child of [...(node._children ?? []), node]) {
             {
                 const validatorNode = ValidatorType._root(child)
-                validatorNode._attributes.validator = validator
+                if (validator !== undefined) {
+                    validatorNode.validator({ type: validator })
+                }
                 const outputs = defaultTypescriptOutput(validatorNode)
                 for (const output of outputs.filter((o) => o.enabled?.(validatorNode))) {
                     expect(output.isGenerated?.(validatorNode)).toBe(true)
-                    expect(output.subtype).toBe(validatorNode._attributes.validator ?? 'ajv')
+                    expect(output.subtype).toBe(validatorNode._attributes.validator?.type ?? 'ajv')
                     expect(output.subtype).toBe(validator ?? 'ajv')
                 }
             }
             {
                 const outputs = defaultTypescriptOutput(child)
-                child._attributes.validator = validator
+                if (validator !== undefined) {
+                    child.validator({ type: validator })
+                }
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(true)
-                    expect(output.subtype).toBe(child._attributes.validator ?? 'ajv')
+                    expect(output.subtype).toBe(child._attributes.validator?.type ?? 'ajv')
                     expect(output.subtype).toBe(validator ?? 'ajv')
                 }
             }
@@ -93,7 +97,9 @@ describe('migrate', () => {
         for (const child of [...(node._children ?? []), node]) {
             {
                 const validatorNode = ValidatorType._root(child)
-                validatorNode._attributes.validator = validator
+                if (validator !== undefined) {
+                    validatorNode.validator({ type: validator })
+                }
                 const outputs = defaultTypescriptOutput(validatorNode)
                 for (const output of outputs.filter((o) => o.enabled?.(validatorNode))) {
                     expect(output.isGenerated?.(validatorNode)).toBe(false)
@@ -102,10 +108,12 @@ describe('migrate', () => {
             }
             {
                 const outputs = defaultTypescriptOutput(child)
-                child._attributes.validator = validator
+                if (validator !== undefined) {
+                    child.validator({ type: validator })
+                }
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(false)
-                    expect(output.subtype).toBe(child._attributes.validator ?? 'zod')
+                    expect(output.subtype).toBe(child._attributes.validator?.type ?? 'zod')
                     expect(output.subtype).toBe(validator ?? 'zod')
                 }
             }
@@ -127,7 +135,7 @@ describe('migrate', () => {
                 const outputs = defaultTypescriptOutput(ValidatorType._root(child))
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(true)
-                    expect(output.subtype).toBe(child._attributes.validator)
+                    expect(output.subtype).toBe(child._attributes.validator?.type)
                     expect(output.subtype).toBe(validator ?? 'ajv')
                 }
             }
@@ -135,7 +143,7 @@ describe('migrate', () => {
                 const outputs = defaultTypescriptOutput(child)
                 for (const output of outputs.filter((o) => o.enabled?.(child))) {
                     expect(output.isGenerated?.(child)).toBe(true)
-                    expect(output.subtype).toBe(child._attributes.validator ?? validator ?? 'ajv')
+                    expect(output.subtype).toBe(child._attributes.validator?.type ?? validator ?? 'ajv')
                     expect(output.subtype).toBe(validator ?? validator ?? 'ajv')
                 }
             }

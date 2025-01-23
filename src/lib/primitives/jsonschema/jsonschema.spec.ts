@@ -696,7 +696,7 @@ describe('array', () => {
                               "generic": {},
                               "isGenerated": true,
                               "typescript": {},
-                              "validator": "ajv",
+                              "validator": undefined,
                               "validatorType": undefined,
                             },
                             "_children": [
@@ -836,7 +836,7 @@ describe('array', () => {
                             "generic": {},
                             "isGenerated": true,
                             "typescript": {},
-                            "validator": "ajv",
+                            "validator": undefined,
                             "validatorType": undefined,
                           },
                           "_children": [
@@ -1084,7 +1084,7 @@ describe('array', () => {
                               "generic": {},
                               "isGenerated": true,
                               "typescript": {},
-                              "validator": "ajv",
+                              "validator": undefined,
                               "validatorType": undefined,
                             },
                             "_children": [
@@ -1224,7 +1224,7 @@ describe('array', () => {
                             "generic": {},
                             "isGenerated": true,
                             "typescript": {},
-                            "validator": "ajv",
+                            "validator": undefined,
                             "validatorType": undefined,
                           },
                           "_children": [
@@ -2580,7 +2580,7 @@ describe('nullable array', () => {
                                   "generic": {},
                                   "isGenerated": true,
                                   "typescript": {},
-                                  "validator": "ajv",
+                                  "validator": undefined,
                                   "validatorType": undefined,
                                 },
                                 "_children": [
@@ -2760,7 +2760,7 @@ describe('nullable array', () => {
                                 "generic": {},
                                 "isGenerated": true,
                                 "typescript": {},
-                                "validator": "ajv",
+                                "validator": undefined,
                                 "validatorType": undefined,
                               },
                               "_children": [
@@ -2984,7 +2984,7 @@ describe('nullable array', () => {
                                   "generic": {},
                                   "isGenerated": true,
                                   "typescript": {},
-                                  "validator": "ajv",
+                                  "validator": undefined,
                                   "validatorType": undefined,
                                 },
                                 "_children": [
@@ -3164,7 +3164,7 @@ describe('nullable array', () => {
                                 "generic": {},
                                 "isGenerated": true,
                                 "typescript": {},
-                                "validator": "ajv",
+                                "validator": undefined,
                                 "validatorType": undefined,
                               },
                               "_children": [

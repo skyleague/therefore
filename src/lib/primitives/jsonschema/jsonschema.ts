@@ -11,7 +11,6 @@ import type {
     JsonSchema7TypeName,
     JsonStringInstance,
 } from '../../../json.js'
-import { constants } from '../../constants.js'
 import type { ThereforeNodeDefinition } from '../../cst/cst.js'
 import { type Node, definitionKeys } from '../../cst/node.js'
 import { loadNode } from '../../visitor/prepass/prepass.js'
@@ -32,6 +31,7 @@ import { $tuple } from '../tuple/tuple.js'
 import type { ThereforeSchema } from '../types.js'
 import { $union, DiscriminatedUnionType } from '../union/union.js'
 import { $unknown, type UnknownOptions, UnknownType } from '../unknown/unknown.js'
+import type { ValidatorInputOptions } from '../validator/types.js'
 
 export const jsonschemaKeys = ['examples', 'title', 'writeonly'] as const satisfies Exclude<
     keyof JsonAnnotations,
@@ -310,15 +310,13 @@ interface JsonSchemaContext {
     strict: boolean
     references: Map<string, () => Node>
     document: object
-    // cache: Map<string, () => Node>
-    // exportAllSymbols: boolean
     name?: string | undefined
     allowIntersection?: boolean
     optionalNullable: boolean
     connections: Node[]
     formats: boolean
 
-    validator: 'ajv' | 'zod' | undefined
+    validator: ValidatorInputOptions | undefined
 
     render: (
         node: JsonSchema,
@@ -343,7 +341,7 @@ export function buildContext({
         allowIntersection = true,
         optionalNullable = false,
         connections = [],
-        validator = constants.migrateToValidator ?? constants.defaultValidator,
+        validator,
         formats = true,
     } = maybeContext
 
@@ -416,7 +414,7 @@ export function walkJsonschema({
                 memoize(() => {
                     const reference = asNullable(context.render(ref, { name: refName }), ref)
                     if (context.validator !== undefined) {
-                        reference._attributes.validator = context.validator
+                        reference.validator(context.validator)
                     }
                     context.connections.push(reference)
                     return reference
@@ -551,7 +549,7 @@ export interface JsonSchemaOptions {
      */
     optionalNullable?: boolean
 
-    validator?: 'ajv' | 'zod'
+    validator?: ValidatorInputOptions | undefined
 }
 
 /**
@@ -591,7 +589,7 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
                 node._connections = connections
             }
             if (validator !== undefined) {
-                node._attributes.validator = validator
+                node.validator(validator)
             }
 
             return node

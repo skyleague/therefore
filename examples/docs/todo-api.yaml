@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: Todo API
+  version: 1.0.0
+paths:
+  /todos:
+    get:
+      operationId: listTodos
+      responses:
+        '200':
+          description: List of todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    completed:
+                      type: boolean
+                  required:
+                    - id
+                    - title
+                    - completed
+    post:
+      operationId: createTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+              required:
+                - title
+      responses:
+        '201':
+          description: Todo created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  completed:
+                    type: boolean
+                required:
+                  - id
+                  - title
+                  - completed 

@@ -156,129 +156,139 @@ function zodNormalize(schema: JSONSchema.JsonSchema): JSONSchema.JsonSchema {
     return omitUndefined(schema)
 }
 
-it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema', async (target) => {
-    await asyncForAll(
-        arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
-        async (jsonschema) => {
-            const copy = structuredClone(jsonschema)
-            // schema = zodSensible(schema, schema)
-            const schema = sensible({ schema: copy, document: copy, pre: zodSensiblePre, post: zodSensiblePost, target })
-            const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
-            // biome-ignore lint/security/noGlobalEval: needed here as part of the test
-            const zod = eval(zodStr)
-            const therefore = $zod(zod, { keepOriginalSchema: false })
-            therefore._name = 'Root'
-            generateNode(therefore)
-            const converted = toJsonSchema(therefore, { target })
-            const normalized = {
-                $schema: 'http://json-schema.org/draft-07/schema#',
-                title: 'Root',
-                ...normalize(structuredClone(schema), { target }),
-            }
+it.each(['draft-07', 'openapi3'] as const)(
+    '%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema',
+    async (target) => {
+        await asyncForAll(
+            arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
+            async (jsonschema) => {
+                const copy = structuredClone(jsonschema)
+                // schema = zodSensible(schema, schema)
+                const schema = sensible({ schema: copy, document: copy, pre: zodSensiblePre, post: zodSensiblePost, target })
+                const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
+                // biome-ignore lint/security/noGlobalEval: needed here as part of the test
+                const zod = eval(zodStr)
+                const therefore = $zod(zod, { keepOriginalSchema: false })
+                therefore._name = 'Root'
+                generateNode(therefore)
+                const converted = toJsonSchema(therefore, { target })
+                const normalized = {
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    title: 'Root',
+                    ...normalize(structuredClone(schema), { target }),
+                }
 
-            const fileOutput = new GenericFileOutput({ path: 'test.json' })
-            fileOutput.references = converted.references
-            fileOutput.content = { content: JSON.stringify(converted.schema), output: {} as any }
+                const fileOutput = new GenericFileOutput({ path: 'test.json' })
+                fileOutput.references = converted.references
+                fileOutput.content = { content: JSON.stringify(converted.schema), output: {} as any }
 
-            const transformed = JSON.parse((await fileOutput.render()) as unknown as string)
+                const transformed = JSON.parse((await fileOutput.render()) as unknown as string)
 
-            expect(zodNormalize(transformed)).toStrictEqual(normalized)
+                expect(zodNormalize(transformed)).toStrictEqual(normalized)
 
-            const original = structuredClone(converted.schema)
-            JsonSchema.assert(converted.schema)
-            expect(original).toEqual(converted.schema)
+                const original = structuredClone(converted.schema)
+                JsonSchema.assert(converted.schema)
+                expect(original).toEqual(converted.schema)
 
-            const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
-            const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
-            if (transpiled.diagnostics?.length !== 0) {
-                throw new Error(declaration)
-            }
+                const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
+                const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
+                if (transpiled.diagnostics?.length !== 0) {
+                    throw new Error(declaration)
+                }
 
-            forAll(
-                arbitrary(therefore),
-                (value) => {
-                    if (converted.validator !== undefined && (converted.validator(value) as boolean)) {
-                        return true
-                    }
-                    throw new ValidationError(converted.validator?.errors ?? [])
-                },
-                {
-                    seed: 42n,
-                },
-            )
-        },
-        {
-            tests: 200,
-            depth: 'm',
-            shrinks: 400,
-        },
-    )
-})
+                forAll(
+                    arbitrary(therefore),
+                    (value) => {
+                        if (converted.validator !== undefined && (converted.validator(value) as boolean)) {
+                            return true
+                        }
+                        throw new ValidationError(converted.validator?.errors ?? [])
+                    },
+                    {
+                        seed: 42n,
+                    },
+                )
+            },
+            {
+                tests: 200,
+                depth: 'm',
+                shrinks: 400,
+            },
+        )
+    },
+    100000,
+)
 
-it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> zod <=> arbitrary', async (target) => {
-    await asyncForAll(
-        arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
-        async (jsonschema) => {
-            const copy = structuredClone(jsonschema)
-            // schema = zodSensible(schema, schema)
-            const schema = sensible({
-                schema: copy,
-                document: copy,
-                pre: (x) => {
-                    const schema = zodSensiblePre(x)
+it.each(['draft-07', 'openapi3'] as const)(
+    '%s - arbitrary <=> jsonschema <=> zod <=> arbitrary',
+    async (target) => {
+        await asyncForAll(
+            arbitrary(jsonSchema).map((x) => JSON.parse(JSON.stringify(x))),
+            async (jsonschema) => {
+                const copy = structuredClone(jsonschema)
+                // schema = zodSensible(schema, schema)
+                const schema = sensible({
+                    schema: copy,
+                    document: copy,
+                    pre: (x) => {
+                        const schema = zodSensiblePre(x)
 
-                    // zod doesnt properly support full literals
-                    if (schema.const !== undefined) {
-                        schema.const = JSON.stringify(schema.const)
-                    }
-                    if (schema.enum !== undefined) {
-                        schema.enum = schema.enum.map((x) => JSON.stringify(x))
-                    }
-                    if (schema.format !== undefined) {
-                        schema.format = undefined
-                    }
-                    return schema
-                },
-                post: zodSensiblePost,
-                target,
-            })
-            const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
-            // biome-ignore lint/security/noGlobalEval: needed here as part of the test
-            const zod: ZodSchema = eval(zodStr)
+                        // zod doesnt properly support full literals
+                        if (schema.const !== undefined) {
+                            schema.const = JSON.stringify(schema.const)
+                        }
+                        if (schema.enum !== undefined) {
+                            schema.enum = schema.enum.map((x) => JSON.stringify(x))
+                        }
+                        if (schema.format !== undefined) {
+                            schema.format = undefined
+                        }
+                        return schema
+                    },
+                    post: zodSensiblePost,
+                    target,
+                })
+                const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
+                // biome-ignore lint/security/noGlobalEval: needed here as part of the test
+                const zod: ZodSchema = eval(zodStr)
 
-            const therefore = $jsonschema(structuredClone(schema), {
-                name: 'root',
-                allowIntersection: true,
-                dereference: false,
-                // make our own lives a whole lot easier
-                validator: 'zod',
-            })
-            generateNode(therefore)
-            const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
-            const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
-            if (transpiled.diagnostics?.length !== 0) {
-                throw new Error(declaration)
-            }
+                const therefore = $jsonschema(structuredClone(schema), {
+                    name: 'root',
+                    allowIntersection: true,
+                    dereference: false,
+                    // make our own lives a whole lot easier
+                    validator: { type: 'zod' },
+                }).validator({
+                    type: 'zod',
+                })
+                generateNode(therefore)
+                const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
+                const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
+                if (transpiled.diagnostics?.length !== 0) {
+                    throw new Error(declaration)
+                }
 
-            void z
+                void z
 
-            // biome-ignore lint/security/noGlobalEval: needed here as part of the test
-            const execute = await eval(`const { z } = require("zod"); ${transpiled.outputText}; Root`)
+                // biome-ignore lint/security/noGlobalEval: needed here as part of the test
+                const execute = await eval(`const { z } = require("zod"); ${transpiled.outputText}; Root`)
 
-            forAll(
-                arbitrary(zod),
-                (value) => {
-                    return zod.safeParse(value).success && execute.safeParse(value).success
-                },
-                {
-                    seed: 42n,
-                },
-            )
-        },
-        {
-            tests: 200,
-            depth: 'm',
-            shrinks: 400,
-        },
-    )
-})
+                forAll(
+                    arbitrary(zod),
+                    (value) => {
+                        return zod.safeParse(value).success && execute.safeParse(value).success
+                    },
+                    {
+                        seed: 42n,
+                    },
+                )
+            },
+            {
+                tests: 200,
+                depth: 'm',
+                shrinks: 400,
+            },
+        )
+    },
+    100000,
+)

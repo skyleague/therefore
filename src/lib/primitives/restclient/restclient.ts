@@ -100,7 +100,6 @@ export class RestclientType extends Node {
 
         this._children = builder.children
         this._connections = [...builder.connections, ...builder.children]
-        this._attributes.validator = builder.options.validator
         this._attributes.isGenerated = true
 
         for (const child of this._connections) {
@@ -130,8 +129,7 @@ export class RestclientType extends Node {
                 node._sourcePath = newSourcePath
 
                 if (this._options.useEither !== false) {
-                    const instance = EitherHelper.from({ sourcePath: newSourcePath, client: this._builder.options.client })
-                    instance._attributes.validator = this._attributes.validator
+                    const instance = EitherHelper.from({ sourcePath: newSourcePath, builder: this._builder })
                     node._children?.push(instance)
                     node._connections?.push(instance)
                 }
@@ -171,6 +169,6 @@ export class RestclientType extends Node {
  *
  * @group Schema
  */
-export function $restclient(definition: OpenapiV3, options: Partial<RestClientOptions> = {}): Promise<RestclientType> {
-    return RestclientType.from(definition, options)
+export function $restclient(definition: unknown, options: Partial<RestClientOptions> = {}): Promise<RestclientType> {
+    return RestclientType.from(definition as OpenapiV3, options)
 }
