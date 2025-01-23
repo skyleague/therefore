@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "price": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "category": {
+      "enum": ["Electronics", "Books", "Clothing"]
+    },
+    "inStock": {
+      "type": "boolean",
+      "default": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": ["category", "id", "name", "price"],
+  "additionalProperties": true
+}

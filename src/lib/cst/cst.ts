@@ -2,7 +2,6 @@ import { isObject } from '@skyleague/axioms'
 import type { References } from '../../commands/generate/output/references.js'
 import type { ThereforeOutputType } from '../../commands/generate/output/types.js'
 import type { JsonAnnotations } from '../../json.js'
-import type { ValidatorOptions } from '../primitives/validator/validator.js'
 import type { DefinedTypescriptOutput } from '../visitor/typescript/cst.js'
 import type { TypescriptTypeWalkerContext } from '../visitor/typescript/typescript-type.js'
 import type { Node, SourceNode } from './node.js'
@@ -86,8 +85,6 @@ export interface ThereforeNodeDefinition<T = unknown> {
      * @deprecated
      */
     deprecated?: boolean | undefined
-
-    _validator?: Partial<ValidatorOptions> | undefined
 }
 
 /**

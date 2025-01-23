@@ -265,6 +265,7 @@ export interface GraphqlSchemaOptions {
     query: Record<string, GraphqlFieldType>
     mutation?: Record<string, GraphqlFieldType>
     subscription?: Record<string, GraphqlFieldType>
+    introspection?: boolean
 }
 
 export class GraphQLSchemaType extends Node {
@@ -276,6 +277,7 @@ export class GraphQLSchemaType extends Node {
     public query: Record<string, GraphqlFieldType> = {}
     public mutation: Record<string, GraphqlFieldType> | undefined
     public subscription: Record<string, GraphqlFieldType> | undefined
+    public introspection = false
 
     public schema = memoize(() => {
         if (this._genericReferences === undefined) {
@@ -341,9 +343,11 @@ export class GraphQLSchemaType extends Node {
                 subtype: undefined,
                 isGenerated: () => true,
                 isTypeOnly: false,
+                enabled: () => this.introspection,
                 definition: (node, context) => {
                     // biome-ignore lint/style/noNonNullAssertion: is set on evaluation in the other output
                     context.references.from(this._genericReferences!)
+
                     node._attributes.typescript.symbolName = 'introspection'
                     const { introspection } = this.schema()
                     return `${context.declare('const', node)} = ${introspection} as const`
@@ -353,6 +357,6 @@ export class GraphQLSchemaType extends Node {
     }
 }
 
-export function $schema({ query, mutation, subscription }: GraphqlSchemaOptions): GraphQLSchemaType {
-    return new GraphQLSchemaType(omitUndefined({ query, mutation, subscription }))
+export function $schema({ query, mutation, subscription, introspection }: GraphqlSchemaOptions): GraphQLSchemaType {
+    return new GraphQLSchemaType(omitUndefined({ query, mutation, subscription, introspection }))
 }

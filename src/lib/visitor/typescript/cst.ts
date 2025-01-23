@@ -47,9 +47,10 @@ const defaultZodOutput = (node: Node) => {
             if (self._isRecurrent) {
                 return undefined
             }
+
             return `${context.declare('const', self)} = ${context.render(self)}`
         },
-        enabled: (node) => node._validator === 'zod',
+        enabled: (node) => node._validator.type === 'zod',
         isTypeOnly: false,
         isGenerated: (node) => node._attributes.isGenerated,
     } satisfies DefinedTypescriptOutput
@@ -83,7 +84,7 @@ const defaultAjvOutput = (_: Node) => {
         definition: (self, context) => {
             return `${context.declare('type', self)} = ${context.render(self)}`
         },
-        enabled: (node) => node._validator === 'ajv',
+        enabled: (node) => node._validator.type === 'ajv',
         isTypeOnly: true,
         isGenerated: (node) => node._attributes.isGenerated,
     } satisfies DefinedTypescriptOutput
@@ -112,10 +113,10 @@ export function defaultTypescriptOutput(node: Node): DefinedTypescriptOutput[] {
             }) ?? []
 
     if (node._output === undefined) {
-        if (node._validator === 'ajv') {
+        if (node._validator.type === 'ajv') {
             generators.push(defaultAjv)
         }
-        if (node._validator === 'zod') {
+        if (node._validator.type === 'zod') {
             generators.push(defaultZod)
         }
     }

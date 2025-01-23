@@ -92,106 +92,110 @@ function extendSchemaCoverage(schema: JSONSchema.JsonSchema) {
     return value
 }
 
-it.each(['draft-07', 'openapi3'] as const)('%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema', async (target) => {
-    await asyncForAll(
-        jsonSchemaArbitrary({ target }),
-        async (schema) => {
-            const therefore = $jsonschema(structuredClone(schema), {
-                name: 'root',
-                allowIntersection: true,
-                dereference: false,
-                // make our own lives a whole lot easier
-                _validator: {
-                    ajv: { useDefaults: false },
-                },
-            })
-            generateNode(therefore)
-            const converted = toJsonSchema(therefore, { target })
-            const normalized = {
-                $schema: 'http://json-schema.org/draft-07/schema#',
-                title: 'Root',
-                ...normalize(structuredClone(schema), { target }),
-            }
-
-            const fileOutput = new GenericFileOutput({ path: 'test.json' })
-            fileOutput.references = converted.references
-            fileOutput.content = { content: JSON.stringify(converted.schema), output: {} as any }
-
-            const transformed = JSON.parse((await fileOutput.render()) as unknown as string)
-
-            expect(transformed).toStrictEqual(normalized)
-
-            const original = structuredClone(converted.schema)
-            JsonSchema.assert(converted.schema)
-            expect(original).toEqual(converted.schema)
-
-            const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
-            const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
-            if (transpiled.diagnostics?.length !== 0) {
-                throw new Error(declaration)
-            }
-
-            // nullable is only partially supported in ajv
-            const originalValidator =
-                target === 'draft-07'
-                    ? new Ajv({ ...defaultAjvConfig, allowUnionTypes: true, useDefaults: false }).compile(
-                          extendSchemaCoverage(schema) as AnySchema,
-                      )
-                    : undefined
-            forAll(
-                arbitrary(therefore),
-                (value) => {
-                    if (
-                        converted.validator !== undefined &&
-                        (converted.validator(value) as boolean) &&
-                        originalValidator?.(value) !== false
-                    ) {
-                        return true
-                    }
-                    throw new ValidationError(converted.validator?.errors ?? originalValidator?.errors ?? [])
-                },
-                {
-                    seed: 42n,
-                },
-            )
-        },
-        {
-            tests: 200,
-            depth: 'm',
-            shrinks: 400,
-        },
-    )
-})
-
-it.each(['draft-07', 'openapi3'] as const)('%s - value to literal', async (target) => {
-    forAll(
-        jsonSchemaArbitrary({ target })
-            .map((schema) => {
+it.each(['draft-07', 'openapi3'] as const)(
+    '%s - arbitrary <=> jsonschema <=> therefore <=> jsonschema',
+    async (target) => {
+        await asyncForAll(
+            jsonSchemaArbitrary({ target }),
+            async (schema) => {
                 const therefore = $jsonschema(structuredClone(schema), {
                     name: 'root',
                     allowIntersection: true,
                     dereference: false,
-                    // make our own lives a whole lot easier
-                    _validator: {
-                        ajv: { useDefaults: false },
-                    },
                 })
-                return therefore
-            })
-            .chain((therefore) => tuple(constant(therefore), arbitrary(therefore))),
-        ([therefore, value]) => {
-            const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
-            const transpiled = ts.transpileModule([declaration, `export const root: Root = ${toLiteral(value)}`].join('\n'), {
-                reportDiagnostics: true,
-            })
-            if (transpiled.diagnostics?.length !== 0) {
-                throw new Error(declaration)
-            }
-        },
-        {
-            tests: 1000,
-            depth: 'm',
-            shrinks: 400,
-        },
-    )
-})
+                    // make our own lives a whole lot easier
+                    .validator({ type: 'ajv', ajv: { useDefaults: false } })
+                generateNode(therefore)
+                const converted = toJsonSchema(therefore, { target })
+                const normalized = {
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    title: 'Root',
+                    ...normalize(structuredClone(schema), { target }),
+                }
+
+                const fileOutput = new GenericFileOutput({ path: 'test.json' })
+                fileOutput.references = converted.references
+                fileOutput.content = { content: JSON.stringify(converted.schema), output: {} as any }
+
+                const transformed = JSON.parse((await fileOutput.render()) as unknown as string)
+
+                expect(transformed).toStrictEqual(normalized)
+
+                const original = structuredClone(converted.schema)
+                JsonSchema.assert(converted.schema)
+                expect(original).toEqual(converted.schema)
+
+                const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
+                const transpiled = ts.transpileModule(declaration, { reportDiagnostics: true })
+                if (transpiled.diagnostics?.length !== 0) {
+                    throw new Error(declaration)
+                }
+
+                // nullable is only partially supported in ajv
+                const originalValidator =
+                    target === 'draft-07'
+                        ? new Ajv({ ...defaultAjvConfig, allowUnionTypes: true, useDefaults: false }).compile(
+                              extendSchemaCoverage(schema) as AnySchema,
+                          )
+                        : undefined
+                forAll(
+                    arbitrary(therefore),
+                    (value) => {
+                        if (
+                            converted.validator !== undefined &&
+                            (converted.validator(value) as boolean) &&
+                            originalValidator?.(value) !== false
+                        ) {
+                            return true
+                        }
+                        throw new ValidationError(converted.validator?.errors ?? originalValidator?.errors ?? [])
+                    },
+                    {
+                        seed: 42n,
+                    },
+                )
+            },
+            {
+                tests: 200,
+                depth: 'm',
+                shrinks: 400,
+            },
+        )
+    },
+    100000,
+)
+
+it.each(['draft-07', 'openapi3'] as const)(
+    '%s - value to literal',
+    async (target) => {
+        forAll(
+            jsonSchemaArbitrary({ target })
+                .map((schema) => {
+                    const therefore = $jsonschema(structuredClone(schema), {
+                        name: 'root',
+                        allowIntersection: true,
+                        dereference: false,
+                    })
+                        // make our own lives a whole lot easier
+                        .validator({ type: 'ajv', ajv: { useDefaults: false } })
+                    return therefore
+                })
+                .chain((therefore) => tuple(constant(therefore), arbitrary(therefore))),
+            ([therefore, value]) => {
+                const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })
+                const transpiled = ts.transpileModule([declaration, `export const root: Root = ${toLiteral(value)}`].join('\n'), {
+                    reportDiagnostics: true,
+                })
+                if (transpiled.diagnostics?.length !== 0) {
+                    throw new Error(declaration)
+                }
+            },
+            {
+                tests: 1000,
+                depth: 'm',
+                shrinks: 400,
+            },
+        )
+    },
+    100000,
+)

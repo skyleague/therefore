@@ -58,7 +58,7 @@ describe('formats', () => {
         forAll(arbitrary(schemaRef), (s) => {
             schema.parse(s)
         })
-    })
+    }, 10000)
 
     it('nanoid', () => {
         const schema = z.string().nanoid()

@@ -206,6 +206,9 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                     if (node._isRecurrent) {
                         return undefined
                     }
+                    if (node._origin.zod !== undefined) {
+                        return undefined
+                    }
                     return `${context.declare('const', node)} = ${context.render(node)}`
                 },
             },

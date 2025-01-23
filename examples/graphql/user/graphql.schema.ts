@@ -1,4 +1,5 @@
 import { $array } from '../../../src/lib/primitives/array/array.js'
+import { $graphql } from '../../../src/lib/primitives/graphql/graphql.js'
 import type { ObjectType } from '../../../src/lib/primitives/object/object.js'
 import { $object } from '../../../src/lib/primitives/object/object.js'
 import { $ref } from '../../../src/lib/primitives/ref/ref.js'
@@ -18,8 +19,10 @@ export const user = person.extend({
     name: $string,
 })
 
-export const query = $object({
-    allUsers: $array($ref(user)),
-    me: $ref(user),
-    person: $ref(person),
+export const schema = $graphql.schema({
+    query: {
+        allUsers: $graphql.field({ type: user.reference().array() }),
+        me: $graphql.field({ type: user.reference() }),
+        person: $graphql.field({ type: person.reference() }),
+    },
 })

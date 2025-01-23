@@ -13,3 +13,4 @@ export const person = $object({
 export const nameonlyPerson = person.pick('name').validator({ assert: true })
 export const ageonlyPerson = person.pick('age').validator({ assert: true })
 export const nonamePerson = person.omit('name').validator({ assert: true })
+export const multipleOmit = person.omit('name', 'age').validator({ assert: true })

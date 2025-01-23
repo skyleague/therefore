@@ -242,7 +242,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
     array: (node, context) => {
         let localReference: string | undefined = undefined
         const element = node.element
-        if (!isSmall(element)) {
+        if (!isSmall(element) && element._origin.zod === undefined) {
             if (element._name === undefined) {
                 const symbolName = camelcase([context.property, node._type].filter(isDefined).join('_'))
                 const symbolRef = context.symbol !== undefined ? context.references.reference(context.symbol, 'symbolName') : ''
