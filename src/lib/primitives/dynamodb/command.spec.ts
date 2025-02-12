@@ -1,8 +1,41 @@
 import { describe, expect, it } from 'vitest'
-import { Pet } from '../../../../examples/restclients/petstore/petstore.type.js'
+import { Pet } from '../../../../examples/restclients/ajv/petstore/petstore.type.js'
+import { $object } from '../object/object.js'
 import { $ref } from '../ref/ref.js'
+import { $string } from '../string/string.js'
+import { $dynamodb } from './dynamodb.js'
 import { conditionExpression } from './expressions/condition.js'
+import { DynamodbExpressionContext } from './expressions/context.js'
 import { updateExpression } from './expressions/update.js'
+
+function createMockEntity() {
+    const mockTable = $dynamodb.table({
+        shape: $object({
+            pk: $string,
+            sk: $string,
+            entityType: $string,
+            createdAt: $string().datetime(),
+            updatedAt: $string().datetime(),
+        }),
+        pk: 'pk',
+        sk: 'sk',
+        entityType: 'entityType',
+        validator: 'ajv',
+    })
+
+    const mockEntity = mockTable.entity({
+        entityType: 'pet',
+        shape: $ref(Pet).extend({
+            ownerId: $string,
+        }),
+        keyFormatters: {
+            pk: 'owner#{ownerId}',
+            sk: 'pet#{id}',
+        },
+    })
+
+    return { mockEntity, mockContext: new DynamodbExpressionContext(mockEntity, {} as any) }
+}
 
 describe('getItem', () => {
     it('should format the key', () => {
@@ -12,206 +45,30 @@ describe('getItem', () => {
 
 describe('query', () => {
     it('should build a condition expression', () => {
+        const { mockContext } = createMockEntity()
+
         expect(
-            conditionExpression($ref(Pet), (existing, input) => {
-                return {
+            conditionExpression({
+                build: ({ existing, input }) => ({
                     and: [
-                        existing.name.eq(input.name),
-                        existing.category.eq(input.category!),
+                        existing.name!.eq(input.name),
+                        existing.category!.eq(input.category),
                         {
-                            or: [existing.status.eq(input.status!), existing.name.eq(input.name!)],
+                            or: [existing.status!.eq(input.status), existing.name!.eq(input.name)],
                         },
                     ],
-                }
+                }),
+                context: mockContext,
             }),
         ).toMatchInlineSnapshot(`
           {
-            "attributeNames": {
-              "name": "#name",
-              "status": "#status",
-            },
-            "attributeValues": {
-              "category": ":category",
-              "name": ":name",
-              "status": ":status",
-            },
+            "comparands": [
+              "name",
+              "category",
+              "status",
+              "name",
+            ],
             "expression": "#name = :name AND category = :category AND (#status = :status OR #name = :name)",
-            "inputSchema": {
-              "category": NodeTrait {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_children": [
-                  JSONObjectType {
-                    "_attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "_children": [
-                      NodeTrait {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          IntegerType {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_definition": {},
-                            "_id": "14",
-                            "_isCommutative": true,
-                            "_name": "Category",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
-                            "_type": "integer",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "16",
-                        "_isCommutative": true,
-                        "_type": "optional",
-                      },
-                      NodeTrait {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          StringType {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_definition": {},
-                            "_id": "15",
-                            "_isCommutative": true,
-                            "_name": "Category",
-                            "_options": {},
-                            "_type": "string",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "17",
-                        "_isCommutative": true,
-                        "_type": "optional",
-                      },
-                    ],
-                    "_definition": {},
-                    "_id": "18",
-                    "_isCommutative": false,
-                    "_name": "Category",
-                    "_options": {
-                      "strict": false,
-                    },
-                    "_type": "object",
-                    "shape": {
-                      "id": NodeTrait {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          IntegerType {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_definition": {},
-                            "_id": "14",
-                            "_isCommutative": true,
-                            "_name": "Category",
-                            "_options": {
-                              "maxInclusive": true,
-                              "minInclusive": true,
-                            },
-                            "_type": "integer",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "16",
-                        "_isCommutative": true,
-                        "_type": "optional",
-                      },
-                      "name": NodeTrait {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          StringType {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_definition": {},
-                            "_id": "15",
-                            "_isCommutative": true,
-                            "_name": "Category",
-                            "_options": {},
-                            "_type": "string",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "17",
-                        "_isCommutative": true,
-                        "_type": "optional",
-                      },
-                    },
-                  },
-                ],
-                "_definition": {},
-                "_hooks": {
-                  "onGenerate": [
-                    [Function],
-                  ],
-                  "onLoad": [
-                    [Function],
-                  ],
-                },
-                "_id": "1",
-                "_isCommutative": true,
-                "_name": "category",
-                "_options": {},
-                "_type": "ref",
-              },
-              "name": StringType {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_definition": {},
-                "_id": "3",
-                "_isCommutative": true,
-                "_name": "name",
-                "_options": {},
-                "_type": "string",
-              },
-              "status": EnumType {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_definition": {
-                  "description": "pet status in the store",
-                },
-                "_id": "6",
-                "_isCommutative": true,
-                "_isNamed": false,
-                "_name": "status",
-                "_options": {},
-                "_type": "enum",
-                "enum": [
-                  "available",
-                  "pending",
-                  "sold",
-                ],
-              },
-            },
           }
         `)
     })
@@ -219,678 +76,37 @@ describe('query', () => {
 
 describe('update', () => {
     it('should build an update expression', () => {
+        const { mockEntity, mockContext } = createMockEntity()
+
         expect(
             updateExpression({
-                shape: $ref(Pet),
-                build: (existing, input) => {
-                    return [
-                        //
-                        existing.name.set(input.name!),
-                        existing.tags.listAppend(input.tags!),
-                        existing.photoUrls.remove(),
-                    ]
-                },
+                entity: mockEntity,
+                build: ({ existing, input }) => [
+                    existing.name!.set(input.name),
+                    existing.tags!.listAppend(input.tags),
+                    existing.photoUrls!.remove(),
+                ],
+                context: mockContext,
             }),
         ).toMatchInlineSnapshot(`
           {
-            "attributeConstValues": {},
-            "attributeNames": {
-              "name": "#name",
-            },
-            "attributeValues": {
-              "name": ":name",
-              "tags": ":tags",
-            },
-            "expression": "SET #name = :name, tags = list_append(tags, :tags) REMOVE photoUrls",
-            "inputSchema": {
-              "name": StringType {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_definition": {},
-                "_id": "3",
-                "_isCommutative": true,
-                "_name": "name",
-                "_options": {},
-                "_type": "string",
-              },
-              "tags": NodeTrait {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_children": [
-                  NodeTrait {
-                    "_attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "_children": [
-                      JSONObjectType {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              IntegerType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "19",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {
-                                  "maxInclusive": true,
-                                  "minInclusive": true,
-                                },
-                                "_type": "integer",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "21",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                          NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "20",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {},
-                                "_type": "string",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "22",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "23",
-                        "_isCommutative": false,
-                        "_name": "Tag",
-                        "_options": {
-                          "strict": false,
-                        },
-                        "_type": "object",
-                        "shape": {
-                          "id": NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              IntegerType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "19",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {
-                                  "maxInclusive": true,
-                                  "minInclusive": true,
-                                },
-                                "_type": "integer",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "21",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                          "name": NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "20",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {},
-                                "_type": "string",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "22",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                        },
-                      },
-                    ],
-                    "_definition": {},
-                    "_hooks": {
-                      "onGenerate": [
-                        [Function],
-                      ],
-                      "onLoad": [
-                        [Function],
-                      ],
-                    },
-                    "_id": "7",
-                    "_isCommutative": true,
-                    "_name": "tags",
-                    "_options": {},
-                    "_type": "ref",
-                  },
-                ],
-                "_definition": {},
-                "_id": "8",
-                "_isCommutative": false,
-                "_name": "tags",
-                "_options": {},
-                "_type": "array",
-                "element": NodeTrait {
-                  "_attributes": {
-                    "generic": {},
-                    "typescript": {},
-                  },
-                  "_children": [
-                    JSONObjectType {
-                      "_attributes": {
-                        "generic": {},
-                        "typescript": {},
-                      },
-                      "_children": [
-                        NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            IntegerType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "19",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {
-                                "maxInclusive": true,
-                                "minInclusive": true,
-                              },
-                              "_type": "integer",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "21",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                        NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "20",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {},
-                              "_type": "string",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "22",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                      ],
-                      "_definition": {},
-                      "_id": "23",
-                      "_isCommutative": false,
-                      "_name": "Tag",
-                      "_options": {
-                        "strict": false,
-                      },
-                      "_type": "object",
-                      "shape": {
-                        "id": NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            IntegerType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "19",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {
-                                "maxInclusive": true,
-                                "minInclusive": true,
-                              },
-                              "_type": "integer",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "21",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                        "name": NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "20",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {},
-                              "_type": "string",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "22",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                      },
-                    },
-                  ],
-                  "_definition": {},
-                  "_hooks": {
-                    "onGenerate": [
-                      [Function],
-                    ],
-                    "onLoad": [
-                      [Function],
-                    ],
-                  },
-                  "_id": "7",
-                  "_isCommutative": true,
-                  "_name": "tags",
-                  "_options": {},
-                  "_type": "ref",
-                },
-              },
-            },
+            "expression": "SET #name = :name, tags = list_append(tags, :tags), createdAt = if_not_exists(createdAt, :createdAt0), updatedAt = :createdAt0, entityType = if_not_exists(entityType, :entityType0) REMOVE photoUrls",
           }
         `)
 
         expect(
             updateExpression({
-                shape: $ref(Pet),
-                build: (existing, input) => {
-                    return {
-                        name: input.name!,
-                        tags: existing.tags.listAppend(input.tags!),
-                        photoUrls: existing.photoUrls.remove(),
-                    }
-                },
+                entity: mockEntity,
+                build: ({ existing, input }) => ({
+                    name: input.name,
+                    tags: existing.tags!.listAppend(input.tags),
+                    photoUrls: existing.photoUrls!.remove(),
+                }),
+                context: mockContext,
             }),
         ).toMatchInlineSnapshot(`
           {
-            "attributeConstValues": {},
-            "attributeNames": {
-              "name": "#name",
-            },
-            "attributeValues": {
-              "name": ":name",
-              "tags": ":tags",
-            },
-            "expression": "SET #name = :name, tags = list_append(tags, :tags) REMOVE photoUrls",
-            "inputSchema": {
-              "name": StringType {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_definition": {},
-                "_id": "26",
-                "_isCommutative": true,
-                "_name": "name",
-                "_options": {},
-                "_type": "string",
-              },
-              "tags": NodeTrait {
-                "_attributes": {
-                  "generic": {},
-                  "typescript": {},
-                },
-                "_children": [
-                  NodeTrait {
-                    "_attributes": {
-                      "generic": {},
-                      "typescript": {},
-                    },
-                    "_children": [
-                      JSONObjectType {
-                        "_attributes": {
-                          "generic": {},
-                          "typescript": {},
-                        },
-                        "_children": [
-                          NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              IntegerType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "42",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {
-                                  "maxInclusive": true,
-                                  "minInclusive": true,
-                                },
-                                "_type": "integer",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "44",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                          NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "43",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {},
-                                "_type": "string",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "45",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                        ],
-                        "_definition": {},
-                        "_id": "46",
-                        "_isCommutative": false,
-                        "_name": "Tag",
-                        "_options": {
-                          "strict": false,
-                        },
-                        "_type": "object",
-                        "shape": {
-                          "id": NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              IntegerType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "42",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {
-                                  "maxInclusive": true,
-                                  "minInclusive": true,
-                                },
-                                "_type": "integer",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "44",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                          "name": NodeTrait {
-                            "_attributes": {
-                              "generic": {},
-                              "typescript": {},
-                            },
-                            "_children": [
-                              StringType {
-                                "_attributes": {
-                                  "generic": {},
-                                  "typescript": {},
-                                },
-                                "_definition": {},
-                                "_id": "43",
-                                "_isCommutative": true,
-                                "_name": "Tag",
-                                "_options": {},
-                                "_type": "string",
-                              },
-                            ],
-                            "_definition": {},
-                            "_id": "45",
-                            "_isCommutative": true,
-                            "_type": "optional",
-                          },
-                        },
-                      },
-                    ],
-                    "_definition": {},
-                    "_hooks": {
-                      "onGenerate": [
-                        [Function],
-                      ],
-                      "onLoad": [
-                        [Function],
-                      ],
-                    },
-                    "_id": "30",
-                    "_isCommutative": true,
-                    "_name": "tags",
-                    "_options": {},
-                    "_type": "ref",
-                  },
-                ],
-                "_definition": {},
-                "_id": "31",
-                "_isCommutative": false,
-                "_name": "tags",
-                "_options": {},
-                "_type": "array",
-                "element": NodeTrait {
-                  "_attributes": {
-                    "generic": {},
-                    "typescript": {},
-                  },
-                  "_children": [
-                    JSONObjectType {
-                      "_attributes": {
-                        "generic": {},
-                        "typescript": {},
-                      },
-                      "_children": [
-                        NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            IntegerType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "42",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {
-                                "maxInclusive": true,
-                                "minInclusive": true,
-                              },
-                              "_type": "integer",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "44",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                        NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "43",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {},
-                              "_type": "string",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "45",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                      ],
-                      "_definition": {},
-                      "_id": "46",
-                      "_isCommutative": false,
-                      "_name": "Tag",
-                      "_options": {
-                        "strict": false,
-                      },
-                      "_type": "object",
-                      "shape": {
-                        "id": NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            IntegerType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "42",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {
-                                "maxInclusive": true,
-                                "minInclusive": true,
-                              },
-                              "_type": "integer",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "44",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                        "name": NodeTrait {
-                          "_attributes": {
-                            "generic": {},
-                            "typescript": {},
-                          },
-                          "_children": [
-                            StringType {
-                              "_attributes": {
-                                "generic": {},
-                                "typescript": {},
-                              },
-                              "_definition": {},
-                              "_id": "43",
-                              "_isCommutative": true,
-                              "_name": "Tag",
-                              "_options": {},
-                              "_type": "string",
-                            },
-                          ],
-                          "_definition": {},
-                          "_id": "45",
-                          "_isCommutative": true,
-                          "_type": "optional",
-                        },
-                      },
-                    },
-                  ],
-                  "_definition": {},
-                  "_hooks": {
-                    "onGenerate": [
-                      [Function],
-                    ],
-                    "onLoad": [
-                      [Function],
-                    ],
-                  },
-                  "_id": "30",
-                  "_isCommutative": true,
-                  "_name": "tags",
-                  "_options": {},
-                  "_type": "ref",
-                },
-              },
-            },
+            "expression": "SET #name = :name, tags = list_append(tags, :tags), createdAt = if_not_exists(createdAt, :createdAt0), updatedAt = :createdAt0, entityType = if_not_exists(entityType, :entityType0) REMOVE photoUrls",
           }
         `)
     })

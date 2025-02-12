@@ -10,9 +10,7 @@ export interface Foo {
     c: string
 }
 
-export interface OmitMultiple {
-    a: string
-}
+export type OmitMultiple = Omit<Foo, 'b' | 'c'>
 
 export interface Record {
     [k: string]: string | undefined

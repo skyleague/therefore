@@ -1,7 +1,7 @@
 import { isDefined, omitUndefined } from '@skyleague/axioms'
 import camelcase from 'camelcase'
 import { Node } from '../../../cst/node.js'
-import type { TypescriptWalkerContext } from '../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../visitor/typescript/typescript-type.js'
 import { createWriter } from '../../../writer.js'
 import type { DynamoDbEntityType } from '../entity.js'
 import { DynamodbExpressionContext } from '../expressions/context.js'
@@ -41,33 +41,20 @@ export abstract class DynamodbBaseCommandType<
     public constructor({ entity, commandOptions }: { entity: Entity; commandOptions: Partial<CommandOptions> }) {
         super()
 
-        let parentName: string | undefined
+        // let parentName: string | undefined
 
         this.entity = entity
         this._commandOptions = omitUndefined({ ...commandOptions }) as Partial<CommandOptions>
         this._builder = new DynamodbCommandBuilder({
-            context: new DynamodbExpressionContext(entity.shape),
-            parentName: () => parentName,
+            context: new DynamodbExpressionContext(entity, this),
         })
 
         this._transform ??= {}
-        this._transform.symbolName = (name) => {
-            parentName = name
-            return `${camelcase(name)}Command`
-        }
+        const commandTransform = (name: string) => `${camelcase(name)}Command`
+        this._transform['type:source'] = commandTransform
+        this._transform['value:source'] = commandTransform
 
-        Object.defineProperties(this, {
-            _parentName: { get: () => parentName },
-            _children: {
-                get: () => [this._builder.result, this._builder.input].filter((x) => Object.values(x?.shape ?? {}).length > 0),
-            },
-            _connections: {
-                get: () =>
-                    [this._builder.result ?? this.entity.shape, this._builder.input].filter(
-                        (x) => Object.values(x?.shape ?? {}).length > 0,
-                    ),
-            },
-        })
+        this._children = [this.entity.shape]
 
         if (entity._commands[this._id] !== undefined) {
             throw new Error(`Command with name ${this._id} already exists`)
@@ -75,16 +62,19 @@ export abstract class DynamodbBaseCommandType<
         entity._commands[this._id] = this
     }
 
-    public _buildHandler({ context, commandLines }: { context: TypescriptWalkerContext; commandLines: () => Generator<string> }) {
-        const DynamoDBServiceException = context.reference(dynamodbSymbols.DynamoDBServiceException())
+    public _buildHandler({
+        context,
+        commandLines,
+    }: { context: TypescriptTypeWalkerContext; commandLines: () => Generator<string> }) {
+        const DynamoDBServiceException = context.type(dynamodbSymbols.DynamoDBServiceException())
 
         const writer = createWriter()
 
-        writer.write(`public async ${this._dynamodb.needsGenerator ? '*' : ''}${this._name ?? context.reference(this)}(`)
+        writer.write(`public async ${this._dynamodb.needsGenerator ? '*' : ''}${context.value(this)}(`)
 
         const $input =
             isDefined(this._builder.input) && Object.keys(this._builder.input.shape).length > 0
-                ? context.reference(this._builder.input)
+                ? context.type(this._builder.input)
                 : undefined
 
         if (isDefined($input)) {
@@ -121,7 +111,13 @@ export abstract class DynamodbBaseCommandType<
         return writer.toString()
     }
 
-    public abstract buildHandler(context: TypescriptWalkerContext): string
+    public asValidator(node: Node) {
+        node.validator({
+            type: this.entity.table.definition.validator,
+        })
+    }
+
+    public abstract buildHandler(context: TypescriptTypeWalkerContext): string
 
     public options(options: Partial<CommandOptions>) {
         this._commandOptions = omitUndefined({

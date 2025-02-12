@@ -10838,7 +10838,7 @@ exports[`petstore > jsonschema 1`] = `
       "properties": {
         "address": {
           "items": {
-            "$ref": "#/$defs/{{30:symbolName}}",
+            "$ref": "#/$defs/{{30:value:name}}",
           },
           "type": "array",
         },
@@ -10885,7 +10885,7 @@ exports[`petstore > jsonschema 1`] = `
       "additionalProperties": true,
       "properties": {
         "category": {
-          "$ref": "#/$defs/{{84:symbolName}}",
+          "$ref": "#/$defs/{{84:value:name}}",
         },
         "id": {
           "type": "integer",
@@ -10909,7 +10909,7 @@ exports[`petstore > jsonschema 1`] = `
         },
         "tags": {
           "items": {
-            "$ref": "#/$defs/{{89:symbolName}}",
+            "$ref": "#/$defs/{{89:value:name}}",
           },
           "type": "array",
         },
@@ -10979,7 +10979,7 @@ exports[`petstore > jsonschema 1`] = `
 `;
 
 exports[`petstore > typescript 1`] = `
-"interface {{97:symbolName}} {
+"interface {{97:type:name}} {
     Order: {
         complete?: (boolean | undefined)
         id?: (number | undefined)
@@ -10992,7 +10992,7 @@ exports[`petstore > typescript 1`] = `
         status?: ('placed' | 'approved' | 'delivered' | undefined)
     }
     Customer: {
-        address?: (({{30:referenceName}})[] | undefined)
+        address?: (({{30:type:reference}})[] | undefined)
         id?: (number | undefined)
         username?: (string | undefined)
     }
@@ -11024,7 +11024,7 @@ exports[`petstore > typescript 1`] = `
         name?: (string | undefined)
     }
     Pet: {
-        category?: ({{84:referenceName}} | undefined)
+        category?: ({{84:type:reference}} | undefined)
         id?: (number | undefined)
         name: string
         photoUrls: (string)[]
@@ -11032,7 +11032,7 @@ exports[`petstore > typescript 1`] = `
          * pet status in the store
          */
         status?: ('available' | 'pending' | 'sold' | undefined)
-        tags?: (({{89:referenceName}})[] | undefined)
+        tags?: (({{89:type:reference}})[] | undefined)
     }
     ApiResponse: {
         code?: (number | undefined)
@@ -11040,17 +11040,17 @@ exports[`petstore > typescript 1`] = `
         type?: (string | undefined)
     }
 }
-interface {{30:symbolName}} {
+interface {{30:type:name}} {
     city?: (string | undefined)
     state?: (string | undefined)
     street?: (string | undefined)
     zip?: (string | undefined)
 }
-interface {{84:symbolName}} {
+interface {{84:type:name}} {
     id?: (number | undefined)
     name?: (string | undefined)
 }
-interface {{89:symbolName}} {
+interface {{89:type:name}} {
     id?: (number | undefined)
     name?: (string | undefined)
 }"

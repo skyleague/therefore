@@ -1,38 +1,35 @@
-import { $dynamodb } from '../../../src/lib/primitives/dynamodb/dynamodb.js'
-import { $object } from '../../../src/lib/primitives/object/object.js'
-import { $ref } from '../../../src/lib/primitives/ref/ref.js'
-import { $string } from '../../../src/lib/primitives/string/string.js'
-import { Pet } from '../../restclients/petstore/petstore.type.js'
+import { z } from 'zod'
+import { $dynamodb } from '../../../../src/lib/primitives/dynamodb/dynamodb.js'
+import { Pet } from '../../../restclients/zod/petstore/petstore.zod.js'
 
-export const petDataTable = $dynamodb.table(
-    $object({
-        pk: $string,
-        sk: $string,
-        entityType: $string,
-        createdAt: $string().datetime(),
-        updatedAt: $string().datetime(),
-    }),
-    {
-        pk: 'pk',
-        sk: 'sk',
-        entityType: 'entityType',
-        tableName: 'pet-data',
-        indexes: {
-            'sk-pk-index': {
-                pk: 'sk',
-                sk: 'pk',
-                projectionType: 'INCLUDE',
-                nonKeyAttributes: ['category'],
-            },
+export const entity = z.object({
+    pk: z.string(),
+    sk: z.string(),
+    entityType: z.string(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+})
+
+export const petDataTable = $dynamodb.table({
+    shape: entity,
+    pk: 'pk',
+    sk: 'sk',
+    entityType: 'entityType',
+    indexes: {
+        'sk-pk-index': {
+            pk: 'sk',
+            sk: 'pk',
+            projectionType: 'INCLUDE',
+            nonKeyAttributes: ['category'],
         },
     },
-)
+    validator: 'zod',
+})
 
-export const pet = $dynamodb.entity({
-    table: petDataTable,
+export const pet = petDataTable.entity({
     entityType: 'pet',
-    shape: $ref(Pet).extend({
-        ownerId: $string,
+    shape: Pet.extend({
+        ownerId: z.string(),
     }),
     keyFormatters: {
         pk: 'owner#{ownerId}',
@@ -46,6 +43,7 @@ export const updatePetName = pet.updateItem({
         name: existing.name.ifNotExists(input.name),
     }),
 })
+
 export const upsertPetName = pet.updateItem({
     update: ({ existing, input }) => ({
         name: existing.name.ifNotExists(input.name),

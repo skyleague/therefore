@@ -1,6 +1,7 @@
 import type { ArrayType } from '../array/array.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import type { ConstType } from '../const/const.js'
+import type { EnumType } from '../enum/enum.js'
 import type { IntersectionType } from '../intersection/intersection.js'
 import type { NullableType } from '../nullable/nullable.js'
 import type { NumberType } from '../number/number.js'
@@ -65,4 +66,6 @@ export type ZodSchemaAsNode<T extends ZodSchema> = T['_def']['typeName'] extends
                                         ? Schema extends ZodSchema
                                             ? ZodSchemaAsNode<Schema>
                                             : never
-                                        : never
+                                        : T extends { _def: { typeName: 'ZodEnum'; values: Array<infer Values> } }
+                                          ? EnumType<Values[]>
+                                          : never

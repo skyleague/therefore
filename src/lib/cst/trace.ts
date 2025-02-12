@@ -42,7 +42,7 @@ export function fileFromNodeTrace(trace: string | undefined): NodeTrace | undefi
 
         // First try to find direct assignment at the line number
         const lineContent = lines[lineNumber - 1]
-        const directMatch = lineContent?.match(/^(?:\s*export\s+)?(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/)?.[1]
+        const directMatch = lineContent?.match(/(?:\s*export\s+)?(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/)?.[1]
 
         if (directMatch) {
             symbolName = directMatch
@@ -50,11 +50,13 @@ export function fileFromNodeTrace(trace: string | undefined): NodeTrace | undefi
             // If not found, search backwards until we find a schema definition
             let currentLine = lineNumber - 1
             let openBraces = 0
-            let foundStart = false
 
-            // Count braces on the current line
-            openBraces += lineContent?.match(/\{/g)?.length ?? 0
-            openBraces -= lineContent?.match(/\}/g)?.length ?? 0
+            // First count braces from the error line to understand our starting scope
+            const errorLineContent = lines[lineNumber - 1]
+            if (errorLineContent !== undefined) {
+                openBraces += errorLineContent.match(/\{/g)?.length ?? 0
+                openBraces -= errorLineContent.match(/\}/g)?.length ?? 0
+            }
 
             while (currentLine >= 0 && !symbolName) {
                 const currentLineContent = lines[currentLine]
@@ -66,23 +68,14 @@ export function fileFromNodeTrace(trace: string | undefined): NodeTrace | undefi
                 openBraces += currentLineContent.match(/\{/g)?.length ?? 0
                 openBraces -= currentLineContent.match(/\}/g)?.length ?? 0
 
-                // If we're at brace level 0 and we found a start, we've gone too far back
-                if (foundStart && openBraces === 0) {
-                    break
-                }
-
                 // Look for schema definitions - must start at beginning of line (with optional whitespace and export)
                 const schemaMatch = currentLineContent.match(
-                    /^(?:\s*export\s+)?(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*z[\s\S]*/,
+                    /(?:\s*export\s+)?(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/,
                 )?.[1]
-                if (schemaMatch) {
+
+                if (schemaMatch && openBraces <= 0) {
                     symbolName = schemaMatch
                     break
-                }
-
-                // Mark when we find a schema start
-                if (currentLineContent.match(/^\s*z\./)) {
-                    foundStart = true
                 }
 
                 currentLine--

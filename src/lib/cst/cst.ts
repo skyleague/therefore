@@ -1,9 +1,10 @@
 import { isObject } from '@skyleague/axioms'
-import type { References } from '../../commands/generate/output/references.js'
+import type { GenericReferences, TypescriptReferences } from '../../commands/generate/output/references.js'
 import type { ThereforeOutputType } from '../../commands/generate/output/types.js'
 import type { JsonAnnotations } from '../../json.js'
 import type { DefinedTypescriptOutput } from '../visitor/typescript/cst.js'
 import type { TypescriptTypeWalkerContext } from '../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../visitor/typescript/typescript-zod.js'
 import type { Node, SourceNode } from './node.js'
 
 export type ThereforeExpr = Node | (() => Node)
@@ -16,14 +17,26 @@ export interface ThereforeOutputFile {
     type: string
 }
 
-export interface TypescriptOutput extends ThereforeOutputFile {
+export interface TypescriptOutput<Context extends TypescriptTypeWalkerContext | TypescriptZodWalkerContext>
+    extends ThereforeOutputFile {
     context?: (args: {
+        targetPath: string
         symbol?: Node
-        references?: References<'typescript'>
-        locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
+        references?: TypescriptReferences
+        locals?: [
+            Node,
+            (
+                | ((
+                      output:
+                          | DefinedTypescriptOutput<TypescriptTypeWalkerContext>
+                          | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+                  ) => boolean)
+                | undefined
+            ),
+        ][]
         exportSymbol: boolean
-    }) => TypescriptTypeWalkerContext
-    definition?: (node: Node, context: TypescriptTypeWalkerContext) => string | undefined
+    }) => Context
+    definition?: (node: Node, context: Context) => string | undefined
     isGenerated?: (node: Node) => boolean
     subtype: 'zod' | 'ajv' | undefined
     isTypeOnly: boolean
@@ -31,27 +44,142 @@ export interface TypescriptOutput extends ThereforeOutputFile {
     type: 'typescript'
 }
 
+/**
+ * TypeScript code generation attributes that control how symbols, types, and modules are handled.
+ * The attributes are split into two main categories:
+ * 1. Value-level attributes (prefixed with 'value:'): Handle runtime constructs like variables, functions, and classes
+ * 2. Type-level attributes (prefixed with 'type:'): Handle type system constructs like interfaces and type aliases
+ */
 export interface TypescriptAttributes {
-    referenceName: string
-    symbolName: string
-    aliasName?: string
-    isModule?: boolean
-    path?: string
+    /**
+     * Controls how a value is exported from its module.
+     * Used for runtime exports (const/let/var/class/function).
+     *
+     * Example:
+     * ```ts
+     * // If value:export is "MyExportedFunction"
+     * export { myFunction as MyExportedFunction }
+     * ```
+     */
+    'value:export'?: string
 
-    schemaPath?: string
+    /**
+     * Controls how a type is exported from its module.
+     * Used for type-level exports (type/interface).
+     *
+     * Example:
+     * ```ts
+     * // If type:export is "MyExportedType"
+     * export { MyType as MyExportedType }
+     * ```
+     */
+    'type:export'?: string
+
+    /**
+     * The local name of a value within the current module scope.
+     * Used when the internal name needs to differ from the source name.
+     *
+     * Example:
+     * ```ts
+     * // If value:name is "localFunction"
+     * const localFunction = importedFunction
+     * ```
+     */
+    'value:name'?: string
+
+    /**
+     * The base identifier for a value. This is the primary name used for the value
+     * and serves as the default for other value-related attributes if they're not specified.
+     * Required for proper symbol resolution.
+     *
+     * Example:
+     * ```ts
+     * // If value:source is "processData"
+     * const processData = ...
+     * ```
+     */
+    'value:source': string
+
+    /**
+     * The file path where a value is defined.
+     * Used for import resolution and module organization.
+     * Critical for determining when and how to generate imports.
+     *
+     * Example:
+     * ```ts
+     * // If value:path is "./models/user.ts"
+     * import { User } from './models/user.js'
+     * ```
+     */
+    'value:path'?: string
+
+    /**
+     * The local name of a type within the current module scope.
+     * Used when the internal type name needs to differ from its source name.
+     *
+     * Example:
+     * ```ts
+     * // If type:name is "LocalUserType"
+     * type LocalUserType = ImportedUser
+     * ```
+     */
+    'type:name'?: string
+
+    /**
+     * The base identifier for a type. This is the primary name used for the type
+     * and serves as the default for other type-related attributes if they're not specified.
+     * Required for proper type resolution.
+     *
+     * Example:
+     * ```ts
+     * // If type:source is "UserData"
+     * interface UserData { ... }
+     * ```
+     */
+    'type:source': string
+
+    /**
+     * Used for complex type references, particularly in generic contexts or
+     * when types need special handling during reference resolution.
+     * Helps manage type references across module boundaries.
+     *
+     * Example:
+     * ```ts
+     * // If type:reference is "Record<string, User>"
+     * type UserMap = Record<string, User>
+     * ```
+     */
+    'type:reference'?: string
+
+    /**
+     * The file path where a type is defined.
+     * Used for type import resolution and module organization.
+     * Critical for determining when and how to generate type imports.
+     *
+     * Example:
+     * ```ts
+     * // If type:path is "./types/user.ts"
+     * import type { User } from './types/user.js'
+     * ```
+     */
+    'type:path'?: string
+
+    /**
+     * Indicates if the node represents a module.
+     * Affects how imports and exports are handled.
+     * When true, special module-level processing is applied.
+     */
+    isModule?: boolean
 }
 
 export interface GenericAttributes {
-    referenceName: string
-    symbolName: string
-
-    // unused
-    aliasName?: string
+    'value:name': string
+    'jsonschema:path'?: string
 }
 
 export interface GenericOutput extends ThereforeOutputFile {
     targetPath: (node: SourceNode) => string
-    content: (options: GenericOutput, args: { references: References<'generic'> }) => string
+    content: (options: GenericOutput, args: { references: GenericReferences }) => string
     type: 'file'
     subtype: (() => ThereforeOutputType) | ThereforeOutputType
     prettify?: () => boolean

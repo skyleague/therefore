@@ -4,13 +4,13 @@ import type { GenericOutput } from '../../../lib/cst/cst.js'
 import type { Node, SourceNode } from '../../../lib/cst/node.js'
 import type { GeneratorHooks } from '../../../lib/primitives/therefore.js'
 import { type Prettier, formatContent } from '../format.js'
-import { References } from './references.js'
+import { GenericReferences } from './references.js'
 import type { ThereforeOutput } from './types.js'
 import type { TypescriptFileOutput } from './typescript.js'
 
 export class GenericFileOutput {
     public path: string
-    public references = new References('generic')
+    public references = new GenericReferences()
     public content?: {
         output: GenericOutput
         content: string
@@ -32,16 +32,11 @@ export class GenericFileOutput {
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 
-        const unmappedDuplicates = duplicates.map((records) =>
-            records.filter(([name]) => this.references.key2node.get(name)?._attributes.typescript.aliasName === undefined),
-        )
-
-        const suffixes = unmappedDuplicates.flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
+        const suffixes = duplicates.flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
 
         for (const [key, suffix] of suffixes) {
-            this.references.transform[key]?.((current) => {
-                return `${current}${suffix}`
-            })
+            this.references.transformers[key] ??= []
+            this.references.transformers[key]?.push((current: string) => `${current}${suffix}`)
         }
     }
 

@@ -3,13 +3,13 @@ import { isDefined } from '@skyleague/axioms'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
 import type { Node } from '../../../../cst/node.js'
-import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../../../visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../../../writer.js'
 import type { ObjectType } from '../../../object/object.js'
 import type { DynamoDbEntityType } from '../../entity.js'
 import { Condition, type ConditionBuilder } from '../../expressions/condition.js'
 import type { ProjectionBuilder } from '../../expressions/projection.js'
-import {} from '../../expressions/update.js'
 import { dynamodbSymbols } from '../../symbols.js'
 import { DynamodbBaseCommandType, type OmitExpressions, type OmitLegacyOptions } from '../base.js'
 
@@ -102,19 +102,32 @@ export class DynamodbQueryCommandType<
 
         this._builder.addIndexResult(entity, entity.table.definition.indexes?.[index as string])
         this._builder.addInput(this._builder.context._inputSchema)
+
+        if (this._scope !== 'table') {
+            this.asValidator(this._builder.result ?? this.entity.shape)
+        }
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
+                subtype: undefined,
+                isTypeOnly: false,
                 definition: (node, context) => {
+                    node._attributes.typescript['value:path'] = context.targetPath
+                    node._attributes.typescript['type:path'] = context.targetPath
+
                     const self = this
                     return this._builder.writeCommand({
                         node,
                         context,
-                        commandInput: context.reference(dynamodbSymbols.QueryCommandInput()),
+                        commandInput: context.type(dynamodbSymbols.QueryCommandInput()),
                         commandLines: function* () {
                             if (isDefined(self._index)) {
                                 yield `IndexName: ${JSON.stringify(self._index)},`
@@ -129,12 +142,11 @@ export class DynamodbQueryCommandType<
                         },
                     })
                 },
-            },
-            ...(super._output ?? []),
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 
-    public override buildHandler(context: TypescriptWalkerContext): string {
+    public override buildHandler(context: TypescriptTypeWalkerContext): string {
         const self = this
         return this._buildHandler({
             context,
@@ -150,8 +162,9 @@ export class DynamodbQueryCommandType<
                             if (self._scope === 'table') {
                                 writer.writeLine('yield { right: item, status: "success" as const, $response: page }')
                             } else {
+                                const schema = self._builder.result ?? self.entity.shape
                                 writer.writeLine(
-                                    `yield { ...${context.value(self._builder.result ?? self.entity.shape)}.parse(item), status: 'success' as const, $response: page }`,
+                                    `yield { ...${context.value(schema)}.parse(item), status: 'success' as const, $response: page }`,
                                 )
                             }
                         })
@@ -161,28 +174,4 @@ export class DynamodbQueryCommandType<
             },
         })
     }
-}
-
-export function $queryCommand<Entity extends DynamoDbEntityType>(
-    args: Omit<DynamodbQueryCommandOptions<Entity, undefined>, 'scope'>,
-) {
-    return new DynamodbQueryCommandType<Entity, undefined>({ ...args, scope: 'entity' })
-}
-
-export function $queryIndexCommand<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>>(
-    args: Omit<DynamodbQueryCommandOptions<Entity, Index>, 'scope' | 'index'> & { index: Index },
-) {
-    return new DynamodbQueryCommandType<Entity, Index>({ ...args, scope: 'entity' })
-}
-
-export function $queryTableCommand<Entity extends DynamoDbEntityType>(
-    args: Omit<DynamodbQueryCommandOptions<Entity, undefined>, 'scope'>,
-) {
-    return new DynamodbQueryCommandType<Entity, undefined>({ ...args, scope: 'table' })
-}
-
-export function $queryTableIndexCommand<Entity extends DynamoDbEntityType, Index extends keyof IndexesOf<Entity>>(
-    args: Omit<DynamodbQueryCommandOptions<Entity, Index>, 'scope' | 'index'> & { index: Index },
-) {
-    return new DynamodbQueryCommandType<Entity, Index>({ ...args, scope: 'table' })
 }

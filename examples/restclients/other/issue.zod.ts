@@ -8,7 +8,7 @@ import { z } from 'zod'
 import type { ZodType } from 'zod'
 
 export type ICompany = {
-    owns?: z.infer<typeof ICompany>[] | undefined
+    owns?: ICompany[] | undefined
 }
 export const ICompany: ZodType<ICompany> = z.object({
     owns: z

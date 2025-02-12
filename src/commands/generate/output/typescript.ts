@@ -8,10 +8,11 @@ import type { GeneratorHooks } from '../../../lib/primitives/therefore.js'
 import { generateNode, loadNode } from '../../../lib/visitor/prepass/prepass.js'
 import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../../../lib/visitor/typescript/cst.js'
 import type { TypescriptTypeWalkerContext } from '../../../lib/visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../../lib/visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../../lib/writer.js'
 import { generatedBy } from '../constants.js'
 import { type Prettier, formatContent } from '../format.js'
-import { References } from './references.js'
+import { TypescriptReferences } from './references.js'
 import type { ThereforeOutput } from './types.js'
 
 export function sanitizeTypescriptTypeName(symbol: string): string {
@@ -27,9 +28,11 @@ export const setDefaultNames = (self: Node) => {
             pascalCase: true,
             preserveConsecutiveUppercase: true,
         })
-        //  we lied to the compiler in the definition
-        self._attributes.typescript.symbolName ??= readableSymbolName
-        self._attributes.generic.symbolName ??= readableSymbolName
+
+        self._attributes.typescript['value:source'] ??= readableSymbolName
+        self._attributes.typescript['type:source'] ??= readableSymbolName
+
+        self._attributes.generic['value:name'] ??= readableSymbolName
     }
 }
 
@@ -42,17 +45,25 @@ export type ImportGroup = (typeof importGroups)[number]
 export class TypescriptFileOutput {
     public path: string
 
-    public content: (readonly [Node, string, DefinedTypescriptOutput])[] = []
-    public references = new References('typescript', {
-        fallbackStrategy: (node, type) => {
-            if (type === 'referenceName' && node._attributes.typescript.path !== this.path) {
-                return 'aliasName'
-            }
-            return 'symbolName'
-        },
-    })
-    public locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][] = []
+    public content: (readonly [
+        Node,
+        string,
+        DefinedTypescriptOutput<TypescriptTypeWalkerContext> | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+    ])[] = []
+    public references = new TypescriptReferences()
+    public locals: [
+        Node,
+        (
+            | ((
+                  output:
+                      | DefinedTypescriptOutput<TypescriptTypeWalkerContext>
+                      | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+              ) => boolean)
+            | undefined
+        ),
+    ][] = []
     public isGenerated = false
+    private exportValues: Record<string, string> = {}
 
     public static hooks: Partial<GeneratorHooks> = {
         onExport: [
@@ -139,7 +150,9 @@ export class TypescriptFileOutput {
         return definition
     }
 
-    private static tsGenerators(symbol: Node): DefinedTypescriptOutput[] {
+    private static tsGenerators(
+        symbol: Node,
+    ): (DefinedTypescriptOutput<TypescriptTypeWalkerContext> | DefinedTypescriptOutput<TypescriptZodWalkerContext>)[] {
         return defaultTypescriptOutput(symbol).filter((o) => o.enabled?.(symbol) !== false)
     }
 
@@ -151,17 +164,14 @@ export class TypescriptFileOutput {
         context,
     }: {
         symbol: Node
-        output: DefinedTypescriptOutput
+        output: DefinedTypescriptOutput<TypescriptTypeWalkerContext> | DefinedTypescriptOutput<TypescriptZodWalkerContext>
         exportSymbol?: boolean
-        context?: TypescriptTypeWalkerContext
+        context?: TypescriptTypeWalkerContext | TypescriptZodWalkerContext
     }) {
         if (this.seen.has(symbol._id)) {
             return
         }
         this.seen.add(symbol._id)
-
-        // set the target location of the symbol
-        symbol._attributes.typescript.path = this.path
 
         this.isGenerated = this.isGenerated || (output.isGenerated?.(symbol) ?? false)
 
@@ -170,9 +180,15 @@ export class TypescriptFileOutput {
         }
 
         // biome-ignore lint/style/noNonNullAssertion: we know the context is defined
-        context ??= output.context!({ symbol, exportSymbol, references: this.references, locals: this.locals })
-        const content = output.definition(symbol, context)
-        if (content !== undefined) {
+        context ??= output.context!({
+            targetPath: this.path,
+            symbol,
+            exportSymbol,
+            references: this.references,
+            locals: this.locals,
+        })
+        const content = output.definition(symbol, context as TypescriptZodWalkerContext & TypescriptTypeWalkerContext)
+        if (content !== undefined && content !== '') {
             this.content.push([symbol, content, output])
             if (output.clean !== undefined) {
                 this._clean.push(() => output.clean?.(this.path))
@@ -191,33 +207,46 @@ export class TypescriptFileOutput {
         }
 
         const data = this.references.data()
-        const duplicates = entriesOf(Object.groupBy(entriesOf(data), ([, values]) => values))
+        const duplicates = entriesOf(
+            Object.groupBy(entriesOf(data), ([key, value]) => {
+                const refType = key.split(':')[1]
+                return refType !== undefined ? `${refType}:${value}` : value
+            }),
+        )
             .map(([, second]) => second)
             .filter((records) => records !== undefined)
             .map((records) => records.filter(([, name]) => !(name.startsWith('{{') || name.endsWith('}}'))))
             .filter((records) => records.length > 1)
 
         const unmappedDuplicates = duplicates.map((records) =>
-            records
-                .filter(([name]) => {
-                    return this.references.key2node.get(name)?._attributes.typescript.aliasName === undefined
-                })
-                .toSorted((a, z) => {
-                    const aNode = this.references.key2node.get(a[0])
-                    const zNode = this.references.key2node.get(z[0])
-                    if (!aNode || !zNode) {
-                        return 0
-                    }
-                    return compareNodes(aNode, zNode)
-                }),
+            records.toSorted((a, z) => {
+                const aNode = this.references.key2node.get(a[0])
+                const zNode = this.references.key2node.get(z[0])
+                if (!aNode || !zNode) {
+                    return 0
+                }
+                return compareNodes(aNode, zNode)
+            }),
         )
 
-        const suffixes = unmappedDuplicates.flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
+        const suffixes = unmappedDuplicates
+            .flatMap((dups) => dups.map(([key], i) => [key, `${i > 0 ? i + 1 : ''}`] as const))
+            .filter(([, suffix]) => suffix !== '')
 
         for (const [key, suffix] of suffixes) {
-            this.references.transform[key]?.((current) => {
-                return `${current}${suffix}`
-            })
+            const node = this.references.key2node.get(key)
+
+            if (node) {
+                const effectiveKey = key.includes(':source') ? this.references.typeName(node).slice(2, -2) : key
+                this.references.transformers[effectiveKey] ??= []
+                this.references.transformers[effectiveKey]?.push((current: string) => `${current}${suffix}`)
+
+                if (key.includes('type:')) {
+                    this.exportValues[this.references.typeExport(node)] = this.references.typeName(node)
+                } else {
+                    this.exportValues[this.references.valueExport(node)] = key
+                }
+            }
         }
 
         this.content.sort(([a], [z]) => compareNodes(a, z))
@@ -233,50 +262,60 @@ export class TypescriptFileOutput {
         if (this.isGenerated) {
             contents
                 .writeLine('/**')
-                .writeLine(`* ${generatedBy}`)
-                .writeLine('* Do not manually touch this')
-                .newLineIfLastNot()
-                .closeComment()
+                .writeLine(` * ${generatedBy}`)
+                .writeLine(' * Do not manually touch this')
+                .writeLine(' */')
                 .writeLine('/* eslint-disable */')
-                .writeLine('')
+                .newLine()
         }
 
         const typeDependencies: Record<string, string[]> = {}
         const dependencies: Record<string, string[]> = {}
-        const alias: Record<string, string> = {}
         for (const symbol of this.references.symbols.values()) {
             // first check if we referenced the symbol in the first place
-            if (
-                this.references.references.get(symbol._id)?.has('referenceName') !== true ||
-                symbol._attributes.typescript.path === this.path ||
-                symbol._sourcePath === undefined
-            ) {
-                continue
+            const references = this.references.references.get(symbol._id)
+
+            // For modules we use the direct path, for local files we calculate the relative path
+            // and ensure it starts with ./ or ../
+            const isModule = symbol._attributes.typescript.isModule === true
+            const importPath = (targetPath: string) => {
+                if (isModule) {
+                    return targetPath
+                }
+                const result = path.relative(path.dirname(this.path), targetPath)
+                if (!isModule && !startsWithPath(result, '../')) {
+                    return `./${result}`
+                }
+                return result
             }
 
-            const symbolPath = symbol._attributes.typescript.path
-            if (symbolPath === undefined) {
-                console.error('No path found for symbol', symbol._name)
-                continue
+            if (references?.has('value:name')) {
+                const targetPath = symbol._attributes.typescript['value:path']
+                if (targetPath === undefined) {
+                    throw new Error(`No value:path found for symbol ${symbol._name}`)
+                }
+                if (targetPath !== this.path) {
+                    const pathReference = importPath(targetPath)
+                    dependencies[pathReference] ??= []
+                    dependencies[pathReference].push(this.references.valueExport(symbol))
+                }
+            } else if (references?.has('type:name')) {
+                const targetPath = symbol._attributes.typescript['type:path']
+                if (targetPath === undefined) {
+                    throw new Error(`No type:path found for symbol ${symbol._name}`)
+                }
+                if (targetPath !== this.path) {
+                    const pathReference = importPath(targetPath)
+                    typeDependencies[pathReference] ??= []
+                    typeDependencies[pathReference].push(this.references.typeExport(symbol))
+                }
             }
 
-            let importPath =
-                symbol._attributes.typescript.isModule === true ? symbolPath : path.relative(path.dirname(this.path), symbolPath)
-            if (symbol._attributes.typescript.isModule !== true && !startsWithPath(importPath, '../')) {
-                importPath = `.${path.sep}${importPath}`
+            if (symbol._attributes.typescript['value:export'] !== undefined) {
+                this.exportValues[this.references.valueExport(symbol)] = this.references.valueSource(symbol)
             }
-            const reference = this.references.reference(symbol, 'symbolName')
-            if (this.references.references.get(symbol._id)?.has('value')) {
-                dependencies[importPath] ??= []
-                dependencies[importPath]?.push(reference)
-            } else {
-                typeDependencies[importPath] ??= []
-                typeDependencies[importPath]?.push(reference)
-            }
-            if (symbol._attributes.typescript.aliasName !== undefined) {
-                alias[reference] =
-                    symbol._transform?.aliasName?.(symbol._attributes.typescript.aliasName) ??
-                    symbol._attributes.typescript.aliasName
+            if (symbol._attributes.typescript['type:export'] !== undefined) {
+                this.exportValues[this.references.typeExport(symbol)] = this.references.typeSource(symbol)
             }
         }
         const data = this.references.resolveData(this.references.data())
@@ -295,25 +334,33 @@ export class TypescriptFileOutput {
                     : 'external'
 
             const target = targetPath.replace('.ts', '.js').replace(/\\/g, '/')
-            const importAttributes = target.endsWith('.json') ? ' with { type: "json" }' : ''
+            const importAttributes = target.endsWith('.json') ? " with { type: 'json' }" : ''
 
             const allDeps = [...new Set(deps)]
+            // Handle special case for default exports with aliases
+            // If we have a single dependency that is a default export and has an alias defined,
+            // we generate a default import with the alias instead of a named import
             const [first] = allDeps
             if (allDeps.length === 1 && first !== undefined) {
                 const symbolName = data[first.slice(2, -2)]
-                const foundAlias = alias[first]
+                const foundAlias = this.exportValues[first]
                 if (foundAlias !== undefined && symbolName === 'default') {
                     imports.push([group, `import ${type}${foundAlias} from '${target}'${importAttributes}`])
                     continue
                 }
             }
 
+            if (allDeps.length === 0) {
+                // no dependencies, skip generating the import
+                continue
+            }
+
             imports.push([
                 group,
                 `import ${type}{ ${allDeps
                     .map((d) => {
-                        if (alias[d] !== undefined) {
-                            return `${d} as ${alias[d]}`
+                        if (this.exportValues[d] !== undefined) {
+                            return `${d} as ${this.exportValues[d]}`
                         }
                         return data[d.slice(2, -2)] ?? d
                     })
@@ -352,6 +399,7 @@ export class TypescriptFileOutput {
             contents.writeLine(line).newLine()
         }
 
+        // const file = contents.toString()
         const file = this.references.render(contents.toString())
         return await formatContent({ prettier, input: renderTemplate(file, data), file: this.path, type: 'typescript' })
     }
@@ -367,7 +415,122 @@ export class TypescriptFileOutput {
         }
     }
 
-    private sortContentTopologically(): (readonly [Node, string, DefinedTypescriptOutput])[] {
+    private generateMermaidGraph({
+        allNodes,
+        nodeToRoot,
+        validatedToValidator,
+        showSubgraphs = false,
+        rootNodesOnly = false,
+        inGraph,
+        rootNodes,
+    }: {
+        allNodes: Map<string, Node>
+        nodeToRoot: Map<string, string>
+        validatedToValidator: Map<string, string>
+        showSubgraphs?: boolean
+        rootNodesOnly?: boolean
+        inGraph?: Map<string, Set<string>>
+        rootNodes?: Set<string>
+    }): string {
+        let mermaidGraph = 'graph TD;\n'
+
+        if (rootNodesOnly && inGraph && rootNodes) {
+            // Add only root nodes
+            for (const rootId of rootNodes) {
+                const node = allNodes.get(rootId)
+                if (!node) {
+                    continue
+                }
+                mermaidGraph += `    ${rootId}["${node._name ?? 'unnamed'}<br/>${node._type ?? 'unknown'}<br/><small>${rootId}</small>"]\n`
+            }
+
+            // Show only connections between root nodes using the inGraph
+            for (const [nodeId, incomingNodes] of inGraph.entries()) {
+                if (!rootNodes.has(nodeId)) {
+                    continue
+                }
+                for (const incomingId of incomingNodes) {
+                    if (!rootNodes.has(incomingId)) {
+                        continue
+                    }
+                    mermaidGraph += `    ${incomingId}-->${nodeId}\n`
+                }
+            }
+            return mermaidGraph
+        }
+
+        if (showSubgraphs) {
+            // First, create subgraphs for each root node
+            const subgraphs = new Map<string, Set<string>>()
+            for (const [nodeId] of allNodes) {
+                const rootId = nodeToRoot.get(nodeId)
+                if (rootId) {
+                    if (!subgraphs.has(rootId)) {
+                        subgraphs.set(rootId, new Set())
+                    }
+                    subgraphs.get(rootId)?.add(nodeId)
+                }
+            }
+
+            // Generate subgraphs
+            let subgraphCounter = 0
+            for (const [rootId, nodeIds] of subgraphs) {
+                const rootNode = allNodes.get(rootId)
+                if (!rootNode) {
+                    continue
+                }
+
+                mermaidGraph += `    subgraph sg${subgraphCounter}[${rootNode._name ?? rootId}]\n`
+
+                // Add all nodes in the subgraph
+                for (const nodeId of nodeIds) {
+                    const node = allNodes.get(nodeId)
+                    if (!node) {
+                        continue
+                    }
+                    mermaidGraph += `        ${nodeId}["${node._name ?? 'unnamed'}<br/>${node._type ?? 'unknown'}<br/><small>${nodeId}</small>"]\n`
+                }
+                mermaidGraph += '    end\n'
+                subgraphCounter++
+            }
+        } else {
+            // Add all nodes without subgraphs
+            for (const [nodeId, node] of allNodes) {
+                mermaidGraph += `    ${nodeId}["${node._name ?? 'unnamed'}<br/>${node._type ?? 'unknown'}<br/><small>${nodeId}</small>"]\n`
+            }
+        }
+
+        // Add all connections between nodes
+        for (const [nodeId, node] of allNodes) {
+            // Add connections from _connections
+            if (node._connections) {
+                for (const conn of node._connections) {
+                    mermaidGraph += `    ${nodeId}-->${conn._id}\n`
+                }
+            }
+
+            // Add connections from _children
+            if (node._children) {
+                for (const child of node._children) {
+                    mermaidGraph += `    ${nodeId}-.->|child|${child._id}\n`
+                }
+            }
+
+            // Add validator relationships
+            const validatorId = validatedToValidator.get(nodeId)
+            if (validatorId) {
+                mermaidGraph += `    ${nodeId}===>|validates|${validatorId}\n`
+            }
+        }
+
+        return mermaidGraph
+    }
+
+    private sortContentTopologically(): (readonly [
+        Node,
+        string,
+        DefinedTypescriptOutput<TypescriptTypeWalkerContext> | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+    ])[] {
         const inGraph = new Map<string, Set<string>>()
         const outGraph = new Map<string, Set<string>>()
         const allNodes = new Map<string, Node>()
@@ -492,20 +655,17 @@ export class TypescriptFileOutput {
             }
         }
 
-        // Create a mermaid graph visualization for debugging dependency relationships
-        // let mermaidGraph = 'graph TD;\n'
-        // for (const [nodeId, incomingNodes] of inGraph.entries()) {
-        //     const node = this.content.find(([n]) => n._id === nodeId)?.[0]
-        //     const nodeName = node?._name ?? nodeId
-        //     const nodeType = node?._type ?? 'unknown'
-        //     for (const incomingId of incomingNodes) {
-        //         const incomingNode = this.content.find(([n]) => n._id === incomingId)?.[0]
-        //         const incomingName = incomingNode?._name ?? incomingId
-        //         const incomingType = incomingNode?._type ?? 'unknown'
-        //         mermaidGraph += `    ${incomingName}[${incomingName}<br/>${incomingId}<br/>${incomingType}]-->${nodeName}[${nodeName}<br/>${nodeId}<br/>${nodeType}]\n`
-        //     }
-        // }
-        // console.log('\nDependency Graph:\n```mermaid\n' + mermaidGraph + '```\n')
+        // Generate and log both dependency graphs for debugging
+        // const graph = this.generateMermaidGraph({
+        //     allNodes,
+        //     nodeToRoot,
+        //     validatedToValidator,
+        //     showSubgraphs: true,
+        //     rootNodesOnly: false,
+        //     inGraph,
+        //     rootNodes,
+        // })
+        // console.log(`\nRoot Node Dependency Graph:\n\`\`\`mermaid\n${graph}\`\`\`\n`)
 
         // Kahn's algorithm
         const queue = Array.from(inGraph.entries())
@@ -520,7 +680,11 @@ export class TypescriptFileOutput {
                 return compareNodes(aNode, bNode)
             })
 
-        const sorted: (readonly [Node, string, DefinedTypescriptOutput])[] = []
+        const sorted: (readonly [
+            Node,
+            string,
+            DefinedTypescriptOutput<TypescriptTypeWalkerContext> | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+        ])[] = []
         const processedValidatedTypes = new Set<string>()
 
         while (queue.length > 0) {

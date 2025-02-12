@@ -2,8 +2,9 @@ import { entriesOf } from '@skyleague/axioms'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
+import type { _KeyOfType } from '../../primitives/enum/enum.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
-import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/object.js'
+import type { _ExtendType, _MergeType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import { $ref } from '../../primitives/ref/ref.js'
 import { therefore } from '../../primitives/therefore.js'
 
@@ -14,12 +15,7 @@ export function loadNode<T extends Node>(obj: T & { _loaded?: true }): T & { _lo
             if (seen.has(node)) {
                 return node
             }
-            try {
-                seen.add(node)
-            } catch (e) {
-                console.log(node)
-                throw e
-            }
+            seen.add(node)
 
             therefore.loadSymbol(node)
 
@@ -116,6 +112,10 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
                     }
                 }
             }
+            const mergedType = node as unknown as _MergeType
+            if (mergedType._merged !== undefined) {
+                walkTherefore(mergedType._merged.origin, autoRefVisitor)
+            }
 
             return node
         },
@@ -146,6 +146,13 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
                 } else {
                     walkTherefore(rest, autoRefVisitor)
                 }
+            }
+            return node
+        },
+        enum: (node) => {
+            const keyofType = node as unknown as _KeyOfType
+            if (keyofType._keyof !== undefined) {
+                walkTherefore(keyofType._keyof.origin, autoRefVisitor)
             }
             return node
         },

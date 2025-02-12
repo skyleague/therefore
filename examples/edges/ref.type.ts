@@ -4,13 +4,15 @@
  */
 /* eslint-disable */
 
-import type { DefinedError, ValidateFunction } from 'ajv'
-
+import type { Bar as Bar2 } from './ref-alias.type.js'
 import { validate as BarValidator } from './schemas/bar.schema.js'
 import { validate as FooValidator } from './schemas/foo.schema.js'
 
+import type { DefinedError, ValidateFunction } from 'ajv'
+
 export interface Bar {
     bar?: string | undefined
+    aliased?: Bar2 | undefined
 }
 
 export const Bar = {

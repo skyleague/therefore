@@ -1,39 +1,17 @@
 import { renderTemplate } from '../../../common/template/template.js'
+import { constants } from '../../../lib/constants.js'
 import type { Node } from '../../../lib/cst/node.js'
 
 import { mapValues, partition, sha256 } from '@skyleague/axioms'
 
-export const referenceTypes = ['symbolName', 'referenceName', 'aliasName'] as const
-export type ReferenceType = (typeof referenceTypes)[number]
-
-export class References<Type extends 'typescript' | 'generic'> {
-    public references = new Map<string, Set<string>>()
+abstract class References<ReferenceType = string> {
+    public references = new Map<string, Set<ReferenceType>>()
     public symbols = new Map<string, Node>()
     public key2node = new Map<string, Node>()
-    // late binding
     public _data: Record<string, () => string> = {}
-    public transform: Record<string, (transformer: (current: string) => string) => void> = {}
-    public type: Type
+    public transformers: Record<string, ((current: string) => string)[]> = {}
     public hardlinks: Record<string, string> = {}
-    public fallbackStrategy: (node: Node, type: ReferenceType) => ReferenceType
-
-    public constructor(
-        type: Type,
-        { fallbackStrategy }: { fallbackStrategy?: (node: Node, type: ReferenceType) => ReferenceType } = {},
-    ) {
-        this.type = type
-        this.fallbackStrategy = fallbackStrategy ?? (() => 'symbolName')
-    }
-
-    public from<T extends 'typescript' | 'generic'>(references: References<T>): void {
-        for (const symbol of references.symbols.values()) {
-            for (const ref of references.references.get(symbol._id) ?? []) {
-                if (referenceTypes.includes(ref as ReferenceType)) {
-                    this.reference(symbol, ref as ReferenceType)
-                }
-            }
-        }
-    }
+    public declare ReferenceType: ReferenceType
 
     public render(content: string): string {
         let rendered = content
@@ -43,51 +21,32 @@ export class References<Type extends 'typescript' | 'generic'> {
         return rendered
     }
 
-    public hardlink(node: Node, type: ReferenceType, { tag }: { tag?: string } = {}): string {
-        const key = `SYMB_${node._attributes[this.type][type]}_${sha256(node._id).slice(6)}_${type.toUpperCase()}_${tag}`
+    public hardlink(node: Node, type: ReferenceType, { suffix }: { suffix?: string } = {}): string {
+        const attributes = node._attributes.generic
+        const value = attributes[type as keyof typeof attributes]
+        if (value === undefined) {
+            throw new Error(`Reference ${type} not found`)
+        }
+        const key = `SYMB_${value}_${sha256(node._id).slice(6)}_${String(type).replaceAll(':', '_').toUpperCase()}_${suffix}`
         this.hardlinks[key] = this.reference(node, type)
         return key
     }
 
-    public reference(node: Node, type: ReferenceType, { tag, fallback }: { tag?: string; fallback?: ReferenceType } = {}) {
-        fallback ??= type === 'referenceName' ? 'aliasName' : 'symbolName'
-
+    protected reference(node: Node, type: ReferenceType) {
         if (!this.symbols.has(node._id)) {
             this.symbols.set(node._id, node)
         }
+        const nodeRefs = this.references.get(node._id) ?? new Set()
         if (!this.references.has(node._id)) {
-            this.references.set(node._id, new Set())
+            this.references.set(node._id, nodeRefs)
         }
-        // biome-ignore lint/style/noNonNullAssertion: the value was just set above
-        const reference = this.references.get(node._id)!
-        reference.add(type)
-        if (tag !== undefined) {
-            reference.add(tag)
-        }
+        nodeRefs.add(type)
 
         const key = this.key(node, type)
 
-        const fallbackKey = fallback !== type ? this.reference(node, fallback) : undefined
-
         this.key2node.set(key, node)
-        this._data[key] ??= () => {
-            const value = node._attributes[this.type][type] ?? fallbackKey
-            if (value === undefined) {
-                throw new Error(`Reference ${key} not found`)
-            }
-            const transform = node._transform?.[type]
-            if (transform !== undefined) {
-                return transform(value)
-            }
-            return value
-        }
-        this.transform[key] ??= (transformer) => {
-            const name = node._attributes[this.type][type]
-            if (name === undefined) {
-                throw new Error(`Reference ${key} not found`)
-            }
-            node._attributes[this.type][type] = transformer(name)
-        }
+
+        this.setDataAndTransform(node, key, type)
 
         return `{{${key}}}`
     }
@@ -98,7 +57,9 @@ export class References<Type extends 'typescript' | 'generic'> {
         const solved = Object.fromEntries(_solved)
         let foundUnsolved: [string, string][] = unsolved
 
-        for (const _ of foundUnsolved) {
+        let sweeps = 0
+        const maxSweeps = 3
+        while (foundUnsolved.length > 0 && sweeps < maxSweeps) {
             const newUnsolved: [string, string][] = []
             for (const [key, value] of foundUnsolved) {
                 const newValue = renderTemplate(value, solved)
@@ -109,6 +70,9 @@ export class References<Type extends 'typescript' | 'generic'> {
                 }
             }
             foundUnsolved = newUnsolved
+            if (sweeps++ >= maxSweeps) {
+                break
+            }
         }
         return solved
     }
@@ -118,6 +82,139 @@ export class References<Type extends 'typescript' | 'generic'> {
     }
 
     public data() {
-        return mapValues(this._data, (s) => s())
+        const rawData = mapValues(this._data, (s) => s())
+        const transformedData: Record<string, string> = {}
+
+        for (const [key, value] of Object.entries(rawData)) {
+            let currentValue = value
+            const keyTransformers = this.transformers[key] ?? []
+            for (const transformer of keyTransformers) {
+                currentValue = transformer(currentValue)
+            }
+            transformedData[key] = currentValue
+        }
+
+        return transformedData
+    }
+
+    protected abstract setDataAndTransform(node: Node, key: string, type: ReferenceType): void
+}
+
+export class TypescriptReferences extends References<
+    'value:export' | 'type:export' | 'value:name' | 'type:name' | 'value:source' | 'type:source' | 'type:reference' // | 'value:reference'
+> {
+    public from(references: GenericReferences): void {
+        for (const [id, symbol] of references.symbols.entries()) {
+            if (!this.symbols.has(id)) {
+                this.symbols.set(id, symbol)
+            }
+
+            const refs = references.references.get(id) ?? new Set()
+            if (refs.has('value:name')) {
+                // Create value references
+                this.reference(symbol, 'value:source')
+                // this.reference(symbol, 'value:source')
+                // this.reference(symbol, 'value:export')
+                // // Create corresponding type references
+                // this.reference(symbol, 'type:name')
+                // this.reference(symbol, 'type:source')
+                // this.reference(symbol, 'type:export')
+                // this.reference(symbol, 'type:reference')
+            }
+        }
+    }
+
+    public value(node: Node): string {
+        return this.reference(node, 'value:name')
+    }
+
+    public type(node: Node): string {
+        return this.reference(node, 'type:reference')
+    }
+
+    public valueExport(node: Node): string {
+        return this.reference(node, 'value:export')
+    }
+
+    public typeExport(node: Node): string {
+        return this.reference(node, 'type:export')
+    }
+
+    public typeName(node: Node): string {
+        return this.reference(node, 'type:name')
+    }
+
+    public typeSource(node: Node): string {
+        return this.reference(node, 'type:source')
+    }
+    public valueSource(node: Node): string {
+        return this.reference(node, 'value:source')
+    }
+
+    protected setDataAndTransform(node: Node, key: string, type: TypescriptReferences['ReferenceType']): void {
+        const effectiveFallback = this.getFallbackType(type)
+        const fallbackKey = effectiveFallback !== type ? this.reference(node, effectiveFallback) : undefined
+        const debugKey = (str: string) => (constants.debug ? `/**${key}??*/${str}` : str)
+        this._data[key] ??= () => {
+            const attributes = node._attributes.typescript
+            const attrValue = attributes[type]
+            const value = attrValue ?? fallbackKey
+            if (value === undefined) {
+                throw new Error(`Reference ${key} not found`)
+            }
+            const transformKey = type
+            const transform = node._transform?.[transformKey]
+            if (transform !== undefined) {
+                return debugKey(transform(value))
+            }
+            return debugKey(value)
+        }
+        // this.transformers[key] ??= []
+    }
+
+    private getFallbackType(type: TypescriptReferences['ReferenceType']): TypescriptReferences['ReferenceType'] {
+        if (type === 'type:reference') {
+            return 'type:name'
+        }
+
+        if (type === 'value:name') {
+            return 'value:source'
+        }
+
+        if (type === 'type:name') {
+            return 'type:source'
+        }
+
+        if (type === 'value:export') {
+            return 'value:source'
+        }
+
+        if (type === 'type:export') {
+            return 'type:source'
+        }
+
+        return type
+    }
+}
+
+export class GenericReferences extends References<'value:name'> {
+    public name(node: Node): string {
+        return this.reference(node, 'value:name')
+    }
+
+    protected setDataAndTransform(node: Node, key: string, type: GenericReferences['ReferenceType']): void {
+        this._data[key] ??= () => {
+            const attributes = node._attributes.generic
+            const value = attributes[type]
+            if (value === undefined) {
+                throw new Error(`Reference ${key} not found`)
+            }
+            const transform = node._transform?.[type]
+            if (transform !== undefined) {
+                return transform(value)
+            }
+            return value
+        }
+        this.transformers[key] ??= []
     }
 }

@@ -4,11 +4,12 @@ import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
-import { EnumType } from '../enum/enum.js'
+import { EnumType, type _KeyOfType } from '../enum/enum.js'
 
 import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
-import type { Shape } from '../../../../examples/runtypes/shapes.type.js'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../visitor/typescript/typescript-zod.js'
 import { $optional, OptionalType } from '../optional/optional.js'
 
 export type ObjectShape<Shape extends Record<string, Node> = Record<string, Node>> = {
@@ -22,9 +23,8 @@ type UndefinedToOptional<T> = {
 type _ShapeToInferred<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Shape>> & UndefinedToOptional<Shape>>
 
 export type ShapeToInfer<Shape extends Record<string, Node>> = _ShapeToInferred<{
-    [K in keyof Shape]: Shape[K] extends infer S extends Node ? S['infer'] : never
+    [K in keyof Shape]: Shape[K]['infer']
 }>
-type _ShapeToInput<Shape> = Simplify<Omit<Shape, keyof UndefinedToOptional<Shape>> & UndefinedToOptional<Shape>>
 export type ShapeToInput<Shape extends Record<string, Node>> = _ShapeToInferred<{
     [K in keyof Shape]: Shape[K]['input']
 }>
@@ -73,18 +73,43 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     protected declare key?: Node | undefined
     protected declare patternProperties?: Record<string, Node> | undefined
 
-    protected declare _omitted?: {
-        mask: (keyof Shape)[]
-        origin: ObjectType
-    }
-    protected declare _picked?: {
-        mask: (keyof Shape)[]
-        origin: ObjectType
-    }
-    protected declare _extended?: {
-        origin: ObjectType
-        extends: Shape
-    }
+    protected declare _omitted?:
+        | {
+              mask: (keyof Shape)[]
+              origin: ObjectType
+          }
+        | undefined
+    protected declare _picked?:
+        | {
+              mask: (keyof Shape)[]
+              origin: ObjectType
+          }
+        | undefined
+    protected declare _extended?:
+        | {
+              origin: ObjectType
+              extends: Shape
+          }
+        | undefined
+    protected declare _partial?:
+        | {
+              origin: ObjectType
+              mask: (keyof Shape)[] | undefined
+          }
+        | undefined
+    protected declare _required?:
+        | {
+              origin: ObjectType
+              mask: (keyof Shape)[] | undefined
+          }
+        | undefined
+
+    protected declare _merged?:
+        | {
+              origin: ObjectType
+              merged: ObjectType
+          }
+        | undefined
 
     public override _isCommutative = false
     public declare infer: ShapeToInfer<Shape>
@@ -103,7 +128,12 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
     }
 
     public keyof(): EnumType<(keyof Shape)[]> {
-        return new EnumType(Object.keys(this.shape), {})
+        const keyof = new EnumType(Object.keys(this.shape), {})
+        ;(keyof as _KeyOfType)._keyof = {
+            origin: this as ObjectType,
+        }
+        keyof._children?.push(this)
+        return keyof
     }
 
     public extend<Extra extends Record<string, Node>>(extra: ObjectShape<Extra>): ObjectType<Simplify<Shape & Extra>> {
@@ -114,42 +144,61 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 ...extra,
             },
         })
+        clone._resetTypeProperties()
+        const extendedShape = mapValues(extra, (node) => {
+            return evaluate(node)
+        }) as unknown as typeof this.shape
         clone._extended = {
-            extends: extra as unknown as Shape,
+            extends: extendedShape,
             origin: this as ObjectType,
         }
-        clone._children.push(clone._extended.origin)
+        clone._children = [this, ...Object.values<Node>(extendedShape)]
         return clone as unknown as ObjectType<Simplify<Shape & Extra>>
     }
 
     public merge<Other extends ObjectType>(other: Other): ObjectType<Simplify<Shape & Other['shape']>> {
-        return this.extend(other.shape) as ObjectType<Simplify<Shape & Other['shape']>>
+        const merged = ObjectType._clone(this)
+        merged._from({
+            shape: {
+                ...this.shape,
+                ...other.shape,
+            },
+        })
+        merged._resetTypeProperties()
+        merged._merged = {
+            origin: this as ObjectType,
+            merged: other as ObjectType,
+        }
+        merged._children = [other, this]
+        return merged
     }
 
     public pick<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Pick<Shape, Key>>> {
         const clone = ObjectType._clone(this)
         clone._from({ shape: pick(this.shape, properties) as unknown as Shape })
+        clone._resetTypeProperties()
         clone._picked = {
             mask: properties,
             origin: this as ObjectType,
         }
-        clone._children.push(clone._picked.origin)
+        clone._children = [this]
         return clone as unknown as ObjectType<Simplify<Pick<Shape, Key>>>
     }
 
     public omit<Key extends keyof Shape>(...properties: Key[]): ObjectType<Simplify<Omit<Shape, Key>>> {
         const clone = ObjectType._clone(this)
         clone._from({ shape: omit(this.shape, properties) as unknown as Shape })
+        clone._resetTypeProperties()
         clone._omitted = {
             mask: properties,
             origin: this as ObjectType,
         }
-        clone._children.push(clone._omitted.origin)
+        clone._children = [this]
         return clone as unknown as ObjectType<Simplify<Omit<Shape, Key>>>
     }
 
     public partial<Keys extends (keyof Shape)[]>(...properties: Keys): ObjectType<ShapeToPartial<Shape, Keys>> {
-        return new ObjectType(
+        const partial = new ObjectType(
             mapValues(this.shape, (p, property) =>
                 properties.length === 0 || properties.includes(property) ? $optional(p) : p,
             ) as Record<string, Node>,
@@ -157,10 +206,18 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 ...this._options,
             },
         ) as unknown as ObjectType<ShapeToPartial<Shape, Keys>>
+
+        partial._resetTypeProperties()
+        partial._partial = {
+            origin: this as ObjectType,
+            mask: properties,
+        }
+        partial._children = [this]
+        return partial
     }
 
     public required<Keys extends (keyof Shape)[]>(...properties: Keys): ObjectType<ShapeToRequired<Shape, Keys>> {
-        return new ObjectType(
+        const required = new ObjectType(
             mapValues(this.shape, (p, property) => {
                 if (properties.length === 0 || properties.includes(property)) {
                     let field = p
@@ -175,43 +232,46 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 ...this._options,
             },
         ) as unknown as ObjectType<ShapeToRequired<Shape, Keys>>
+        required._resetTypeProperties()
+        required._required = {
+            origin: this as ObjectType,
+            mask: properties,
+        }
+        required._children = [this]
+        return required
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 type: 'typescript',
                 subtype: 'ajv',
                 isTypeOnly: true,
                 definition: (node, context) => {
+                    node._attributes.typescript['type:path'] = context.targetPath
                     if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node) && !this.key) {
-                        const omitType = node as _OmitType
-                        if (omitType._omitted !== undefined && omitType._omitted.origin._name !== undefined) {
-                            return `${context.declare('type', node)} = ${context.render(node)}`
-                        }
-                        const pickType = node as _PickType
-                        if (pickType._picked !== undefined && pickType._picked.origin._name !== undefined) {
+                        if (
+                            (node as _OmitType)._omitted !== undefined ||
+                            (node as _PickType)._picked !== undefined ||
+                            (node as _MergeType)._merged !== undefined ||
+                            (node as _ExtendType)._extended !== undefined
+                        ) {
                             return `${context.declare('type', node)} = ${context.render(node)}`
                         }
                         return `${context.declare('interface', node)} ${context.render(node)}`
                     }
                     return `${context.declare('type', node)} = ${context.render(node)}`
                 },
-            },
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
             {
                 type: 'typescript',
                 subtype: 'zod',
                 isTypeOnly: false,
-                definition: (node, context) => {
-                    if (node._isRecurrent) {
-                        return undefined
-                    }
-                    if (node._origin.zod !== undefined) {
-                        return undefined
-                    }
-                    return `${context.declare('const', node)} = ${context.render(node)}`
-                },
-            },
+            } satisfies TypescriptOutput<TypescriptZodWalkerContext>,
         ]
     }
 
@@ -241,6 +301,15 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
             ...(this.element !== undefined ? [this.element] : []),
         ]
     }
+
+    private _resetTypeProperties() {
+        this._extended = undefined
+        this._omitted = undefined
+        this._picked = undefined
+        this._merged = undefined
+        this._partial = undefined
+        this._origin = {}
+    }
 }
 
 export class _OmitType extends ObjectType {
@@ -251,8 +320,8 @@ export class _OmitType extends ObjectType {
 }
 
 export class _PickType extends ObjectType {
-    public declare _picked: {
-        mask: (keyof Shape)[]
+    public declare _picked?: {
+        mask: string[]
         origin: ObjectType
     }
 }
@@ -261,6 +330,27 @@ export class _ExtendType extends ObjectType {
     public declare _extended?: {
         extends: ObjectType['shape']
         origin: ObjectType
+    }
+}
+
+export class _MergeType extends ObjectType {
+    public declare _merged?: {
+        merged: ObjectType
+        origin: ObjectType
+    }
+}
+
+export class _PartialType extends ObjectType {
+    public declare _partial?: {
+        origin: ObjectType
+        mask: string[] | undefined
+    }
+}
+
+export class _RequiredType extends ObjectType {
+    public declare _required?: {
+        origin: ObjectType
+        mask: string[] | undefined
     }
 }
 
