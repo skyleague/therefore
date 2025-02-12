@@ -399,8 +399,7 @@ export class TypescriptFileOutput {
             contents.writeLine(line).newLine()
         }
 
-        // const file = contents.toString()
-        const file = this.references.render(contents.toString())
+        const file = contents.toString()
         return await formatContent({ prettier, input: renderTemplate(file, data), file: this.path, type: 'typescript' })
     }
 

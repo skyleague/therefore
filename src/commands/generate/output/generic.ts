@@ -90,7 +90,7 @@ export class GenericFileOutput {
         const contents = this.content.content
 
         const data = this.references.resolveData(this.references.data())
-        const file = renderTemplate(this.references.render(contents.toString()), data)
+        const file = renderTemplate(contents.toString(), data)
 
         if (this.content.output.prettify?.() !== false) {
             return formatContent({ prettier, input: file, file: this.path, type: evaluate(this.content.output.subtype) })
