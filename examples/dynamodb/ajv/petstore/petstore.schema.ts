@@ -31,7 +31,7 @@ export const pet = petDataTable.entity({
     shape: $ref(Pet).extend({
         ownerId: $string,
     }),
-    keyFormatters: {
+    formatters: {
         pk: 'owner#{ownerId}',
         sk: 'pet#{id}',
     },

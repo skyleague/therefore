@@ -21,11 +21,13 @@ export type EntityShape<Shape extends ObjectType, Table extends DynamoDbTableTyp
     Shape['shape'] & Table['shape']['shape']
 >
 
-export type ShapeFormatString<ShapeKey extends PropertyKey> =
+export type ShapeFormatString<ShapeKey extends PropertyKey> = (
     | `${string}${ShapeKey & string}${string}`
     | `${string}${ShapeKey & string}`
     | `${ShapeKey & string}${string}`
     | ShapeKey
+) &
+    string
 
 export class DynamoDbEntityType<
     Shape extends ObjectType = ObjectType,
@@ -45,14 +47,12 @@ export class DynamoDbEntityType<
         table,
         entityType,
         shape,
-        keyFormatters,
-        attributeFormatters,
+        formatters,
     }: {
         table: Table
         entityType: EntityType
         shape: Shape
-        keyFormatters: Record<string, ShapeFormatString<keyof Shape['shape'] | keyof Table['shape']['shape']> & string>
-        attributeFormatters: Record<string, ShapeFormatString<keyof Shape['shape'] | keyof Table['shape']['shape']> & string>
+        formatters?: Record<string, string>
     }) {
         super()
         this.table = table
@@ -63,8 +63,7 @@ export class DynamoDbEntityType<
             .validator({ type: this.table.definition.validator })
         this._connections = [this.shape]
         this._attributeFormatters = {
-            ...attributeFormatters,
-            ...keyFormatters,
+            ...formatters,
         }
     }
 
