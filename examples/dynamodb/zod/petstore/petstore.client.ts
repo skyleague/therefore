@@ -173,7 +173,6 @@ export class PetEntityClient {
 
 export class PetDataTable {
     public tableName: string
-
     public client: DynamoDBDocument
 
     public constructor({ client, tableName }: { client: DynamoDBDocument; tableName: string }) {

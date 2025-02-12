@@ -46,7 +46,6 @@ export interface DynamoDbTableDefinition<
 > {
     pk: Pk
     sk?: Sk
-    tableName?: string
     createdAt?: CreatedAt
     updatedAt?: UpdatedAt
     entityType?: EntityType
@@ -95,29 +94,15 @@ export class DynamoDbTableType<
 
                     const tableWriter = createWriter()
                     tableWriter.write(declare('class', node)).block(() => {
-                        if (this.definition.tableName) {
-                            tableWriter.writeLine(`public tableName = '${this.definition.tableName}' as const`)
-                        } else {
-                            tableWriter.writeLine('public tableName: string')
-                        }
-
-                        tableWriter.newLine().writeLine(`public client: ${DynamoDBDocument}`)
-
                         tableWriter
+                            .writeLine('public tableName: string')
+                            .writeLine(`public client: ${DynamoDBDocument}`)
                             .blankLine()
-                            .write('public constructor({')
-                            .write('client,')
-                            .conditionalWrite(this.definition.tableName === undefined, 'tableName,')
-                            .write('} : {')
-                            .write(`client: ${DynamoDBDocument};`)
-                            .conditionalWrite(this.definition.tableName === undefined, 'tableName: string;')
-                            .write('})')
+                            .write(
+                                `public constructor({ client, tableName } : { client: ${DynamoDBDocument}; tableName: string; })`,
+                            )
                             .block(() => {
-                                tableWriter.writeLine('this.client = client')
-                                tableWriter.conditionalWrite(
-                                    this.definition.tableName === undefined,
-                                    'this.tableName = tableName',
-                                )
+                                tableWriter.writeLine('this.client = client').writeLine('this.tableName = tableName')
                             })
                     })
 
