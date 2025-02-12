@@ -2,7 +2,7 @@ import { renderTemplate } from '../../../common/template/template.js'
 import { constants } from '../../../lib/constants.js'
 import type { Node } from '../../../lib/cst/node.js'
 
-import { mapValues, partition, sha256 } from '@skyleague/axioms'
+import { mapValues, partition } from '@skyleague/axioms'
 
 abstract class References<ReferenceType = string> {
     public references = new Map<string, Set<ReferenceType>>()
@@ -10,27 +10,8 @@ abstract class References<ReferenceType = string> {
     public key2node = new Map<string, Node>()
     public _data: Record<string, () => string> = {}
     public transformers: Record<string, ((current: string) => string)[]> = {}
-    public hardlinks: Record<string, string> = {}
+
     public declare ReferenceType: ReferenceType
-
-    public render(content: string): string {
-        let rendered = content
-        for (const [key, value] of Object.entries(this.hardlinks)) {
-            rendered = rendered.replaceAll(key, value)
-        }
-        return rendered
-    }
-
-    public hardlink(node: Node, type: ReferenceType, { suffix }: { suffix?: string } = {}): string {
-        const attributes = node._attributes.generic
-        const value = attributes[type as keyof typeof attributes]
-        if (value === undefined) {
-            throw new Error(`Reference ${type} not found`)
-        }
-        const key = `SYMB_${value}_${sha256(node._id).slice(6)}_${String(type).replaceAll(':', '_').toUpperCase()}_${suffix}`
-        this.hardlinks[key] = this.reference(node, type)
-        return key
-    }
 
     protected reference(node: Node, type: ReferenceType) {
         if (!this.symbols.has(node._id)) {
@@ -103,27 +84,6 @@ abstract class References<ReferenceType = string> {
 export class TypescriptReferences extends References<
     'value:export' | 'type:export' | 'value:name' | 'type:name' | 'value:source' | 'type:source' | 'type:reference' // | 'value:reference'
 > {
-    public from(references: GenericReferences): void {
-        for (const [id, symbol] of references.symbols.entries()) {
-            if (!this.symbols.has(id)) {
-                this.symbols.set(id, symbol)
-            }
-
-            const refs = references.references.get(id) ?? new Set()
-            if (refs.has('value:name')) {
-                // Create value references
-                this.reference(symbol, 'value:source')
-                // this.reference(symbol, 'value:source')
-                // this.reference(symbol, 'value:export')
-                // // Create corresponding type references
-                // this.reference(symbol, 'type:name')
-                // this.reference(symbol, 'type:source')
-                // this.reference(symbol, 'type:export')
-                // this.reference(symbol, 'type:reference')
-            }
-        }
-    }
-
     public value(node: Node): string {
         return this.reference(node, 'value:name')
     }

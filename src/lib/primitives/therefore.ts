@@ -281,7 +281,7 @@ export class Therefore {
         const validator = toJsonSchema(evaluated, { formats: true, compile: false })
 
         const data = validator.references.resolveData(validator.references.data())
-        const file = renderTemplate(validator.references.render(JSON.stringify(validator.schema)), data)
+        const file = renderTemplate(JSON.stringify(validator.schema), data)
         return JSON.parse(file)
     }
 
