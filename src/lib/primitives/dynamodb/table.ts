@@ -22,6 +22,16 @@ export type IndexDefinition<Pk extends string, NonKeyAttributes extends string[]
           sk?: Sk
           projectionType: 'KEYS_ONLY' | 'ALL'
       }
+
+export type EntityFormatters<
+    EntityShape extends Record<string, unknown>,
+    TableShape extends Record<string, unknown>,
+    Definition extends DynamoDbTableDefinition,
+> = {
+    pk: ShapeFormatString<keyof EntityShape | keyof TableShape>
+    sk: Definition['sk'] extends undefined ? never : ShapeFormatString<keyof EntityShape | keyof TableShape>
+} & Record<string, ShapeFormatString<keyof EntityShape | keyof TableShape>>
+
 export interface DynamoDbTableDefinition<
     Entity extends Record<string, unknown> = Record<string, unknown>,
     Pk extends keyof Entity & string = keyof Entity & string, //'pk',
@@ -124,11 +134,7 @@ export class DynamoDbTableType<
     >(args: {
         entityType: EntityType
         shape: EntitySchema
-        keyFormatters: Record<
-            Definition['pk'] | NonNullable<Definition['sk']>,
-            ShapeFormatString<keyof EntitySchema['shape'] | keyof Table['shape']['shape']>
-        >
-        attributeFormatters?: Record<string, ShapeFormatString<keyof EntitySchema['shape'] | keyof Table['shape']['shape']>>
+        formatters?: EntityFormatters<EntitySchema['shape'], Table['shape']['shape'], Definition>
     }): DynamoDbEntityType<EntitySchema, EntityType, Table>
     public entity<
         EntitySchema extends ZodObjectSchema,
@@ -137,11 +143,7 @@ export class DynamoDbTableType<
     >(args: {
         entityType: EntityType
         shape: EntitySchema
-        keyFormatters: Record<
-            Definition['pk'] | NonNullable<Definition['sk']>,
-            ShapeFormatString<keyof EntitySchema['shape'] | keyof Table['shape']['shape']>
-        >
-        attributeFormatters?: Record<string, ShapeFormatString<keyof EntitySchema['shape'] | keyof Table['shape']['shape']>>
+        formatters?: EntityFormatters<EntitySchema['shape'], Table['shape']['shape'], Definition>
     }): DynamoDbEntityType<
         ZodSchemaAsNode<EntitySchema> extends ObjectType ? ZodSchemaAsNode<EntitySchema> : never,
         EntityType,
@@ -150,8 +152,7 @@ export class DynamoDbTableType<
     public entity<EntitySchema extends ObjectType | ZodObjectSchema, const EntityType extends string>(args: {
         entityType: EntityType
         shape: EntitySchema
-        keyFormatters: Record<Definition['pk'] | NonNullable<Definition['sk']>, string>
-        attributeFormatters?: Record<string, string>
+        formatters?: Record<string, string>
     }): DynamoDbEntityType<
         EntitySchema extends ObjectType
             ? EntitySchema
@@ -168,8 +169,7 @@ export class DynamoDbTableType<
             table: this,
             entityType: args.entityType,
             shape: shapeRef as ObjectType,
-            keyFormatters: args.keyFormatters,
-            attributeFormatters: args.attributeFormatters ?? {},
+            formatters: args.formatters ?? {},
         })
     }
 }
