@@ -1,6 +1,6 @@
 import { isDefined } from '@skyleague/axioms'
 import type { Node } from '../../../cst/node.js'
-import type { TypescriptWalkerContext } from '../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../visitor/typescript/typescript-type.js'
 import { createWriter } from '../../../writer.js'
 import { $object, ObjectType } from '../../object/object.js'
 import type { DynamoDbEntityType } from '../entity.js'
@@ -22,30 +22,12 @@ export class DynamodbCommandBuilder {
     public keyCondition: ReturnType<typeof conditionExpression> | undefined
     public update: ReturnType<typeof updateExpression> | undefined
 
-    public readonly parentName: string | undefined
-
     public constructor({
         context,
-        input,
-        result,
-        parentName,
     }: {
         context: DynamodbExpressionContext
-        input?: Record<string, Node>
-        result?: Record<string, Node>
-        parentName: () => string | undefined
     }) {
         this.context = context
-
-        Object.defineProperty(this, 'parentName', { get: parentName })
-
-        if (isDefined(input)) {
-            this.addInput(input)
-        }
-
-        if (isDefined(result)) {
-            this.addResult(result)
-        }
     }
 
     public addKey(entity: DynamoDbEntityType) {
@@ -59,44 +41,26 @@ export class DynamodbCommandBuilder {
 
     public addInput(input: ObjectType | Record<string, Node>) {
         this.input = input instanceof ObjectType ? input : $object(input)
-        this.input._transform ??= {}
-        this.input._transform.symbolName = (name) => `${this.parentName ?? name}Input`
 
-        let _name = this.input._name
-        Object.defineProperties(this.input, {
-            _name: {
-                get: () => {
-                    const name = this.parentName ?? _name
-                    return name === undefined ? name : `${name}Input`
-                },
-                set: (name: string) => {
-                    _name = name
-                },
-            },
-        })
+        this.input._transform ??= {}
+        this.input._transform['type:source'] = (name) => `${name}Input`
+        this.input._transform['value:source'] = (name) => `${name}Input`
+
+        this.context.command._connections ??= []
+        this.context.command._connections.push(this.input)
 
         return this.input
     }
 
     public addResult(result: ObjectType | Record<string, Node>) {
-        this.result = result instanceof ObjectType ? result : $object(result).validator()
-        this.result._transform ??= {}
-        this.result._transform.symbolName = (name) => {
-            return `${this.parentName ?? name}Result`
-        }
+        this.result = result instanceof ObjectType ? result : $object(result)
 
-        let _name = this.result._name
-        Object.defineProperties(this.result, {
-            _name: {
-                get: () => {
-                    const name = this.parentName ?? _name
-                    return name === undefined ? name : `${name}Result`
-                },
-                set: (name: string) => {
-                    _name = name
-                },
-            },
-        })
+        this.result._transform ??= {}
+        this.result._transform['type:source'] = (name) => `${name}Result`
+        this.result._transform['value:source'] = (name) => `${name}Result`
+
+        this.context.command._connections ??= []
+        this.context.command._connections.push(this.result)
 
         return this.result
     }
@@ -288,16 +252,13 @@ export class DynamodbCommandBuilder {
         commandLines,
     }: {
         node: Node
-        context: TypescriptWalkerContext
+        context: TypescriptTypeWalkerContext
         commandInput: string
         prefixLines?: () => Generator<string | undefined>
         commandLines: () => Generator<string | undefined>
     }) {
         const writer = createWriter()
-        writer.write(context.declare('const', node))
-
-        writer.write(' = (')
-
+        writer.write(`${context.declare('const', node)} = (`)
         const input = this.input
         if (isDefined(input) && Object.values(input.shape).filter(isDefined).length > 0) {
             writer
@@ -313,7 +274,7 @@ export class DynamodbCommandBuilder {
                 })
                 .write(':')
                 .inlineBlock(() => {
-                    writer.write('tableName: string;').write('input: ').write(context.reference(input))
+                    writer.write('tableName: string;').write('input: ').write(context.type(input))
                 })
         } else {
             writer

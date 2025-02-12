@@ -4,7 +4,7 @@ import { Ajv } from 'ajv'
 import addFormats, { type FormatName } from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
 import camelcase from 'camelcase'
-import { References } from '../../../commands/generate/output/references.js'
+import { GenericReferences } from '../../../commands/generate/output/references.js'
 import type {
     JsonAnnotations,
     JsonAnyInstance,
@@ -29,7 +29,7 @@ export interface JsonSchemaWalkerContext {
     branch: Node | undefined
     current: Node | undefined
     definitions: NonNullable<JsonSchema['definitions']>
-    references: References<'generic'>
+    references: GenericReferences
     formats: Set<string>
     target: 'draft-07' | 'openapi3'
     hasDiscriminator: boolean
@@ -40,9 +40,9 @@ export interface JsonSchemaWalkerContext {
 export function buildContext(
     obj?: Node,
     {
-        references = new References('generic'),
+        references = new GenericReferences(),
         target = 'draft-07',
-    }: { references?: References<'generic'>; target?: 'draft-07' | 'openapi3' } = {},
+    }: { references?: GenericReferences; target?: 'draft-07' | 'openapi3' } = {},
 ): JsonSchemaWalkerContext {
     const ajv = ajvOptions(obj)
     ajv.code ??= {}
@@ -421,7 +421,7 @@ export const jsonSchemaVisitor: ThereforeVisitor<JsonSchema, JsonSchemaWalkerCon
             return { $ref: '#' }
         }
 
-        const symbolName = references.reference(reference, 'symbolName')
+        const symbolName = references.name(reference)
         if (definitions[symbolName] === undefined) {
             definitions[symbolName] = {} // mark spot as taken (prevents recursion)
             const node: JsonSchema = ctx.render(reference)
@@ -500,15 +500,15 @@ export function toJsonSchema<Compile extends boolean = true>(
     obj: Node,
     {
         compile,
-        references = new References('generic'),
+        references = new GenericReferences(),
         formats = true,
         target = 'draft-07',
-    }: { compile?: Compile; references?: References<'generic'>; formats?: boolean; target?: 'draft-07' | 'openapi3' } = {},
+    }: { compile?: Compile; references?: GenericReferences; formats?: boolean; target?: 'draft-07' | 'openapi3' } = {},
 ) {
     const context = buildContext(obj, { references, target: target })
     const definition: JsonSchema = {
         $schema: 'http://json-schema.org/draft-07/schema#',
-        title: references.reference(obj, 'symbolName'),
+        title: references.name(obj),
         ...context.render(obj),
     } as const
 

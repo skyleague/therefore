@@ -1,40 +1,73 @@
-import { References } from '../../../commands/generate/output/references.js'
+import type { ZodString } from 'zod'
+import { TypescriptReferences } from '../../../commands/generate/output/references.js'
 import { zodSymbols } from '../../cst/module.js'
 import type { Node } from '../../cst/node.js'
 import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
-import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/object.js'
+import type { _ExtendType, _MergeType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { ValidatorType } from '../../primitives/validator/validator.js'
 import { createWriter } from '../../writer.js'
 import type { DefinedTypescriptOutput } from './cst.js'
 import { stringLiteral, toLiteral } from './literal.js'
-import { buildTypescriptTypeContext, escapeProperty } from './typescript-type.js'
+import {
+    type TypescriptTypeWalkerContext,
+    buildTypescriptTypeContext,
+    escapeProperty,
+    isReferenceable,
+} from './typescript-type.js'
 
 export interface TypescriptZodWalkerContext {
+    targetPath: string
     symbol?: Node | undefined
-    references: References<'typescript'>
-    locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
+    references: TypescriptReferences
+    locals: [
+        Node,
+        (
+            | ((
+                  output:
+                      | DefinedTypescriptOutput<TypescriptZodWalkerContext>
+                      | DefinedTypescriptOutput<TypescriptTypeWalkerContext>,
+              ) => boolean)
+            | undefined
+        ),
+    ][]
     exportKeyword: string | undefined
     property: string | undefined
     render: (node: Node, ctx?: Partial<TypescriptZodWalkerContext>, options?: { allowToZod: boolean }) => string
-    declare: (declType: string, node: Node) => string
-    reference: (node: Node) => string
+    declare: (declType: 'interface' | 'type' | 'const' | 'class', node: Node) => string
+    // reference: (node: Node) => string
     transform: (node: Node, schema: string) => string
+    type: (node: Node) => string
     value: (node: Node) => string
 }
 
 export function buildTypescriptZodContext({
+    targetPath,
     symbol,
-    references = new References('typescript'),
+    references = new TypescriptReferences(),
     locals = [],
     exportSymbol,
 }: {
+    targetPath: string
     symbol?: Node | undefined
-    references?: References<'typescript'> | undefined
-    locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][] | undefined
+    references?: TypescriptReferences | undefined
+    locals?:
+        | [
+              Node,
+              (
+                  | ((
+                        output:
+                            | DefinedTypescriptOutput<TypescriptZodWalkerContext>
+                            | DefinedTypescriptOutput<TypescriptTypeWalkerContext>,
+                    ) => boolean)
+                  | undefined
+              ),
+          ][]
+        | undefined
     exportSymbol: boolean
 }): TypescriptZodWalkerContext {
     const context: TypescriptZodWalkerContext = {
+        targetPath,
         symbol,
         references,
         locals,
@@ -55,38 +88,47 @@ export function buildTypescriptZodContext({
 
             return writer.toString()
         },
-        render: (node, ctx: Partial<TypescriptZodWalkerContext> = {}, { allowToZod = false }: { allowToZod?: boolean } = {}) => {
-            if (node._toZod !== undefined && allowToZod && node._type === 'object') {
-                return context.render(node._toZod)
-            }
+        render: (node, ctx: Partial<TypescriptZodWalkerContext> = {}) => {
             return walkTherefore(node, typescriptZodVisitor, { ...context, ...ctx })
         },
-        declare: (declType: string, node) => asZodDeclaration(declType, node, { exportSymbol, references }),
-        reference: (node) => references.reference(node._toZod ?? node, 'referenceName'),
-        value: (node) => references.reference(node._toZod ?? node, 'referenceName', { tag: 'value' }),
+        declare: (declType: 'interface' | 'type' | 'const' | 'class', node) =>
+            asZodDeclaration(declType, node, { exportSymbol, references }),
+        type: (node) => references.type(node),
+        value: (node) => references.value(node),
     }
     return context
 }
 
 export function buildTypescriptZodTypeContext({
+    targetPath,
     symbol,
     exportSymbol,
     references,
     locals,
 }: {
+    targetPath: string
     symbol: Node
     exportSymbol: boolean
-    references: References<'typescript'>
-    locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
+    references: TypescriptReferences
+    locals: [
+        Node,
+        (
+            | ((
+                  output:
+                      | DefinedTypescriptOutput<TypescriptZodWalkerContext>
+                      | DefinedTypescriptOutput<TypescriptTypeWalkerContext>,
+              ) => boolean)
+            | undefined
+        ),
+    ][]
 }) {
     const context = buildTypescriptTypeContext({
+        targetPath,
         symbol,
         exportSymbol,
         references,
         locals,
     })
-    const originalReference = context.reference
-    context.reference = (node) => `${originalReference(zodSymbols.z())}.infer<typeof ${originalReference(node)}>`
     return context
 }
 
@@ -216,7 +258,36 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                     writer.write('.ulid()')
                     break
                 case 'date-time':
-                    writer.write('.datetime({ offset: true })')
+                    if (node._origin.zod !== undefined && (node._origin.zod as ZodString)._def.checks !== undefined) {
+                        const zodString = node._origin.zod as ZodString
+                        const zodDatetime = zodString._def.checks.find((check) => check.kind === 'datetime')
+                        if (zodDatetime !== undefined) {
+                            const hasArgs =
+                                (zodDatetime.precision !== undefined && zodDatetime.precision !== null) ||
+                                zodDatetime.offset ||
+                                zodDatetime.local
+
+                            writer.write('.datetime(')
+                            if (hasArgs) {
+                                writer.inlineBlock(() => {
+                                    if (zodDatetime.precision !== undefined && zodDatetime.precision !== null) {
+                                        writer.writeLine(`precision: ${zodDatetime.precision},`)
+                                    }
+                                    if (zodDatetime.offset) {
+                                        writer.writeLine(`offset: ${zodDatetime.offset},`)
+                                    }
+                                    if (zodDatetime.local) {
+                                        writer.writeLine(`local: ${zodDatetime.local},`)
+                                    }
+                                })
+                            }
+                            writer.write(')')
+                        } else {
+                            writer.write('.datetime()')
+                        }
+                    } else {
+                        writer.write('.datetime({ offset: true })')
+                    }
                     break
                 case 'date':
                     writer.write('.date()')
@@ -302,48 +373,44 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         const omitType = node as _OmitType
         const pickType = node as _PickType
         const extendType = node as _ExtendType
+        const mergedType = node as _MergeType
         if (omitType._omitted !== undefined) {
-            if (omitType._omitted.origin._name !== undefined) {
-                writer.writeLine(
-                    `${context.value(omitType._omitted.origin)}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
-                )
-            } else {
-                writer.writeLine(
-                    `${context.render(omitType._omitted.origin, undefined, { allowToZod: true })}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`,
-                )
-            }
+            const origin = isReferenceable(omitType._omitted.origin)
+                ? context.value(omitType._omitted.origin)
+                : context.render(omitType._omitted.origin, undefined, { allowToZod: true })
+
+            writer.writeLine(`${origin}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`)
         } else if (pickType._picked !== undefined) {
-            if (pickType._picked.origin._name !== undefined) {
-                writer.writeLine(
-                    `${context.value(pickType._picked.origin)}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
-                )
-            } else {
-                writer.writeLine(
-                    `${context.render(pickType._picked.origin, undefined, { allowToZod: true })}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`,
-                )
-            }
+            const origin = isReferenceable(pickType._picked.origin)
+                ? context.value(pickType._picked.origin)
+                : context.render(pickType._picked.origin, undefined, { allowToZod: true })
+
+            writer.writeLine(`${origin}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`)
         } else if (extendType._extended !== undefined) {
-            if (extendType._extended.origin._name !== undefined) {
-                writer
-                    .write(`${context.value(extendType._extended.origin)}.extend(`)
-                    .inlineBlock(() => {
-                        for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
-                            writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
-                        }
-                    })
-                    .write(')')
-            } else {
-                writer
-                    .write(`${context.render(extendType._extended.origin, undefined, { allowToZod: true })}.extend(`)
-                    .inlineBlock(() => {
-                        for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
-                            writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
-                        }
-                    })
-                    .write(')')
-            }
-        } else if (node._toZod !== undefined) {
-            return context.render(node._toZod)
+            const origin = isReferenceable(extendType._extended.origin)
+                ? context.value(extendType._extended.origin)
+                : context.render(extendType._extended.origin, undefined, { allowToZod: true })
+
+            writer
+                .write(`${origin}.extend(`)
+                .inlineBlock(() => {
+                    for (const [key, value] of Object.entries(extendType._extended?.extends ?? {})) {
+                        writer.writeLine(`${escapeProperty(key)}: ${context.render(value)},`)
+                    }
+                })
+                .write(')')
+        } else if (mergedType._merged !== undefined) {
+            const origin = isReferenceable(mergedType._merged.origin)
+                ? context.value(mergedType._merged.origin)
+                : context.render(mergedType._merged.origin)
+
+            const merged = isReferenceable(mergedType._merged.merged)
+                ? context.value(mergedType._merged.merged)
+                : context.render(mergedType._merged.merged)
+
+            writer.write(`${origin}.merge(${merged})`)
+            // } else if (node._toZod !== undefined) {
+            //     return context.render(node._toZod)
         } else if (Object.keys(shape).length === 0 && element !== undefined) {
             // If it's a pure record type with no other properties
             // Zod uses .record() for key-value mappings
@@ -444,6 +511,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         } = node
         if (reference._sourcePath === undefined && context.locals.find(([l]) => l._id === reference._id) === undefined) {
             context.locals.push([reference, (out) => out.subtype === 'zod'])
+            reference.validator({ type: 'zod' })
         }
         if (
             context.symbol === reference ||
@@ -466,11 +534,11 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
 export function asZodDeclaration(
     declType: string,
     obj: Node,
-    { exportSymbol, references }: { exportSymbol: boolean; references: References<'typescript'> },
+    { exportSymbol, references }: { exportSymbol: boolean; references: TypescriptReferences },
 ) {
     const exportString = exportSymbol ? 'export ' : ''
     const writer = createWriter()
-    writer.write(exportString).write(declType).write(' ').write(references.reference(obj, 'symbolName'))
+    writer.write(exportString).write(declType).write(' ').write(references.value(obj))
 
     return writer.toString()
 }

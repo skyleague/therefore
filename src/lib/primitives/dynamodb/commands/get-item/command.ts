@@ -1,7 +1,8 @@
 import type { GetCommand, GetCommandInput } from '@aws-sdk/lib-dynamodb'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
-import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../../../visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../../../writer.js'
 import type { DynamoDbEntityType } from '../../entity.js'
 import {} from '../../expressions/condition.js'
@@ -36,19 +37,30 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
         this._builder.addKey(this.entity)
         this._builder.addProjectionExpression(expressions?.projection)
         this._builder.addInput(this._builder.context._inputSchema)
+
+        this.asValidator(this._builder.result ?? this.entity.shape)
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
+                subtype: undefined,
+                isTypeOnly: false,
                 definition: (node, context) => {
+                    node._attributes.typescript['value:path'] = context.targetPath
+                    node._attributes.typescript['type:path'] = context.targetPath
+
                     const self = this
                     return this._builder.writeCommand({
                         node,
                         context,
-                        commandInput: context.reference(dynamodbSymbols.GetCommandInput()),
+                        commandInput: context.type(dynamodbSymbols.GetCommandInput()),
                         commandLines: function* () {
                             yield self._builder.writeKey()
                             yield self._builder.writeProjectionExpression()
@@ -59,12 +71,11 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
                         },
                     })
                 },
-            },
-            ...(super._output ?? []),
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 
-    public override buildHandler(context: TypescriptWalkerContext): string {
+    public override buildHandler(context: TypescriptTypeWalkerContext): string {
         const self = this
         return this._buildHandler({
             context,
@@ -77,16 +88,11 @@ export class DynamodbGetItemCommandType<Entity extends DynamoDbEntityType = Dyna
                 writer.write('if (result.Item === undefined)').block(() => {
                     writer.writeLine('return { right: null, $response: result }')
                 })
-                writer.writeLine(
-                    `return { ...${context.value(self._builder.result ?? self.entity.shape)}.parse(result.Item), $response: result }`,
-                )
+                const schema = self._builder.result ?? self.entity.shape
+                writer.writeLine(`return { ...${context.value(schema)}.parse(result.Item), $response: result }`)
 
                 yield writer.toString()
             },
         })
     }
-}
-
-export function $getItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbGetItemCommandOptions<Entity>) {
-    return new DynamodbGetItemCommandType<Entity>(args)
 }

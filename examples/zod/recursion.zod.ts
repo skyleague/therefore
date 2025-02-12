@@ -7,22 +7,22 @@
 import { z } from 'zod'
 import type { ZodType } from 'zod'
 
-export type Recursion = z.infer<typeof Recursion>[]
+export type Recursion = Recursion[]
 export const Recursion: ZodType<Recursion> = z.lazy(() => Recursion).array()
 
 export type RecursionObject = {
-    recursion: z.infer<typeof RecursionObject>[]
+    recursion: RecursionObject[]
 }
 export const RecursionObject: ZodType<RecursionObject> = z.object({
     recursion: z.lazy(() => RecursionObject).array(),
 })
 
 export type RecursionObjectAdvanced = {
-    recursion: z.infer<typeof RecursionObjectAdvanced>[]
+    recursion: RecursionObjectAdvanced[]
 }
 export const RecursionObjectAdvanced: ZodType<RecursionObjectAdvanced> = z.object({
     recursion: z.lazy(() => RecursionObjectAdvanced).array(),
 })
 
-export type RecursionValidator = z.infer<typeof RecursionValidator>[]
+export type RecursionValidator = RecursionValidator[]
 export const RecursionValidator: ZodType<RecursionValidator> = z.lazy(() => RecursionValidator).array()

@@ -12,11 +12,11 @@ import decamelize from 'decamelize'
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
-import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
+import { type TypescriptZodWalkerContext, buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
 import { type ValidatorInputOptions, type ValidatorOptions, defaultAjvValidatorOptions } from './types.js'
 
 export function ajvOptions(node?: Node): Options {
@@ -63,7 +63,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 if (this._options?.type === 'ajv') {
                     const schemaName = decamelize(n._name, { separator: '-' })
 
-                    n._attributes.typescript.schemaPath = path.join(
+                    n._attributes.generic['jsonschema:path'] = path.join(
                         path.dirname(n._sourcePath),
                         `./schemas/${schemaName}.schema.js${this._options.compile ? '' : 'on'}`,
                     )
@@ -82,23 +82,23 @@ export class ValidatorType<T extends Node = Node> extends Node {
         return symbol._attributes.validator !== undefined ? new ValidatorType(symbol) : symbol
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 type: 'typescript',
                 subtype: 'ajv',
                 isTypeOnly: false,
-                definition: ({ _attributes: { typescript } }, { value, reference, references }) => {
+                definition: ({ _attributes: { generic } }, { value, type, targetPath }) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
-                    const symbolName = references.reference(child, 'symbolName')
-                    this._attributes.typescript.symbolName = symbolName
-                    this._attributes.typescript.referenceName = reference(this)
+                    const symbolValue = value(child)
+                    const symbolType = type(child)
 
-                    const symbolPath = typescript.path
-                    if (symbolPath === undefined) {
-                        throw new Error('path is undefined, node was not properly initialized.')
-                    }
+                    child._attributes.typescript['value:path'] = targetPath
 
                     const options = this._validator
                     if (options.type !== 'ajv') {
@@ -106,37 +106,35 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     }
 
                     const writer = createWriter()
-                    const schemaPath = path.relative(path.dirname(symbolPath), typescript.schemaPath ?? '.')
+                    const schemaPath = path.relative(path.dirname(targetPath), generic['jsonschema:path'] ?? '.')
 
-                    const validatorReference = moduleSymbol(`./${schemaPath}`, 'validate', {
-                        alias: 'validate',
-                        transform: { aliasName: () => `${symbolName}Validator` },
+                    const validatorReference = moduleSymbol(`./${schemaPath}`, `${symbolValue}Validator`, {
+                        'value:export': 'validate',
                     })
-                    const schemaReference = moduleSymbol(`./${schemaPath}`, 'default', {
-                        alias: 'schema',
-                        transform: { aliasName: () => `${symbolName}Schema` },
+                    const schemaReference = moduleSymbol(`./${schemaPath}`, `${symbolValue}Schema`, {
+                        'value:export': 'default',
                     })
 
                     return writer
-                        .write(`export const ${symbolName} = `)
+                        .write(`export const ${symbolValue} = `)
                         .inlineBlock(() => {
                             if (options.compile) {
                                 writer
                                     .writeLine(
-                                        `validate: ${value(validatorReference())} as ${reference(
+                                        `validate: ${value(validatorReference())} as ${type(
                                             ajvSymbols.ValidateFunction(),
-                                        )}<${symbolName}>,`,
+                                        )}<${symbolType}>,`,
                                     )
-                                    .writeLine(`get schema() { return ${symbolName}.validate.schema},`)
+                                    .writeLine(`get schema() { return ${symbolValue}.validate.schema},`)
                             } else {
                                 const ajvCompile = `new ${value(ajvSymbols.AjvValidator())}(${JSON.stringify(ajvOptions(child))})`
-                                const compile = `.compile<${symbolName}>(${value(schemaReference())})`
+                                const compile = `.compile<${symbolType}>(${value(schemaReference())})`
 
                                 if (this.formats !== undefined && this.formats.length > 0) {
                                     writer.writeLine(
                                         `validate: ${value(ajvFormatsSymbols.addFormats())}.default(${ajvCompile}, ${toLiteral(
                                             this.formats,
-                                        )} as ${reference(ajvFormatsSymbols.FormatName())}[])${compile},`,
+                                        )} as ${type(ajvFormatsSymbols.FormatName())}[])${compile},`,
                                     )
                                 } else {
                                     writer.writeLine(`validate: ${ajvCompile}${compile},`)
@@ -145,8 +143,8 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                 writer.writeLine(`schema: ${value(schemaReference())},`)
                             }
 
-                            writer.writeLine(`get errors() { return ${symbolName}.validate.errors ?? undefined },`)
-                            writer.writeLine(`is: (o: unknown): o is ${symbolName} => ${symbolName}.validate(o) === true,`)
+                            writer.writeLine(`get errors() { return ${symbolValue}.validate.errors ?? undefined },`)
+                            writer.writeLine(`is: (o: unknown): o is ${symbolType} => ${symbolValue}.validate(o) === true,`)
                             if (options.assert) {
                                 writer
                                     // the full assertion syntax is not yet supported on properties
@@ -154,27 +152,27 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                     // .write(`assert: (o: unknown): asserts o is ${symbolName} => `)
                                     .write('assert: (o: unknown) => ')
                                     .inlineBlock(() => {
-                                        writer.write(`if (!${symbolName}.validate(o))`).block(() => {
+                                        writer.write(`if (!${symbolValue}.validate(o))`).block(() => {
                                             writer.writeLine(
-                                                `throw new ${value(ajvSymbols.ValidationError())}(${symbolName}.errors ?? [])`,
+                                                `throw new ${value(ajvSymbols.ValidationError())}(${symbolValue}.errors ?? [])`,
                                             )
                                         })
                                     })
                                     .write(',')
                             }
                             if (options.parse) {
-                                const definedErrorReference = reference(ajvSymbols.DefinedError())
+                                const definedErrorReference = type(ajvSymbols.DefinedError())
                                 writer
                                     .writeLine(
-                                        `parse: (o: unknown): { right: ${symbolName} } | { left: ${definedErrorReference}[] } => `,
+                                        `parse: (o: unknown): { right: ${symbolType} } | { left: ${definedErrorReference}[] } => `,
                                     )
                                     .inlineBlock(() => {
                                         writer
-                                            .write(`if(${symbolName}.is(o))`)
+                                            .write(`if(${symbolValue}.is(o))`)
                                             .block(() => {
                                                 writer.writeLine('return { right: o }')
                                             })
-                                            .write(`return { left: (${symbolName}.errors ?? []) as ${definedErrorReference}[] }`)
+                                            .write(`return { left: (${symbolValue}.errors ?? []) as ${definedErrorReference}[] }`)
                                     })
                                     .write(',')
                             }
@@ -182,110 +180,18 @@ export class ValidatorType<T extends Node = Node> extends Node {
                         .write(' as const\n')
                         .toString()
                 },
-            },
-            {
-                type: 'typescript',
-                subtype: 'zod',
-                isTypeOnly: false,
-                definition: ({ _attributes: { typescript } }, { value, references }) => {
-                    const child = this._children[0]
-                    const symbolName = references.reference(child, 'aliasName')
-                    const symbolNameAlias = moduleSymbol(
-                        `./${path.relative(path.dirname(this._attributes.typescript.path ?? ''), child._attributes.typescript.path ?? '')}`,
-                        symbolName,
-                        {
-                            alias: 'schema',
-                            transform: { aliasName: () => `${symbolName}Schema` },
-                        },
-                    )()
-
-                    const symbolPath = typescript.path
-                    if (symbolPath === undefined) {
-                        throw new Error('path is undefined, node was not properly initialized.')
-                    }
-                    const writer = createWriter()
-                    writer
-                        .writeLine('/**')
-                        .writeLine(' * @deprecated')
-                        .writeLine(' */')
-                        .writeLine(`export type ${symbolName} = ${value(zodSymbols.z())}.infer<typeof ${value(symbolNameAlias)}>`)
-                        .writeLine('/**')
-                        .writeLine(
-                            ` * @deprecated Use \`${symbolName}.safeParse\` instead. To migrate: 1) Replace \`${symbolName}.validate(data)\` with \`${symbolName}.safeParse(data)\` 2) Check result with \`.success\` instead of the return value 3) Access parsed data via \`.data\` or validation errors via \`.error.issues\` on the result object`,
-                        )
-                        .writeLine(' */')
-                        .writeLine(`export const ${symbolName} = Object.assign(${value(symbolNameAlias)}.refine(x => x), `)
-                        .block(() => {
-                            writer
-                                .writeLine('validate: (value: unknown): boolean => ')
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(value)`)
-                                        .writeLine('if (result.success && typeof value === "object" && value !== null) {')
-                                        .writeLine('    Object.assign(value, result.data)')
-                                        .writeLine('}')
-                                        .writeLine(
-                                            `${symbolName}.errors = result.success ? undefined : result.error.issues.map((issue) => ({`,
-                                        )
-                                        .writeLine('message: issue.message,')
-                                        .writeLine('params: issue.path,')
-                                        .writeLine("schemaPath: issue.path.join('/'),")
-                                        .writeLine('}))')
-                                        .writeLine('return result.success')
-                                })
-                                .write(',')
-                                .writeLine('errors: undefined as unknown[] | undefined,')
-                                .writeLine(`is: (o: unknown): o is ${symbolName} =>`)
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
-                                        .writeLine('if (result.success && typeof o === "object" && o !== null) {')
-                                        .writeLine('    Object.assign(o, result.data)')
-                                        .writeLine('}')
-                                        .writeLine('return result.success')
-                                })
-                                .write(',')
-                                .writeLine(`parse: (o: unknown): { right: ${symbolName} } | { left: unknown[] } => `)
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
-                                        .writeLine('if (result.success) { return { right: result.data } }')
-                                        .writeLine('return {')
-                                        .writeLine('left: result.error.issues.map((issue) => ({')
-                                        .writeLine('message: issue.message,')
-                                        .writeLine('params: issue.path,')
-                                        .writeLine("schemaPath: issue.path.join('/')")
-                                        .writeLine('}))')
-                                        .writeLine('}')
-                                })
-                        })
-                        .write(')')
-                    return writer.toString()
-                },
-                enabled: (node) =>
-                    constants.migrate &&
-                    constants.migrateToValidator === 'zod' &&
-                    !node._attributes.isGenerated &&
-                    constants.generateInterop,
-                targetPath: ({ _sourcePath: sourcePath }) => {
-                    return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
-                },
-            },
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
             {
                 type: 'typescript',
                 subtype: 'zod',
                 isTypeOnly: false,
                 enabled: (node) =>
                     (node._attributes.isGenerated && node._attributes.validator?.type === 'zod') ||
-                    (!constants.generateInterop &&
-                        constants.migrateToValidator === 'zod' &&
-                        node._attributes.validator === undefined),
+                    (constants.migrateToValidator === 'zod' && node._attributes.validator === undefined),
                 definition: (symbol, context) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
-                    const symbolName = context.references.reference(child, 'symbolName')
-                    this._attributes.typescript.symbolName = symbolName
-                    this._attributes.typescript.referenceName = context.reference(this)
+                    const symbolType = context.type(child)
 
                     const options = this._options
                     if (options.type !== 'zod') {
@@ -293,44 +199,53 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     }
 
                     const writer = createWriter()
+
+                    // Generate type definition if needed
                     if (options.types) {
-                        if (child._isRecurrent) {
+                        child._attributes.typescript['type:path'] = context.targetPath
+
+                        const hasInlineZodDefinition =
+                            symbol._guessedTrace?.symbolName === undefined && symbol._origin.zod !== undefined
+                        const isExternalReference = symbol._guessedTrace?.source !== symbol._sourcePath
+                        if (child._isRecurrent || symbol._name === undefined || hasInlineZodDefinition || !isExternalReference) {
                             const typeContext = buildTypescriptZodTypeContext({
+                                targetPath: context.targetPath,
                                 symbol,
                                 exportSymbol: true,
                                 references: context.references,
                                 locals: context.locals,
                             })
-                            writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
+                            writer.writeLine(`export type ${symbolType} = ${typeContext.render(child)}`)
                         } else {
-                            writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                            writer.writeLine(
+                                `export type ${symbolType} = ${context.type(zodSymbols.z())}.infer<typeof ${context.value(child)}>`,
+                            )
                         }
                     }
 
-                    if (child._attributes.validator?.type === 'zod') {
-                        if (child._isRecurrent) {
-                            writer
-                                .write(
-                                    `${context.declare('const', child)}: ${context.reference(zodSymbols.ZodType())}<${context.reference(child)}> = `,
-                                )
-                                // .write('z.lazy(() => ')
-                                .write(context.render(child))
-                            // .write(')')
-                        } else {
-                            // writer.write(`${context.declare('const', child)} = `).write(context.render(child))
-                        }
+                    // Generate Zod validator for recursive types
+                    // we do it here to make sure they are always local to each other
+                    if (child._attributes.validator?.type === 'zod' && child._isRecurrent) {
+                        child._attributes.typescript['value:path'] = context.targetPath
+
+                        writer
+                            .write(
+                                `${context.declare('const', child)}: ${context.type(zodSymbols.ZodType())}<${context.type(child)}> = `,
+                            )
+                            .write(context.render(child))
                     }
+
                     return writer.toString()
                 },
-            },
+            } satisfies TypescriptOutput<TypescriptZodWalkerContext>,
             {
                 type: 'file',
                 subtype: () => ('compile' in this._options && this._options.compile ? 'typescript' : 'json'),
                 targetPath: () => {
-                    if (this._attributes.typescript.schemaPath === undefined) {
+                    if (this._attributes.generic['jsonschema:path'] === undefined) {
                         throw new Error('schemaPath is undefined, node was not properly initialized.')
                     }
-                    return this._attributes.typescript.schemaPath
+                    return this._attributes.generic['jsonschema:path']
                 },
                 content: (_, { references }) => {
                     const options = this._options
@@ -357,7 +272,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 },
                 prettify: () => !('compile' in this._options && this._options.compile),
                 enabled: () => this._validator.type === 'ajv' && this._children[0]._attributes.validator !== undefined,
-            },
+            } satisfies GenericOutput,
             {
                 type: 'file',
                 enabled: () => this._validator.output?.jsonschema !== undefined,
@@ -374,7 +289,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     })
                     return JSON.stringify(jsonschema.schema, null, 2)
                 },
-            },
+            } satisfies GenericOutput,
         ]
     }
 }

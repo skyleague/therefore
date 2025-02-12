@@ -393,7 +393,7 @@ describe('person', () => {
           "/**
            * Person
            */
-          interface {{7:symbolName}} {
+          interface {{7:type:name}} {
               /**
                * Age in years which must be equal to or greater than zero.
                */
@@ -630,10 +630,10 @@ describe('coordinates', () => {
         expect(TypescriptFileOutput.define({ symbol: therefore() })).toMatchInlineSnapshot(`
           "/**
            * Longitude and Latitude Values
-           * 
+           *
            * A geographical coordinate.
            */
-          interface {{3:symbolName}} {
+          interface {{3:type:name}} {
               latitude: number
               longitude: number
           }"
@@ -1753,7 +1753,7 @@ describe('array', () => {
               },
               "vegetables": {
                 "items": {
-                  "$ref": "#/$defs/{{10:symbolName}}",
+                  "$ref": "#/$defs/{{10:value:name}}",
                 },
                 "type": "array",
               },
@@ -1768,11 +1768,11 @@ describe('array', () => {
           "/**
            * A representation of a person, company, organization, or place
            */
-          interface {{7:symbolName}} {
+          interface {{7:type:name}} {
               fruits?: ((string)[] | undefined)
-              vegetables?: (({{10:referenceName}})[] | undefined)
+              vegetables?: (({{10:type:reference}})[] | undefined)
           }
-          interface {{10:symbolName}} {
+          interface {{10:type:name}} {
               /**
                * Do I like this vegetable?
                */
@@ -2579,7 +2579,7 @@ describe('object with nullable property', () => {
           "/**
            * An object with nullable properties
            */
-          interface {{13:symbolName}} {
+          interface {{13:type:name}} {
               fruits?: ((string)[] | null | undefined)
               store?: ((string | number) | null | undefined)
               vegetables?: ((string)[] | undefined)
@@ -3064,7 +3064,7 @@ describe('make optional properties nullable', () => {
           "/**
            * An object with optional properties
            */
-          interface {{10:symbolName}} {
+          interface {{10:type:name}} {
               bar: number
               foo?: (string | null | undefined)
               foobar?: ((boolean | number) | null | undefined)
@@ -4089,7 +4089,7 @@ describe('nullable array', () => {
                   },
                 ],
                 "items": {
-                  "$ref": "#/$defs/{{9:symbolName}}",
+                  "$ref": "#/$defs/{{9:value:name}}",
                 },
                 "type": [
                   "array",
@@ -4107,13 +4107,13 @@ describe('nullable array', () => {
           "/**
            * An object with a nullable array that has a ref
            */
-          interface {{5:symbolName}} {
+          interface {{5:type:name}} {
               /**
                * @example Foo = { bar: 'wut' }
                */
-              foo?: (({{9:referenceName}})[] | null | undefined)
+              foo?: (({{9:type:reference}})[] | null | undefined)
           }
-          interface {{9:symbolName}} {
+          interface {{9:type:name}} {
               bar?: (string | null | undefined)
           }"
         `)
@@ -4171,9 +4171,9 @@ describe('const', () => {
     it('typescript', () => {
         expect(TypescriptFileOutput.define({ symbol: therefore() })).toMatchInlineSnapshot(`
           "/**
-           * 
+           *
            */
-          type {{1:symbolName}} = {  }"
+          type {{1:type:name}} = {  }"
         `)
     })
 

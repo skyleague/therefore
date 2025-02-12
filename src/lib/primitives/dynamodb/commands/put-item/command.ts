@@ -3,7 +3,8 @@ import { omit } from '@skyleague/axioms'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
 import type { Node } from '../../../../cst/node.js'
-import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../../../visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../../../writer.js'
 import { $string } from '../../../string/string.js'
 import type { DynamoDbEntityType } from '../../entity.js'
@@ -65,17 +66,24 @@ export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = Dyna
         )
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public override get _output():
+        | (TypescriptOutput<TypescriptTypeWalkerContext> | TypescriptOutput<TypescriptZodWalkerContext> | GenericOutput)[]
+        | undefined {
         return [
             {
                 targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
+                subtype: undefined,
+                isTypeOnly: false,
                 definition: (node, context) => {
+                    node._attributes.typescript['value:path'] = context.targetPath
+                    node._attributes.typescript['type:path'] = context.targetPath
+
                     const self = this
                     return this._builder.writeCommand({
                         node,
                         context,
-                        commandInput: context.reference(dynamodbSymbols.PutCommandInput()),
+                        commandInput: context.type(dynamodbSymbols.PutCommandInput()),
                         prefixLines: function* () {
                             if (
                                 self.entity.table.definition.createdAt !== undefined ||
@@ -142,12 +150,11 @@ export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = Dyna
                         },
                     })
                 },
-            },
-            ...(super._output ?? []),
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 
-    public override buildHandler(context: TypescriptWalkerContext): string {
+    public override buildHandler(context: TypescriptTypeWalkerContext): string {
         const self = this
         return this._buildHandler({
             context,
@@ -169,8 +176,4 @@ export class DynamodbPutItemCommandType<Entity extends DynamoDbEntityType = Dyna
             },
         })
     }
-}
-
-export function $putItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbPutItemCommandOptions<Entity>) {
-    return new DynamodbPutItemCommandType<Entity>(args)
 }

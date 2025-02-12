@@ -172,3 +172,37 @@ export const defaultTest: OpenapiV3 = {
 }
 
 export const defaultTestClient = $restclient(defaultTest, { strict: false })
+
+export const aliased: OpenapiV3 = {
+    openapi: '3.0.0',
+    info: { title: 'openapi', version: '1.0.0' },
+    paths: {
+        '/api/v{api-version}/multiple-tags/a': {
+            get: {
+                tags: ['MultipleTags1', 'MultipleTags2'],
+                operationId: 'DummyA',
+                responses: {
+                    '200': {
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/400',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    components: {
+        schemas: {
+            '400': {
+                description: 'Model with number-only name',
+                type: 'string',
+            },
+        },
+    },
+}
+
+export const aliasedName = $restclient(aliased)

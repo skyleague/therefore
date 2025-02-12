@@ -66,16 +66,16 @@ it('combined', () => {
             },
         }),
     ).toMatchInlineSnapshot(`
-        "/**
-         * lorum ipsum
-         * 
-         * @default 'dolor sit amet'
-         * @deprecated
-         * 
-         * @example foo = 'lorum ipsum'
-         * @example foo = 'dolor sit amet'
-         */
-        "
+      "/**
+       * lorum ipsum
+       *
+       * @default 'dolor sit amet'
+       * @deprecated
+       *
+       * @example foo = 'lorum ipsum'
+       * @example foo = 'dolor sit amet'
+       */
+      "
     `)
 })
 

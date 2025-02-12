@@ -2,6 +2,7 @@ import type { Node } from '../../../cst/node.js'
 import { $nullable, NullableType } from '../../nullable/nullable.js'
 import type { ObjectType } from '../../object/object.js'
 import { $optional, OptionalType } from '../../optional/optional.js'
+import type { DynamoDbEntityType } from '../entity.js'
 import { isReservedWord } from '../reserved.js'
 import { FormattedOperand } from './attributes.js'
 
@@ -21,13 +22,17 @@ export class DynamodbExpressionContext<Shape extends ObjectType = ObjectType> {
     public _attributeConstValues: Record<string, unknown>
     public _inputSchema: Record<string, Node>
     public shape: Shape
+    public entity: DynamoDbEntityType<Shape>
+    public command: Node
 
-    public constructor(shape: Shape) {
+    public constructor(entity: DynamoDbEntityType<Shape>, command: Node) {
         this._attributeNames = {}
         this._attributeValues = {}
         this._attributeConstValues = {}
         this._inputSchema = {}
-        this.shape = shape
+        this.entity = entity
+        this.shape = entity.shape as Shape
+        this.command = command
     }
 
     public addConstValue({ inputKey, value }: { value: unknown; inputKey?: string | undefined }): string {

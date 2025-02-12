@@ -1,7 +1,8 @@
 import type { DeleteCommand, DeleteCommandInput } from '@aws-sdk/lib-dynamodb'
 import { replaceExtension } from '../../../../../common/template/path.js'
 import type { GenericOutput, TypescriptOutput } from '../../../../cst/cst.js'
-import type { TypescriptWalkerContext } from '../../../../visitor/typescript/typescript.js'
+import type { TypescriptTypeWalkerContext } from '../../../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../../../visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../../../writer.js'
 import type { DynamoDbEntityType } from '../../entity.js'
 import type { ConditionBuilder } from '../../expressions/condition.js'
@@ -34,17 +35,26 @@ export class DynamodbDeleteItemCommandType<
         this._builder.addInput(this._builder.context._inputSchema)
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 targetPath: ({ _sourcePath: sourcePath }) => replaceExtension(sourcePath, '.command.ts'),
                 type: 'typescript',
+                subtype: undefined,
+                isTypeOnly: false,
                 definition: (node, context) => {
+                    node._attributes.typescript['value:path'] = context.targetPath
+                    node._attributes.typescript['type:path'] = context.targetPath
+
                     const self = this
                     return this._builder.writeCommand({
                         node,
                         context,
-                        commandInput: context.reference(dynamodbSymbols.DeleteCommandInput()),
+                        commandInput: context.type(dynamodbSymbols.DeleteCommandInput()),
                         commandLines: function* () {
                             yield self._builder.writeKey()
                             yield self._builder.writeConditionExpression()
@@ -55,12 +65,11 @@ export class DynamodbDeleteItemCommandType<
                         },
                     })
                 },
-            },
-            ...(super._output ?? []),
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 
-    public override buildHandler(context: TypescriptWalkerContext): string {
+    public override buildHandler(context: TypescriptTypeWalkerContext): string {
         const self = this
         return this._buildHandler({
             context,
@@ -82,8 +91,4 @@ export class DynamodbDeleteItemCommandType<
             },
         })
     }
-}
-
-export function $deleteItemCommand<Entity extends DynamoDbEntityType>(args: DynamodbDeleteItemCommandOptions<Entity>) {
-    return new DynamodbDeleteItemCommandType<Entity>(args)
 }

@@ -8,6 +8,7 @@ import type { SchemaOptions } from '../base.js'
 
 import path from 'node:path'
 import { omit } from '@skyleague/axioms'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
 
 export interface RestClientOptions {
     filename?: string | undefined
@@ -137,7 +138,7 @@ export class RestclientType extends Node {
         ],
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput<TypescriptTypeWalkerContext> | GenericOutput)[] {
         return [
             {
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
@@ -146,6 +147,7 @@ export class RestclientType extends Node {
                 isGenerated: () => true,
                 isTypeOnly: false,
                 definition: (node, context) => {
+                    node._attributes.typescript['type:path'] = context.targetPath
                     return this._builder.definition(node, context)
                 },
             },

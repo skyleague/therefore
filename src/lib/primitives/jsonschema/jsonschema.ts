@@ -318,6 +318,8 @@ interface JsonSchemaContext {
 
     validator: ValidatorInputOptions | undefined
 
+    cache: WeakMap<object, Node>
+
     render: (
         node: JsonSchema,
         options?: { childProperty?: keyof Pick<JsonSchema, 'items'> | undefined; name?: string | undefined },
@@ -343,6 +345,7 @@ export function buildContext({
         connections = [],
         validator,
         formats = true,
+        cache = new WeakMap<object, Node>(),
     } = maybeContext
 
     const context: JsonSchemaContext = {
@@ -352,6 +355,7 @@ export function buildContext({
         allowIntersection,
         optionalNullable,
         connections,
+        cache,
         name,
         validator,
         formats,
@@ -362,8 +366,12 @@ export function buildContext({
                 name: n,
             }: { childProperty?: keyof Pick<JsonSchema, 'items'> | undefined; name?: string | undefined } = {},
         ) => {
+            if (context.cache.has(schema)) {
+                return context.cache.get(schema) as Node
+            }
             const value = walkJsonschema({ node: schema, visitor: schemaWalker, context, childProperty, name: n ?? name })
             value._origin.jsonschema = schema
+            context.cache.set(schema, value)
             return value
         },
         annotate: (node, schema) => asNullable(annotateNode(node, schema, context), schema),
@@ -411,12 +419,14 @@ export function walkJsonschema({
                 throw new Error('Could not resolve reference')
             }
             const split = childRef.split('/')
-            const refName = split[split.length - 1]
+            const last = split[split.length - 1]
+            const refName = last && /[a-zA-Z]+/.test(last) ? last : split.slice(1).join('_')
 
             context.references.set(
                 childRef,
                 memoize(() => {
                     const reference = asNullable(context.render(ref, { name: refName }), ref)
+
                     if (context.validator !== undefined) {
                         reference.validator(context.validator)
                     }
@@ -554,6 +564,8 @@ export interface JsonSchemaOptions {
     optionalNullable?: boolean
 
     validator?: ValidatorInputOptions | undefined
+
+    cache?: WeakMap<object, Node>
 }
 
 /**
@@ -577,6 +589,7 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
         dereference = true,
         formats = true,
         validator,
+        cache = new WeakMap<object, Node>(),
     } = options
     const connections: Node[] = []
     references.set(
@@ -584,7 +597,7 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
         memoize(() => {
             const context = buildContext({
                 node: schema,
-                context: { ...options, formats, connections, references, document, validator },
+                context: { ...options, formats, connections, references, document, validator, cache },
             })
             const node = context.render(schema, { name })
             node._name = name
@@ -607,6 +620,9 @@ export function $jsonschema(schema: JsonSchema, options: SchemaOptions<JsonSchem
         const oldConnections = value._connections ?? []
         value = evaluate(value._children[0])
         value._connections = oldConnections
+        if (name !== undefined && value._name === undefined) {
+            value._name = name
+        }
     }
     return loadNode(value) as ThereforeSchema
 }

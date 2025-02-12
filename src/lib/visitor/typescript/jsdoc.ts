@@ -13,7 +13,7 @@ function escapeComment(x: string) {
 export class JSDoc {
     public static fromNode(node: Node) {
         const toDefinition = (value: Node) => ({
-            key: value._attributes.typescript.symbolName ?? value._name,
+            key: value._attributes.typescript['value:source'] ?? value._name,
             _definition: omitUndefined({
                 title: value._definition.jsonschema?.title,
                 examples: value._definition.jsonschema?.examples,
@@ -110,6 +110,6 @@ export class JSDoc {
             docs.push(...escapeComment(append.trim()).split('\n'))
         }
 
-        return docs.length > 0 ? `/**\n * ${docs.join('\n * ')}\n */\n` : undefined
+        return docs.length > 0 ? `/**\n${docs.map((d) => (d ? ` * ${d}` : ' *')).join('\n')}\n */\n` : undefined
     }
 }
