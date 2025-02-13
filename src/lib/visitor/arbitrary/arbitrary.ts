@@ -397,15 +397,21 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
         }
         return composite
     },
-    array: ({ _children: [items], _options: options }, context) => {
+    array: ({ _children: [items], _options: options, _origin: { zod } }, context) => {
         const { minLength, maxLength, ...restArbitrary } = options.arbitrary ?? {}
         const child = context.arbitrary(items)
         if (options.set === true) {
-            return set(child, {
+            const value = set(child, {
                 minLength: options.minItems ?? minLength,
                 maxLength: options.maxItems ?? maxLength,
                 ...restArbitrary,
             })
+
+            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodSet') {
+                return value.map((x) => new Set(x))
+            }
+
+            return value
         }
         return array(child, {
             minLength: options.minItems ?? minLength,

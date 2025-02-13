@@ -373,8 +373,13 @@ export const zodVisitor: {
     ZodMap: () => {
         throw new Error('Function not implemented.')
     },
-    ZodSet: () => {
-        throw new Error('Function not implemented.')
+    ZodSet: (node, ctx) => {
+        const value = $array(ctx.render(node._def.valueType), {
+            minItems: node._def.minSize?.value,
+            maxItems: node._def.maxSize?.value,
+            set: true,
+        })
+        return value
     },
     ZodFunction: () => {
         throw new Error('Function not implemented.')
