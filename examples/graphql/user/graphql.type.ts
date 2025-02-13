@@ -13,7 +13,7 @@ export interface Person {
     name: string
 }
 
-export interface User {
-    name: string
+export type User = Omit<Person, 'name'> & {
     groups: Group[]
+    name: string
 }

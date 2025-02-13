@@ -1,17 +1,26 @@
 import { mapValues } from '@skyleague/axioms'
-import type { IpVersion, ZodFirstPartySchemaTypes, ZodNumber, ZodString, z } from 'zod'
+import type { IpVersion, ZodFirstPartySchemaTypes, ZodNumber, ZodRawShape, ZodString, z } from 'zod'
 import type { Node } from '../../cst/node.js'
 import { type NodeTrace, getGuessedTrace } from '../../cst/trace.js'
 import { $array } from '../array/array.js'
 import { $boolean } from '../boolean/boolean.js'
 import { $const } from '../const/const.js'
-import { $enum } from '../enum/enum.js'
+import { $enum, type _KeyOfType } from '../enum/enum.js'
 import { $integer } from '../integer/integer.js'
 import { $intersection } from '../intersection/intersection.js'
 import { $null } from '../null/null.js'
 import { $nullable } from '../nullable/nullable.js'
 import { $number, type NumberType } from '../number/number.js'
-import { $object } from '../object/object.js'
+import {
+    $object,
+    type ObjectType,
+    type _ExtendType,
+    type _MergeType,
+    type _OmitType,
+    type _PartialType,
+    type _PickType,
+    type _RequiredType,
+} from '../object/object.js'
 import { $optional } from '../optional/optional.js'
 import { $record, type RecordType } from '../record/record.js'
 import { $string, type StringType } from '../string/string.js'
@@ -22,6 +31,47 @@ import { $unknown } from '../unknown/unknown.js'
 declare module 'zod' {
     interface ZodType {
         _guessedTrace?: NodeTrace | undefined
+        _merged?:
+            | {
+                  origin: ZodType
+                  merged: ZodType
+              }
+            | undefined
+        _extended?:
+            | {
+                  origin: ZodType
+                  extends: ZodRawShape
+              }
+            | undefined
+        _picked?:
+            | {
+                  origin: ZodType
+                  mask: string[]
+              }
+            | undefined
+        _omitted?:
+            | {
+                  origin: ZodType
+                  mask: string[]
+              }
+            | undefined
+        _keyof?:
+            | {
+                  origin: ZodType
+              }
+            | undefined
+        _required?:
+            | {
+                  origin: ZodType
+                  mask: string[] | undefined
+              }
+            | undefined
+        _partial?:
+            | {
+                  origin: ZodType
+                  mask: string[] | undefined
+              }
+            | undefined
     }
 }
 
@@ -47,6 +97,82 @@ export function extendsZodWithTracing(zod: typeof z) {
             this.__def = value
         },
     })
+
+    // Keep track of merge/extend/pick/omit operations to match Zod's behavior
+    const originalMerge = zod.ZodObject.prototype.merge
+    zod.ZodObject.prototype.merge = function (this: z.ZodObject<z.ZodRawShape>, ...args) {
+        const result = originalMerge.apply(this, args)
+        result._merged = {
+            origin: this,
+            merged: args[0],
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.merge
+
+    const originalExtend = zod.ZodObject.prototype.extend
+    zod.ZodObject.prototype.extend = function (this: z.ZodObject<z.ZodRawShape>, ...args) {
+        const result = originalExtend.apply(this, args)
+        result._extended = {
+            origin: this,
+            extends: args[0],
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.extend
+
+    const originalPick = zod.ZodObject.prototype.pick
+    zod.ZodObject.prototype.pick = function (this: z.ZodObject<z.ZodRawShape>, ...args) {
+        const result = originalPick.apply(this, args)
+        result._picked = {
+            origin: this,
+            mask: Object.keys(args[0]),
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.pick
+
+    const originalOmit = zod.ZodObject.prototype.omit
+    zod.ZodObject.prototype.omit = function (this: z.ZodObject<z.ZodRawShape>, ...args) {
+        const result = originalOmit.apply(this, args)
+        result._omitted = {
+            origin: this,
+            mask: Object.keys(args[0]),
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.omit
+
+    const originalKeyof = zod.ZodObject.prototype.keyof
+    zod.ZodObject.prototype.keyof = function (this: z.ZodObject<z.ZodRawShape>) {
+        const result = originalKeyof.apply(this)
+        result._keyof = {
+            origin: this,
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.keyof
+
+    const originalPartial = zod.ZodObject.prototype.partial
+    zod.ZodObject.prototype.partial = function <T extends z.ZodRawShape>(
+        this: z.ZodObject<T>,
+        ...args: Parameters<typeof originalPartial>
+    ) {
+        const result = originalPartial.apply(this, args)
+        result._partial = {
+            origin: this,
+            mask: args[0] !== undefined ? Object.keys(args[0]) : undefined,
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.partial
+
+    const originalRequired = zod.ZodObject.prototype.required
+    zod.ZodObject.prototype.required = function <T extends z.ZodRawShape>(
+        this: z.ZodObject<T>,
+        ...args: Parameters<typeof originalRequired>
+    ) {
+        const result = originalRequired.apply(this, args)
+        result._required = {
+            origin: this,
+            mask: args[0] !== undefined ? Object.keys(args[0]) : undefined,
+        }
+        return result
+    } as typeof zod.ZodObject.prototype.required
 }
 
 try {
@@ -82,6 +208,11 @@ export function buildContext(options: Partial<ZodWalkerContext> = {}): ZodWalker
 
             if (node._guessedTrace) {
                 value._guessedTrace = node._guessedTrace
+
+                if (value._guessedTrace.source && value._guessedTrace.symbolName) {
+                    value._attributes.typescript['value:path'] = value._guessedTrace.source
+                    value._attributes.typescript['value:source'] = value._guessedTrace.symbolName
+                }
             }
 
             return value
@@ -322,7 +453,61 @@ export const zodVisitor: {
         return value
     },
     ZodObject: (node, ctx) => {
-        const value = $object(mapValues(node._def.shape(), (x) => ctx.render(x as ZodFirstPartySchemaTypes)))
+        const value: Node = $object(mapValues(node._def.shape(), (x) => ctx.render(x as ZodFirstPartySchemaTypes)))
+
+        if (node._merged !== undefined) {
+            const merged = {
+                origin: ctx.render(node._merged.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                merged: ctx.render(node._merged.merged as ZodFirstPartySchemaTypes) as ObjectType,
+            }
+            ;(value as _MergeType)._merged = merged
+            value._children = [merged.merged, merged.origin]
+        }
+
+        if (node._extended !== undefined) {
+            const extended = {
+                origin: ctx.render(node._extended.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                extends: mapValues(node._extended.extends, (x) => ctx.render(x as ZodFirstPartySchemaTypes)),
+            }
+            ;(value as _ExtendType)._extended = extended
+            value._children = [extended.origin, ...Object.values<Node>(extended.extends)]
+        }
+
+        if (node._picked !== undefined) {
+            const picked = {
+                origin: ctx.render(node._picked.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                mask: node._picked.mask,
+            }
+            ;(value as _PickType)._picked = picked
+            value._children = [picked.origin]
+        }
+
+        if (node._omitted !== undefined) {
+            const omitted = {
+                origin: ctx.render(node._omitted.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                mask: node._omitted.mask,
+            }
+            ;(value as _OmitType)._omitted = omitted
+            value._children = [omitted.origin]
+        }
+
+        if (node._partial !== undefined) {
+            const partial = {
+                origin: ctx.render(node._partial.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                mask: node._partial.mask,
+            }
+            ;(value as _PartialType)._partial = partial
+            value._children = [partial.origin]
+        }
+
+        if (node._required !== undefined) {
+            const required = {
+                origin: ctx.render(node._required.origin as ZodFirstPartySchemaTypes) as ObjectType,
+                mask: node._required.mask,
+            }
+            ;(value as _RequiredType)._required = required
+            value._children = [required.origin]
+        }
 
         if (
             node._def.catchall &&
@@ -384,8 +569,8 @@ export const zodVisitor: {
     ZodFunction: () => {
         throw new Error('Function not implemented.')
     },
-    ZodLazy: () => {
-        throw new Error('Function not implemented.')
+    ZodLazy: (node, context) => {
+        return context.render(node.schema)
     },
     ZodLiteral: (node) => {
         const value = node._def.value
@@ -393,8 +578,16 @@ export const zodVisitor: {
         // }
         return $const(value)
     },
-    ZodEnum: (node) => {
-        return $enum(node.enum)
+    ZodEnum: (node, context) => {
+        const value = $enum(Object.values(node.enum))
+        if (node._keyof !== undefined) {
+            const keyof = {
+                origin: context.render(node._keyof.origin as ZodFirstPartySchemaTypes) as ObjectType,
+            }
+            ;(value as _KeyOfType)._keyof = keyof
+            value._children = [keyof.origin]
+        }
+        return value
     },
     ZodEffects: (node, ctx) => {
         return ctx.render(node._def.schema as ZodFirstPartySchemaTypes)

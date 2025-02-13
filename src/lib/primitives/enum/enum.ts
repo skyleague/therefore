@@ -1,8 +1,11 @@
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { NodeTrait } from '../../cst/mixin.js'
 import { objectProperty, toLiteral } from '../../visitor/typescript/literal.js'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../../visitor/typescript/typescript-zod.js'
 import { createWriter } from '../../writer.js'
 import type { SchemaOptions } from '../base.js'
+import type { ObjectType } from '../object/object.js'
 
 export type EnumOptions = object
 
@@ -16,6 +19,11 @@ export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
     public enum: Values
     public declare infer: Values[number]
     public declare input: Values[number]
+    protected declare _keyof?:
+        | {
+              origin: ObjectType
+          }
+        | undefined
 
     public constructor(values: Values, options: SchemaOptions<EnumOptions, Values[number]>) {
         super(options)
@@ -23,25 +31,37 @@ export class EnumType<Values extends unknown[] = string[]> extends _EnumType {
         this.enum = values
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 type: 'typescript',
                 subtype: 'ajv',
                 isTypeOnly: true,
-                definition: (_, context) => {
+                definition: (self, context) => {
+                    self._attributes.typescript['type:path'] = context.targetPath
                     return `${context.declare('type', this)} = ${context.render(this)}`
                 },
-            },
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
             {
                 type: 'typescript',
                 subtype: 'zod',
                 isTypeOnly: false,
                 definition: (_, context) => {
+                    this._attributes.typescript['value:path'] = context.targetPath
                     return `${context.declare('const', this)} = ${context.render(this)}`
                 },
-            },
+            } satisfies TypescriptOutput<TypescriptZodWalkerContext>,
         ]
+    }
+}
+
+export class _KeyOfType extends EnumType {
+    public declare _keyof?: {
+        origin: ObjectType
     }
 }
 
@@ -57,7 +77,11 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
         this.enum = values
     }
 
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (
+        | TypescriptOutput<TypescriptTypeWalkerContext>
+        | TypescriptOutput<TypescriptZodWalkerContext>
+        | GenericOutput
+    )[] {
         return [
             {
                 type: 'typescript',
@@ -65,9 +89,9 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
                 isTypeOnly: false,
                 definition: (_, context) => {
                     const { enum: vals } = this
-                    const { exportKeyword = '', references } = context
                     const writer = createWriter()
-                    const symbolName = references.reference(this, 'symbolName')
+                    const { exportKeyword = '' } = context
+                    const symbolName = context.value(this)
                     writer
                         .write(`${exportKeyword}const ${symbolName} = `)
                         .inlineBlock(() => {
@@ -77,19 +101,11 @@ export class NativeEnumType<Enum extends Record<string, string> = Record<string,
                         })
                         .write(' as const')
                         .writeLine(`${exportKeyword}type ${symbolName} = typeof ${symbolName}`)
-                    // @todo check this
-                    this._attributes.typescript.referenceName = `keyof typeof ${symbolName}`
+                    this._transform ??= {}
+                    this._transform['type:reference'] = (ref: string) => `keyof typeof ${ref}`
                     return writer.writeLine('').toString()
                 },
-            },
-            {
-                type: 'typescript',
-                subtype: 'zod',
-                isTypeOnly: false,
-                definition: (_, context) => {
-                    return `${context.declare('const', this)} = ${context.render(this)}`
-                },
-            },
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 }

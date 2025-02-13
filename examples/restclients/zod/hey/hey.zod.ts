@@ -152,13 +152,13 @@ export const ComplexTypesResponse = ModelWithString.array()
 
 export type ComplexTypesResponse = z.infer<typeof ComplexTypesResponse>
 
+export const ComponentsSchemas400 = z.string().describe('Model with number-only name')
+
+export type ComponentsSchemas400 = z.infer<typeof ComponentsSchemas400>
+
 export const DictionaryWithArray = z.record(ModelWithString.array().optional()).describe('This is a complex dictionary')
 
 export type DictionaryWithArray = z.infer<typeof DictionaryWithArray>
-
-export const Hey = z.string().describe('Model with number-only name')
-
-export type Hey = z.infer<typeof Hey>
 
 export const Import = z.string().describe('Model with restricted keyword name')
 

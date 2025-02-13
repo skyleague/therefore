@@ -4,19 +4,12 @@
  */
 /* eslint-disable */
 
+import type { Character } from './character.type.js'
+
 /**
  * A mechanical creature in the Star Wars universe.
  */
-export interface Droid {
-    /**
-     * The id of the character
-     */
-    id: string
-    /**
-     * The name of the character
-     */
-    name: string
-}
+export type Droid = Character & {}
 
 /**
  * The primary function of the droid.

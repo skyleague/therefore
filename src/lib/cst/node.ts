@@ -12,6 +12,8 @@ import {
     defaultZodValidatorOptions,
 } from '../primitives/validator/types.js'
 import type { ValidatorType } from '../primitives/validator/validator.js'
+import type { TypescriptTypeWalkerContext } from '../visitor/typescript/typescript-type.js'
+import type { TypescriptZodWalkerContext } from '../visitor/typescript/typescript-zod.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
 import { type NodeTrace, getGuessedTrace } from './trace.js'
@@ -48,20 +50,19 @@ export class Node {
     public declare _canReference?: boolean | undefined
     public declare _hooks?: Hooks | undefined
     public declare _guessedTrace?: NodeTrace | undefined
-    public get _output(): (TypescriptOutput | GenericOutput)[] | undefined {
+    public get _output():
+        | (TypescriptOutput<TypescriptTypeWalkerContext> | TypescriptOutput<TypescriptZodWalkerContext> | GenericOutput)[]
+        | undefined {
         return undefined
     }
     public declare _transform?:
         | {
-              symbolName?: (name: string) => string
-              referenceName?: (name: string) => string
-              aliasName?: (name: string) => string
+              [key in keyof TypescriptAttributes]?: (name: string) => string
           }
         | undefined
 
     public declare _name?: string | undefined
     public declare _sourcePath?: string | undefined
-    public declare _toZod?: Node | undefined
 
     public _attributes: NodeAttributes = {
         typescript: {} as TypescriptAttributes,
@@ -199,7 +200,14 @@ export class Node {
         const clone = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj) as T
         clone._id = id()
         clone._definition = { ...clone._definition }
-        clone._attributes = structuredClone(clone._attributes)
+        clone._attributes = {
+            typescript: {} as TypescriptAttributes,
+            generic: {} as GenericAttributes,
+            validator: undefined,
+            validatorType: undefined,
+            isGenerated: !constants.migrate,
+        }
+        clone._guessedTrace = undefined
         return clone
     }
 }

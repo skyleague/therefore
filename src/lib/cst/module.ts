@@ -1,25 +1,25 @@
 import { memoize } from '@skyleague/axioms'
 import { Node } from './node.js'
 
-export type ModuleOptions = {
-    alias?: string
-    transform?: Node['_transform']
+export interface ModuleOptions {
+    'value:export'?: string
 }
 
 export class ModuleNode extends Node {
     public override _type = 'module' as const
 
-    public constructor(module: string, symbol: string, { alias, transform }: ModuleOptions = {}) {
+    public constructor(module: string, symbol: string, { 'value:export': valueExport }: ModuleOptions = {}) {
         super({})
         this._sourcePath = module
-        this._attributes.typescript.symbolName = symbol
+        this._attributes.typescript['value:source'] = symbol
+        this._attributes.typescript['type:source'] = symbol
         this._attributes.typescript.isModule = true
-        this._attributes.typescript.path = module
-        if (alias !== undefined) {
-            this._attributes.typescript.aliasName = alias
-        }
+        this._attributes.typescript['value:path'] = module
+        this._attributes.typescript['type:path'] = module
 
-        this._transform = transform
+        if (valueExport !== undefined) {
+            this._attributes.typescript['value:export'] = valueExport
+        }
     }
 
     public override get _output() {
@@ -29,7 +29,7 @@ export class ModuleNode extends Node {
                 subtype: undefined,
                 isTypeOnly: true,
                 definition: () => {
-                    return this._attributes.typescript.symbolName
+                    return undefined
                 },
             },
         ]
@@ -54,7 +54,7 @@ export const kySymbols = {
     type: moduleSymbol('ky', 'KyInstance'),
     Options: moduleSymbol('ky', 'Options'),
     Response: moduleSymbol('ky', 'Response'),
-    client: moduleSymbol('ky', 'default', { alias: 'ky' }),
+    client: moduleSymbol('ky', 'ky', { 'value:export': 'default' }),
 }
 
 export const ajvSymbols = {
@@ -65,7 +65,7 @@ export const ajvSymbols = {
 }
 
 export const ajvFormatsSymbols = {
-    addFormats: moduleSymbol('ajv-formats', 'default', { alias: 'addFormats' }),
+    addFormats: moduleSymbol('ajv-formats', 'addFormats', { 'value:export': 'default' }),
     FormatName: moduleSymbol('ajv-formats', 'FormatName'),
 }
 

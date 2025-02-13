@@ -3,5 +3,6 @@ import { buildTypescriptTypeContext } from '../src/lib/visitor/typescript/typesc
 export const mockTypescriptContext = (options: Partial<Parameters<typeof buildTypescriptTypeContext>[0]> = {}) =>
     buildTypescriptTypeContext({
         exportSymbol: false,
+        targetPath: 'test',
         ...options,
     })

@@ -1,29 +1,19 @@
 import fs from 'node:fs'
 import type { SetRequired } from '@skyleague/axioms/types'
-import type { References } from '../../../commands/generate/output/references.js'
 import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import type { TypescriptOutput } from '../../cst/cst.js'
 import type { Node } from '../../cst/node.js'
-import { buildTypescriptTypeContext } from './typescript-type.js'
-import { buildTypescriptZodContext } from './typescript-zod.js'
+import { type TypescriptTypeWalkerContext, buildTypescriptTypeContext } from './typescript-type.js'
+import { type TypescriptZodWalkerContext, buildTypescriptZodContext } from './typescript-zod.js'
 
 const defaultZodOutput = (node: Node) => {
     const output = {
         type: 'typescript',
         subtype: 'zod',
-        context: ({
-            symbol,
-            references,
-            locals,
-            exportSymbol,
-        }: {
-            symbol?: Node
-            references?: References<'typescript'>
-            locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
-            exportSymbol: boolean
-        }) =>
+        context: ({ symbol, references, locals, exportSymbol, targetPath }) =>
             buildTypescriptZodContext({
+                targetPath,
                 symbol,
                 exportSymbol,
                 references,
@@ -47,13 +37,17 @@ const defaultZodOutput = (node: Node) => {
             if (self._isRecurrent) {
                 return undefined
             }
+            if (self._origin.zod !== undefined) {
+                return undefined
+            }
 
+            self._attributes.typescript['value:path'] = context.targetPath
             return `${context.declare('const', self)} = ${context.render(self)}`
         },
         enabled: (node) => node._validator.type === 'zod',
         isTypeOnly: false,
         isGenerated: (node) => node._attributes.isGenerated,
-    } satisfies DefinedTypescriptOutput
+    } satisfies DefinedTypescriptOutput<TypescriptZodWalkerContext>
     return output
 }
 
@@ -61,18 +55,9 @@ const defaultAjvOutput = (_: Node) => {
     const output = {
         type: 'typescript',
         subtype: 'ajv',
-        context: ({
-            symbol,
-            references,
-            locals,
-            exportSymbol,
-        }: {
-            symbol?: Node
-            references?: References<'typescript'>
-            locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
-            exportSymbol: boolean
-        }) =>
+        context: ({ symbol, references, locals, exportSymbol, targetPath }) =>
             buildTypescriptTypeContext({
+                targetPath,
                 symbol,
                 exportSymbol,
                 references,
@@ -82,34 +67,63 @@ const defaultAjvOutput = (_: Node) => {
             return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
         },
         definition: (self, context) => {
+            self._attributes.typescript['type:path'] = context.targetPath
             return `${context.declare('type', self)} = ${context.render(self)}`
         },
         enabled: (node) => node._validator.type === 'ajv',
         isTypeOnly: true,
         isGenerated: (node) => node._attributes.isGenerated,
-    } satisfies DefinedTypescriptOutput
+    } satisfies DefinedTypescriptOutput<TypescriptTypeWalkerContext>
     return output
 }
 
-export type DefinedTypescriptOutput = SetRequired<TypescriptOutput, 'targetPath' | 'definition'>
-export function defaultTypescriptOutput(node: Node): DefinedTypescriptOutput[] {
+export type DefinedTypescriptOutput<Type extends TypescriptZodWalkerContext | TypescriptTypeWalkerContext> = SetRequired<
+    TypescriptOutput<Type>,
+    'targetPath' | 'definition'
+>
+export function defaultTypescriptOutput(
+    node: Node,
+): (DefinedTypescriptOutput<TypescriptZodWalkerContext> | DefinedTypescriptOutput<TypescriptTypeWalkerContext>)[] {
     const defaultZod = defaultZodOutput(node)
     const defaultAjv = defaultAjvOutput(node)
-    const generators: DefinedTypescriptOutput[] =
+    const generators: (
+        | DefinedTypescriptOutput<TypescriptZodWalkerContext>
+        | DefinedTypescriptOutput<TypescriptTypeWalkerContext>
+    )[] =
         node._output
-            ?.filter((o): o is TypescriptOutput => o.type === 'typescript')
+            ?.filter(
+                (o): o is TypescriptOutput<TypescriptZodWalkerContext> | TypescriptOutput<TypescriptTypeWalkerContext> =>
+                    o.type === 'typescript',
+            )
             .map((x) => {
                 const { onExport, ...rest } = x
                 if (x.subtype === undefined) {
-                    return { ...defaultAjv, onExport: [...(onExport ?? [])], enabled: () => true, ...rest }
+                    return {
+                        ...defaultAjv,
+                        onExport: [...(onExport ?? [])],
+                        enabled: () => true,
+                        ...rest,
+                    } as DefinedTypescriptOutput<TypescriptTypeWalkerContext>
                 }
                 if (x.subtype === 'ajv') {
-                    return { ...defaultAjv, onExport: [...(onExport ?? [])], ...rest }
+                    return {
+                        ...defaultAjv,
+                        onExport: [...(onExport ?? [])],
+                        ...rest,
+                    } as DefinedTypescriptOutput<TypescriptTypeWalkerContext>
                 }
                 if (x.subtype === 'zod') {
-                    return { ...defaultZod, onExport: [...(onExport ?? [])], ...rest }
+                    return {
+                        ...defaultZod,
+                        onExport: [...(onExport ?? [])],
+                        ...rest,
+                    } as DefinedTypescriptOutput<TypescriptZodWalkerContext>
                 }
-                return { ...defaultAjv, onExport: [...(onExport ?? [])], ...rest }
+                return {
+                    ...defaultAjv,
+                    onExport: [...(onExport ?? [])],
+                    ...rest,
+                } as DefinedTypescriptOutput<TypescriptTypeWalkerContext>
             }) ?? []
 
     if (node._output === undefined) {

@@ -8,8 +8,8 @@ import type { Schema } from '@typeschema/main'
 import type { ThereforeOutput } from '../../commands/generate/output/types.js'
 import { setDefaultNames } from '../../commands/generate/output/typescript.js'
 import { renderTemplate } from '../../common/template/template.js'
-import type {} from '../../lib/cst/node.js'
 import {} from '../../lib/visitor/prepass/prepass.js'
+import { constants } from '../constants.js'
 import { isNode } from '../cst/cst.js'
 import type { NameNode, Node, SourceNode } from '../cst/node.js'
 import { toJsonSchema } from '../visitor/jsonschema/jsonschema.js'
@@ -80,6 +80,7 @@ export class Therefore {
     public generators: OutputGenerator[] = []
 
     public zodCache: WeakMap<ZodSchema, Node> | undefined = new WeakMap()
+    public jsonschemaCache: WeakMap<object, Node> | undefined = new WeakMap()
 
     public static moduleSymbols = new Map<string, Node[]>()
     public static async scanModule({
@@ -155,7 +156,9 @@ export class Therefore {
                     exports.push(
                         ...(await Therefore.scanModule({
                             entry: node._guessedTrace.source,
-                            sourcePath: undefined,
+                            sourcePath: node._guessedTrace.source.endsWith(constants.schemaExtension)
+                                ? node._guessedTrace.source
+                                : undefined,
                             sourceFiles,
                             seenNodes,
                             require,
@@ -278,7 +281,7 @@ export class Therefore {
         const validator = toJsonSchema(evaluated, { formats: true, compile: false })
 
         const data = validator.references.resolveData(validator.references.data())
-        const file = renderTemplate(validator.references.render(JSON.stringify(validator.schema)), data)
+        const file = renderTemplate(JSON.stringify(validator.schema), data)
         return JSON.parse(file)
     }
 

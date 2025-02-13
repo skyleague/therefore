@@ -10,7 +10,96 @@ import type { DefinedError } from 'ajv'
 import { got } from 'got'
 import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 
-import { GetEmployeesResponse200, GetEmployeesResponseDefault } from './client.type.js'
+import { ComponentsSchemas400, GetEmployeesResponse200, GetEmployeesResponseDefault } from './client.type.js'
+
+/**
+ * openapi
+ */
+export class AliasedName {
+    public client: Got
+
+    public constructor({
+        prefixUrl,
+        options,
+        client = got,
+    }: {
+        prefixUrl: string
+        options?: Options | OptionsInit
+        client?: Got
+    }) {
+        this.client = client.extend(
+            ...[{ prefixUrl, throwHttpErrors: false }, options].filter((o): o is Options => o !== undefined),
+        )
+    }
+
+    /**
+     * GET /api/v{api-version}/multiple-tags/a
+     */
+    public dummyA({
+        path,
+    }: { path: { apiVersion: string } }): Promise<
+        | SuccessResponse<'200', ComponentsSchemas400>
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        return this.awaitResponse(
+            this.client.get(`api/v${path.apiVersion}/multiple-tags/a`, {
+                responseType: 'json',
+            }),
+            {
+                200: ComponentsSchemas400,
+            },
+        ) as ReturnType<this['dummyA']>
+    }
+
+    public async awaitResponse<
+        I,
+        S extends Record<PropertyKey, { parse: (o: I) => { left: DefinedError[] } | { right: unknown } }>,
+    >(response: CancelableRequest<NoInfer<Response<I>>>, schemas: S) {
+        const result = await response
+        const status =
+            result.statusCode < 200
+                ? 'informational'
+                : result.statusCode < 300
+                  ? 'success'
+                  : result.statusCode < 400
+                    ? 'redirection'
+                    : result.statusCode < 500
+                      ? 'client-error'
+                      : 'server-error'
+        const validator = schemas[result.statusCode] ?? schemas.default
+        const body = validator?.parse?.(result.body)
+        if (result.statusCode < 200 || result.statusCode >= 300) {
+            return {
+                success: false as const,
+                statusCode: result.statusCode.toString(),
+                status,
+                headers: result.headers,
+                left: body !== undefined && 'right' in body ? body.right : result.body,
+                validationErrors: body !== undefined && 'left' in body ? body.left : undefined,
+                where: 'response:statuscode',
+            }
+        }
+        if (body === undefined || 'left' in body) {
+            return {
+                success: body === undefined,
+                statusCode: result.statusCode.toString(),
+                status,
+                headers: result.headers,
+                left: result.body,
+                validationErrors: body?.left,
+                where: 'response:body',
+            }
+        }
+        return {
+            success: true as const,
+            statusCode: result.statusCode.toString(),
+            status,
+            headers: result.headers,
+            right: result.body,
+        }
+    }
+}
 
 /**
  * openapi

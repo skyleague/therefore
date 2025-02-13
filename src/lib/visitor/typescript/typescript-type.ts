@@ -1,16 +1,18 @@
 import { entriesOf, isAlphaNumeric, isDefined, keysOf, mapValues, valuesOf } from '@skyleague/axioms'
 import camelcase from 'camelcase'
-import { References } from '../../../commands/generate/output/references.js'
+import { TypescriptReferences } from '../../../commands/generate/output/references.js'
 import { setDefaultNames } from '../../../commands/generate/output/typescript.js'
+import { constants } from '../../constants.js'
 import type { ThereforeNodeDefinition } from '../../cst/cst.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import type { Node } from '../../cst/node.js'
 import type { ThereforeVisitor } from '../../cst/visitor.js'
 import { walkTherefore } from '../../cst/visitor.js'
-import type { EnumType } from '../../primitives/enum/enum.js'
+import type { ConstType } from '../../primitives/const/const.js'
+import type { EnumType, _KeyOfType } from '../../primitives/enum/enum.js'
 import type { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import { NullableType } from '../../primitives/nullable/nullable.js'
-import type { _OmitType, _PickType } from '../../primitives/object/object.js'
+import type { _ExtendType, _MergeType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import { OptionalType } from '../../primitives/optional/optional.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { $ref } from '../../primitives/ref/ref.js'
@@ -18,31 +20,59 @@ import { createWriter } from '../../writer.js'
 import type { DefinedTypescriptOutput } from './cst.js'
 import { JSDoc } from './jsdoc.js'
 import { stringLiteral, toLiteral } from './literal.js'
+import type { TypescriptZodWalkerContext } from './typescript-zod.js'
 
 export interface TypescriptTypeWalkerContext {
+    targetPath: string
     symbol?: Node | undefined
-    references: References<'typescript'>
-    locals: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
+    references: TypescriptReferences
+    locals: [
+        Node,
+        (
+            | ((
+                  output:
+                      | DefinedTypescriptOutput<TypescriptTypeWalkerContext>
+                      | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+              ) => boolean)
+            | undefined
+        ),
+    ][]
     exportKeyword: string | undefined
     property: string | undefined
     render: (node: Node, ctx?: Partial<TypescriptTypeWalkerContext>) => string
-    declare: (declType: string, node: Node) => string
-    reference: (node: Node) => string
+    declare: (declType: 'interface' | 'type' | 'const' | 'class', node: Node) => string
+
+    type: (node: Node) => string
     value: (node: Node) => string
 }
 
 export function buildTypescriptTypeContext({
+    targetPath,
     symbol,
-    references = new References('typescript'),
+    references = new TypescriptReferences(),
     locals = [],
     exportSymbol,
 }: {
+    targetPath: string
     symbol?: Node | undefined
-    references?: References<'typescript'> | undefined
-    locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][] | undefined
+    references?: TypescriptReferences | undefined
+    locals?:
+        | [
+              Node,
+              (
+                  | ((
+                        output:
+                            | DefinedTypescriptOutput<TypescriptTypeWalkerContext>
+                            | DefinedTypescriptOutput<TypescriptZodWalkerContext>,
+                    ) => boolean)
+                  | undefined
+              ),
+          ][]
+        | undefined
     exportSymbol: boolean
 }): TypescriptTypeWalkerContext {
     const context: TypescriptTypeWalkerContext = {
+        targetPath,
         symbol,
         references,
         locals,
@@ -50,9 +80,10 @@ export function buildTypescriptTypeContext({
         property: undefined,
         render: (node, ctx: Partial<TypescriptTypeWalkerContext> = {}) =>
             walkTherefore(node, typescriptTypeVisitor, { ...context, ...ctx }),
-        declare: (declType: string, node) => asTypeDeclaration(declType, node, { exportSymbol, references }),
-        reference: (node) => references.reference(node, 'referenceName'),
-        value: (node) => references.reference(node, 'referenceName', { tag: 'value' }),
+        declare: (declType: 'interface' | 'type' | 'const' | 'class', node) =>
+            asTypeDeclaration(declType, node, { exportSymbol, references }),
+        type: (node) => references.type(node),
+        value: (node) => references.value(node),
     } satisfies TypescriptTypeWalkerContext
     return context
 }
@@ -136,6 +167,20 @@ export const toMaybePrimitive = (node: OptionalType | NullableType, context: Typ
     return type
 }
 
+export function isReferenceable(node: Node): boolean {
+    if (node._name === undefined) {
+        return false
+    }
+
+    if (node._sourcePath === undefined && node._guessedTrace?.symbolName !== undefined) {
+        if (node._origin.zod !== undefined) {
+            return true
+        }
+        return false
+    }
+    return true
+}
+
 export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalkerContext> = {
     optional: (node, context) => {
         return toMaybePrimitive(node, context)
@@ -151,8 +196,12 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
     const: (node) => {
         return toLiteral(node.const)
     },
-    enum: (node) => {
+    enum: (node, context) => {
         const { enum: values, _isNamed } = node
+        const _keyof = node as _KeyOfType
+        if (_keyof._keyof !== undefined && isReferenceable(_keyof._keyof.origin)) {
+            return `keyof ${context.type(_keyof._keyof.origin)}`
+        }
         return (_isNamed ? Object.values(values) : values).map((v) => toLiteral(v)).join(' | ')
     },
     union: (node, context) => {
@@ -170,24 +219,134 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         const writer = createWriter()
 
         const omitType = node as _OmitType
-        if (omitType._omitted !== undefined && omitType._omitted.origin._name !== undefined) {
-            writer.writeLine(
-                `Omit<${context.reference(omitType._omitted.origin)}, ${omitType._omitted.mask.map((m) => `'${m}'`).join(' | ')}>`,
-            )
+        if (omitType._omitted !== undefined) {
+            const originRef = isReferenceable(omitType._omitted.origin)
+                ? context.type(omitType._omitted.origin)
+                : context.render(omitType._omitted.origin)
+
+            writer.write(`Omit<${originRef}, ${omitType._omitted.mask.map((m) => `'${m}'`).join(' | ')}>`)
 
             return writer.toString()
         }
 
         const pickType = node as _PickType
-        if (pickType._picked !== undefined && pickType._picked.origin._name !== undefined) {
-            writer.writeLine(
-                `Pick<${context.reference(pickType._picked.origin)}, ${pickType._picked.mask.map((m) => `'${m}'`).join(' | ')}>`,
-            )
+        if (pickType._picked !== undefined) {
+            const originRef = isReferenceable(pickType._picked.origin)
+                ? context.type(pickType._picked.origin)
+                : context.render(pickType._picked.origin)
+            writer.write(`Pick<${originRef}, ${pickType._picked.mask.map((m) => `'${m}'`).join(' | ')}>`)
 
             return writer.toString()
         }
 
-        writer.block(() => {
+        const extendedType = node as _ExtendType
+        if (extendedType._extended !== undefined) {
+            const originRef = isReferenceable(extendedType._extended.origin)
+                ? context.type(extendedType._extended.origin)
+                : context.render(extendedType._extended.origin)
+
+            // For dramatic type changes, we want to show the overridden types explicitly
+            const originShape = extendedType._extended.origin.shape
+            const extendShape = extendedType._extended.extends
+            const overriddenKeys = new Set(Object.keys(extendShape).filter((key) => key in originShape))
+
+            // If no keys are being overridden, just use a simple intersection
+            if (overriddenKeys.size === 0) {
+                writer
+                    .write(`(${originRef} & `)
+                    .inlineBlock(() => {
+                        for (const [name, property] of Object.entries(extendShape)) {
+                            const { _definition, _output } = property
+                            if (_output?.find((t) => t.type === 'typescript')?.content !== false) {
+                                const child = context.render(property, { property: name })
+                                const jsdoc = JSDoc.fromNode(property)
+                                writer.writeLine(
+                                    `${jsdoc ?? ''}${readonly(_definition)}${escapeProperty(name)}${optional(property)}: ${child}`,
+                                )
+                            }
+                        }
+                    })
+                    .write(')')
+            } else {
+                writer
+                    .write(`(Omit<${originRef}, ${[...overriddenKeys].map((k) => `'${k}'`).join(' | ')}> & `)
+                    .inlineBlock(() => {
+                        for (const [name, property] of Object.entries(extendShape)) {
+                            const { _definition, _output } = property
+                            if (_output?.find((t) => t.type === 'typescript')?.content !== false) {
+                                const child = context.render(property, { property: name })
+                                const jsdoc = JSDoc.fromNode(property)
+                                const originalType =
+                                    constants.debug && originShape[name] ? ` /* was ${context.render(originShape[name])} */` : ''
+                                writer.writeLine(
+                                    `${jsdoc ?? ''}${readonly(_definition)}${escapeProperty(name)}${optional(property)}: ${child}${originalType}`,
+                                )
+                            }
+                        }
+                    })
+                    .write(')')
+            }
+
+            return writer.toString()
+        }
+
+        const mergedType = node as _MergeType
+        if (mergedType._merged !== undefined) {
+            const originRef = isReferenceable(mergedType._merged.origin)
+                ? context.type(mergedType._merged.origin)
+                : context.render(mergedType._merged.origin)
+
+            const mergedRef = isReferenceable(mergedType._merged.merged)
+                ? context.type(mergedType._merged.merged)
+                : context.render(mergedType._merged.merged)
+
+            // For dramatic type changes in merge, we want to show the overridden types explicitly
+            const originShape = mergedType._merged.origin.shape
+            const mergedShape = mergedType._merged.merged.shape
+            const overriddenKeys = new Set(
+                Object.keys(mergedShape)
+                    .filter((key) => key in originShape)
+                    .filter((key) => {
+                        const original = originShape[key]
+                        const narrowed = mergedShape[key]
+                        if (original === undefined || narrowed === undefined) {
+                            return true
+                        }
+                        // Skip keys where the new type is a narrowing of the original
+                        if (original._type === 'string') {
+                            if (narrowed._type === 'const' && typeof (narrowed as ConstType).const === 'string') {
+                                return false
+                            }
+                            if (
+                                narrowed._type === 'enum' &&
+                                (narrowed as EnumType).enum.every((v: unknown) => typeof v === 'string')
+                            ) {
+                                return false
+                            }
+                            if (
+                                narrowed._type === 'union' &&
+                                narrowed._children?.every(
+                                    (child) => child._type === 'const' && 'const' in child && typeof child.const === 'string',
+                                )
+                            ) {
+                                return false
+                            }
+                        }
+                        return true
+                    }),
+            )
+
+            // If no keys are being overridden or narrowed, just use a simple intersection
+            if (overriddenKeys.size === 0) {
+                writer.write(`(${originRef} & ${mergedRef})`)
+            } else {
+                writer.write(`(Omit<${originRef}, ${[...overriddenKeys].map((k) => `'${k}'`).join(' | ')}> & ${mergedRef})`)
+            }
+
+            return writer.toString()
+        }
+
+        writer.inlineBlock(() => {
             for (const [name, property] of Object.entries(shape)) {
                 const { _definition, _output } = property
                 if (_output?.find((t) => t.type === 'typescript')?.content !== false) {
@@ -245,10 +404,11 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         if (!isSmall(element) && element._origin.zod === undefined) {
             if (element._name === undefined) {
                 const symbolName = camelcase([context.property, node._type].filter(isDefined).join('_'))
-                const symbolRef = context.symbol !== undefined ? context.references.reference(context.symbol, 'symbolName') : ''
+                const symbolRef = context.symbol !== undefined ? context.type(context.symbol) : ''
+
                 element._name = symbolName
                 element._transform ??= {}
-                element._transform.symbolName = (name) => `${symbolRef}${name}`
+                element._transform['type:source'] = (name) => `${symbolRef}${name}`
 
                 setDefaultNames(element)
             }
@@ -259,7 +419,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         const itemsTs = localReference ?? context.render(element)
         const { minItems, maxItems } = node._options
         if (minItems !== undefined && minItems > 0 && maxItems === undefined) {
-            return `[${`${itemsTs}, `.repeat(minItems)} ...(${itemsTs})[]]`
+            return `[${`${itemsTs}, `.repeat(minItems)}...(${itemsTs})[]]`
         }
         if (minItems !== undefined && minItems > 0 && maxItems !== undefined && maxItems >= minItems) {
             return ` [${`${itemsTs}, `.repeat(minItems)}${`(${itemsTs})?, `.repeat(maxItems - minItems)}]`
@@ -277,16 +437,16 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         const restString = rest !== undefined ? [`...${context.render(rest)}`] : []
         return `[${[...elements.map((c) => context.render(c)), ...restString].join(', ')}]`
     },
-    ref: (node, { reference, locals }) => {
+    ref: (node, { type, locals }) => {
         const {
             _children: [ref],
         } = node
 
-        // this reference was not exported on its own, which means we'll have to hoist it in
+        // this type was not exported on its own, which means we'll have to hoist it in
         if ((ref._sourcePath === undefined && locals.find(([l]) => l._id === ref._id)) === undefined) {
             locals.push([ref, (out) => out.subtype === 'ajv'])
         }
-        return reference(ref)
+        return type(ref)
     },
     default: (node, context): string => {
         const child = node._children?.[0]
@@ -299,9 +459,9 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
 }
 
 export function asTypeDeclaration(
-    declType: string,
+    declType: 'interface' | 'type' | 'const' | 'class',
     obj: Node,
-    { exportSymbol, references }: { exportSymbol: boolean; references: References<'typescript'> },
+    { exportSymbol, references }: { exportSymbol: boolean; references: TypescriptReferences },
 ) {
     const exportString = exportSymbol ? 'export ' : ''
     const writer = createWriter()
@@ -310,7 +470,7 @@ export function asTypeDeclaration(
         .write(exportString)
         .write(declType)
         .write(' ')
-        .write(references.reference(obj, 'symbolName'))
+        .write(references.typeName(obj))
 
     return writer.toString()
 }

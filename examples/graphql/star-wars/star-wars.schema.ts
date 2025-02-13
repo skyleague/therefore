@@ -10,4 +10,5 @@ export const schema = $graphql.schema({
         human: humanField,
         droid: droidField,
     },
+    introspection: true,
 })

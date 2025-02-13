@@ -13,8 +13,8 @@ import { validate as CallWithResponseAndNoContentResponseResponse200Validator } 
 import { validate as CallWithResponsesResponse200Validator } from './schemas/call-with-responses-response200.schema.js'
 import { validate as ComplexParamsRequestValidator } from './schemas/complex-params-request.schema.js'
 import { validate as ComplexTypesResponseValidator } from './schemas/complex-types-response.schema.js'
+import { validate as ComponentsSchemas400Validator } from './schemas/components_schemas_400.schema.js'
 import { validate as DictionaryWithArrayValidator } from './schemas/dictionary-with-array.schema.js'
-import { validate as HeyValidator } from './schemas/hey.schema.js'
 import { validate as ImportRequestValidator } from './schemas/import-request.schema.js'
 import { validate as ImportValidator } from './schemas/import.schema.js'
 import { validate as ModelFromZendeskValidator } from './schemas/model-from.zendesk.schema.js'
@@ -300,6 +300,28 @@ export const ComplexTypesResponse = {
 } as const
 
 /**
+ * Model with number-only name
+ */
+export type ComponentsSchemas400 = string
+
+export const ComponentsSchemas400 = {
+    validate: ComponentsSchemas400Validator as ValidateFunction<ComponentsSchemas400>,
+    get schema() {
+        return ComponentsSchemas400.validate.schema
+    },
+    get errors() {
+        return ComponentsSchemas400.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ComponentsSchemas400 => ComponentsSchemas400.validate(o) === true,
+    parse: (o: unknown): { right: ComponentsSchemas400 } | { left: DefinedError[] } => {
+        if (ComponentsSchemas400.is(o)) {
+            return { right: o }
+        }
+        return { left: (ComponentsSchemas400.errors ?? []) as DefinedError[] }
+    },
+} as const
+
+/**
  * This is a complex dictionary
  */
 export interface DictionaryWithArray {
@@ -320,28 +342,6 @@ export const DictionaryWithArray = {
             return { right: o }
         }
         return { left: (DictionaryWithArray.errors ?? []) as DefinedError[] }
-    },
-} as const
-
-/**
- * Model with number-only name
- */
-export type Hey = string
-
-export const Hey = {
-    validate: HeyValidator as ValidateFunction<Hey>,
-    get schema() {
-        return Hey.validate.schema
-    },
-    get errors() {
-        return Hey.validate.errors ?? undefined
-    },
-    is: (o: unknown): o is Hey => Hey.validate(o) === true,
-    parse: (o: unknown): { right: Hey } | { left: DefinedError[] } => {
-        if (Hey.is(o)) {
-            return { right: o }
-        }
-        return { left: (Hey.errors ?? []) as DefinedError[] }
     },
 } as const
 

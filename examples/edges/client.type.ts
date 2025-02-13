@@ -6,8 +6,31 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
+import { validate as ComponentsSchemas400Validator } from './schemas/components_schemas_400.schema.js'
 import { validate as GetEmployeesResponseDefaultValidator } from './schemas/get-employees-response-default.schema.js'
 import { validate as GetEmployeesResponse200Validator } from './schemas/get-employees-response200.schema.js'
+
+/**
+ * Model with number-only name
+ */
+export type ComponentsSchemas400 = string
+
+export const ComponentsSchemas400 = {
+    validate: ComponentsSchemas400Validator as ValidateFunction<ComponentsSchemas400>,
+    get schema() {
+        return ComponentsSchemas400.validate.schema
+    },
+    get errors() {
+        return ComponentsSchemas400.validate.errors ?? undefined
+    },
+    is: (o: unknown): o is ComponentsSchemas400 => ComponentsSchemas400.validate(o) === true,
+    parse: (o: unknown): { right: ComponentsSchemas400 } | { left: DefinedError[] } => {
+        if (ComponentsSchemas400.is(o)) {
+            return { right: o }
+        }
+        return { left: (ComponentsSchemas400.errors ?? []) as DefinedError[] }
+    },
+} as const
 
 export interface GetEmployeesResponse200 {
     fullTime?: boolean | undefined

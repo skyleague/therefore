@@ -54,6 +54,8 @@
   },
   "devDependencies": {
     "@skyleague/node-standards": "^10.0.0",
+    "@aws-sdk/client-dynamodb": "^3.577.0",
+    "@aws-sdk/lib-dynamodb": "^3.577.0",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",

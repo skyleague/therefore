@@ -17,8 +17,8 @@ import {
     CallWithResponsesResponse200,
     ComplexParamsRequest,
     ComplexTypesResponse,
+    ComponentsSchemas400,
     DictionaryWithArray,
-    Hey,
     Import,
     ImportRequest,
     ModelFromZendesk,
@@ -44,7 +44,7 @@ import {
 /**
  * swagger
  */
-export class Hey2 {
+export class Hey {
     public client: Got
 
     public constructor({
@@ -535,7 +535,7 @@ export class Hey2 {
     public dummyA({
         path,
     }: { path: { apiVersion: string } }): Promise<
-        | SuccessResponse<'200', Hey>
+        | SuccessResponse<'200', ComponentsSchemas400>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
@@ -544,7 +544,7 @@ export class Hey2 {
                 responseType: 'json',
             }),
             {
-                200: Hey,
+                200: ComponentsSchemas400,
             },
         ) as ReturnType<this['dummyA']>
     }
@@ -598,10 +598,10 @@ export class Hey2 {
     }
 
     /**
-     * GET /api/v{api-version}/no-tag
+     * GET /api/v{api-version}/no+tag
      */
     public export({ path }: { path: { apiVersion: string } }) {
-        return this.client.get(`api/v${path.apiVersion}/no-tag`)
+        return this.client.get(`api/v${path.apiVersion}/no+tag`)
     }
 
     /**
@@ -622,6 +622,23 @@ export class Hey2 {
                 200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['fileResponse']>
+    }
+
+    /**
+     * PUT /api/v{api-version}/no+tag
+     */
+    public fooWow({
+        path,
+    }: { path: { apiVersion: string } }): Promise<
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        return this.awaitResponse(
+            this.client.put(`api/v${path.apiVersion}/no+tag`, {
+                responseType: 'text',
+            }),
+            {},
+        ) as ReturnType<this['fooWow']>
     }
 
     /**
@@ -660,7 +677,7 @@ export class Hey2 {
     }
 
     /**
-     * POST /api/v{api-version}/no-tag
+     * POST /api/v{api-version}/no+tag
      */
     public import({
         body,
@@ -678,7 +695,7 @@ export class Hey2 {
         }
 
         return this.awaitResponse(
-            this.client.post(`api/v${path.apiVersion}/no-tag`, {
+            this.client.post(`api/v${path.apiVersion}/no+tag`, {
                 json: _body.right,
                 responseType: 'json',
             }),
@@ -774,6 +791,23 @@ export class Hey2 {
         return this.client(`api/v${path.apiVersion}/simple`, {
             method: 'OPTIONS',
         })
+    }
+
+    /**
+     * PATCH /api/v{api-version}/no+tag
+     */
+    public patchApiNoTag({
+        path,
+    }: { path: { apiVersion: string } }): Promise<
+        | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
+        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+    > {
+        return this.awaitResponse(
+            this.client.patch(`api/v${path.apiVersion}/no+tag`, {
+                responseType: 'text',
+            }),
+            {},
+        ) as ReturnType<this['patchApiNoTag']>
     }
 
     /**

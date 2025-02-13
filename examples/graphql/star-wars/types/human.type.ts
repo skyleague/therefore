@@ -4,6 +4,8 @@
  */
 /* eslint-disable */
 
+import type { Character } from './character.type.js'
+
 /**
  * The home planet of the human, or null if unknown.
  */
@@ -14,13 +16,4 @@ export type HomePlanetResolverType = string | undefined
 /**
  * A humanoid creature in the Star Wars universe.
  */
-export interface Human {
-    /**
-     * The id of the character
-     */
-    id: string
-    /**
-     * The name of the character
-     */
-    name: string
-}
+export type Human = Character & {}

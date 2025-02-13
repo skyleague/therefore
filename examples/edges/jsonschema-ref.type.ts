@@ -9,6 +9,16 @@ import type { DefinedError } from 'ajv'
 
 import CombinedSchema from './schemas/combined.schema.json' with { type: 'json' }
 
+interface Category2 {
+    id?: number | undefined
+    name?: string | undefined
+}
+
+interface Category {
+    id?: number | undefined
+    name?: string | undefined
+}
+
 export type Combined = Reference1 | Reference2
 
 export const Combined = {
@@ -37,6 +47,40 @@ export const Combined = {
     },
 } as const
 
+/**
+ * Pet
+ */
+export type ExistingRef = {
+    category?: Category2 | undefined
+    id?: number | undefined
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold' | undefined
+    tags?: Tag2[] | undefined
+} & {
+    foo: string
+}
+
+/**
+ * Pet
+ */
+export type ExistingRefDuplicate = {
+    category?: Category | undefined
+    id?: number | undefined
+    name: string
+    photoUrls: string[]
+    /**
+     * pet status in the store
+     */
+    status?: 'available' | 'pending' | 'sold' | undefined
+    tags?: Tag[] | undefined
+} & {
+    foo: string
+}
+
 type Foo2 = string
 
 type Foo = string
@@ -57,4 +101,14 @@ export interface Reference1 {
  */
 export interface Reference2 {
     keys: Keys
+}
+
+interface Tag2 {
+    id?: number | undefined
+    name?: string | undefined
+}
+
+interface Tag {
+    id?: number | undefined
+    name?: string | undefined
 }

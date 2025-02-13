@@ -48,7 +48,10 @@ export function $ref<const Reference extends Node, T extends ZodSchema>(
 ): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> | ZodSchemaAsNode<T> | SchemaAsNode<T> {
     if (isObject(reference)) {
         if ('is' in reference && isFunction(reference.is) && !('_def' in reference)) {
-            return $jsonschema(reference.schema as JsonSchema, options) as unknown as SchemaAsNode<T>
+            return $jsonschema(reference.schema as JsonSchema, {
+                // ...(therefore.jsonschemCache && { cache: therefore.jsonschemCache }),
+                ...options,
+            }) as unknown as SchemaAsNode<T>
         }
         if (!isNode(reference)) {
             if ('_def' in reference) {

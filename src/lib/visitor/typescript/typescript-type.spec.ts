@@ -48,15 +48,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -73,15 +71,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -98,15 +94,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -123,15 +117,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -148,15 +140,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -173,15 +163,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -194,15 +182,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -218,15 +204,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -239,15 +223,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -266,15 +248,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -291,15 +271,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -318,15 +296,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -359,15 +335,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -376,11 +350,11 @@ describe('typescriptVisitor', () => {
     it('ref', () => {
         let ctx = mockTypescriptContext()
         const foo = $record($string)
-        expect(ctx.render($ref(foo))).toEqual('{{2:referenceName}}')
+        expect(ctx.render($ref(foo))).toEqual('{{2:type:reference}}')
 
-        expect(ctx.render($optional($ref(foo)))).toEqual('({{2:referenceName}} | undefined)')
-        expect(ctx.render($nullable($ref(foo)))).toEqual('({{2:referenceName}} | null)')
-        expect(ctx.render($optional($nullable($ref(foo))))).toEqual('({{2:referenceName}} | null | undefined)')
+        expect(ctx.render($optional($ref(foo)))).toEqual('({{2:type:reference}} | undefined)')
+        expect(ctx.render($nullable($ref(foo)))).toEqual('({{2:type:reference}} | null)')
+        expect(ctx.render($optional($nullable($ref(foo))))).toEqual('({{2:type:reference}} | null | undefined)')
 
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
@@ -443,16 +417,15 @@ describe('typescriptVisitor', () => {
                 [Function],
               ],
             ],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
+                "2:type:name": [Function],
+                "2:type:reference": [Function],
+                "2:type:source": [Function],
               },
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {
-                "2:symbolName" => RecordType {
+                "2:type:reference" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -506,7 +479,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:aliasName" => RecordType {
+                "2:type:name" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -560,7 +533,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:referenceName" => RecordType {
+                "2:type:source" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -617,9 +590,9 @@ describe('typescriptVisitor', () => {
               },
               "references": Map {
                 "2" => Set {
-                  "referenceName",
-                  "aliasName",
-                  "symbolName",
+                  "type:reference",
+                  "type:name",
+                  "type:source",
                 },
               },
               "symbols": Map {
@@ -678,20 +651,15 @@ describe('typescriptVisitor', () => {
                   "shape": {},
                 },
               },
-              "transform": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
-              },
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
         ctx = mockTypescriptContext()
         // test the stable uuid referencing
         expect(ctx.render($union([$ref(foo), $record($ref(foo))]))).toMatchInlineSnapshot(`
-          "({{2:referenceName}} | {
-              [k: string]: ({{2:referenceName}} | undefined)
+          "({{2:type:reference}} | {
+              [k: string]: ({{2:type:reference}} | undefined)
           })"
         `)
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
@@ -755,16 +723,15 @@ describe('typescriptVisitor', () => {
                 [Function],
               ],
             ],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
+                "2:type:name": [Function],
+                "2:type:reference": [Function],
+                "2:type:source": [Function],
               },
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {
-                "2:symbolName" => RecordType {
+                "2:type:reference" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -818,7 +785,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:aliasName" => RecordType {
+                "2:type:name" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -872,7 +839,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:referenceName" => RecordType {
+                "2:type:source" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -929,9 +896,9 @@ describe('typescriptVisitor', () => {
               },
               "references": Map {
                 "2" => Set {
-                  "referenceName",
-                  "aliasName",
-                  "symbolName",
+                  "type:reference",
+                  "type:name",
+                  "type:source",
                 },
               },
               "symbols": Map {
@@ -990,12 +957,7 @@ describe('typescriptVisitor', () => {
                   "shape": {},
                 },
               },
-              "transform": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
-              },
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1005,7 +967,7 @@ describe('typescriptVisitor', () => {
         const ctx = mockTypescriptContext()
         const foo = $record($string)
         foo._name = 'foo-bar'
-        expect(ctx.render($ref(foo))).toEqual('{{2:referenceName}}')
+        expect(ctx.render($ref(foo))).toEqual('{{2:type:reference}}')
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [
@@ -1068,16 +1030,15 @@ describe('typescriptVisitor', () => {
                 [Function],
               ],
             ],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
+                "2:type:name": [Function],
+                "2:type:reference": [Function],
+                "2:type:source": [Function],
               },
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {
-                "2:symbolName" => RecordType {
+                "2:type:reference" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -1132,7 +1093,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:aliasName" => RecordType {
+                "2:type:name" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -1187,7 +1148,7 @@ describe('typescriptVisitor', () => {
                   },
                   "shape": {},
                 },
-                "2:referenceName" => RecordType {
+                "2:type:source" => RecordType {
                   "_attributes": {
                     "generic": {},
                     "isGenerated": true,
@@ -1245,9 +1206,9 @@ describe('typescriptVisitor', () => {
               },
               "references": Map {
                 "2" => Set {
-                  "referenceName",
-                  "aliasName",
-                  "symbolName",
+                  "type:reference",
+                  "type:name",
+                  "type:source",
                 },
               },
               "symbols": Map {
@@ -1307,12 +1268,7 @@ describe('typescriptVisitor', () => {
                   "shape": {},
                 },
               },
-              "transform": {
-                "2:aliasName": [Function],
-                "2:referenceName": [Function],
-                "2:symbolName": [Function],
-              },
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1330,15 +1286,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1378,15 +1332,13 @@ describe('typescriptVisitor', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1418,28 +1370,26 @@ describe('typescriptVisitor', () => {
         expect(
             ctx.render($object({ foo: $string, bar: $string({ description: 'fooscription', readonly: true }) })),
         ).toMatchInlineSnapshot(`
-            "{
-                foo: string
-                /**
-                 * fooscription
-                 * 
-                 * @readonly
-                 */
-                readonly bar: string
-            }"
+          "{
+              foo: string
+              /**
+               * fooscription
+               *
+               * @readonly
+               */
+              readonly bar: string
+          }"
         `)
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1450,20 +1400,18 @@ describe('toTypeDefinition', () => {
     it('string', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $string(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = string"`,
+            `"type {{1:type:name}} = string"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1472,20 +1420,18 @@ describe('toTypeDefinition', () => {
     it('number', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $number(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = number"`,
+            `"type {{1:type:name}} = number"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1494,20 +1440,18 @@ describe('toTypeDefinition', () => {
     it('integer', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $integer(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = number"`,
+            `"type {{1:type:name}} = number"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1516,20 +1460,18 @@ describe('toTypeDefinition', () => {
     it('boolean', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $boolean(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = boolean"`,
+            `"type {{1:type:name}} = boolean"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1538,20 +1480,18 @@ describe('toTypeDefinition', () => {
     it('null', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $null(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = null"`,
+            `"type {{1:type:name}} = null"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1560,20 +1500,18 @@ describe('toTypeDefinition', () => {
     it('unknown', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $unknown(), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = unknown"`,
+            `"type {{1:type:name}} = unknown"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1582,20 +1520,18 @@ describe('toTypeDefinition', () => {
     it('enum', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $enum(['foo', 'bar']), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = 'foo' | 'bar'"`,
+            `"type {{1:type:name}} = 'foo' | 'bar'"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1604,33 +1540,31 @@ describe('toTypeDefinition', () => {
     it('enum - record', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $enum({ foo: 'bar' }), context: ctx })).toMatchInlineSnapshot(`
-          "const {{1:symbolName}} = {
+          "const {{1:value:name}} = {
               foo: 'bar',
           } as const
-          type {{1:symbolName}} = typeof {{1:symbolName}}
+          type {{1:value:name}} = typeof {{1:value:name}}
 
           "
         `)
         expect(TypescriptFileOutput.define({ symbol: $enum({ foo: 'bar' }), context: ctx })).toMatchInlineSnapshot(`
-          "const {{2:symbolName}} = {
+          "const {{2:value:name}} = {
               foo: 'bar',
           } as const
-          type {{2:symbolName}} = typeof {{2:symbolName}}
+          type {{2:value:name}} = typeof {{2:value:name}}
 
           "
         `)
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1639,26 +1573,24 @@ describe('toTypeDefinition', () => {
     it('array', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $array($string), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = (string)[]"`,
+            `"type {{1:type:name}} = (string)[]"`,
         )
         expect(TypescriptFileOutput.define({ symbol: $array($enum(['foo', 'bar'])), context: ctx })).toMatchInlineSnapshot(
-            `"type {{4:symbolName}} = ('foo' | 'bar')[]"`,
+            `"type {{4:type:name}} = ('foo' | 'bar')[]"`,
         )
         expect(TypescriptFileOutput.define({ symbol: $array($union([$string, $integer])), context: ctx })).toMatchInlineSnapshot(
-            `"type {{8:symbolName}} = ((string | number))[]"`,
+            `"type {{8:type:name}} = ((string | number))[]"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1667,20 +1599,18 @@ describe('toTypeDefinition', () => {
     it('tuple', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $tuple([$string, $string, $integer]), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = [string, string, number]"`,
+            `"type {{1:type:name}} = [string, string, number]"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1689,22 +1619,20 @@ describe('toTypeDefinition', () => {
     it('record', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $record($string), context: ctx })).toMatchInlineSnapshot(`
-          "interface {{2:symbolName}} {
+          "interface {{2:type:name}} {
               [k: string]: (string | undefined)
           }"
         `)
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1715,8 +1643,8 @@ describe('toTypeDefinition', () => {
         const foo = $record($string)
         expect(TypescriptFileOutput.define({ symbol: $ref(foo), context: ctx })).toMatchInlineSnapshot(
             `
-          "type {{3:symbolName}} = {{2:referenceName}}
-          interface {{2:symbolName}} {
+          "type {{3:type:name}} = {{2:type:reference}}
+          interface {{2:type:name}} {
               [k: string]: (string | undefined)
           }"
         `,
@@ -1725,10 +1653,10 @@ describe('toTypeDefinition', () => {
         expect(
             TypescriptFileOutput.define({ symbol: $union([$ref(foo), $record($ref(foo))]), context: ctx }),
         ).toMatchInlineSnapshot(`
-          "type {{8:symbolName}} = ({{2:referenceName}} | {
-              [k: string]: ({{2:referenceName}} | undefined)
+          "type {{8:type:name}} = ({{2:type:reference}} | {
+              [k: string]: ({{2:type:reference}} | undefined)
           })
-          interface {{2:symbolName}} {
+          interface {{2:type:name}} {
               [k: string]: (string | undefined)
           }"
         `)
@@ -1737,23 +1665,21 @@ describe('toTypeDefinition', () => {
     it('union', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $union([$string]), context: ctx })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = (string)"`,
+            `"type {{1:type:name}} = (string)"`,
         )
         expect(TypescriptFileOutput.define({ symbol: $union([$string, $string, $integer]), context: ctx })).toMatchInlineSnapshot(
-            `"type {{3:symbolName}} = (string | string | number)"`,
+            `"type {{3:type:name}} = (string | string | number)"`,
         )
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1767,7 +1693,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "type {{5:symbolName}} = ({
+          "type {{5:type:name}} = ({
               foo: string
           } & {
               bar: string
@@ -1779,7 +1705,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "type {{10:symbolName}} = ({
+          "type {{10:type:name}} = ({
               foo: string
           } & {
               bar: string
@@ -1788,15 +1714,13 @@ describe('toTypeDefinition', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1805,7 +1729,7 @@ describe('toTypeDefinition', () => {
     it('object', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }), context: ctx })).toMatchInlineSnapshot(`
-          "interface {{1:symbolName}} {
+          "interface {{1:type:name}} {
               foo: string
           }"
         `)
@@ -1815,7 +1739,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "interface {{7:symbolName}} {
+          "interface {{7:type:name}} {
               foo: string
               bar: (number | null)
               baz?: (number | undefined)
@@ -1827,7 +1751,7 @@ describe('toTypeDefinition', () => {
                 context: ctx,
             }),
         ).toMatchInlineSnapshot(`
-          "interface {{10:symbolName}} {
+          "interface {{10:type:name}} {
               foo: string
               /**
                * fooscription
@@ -1851,7 +1775,7 @@ describe('toTypeDefinition', () => {
           "/**
            * @default { foo: 'bar', bar: 'foo' }
            */
-          interface {{13:symbolName}} {
+          interface {{13:type:name}} {
               foo: string
               /**
                * fooscription
@@ -1862,15 +1786,13 @@ describe('toTypeDefinition', () => {
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1879,22 +1801,20 @@ describe('toTypeDefinition', () => {
     it('other', () => {
         const ctx = mockTypescriptContext()
         expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }), context: ctx })).toMatchInlineSnapshot(`
-          "interface {{1:symbolName}} {
+          "interface {{1:type:name}} {
               foo: string
           }"
         `)
         expect(pick(ctx, ['locals', 'references'])).toMatchInlineSnapshot(`
           {
             "locals": [],
-            "references": References {
+            "references": TypescriptReferences {
               "_data": {},
-              "fallbackStrategy": [Function],
               "hardlinks": {},
               "key2node": Map {},
               "references": Map {},
               "symbols": Map {},
-              "transform": {},
-              "type": "typescript",
+              "transformers": {},
             },
           }
         `)
@@ -1907,7 +1827,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = string
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1917,7 +1837,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = number
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1927,7 +1847,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = number
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1937,7 +1857,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = boolean
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1947,7 +1867,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = null
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1957,7 +1877,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = unknown
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     // })
@@ -1972,7 +1892,7 @@ describe('TypescriptFileOutput.define', () => {
     //         {
     //           "declaration": "export type Foo = 'foo' | 'bar' | { foo: 'bar' }
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     //     expect(
@@ -1989,7 +1909,7 @@ describe('TypescriptFileOutput.define', () => {
     //         }
 
     //         ",
-    //           "referenceName": "Foo",
+    //           "type:reference": "Foo",
     //         }
     //     `)
     //     expect(
@@ -2005,32 +1925,32 @@ describe('TypescriptFileOutput.define', () => {
     //         }
 
     //         ",
-    //           "referenceName": "keyof typeof Foo",
+    //           "type:reference": "keyof typeof Foo",
     //         }
     //     `)
     // })
 
     it('array', () => {
         expect(TypescriptFileOutput.define({ symbol: $array($string) })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = (string)[]"`,
+            `"type {{1:type:name}} = (string)[]"`,
         )
         expect(TypescriptFileOutput.define({ symbol: $array($enum(['foo', 'bar'])) })).toMatchInlineSnapshot(
-            `"type {{4:symbolName}} = ('foo' | 'bar')[]"`,
+            `"type {{4:type:name}} = ('foo' | 'bar')[]"`,
         )
         expect(TypescriptFileOutput.define({ symbol: $array($union([$string, $integer])) })).toMatchInlineSnapshot(
-            `"type {{8:symbolName}} = ((string | number))[]"`,
+            `"type {{8:type:name}} = ((string | number))[]"`,
         )
     })
 
     it('tuple', () => {
         expect(TypescriptFileOutput.define({ symbol: $tuple([$string, $string, $integer]) })).toMatchInlineSnapshot(
-            `"type {{1:symbolName}} = [string, string, number]"`,
+            `"type {{1:type:name}} = [string, string, number]"`,
         )
     })
 
     it('record', () => {
         expect(TypescriptFileOutput.define({ symbol: $record($string) })).toMatchInlineSnapshot(`
-          "interface {{2:symbolName}} {
+          "interface {{2:type:name}} {
               [k: string]: (string | undefined)
           }"
         `)
@@ -2039,10 +1959,10 @@ describe('TypescriptFileOutput.define', () => {
     it('ref', () => {
         const foo = $record($string)
         expect(TypescriptFileOutput.define({ symbol: $object({ bar: $ref(foo) }) })).toMatchInlineSnapshot(`
-          "interface {{4:symbolName}} {
-              bar: {{2:referenceName}}
+          "interface {{4:type:name}} {
+              bar: {{2:type:reference}}
           }
-          interface {{2:symbolName}} {
+          interface {{2:type:name}} {
               [k: string]: (string | undefined)
           }"
         `)
@@ -2056,7 +1976,7 @@ describe('TypescriptFileOutput.define', () => {
         //         "imports": [],
         //         "isExported": true,
         //         "locals": {},
-        //         "referenceName": "{{0002-000:symbolName}}",
+        //         "type:reference": "{{0002-000:symbolName}}",
         //         "references": [],
         //         "schema": {
         //           "children": [
@@ -2089,7 +2009,7 @@ describe('TypescriptFileOutput.define', () => {
         //     ",
         //         "interfaceName": "Foo",
         //         "meta": undefined,
-        //         "referenceName": "Foo",
+        //         "type:reference": "Foo",
         //         "symbolName": "foo",
         //         "uuid": undefined,
         //       },
@@ -2111,7 +2031,7 @@ describe('TypescriptFileOutput.define', () => {
     //         ",
     //             "interfaceName": "Foo",
     //             "meta": undefined,
-    //             "referenceName": "Foo",
+    //             "type:reference": "Foo",
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
@@ -2125,7 +2045,7 @@ describe('TypescriptFileOutput.define', () => {
     //         ",
     //             "interfaceName": "Foo",
     //             "meta": undefined,
-    //             "referenceName": "Foo",
+    //             "type:reference": "Foo",
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
@@ -2142,7 +2062,7 @@ describe('TypescriptFileOutput.define', () => {
     //         ",
     //             "interfaceName": "Foo",
     //             "meta": undefined,
-    //             "referenceName": "Foo",
+    //             "type:reference": "Foo",
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
@@ -2156,7 +2076,7 @@ describe('TypescriptFileOutput.define', () => {
     //         ",
     //             "interfaceName": "Foo",
     //             "meta": undefined,
-    //             "referenceName": "Foo",
+    //             "type:reference": "Foo",
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
@@ -2174,7 +2094,7 @@ describe('TypescriptFileOutput.define', () => {
     //         ",
     //             "interfaceName": "Foo",
     //             "meta": undefined,
-    //             "referenceName": "Foo",
+    //             "type:reference": "Foo",
     //             "symbolName": "foo",
     //             "uuid": undefined,
     //           },
@@ -2185,7 +2105,7 @@ describe('TypescriptFileOutput.define', () => {
 
     it('object', () => {
         expect(TypescriptFileOutput.define({ symbol: $object({ foo: $string }) })).toMatchInlineSnapshot(`
-          "interface {{1:symbolName}} {
+          "interface {{1:type:name}} {
               foo: string
           }"
         `)
@@ -2194,7 +2114,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $string, bar: $nullable($integer), baz: $optional($integer) }),
             }),
         ).toMatchInlineSnapshot(`
-          "interface {{7:symbolName}} {
+          "interface {{7:type:name}} {
               foo: string
               bar: (number | null)
               baz?: (number | undefined)
@@ -2205,7 +2125,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $string, bar: $string({ description: 'fooscription' }) }),
             }),
         ).toMatchInlineSnapshot(`
-          "interface {{10:symbolName}} {
+          "interface {{10:type:name}} {
               foo: string
               /**
                * fooscription
@@ -2218,7 +2138,7 @@ describe('TypescriptFileOutput.define', () => {
                 symbol: $object({ foo: $enum(['foo', 'bar']) }),
             }),
         ).toMatchInlineSnapshot(`
-          "interface {{13:symbolName}} {
+          "interface {{13:type:name}} {
               foo: 'foo' | 'bar'
           }"
         `)

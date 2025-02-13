@@ -2,6 +2,7 @@ import { type GenericOutput, type TypescriptOutput, isNode } from '../../cst/cst
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { Hooks } from '../../cst/node.js'
+import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
 import type { SchemaOptions } from '../base.js'
 import type { ObjectType } from '../object/object.js'
 import { $ref } from '../ref/ref.js'
@@ -44,31 +45,33 @@ export class GraphqlFieldType extends NodeTrait {
             () => {
                 for (const [, arg] of this.argsChildren()) {
                     arg._transform ??= {}
-                    arg._transform.symbolName ??= (name) => {
+                    arg._transform['type:source'] ??= (name) => {
                         return `${name}Args`
                     }
                 }
                 this.returnType._transform ??= {}
-                this.returnType._transform.symbolName ??= (name) => {
+                this.returnType._transform['type:source'] ??= (name) => {
                     return `${name}Type`
                 }
             },
         ],
     }
-    public override get _output(): (TypescriptOutput | GenericOutput)[] {
+    public override get _output(): (TypescriptOutput<TypescriptTypeWalkerContext> | GenericOutput)[] {
         return [
             {
                 type: 'typescript',
                 subtype: undefined,
                 isTypeOnly: true,
-                definition: (node, { declare, reference }) => {
+                definition: (node, { declare, type, targetPath }) => {
+                    node._attributes.typescript['type:path'] = targetPath
+
                     if (this.args !== undefined) {
                         const argument = this.argsChildren()
-                            .map(([name, arg]) => `${name}: ${reference(arg)}`)
+                            .map(([name, arg]) => `${name}: ${type(arg)}`)
                             .join(', ')
-                        return `${declare('type', node)} = (${argument}) => ${reference(this.returnType)}`
+                        return `${declare('type', node)} = (${argument}) => ${type(this.returnType)}`
                     }
-                    return `${declare('type', node)} = () => ${reference(this.returnType)}`
+                    return `${declare('type', node)} = () => ${type(this.returnType)}`
                 },
                 content: false,
             },

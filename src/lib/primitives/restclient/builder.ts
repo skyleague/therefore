@@ -69,7 +69,9 @@ export function methodName(
             action ?? methodToName[method],
             ...staticParts,
             ...(dynamicParts.length > 0 && !hasAction ? ['by', dynamicParts.join('_and_')] : []),
-        ].join('_'),
+        ]
+            .map((x) => sanitizeTypescriptTypeName(x ?? ''))
+            .join('_'),
     )
 }
 
@@ -85,18 +87,18 @@ export type AsRequestBody =
           name: 'body'
           type: 'json' | 'form' | 'body'
           mimeType?: string
-          definition: (args: { reference: (node: Node) => string }) => string
+          definition: (args: { type: (node: Node) => string }) => string
           variableName?: string
-          precode?: (args: { reference: (node: Node) => string }) => string
+          precode?: (args: { type: (node: Node) => string }) => string
       }
     | {
           schema?: undefined
           mimeType?: string
           name: 'body'
           type: 'body'
-          definition: (args: { reference: (node: Node) => string }) => string
+          definition: (args: { type: (node: Node) => string }) => string
           variableName?: string
-          precode?: (args: { reference: (node: Node) => string }) => string
+          precode?: (args: { type: (node: Node) => string }) => string
       }
 
 export type ResponseBodyDefinition =
@@ -156,7 +158,7 @@ export class EitherHelper extends Node {
     public override _canReference: false = false
     public builder!: RestClientBuilder
 
-    public override get _output(): TypescriptOutput[] {
+    public override get _output(): TypescriptOutput<TypescriptTypeWalkerContext>[] {
         return [
             {
                 type: 'typescript' as const,
@@ -164,9 +166,9 @@ export class EitherHelper extends Node {
                 isTypeOnly: true,
                 isGenerated: () => true,
                 targetPath: ({ _sourcePath: sourcePath }) => sourcePath,
-                definition: (_: Node, { reference }) => {
+                definition: (_: Node, { type }) => {
                     const IncomingHttpHeaders =
-                        this.builder.options.client === 'ky' ? 'Headers' : reference(httpSymbols.IncomingHttpHeadersNode())
+                        this.builder.options.client === 'ky' ? 'Headers' : type(httpSymbols.IncomingHttpHeadersNode())
                     const HeaderVar = this.builder.options.client === 'ky' ? 'HeaderResponse' : 'Headers'
 
                     const writer = createWriter()
@@ -184,10 +186,10 @@ export class EitherHelper extends Node {
                         .writeLine('status: Status<StatusCode>')
                         .writeLine(`headers: ${HeaderVar}`)
                     if (this.builder.options.validator === 'zod') {
-                        const ZodError = reference(zodSymbols.ZodError())
+                        const ZodError = type(zodSymbols.ZodError())
                         writer.writeLine(`error: ${ZodError}<T> | undefined`)
                     } else {
-                        const DefinedError = reference(ajvSymbols.DefinedError())
+                        const DefinedError = type(ajvSymbols.DefinedError())
                         writer.writeLine(`validationErrors: ${DefinedError}[] | undefined`)
                     }
                     return (
@@ -202,7 +204,7 @@ export class EitherHelper extends Node {
                             .toString()
                     )
                 },
-            },
+            } satisfies TypescriptOutput<TypescriptTypeWalkerContext>,
         ]
     }
 
@@ -309,16 +311,16 @@ export class RestClientBuilder {
         }
     }
 
-    public definition(node: Node, { declare, reference, value }: TypescriptTypeWalkerContext): string {
+    public definition(node: Node, { declare, type, value }: TypescriptTypeWalkerContext): string {
         const writer = createWriter()
-        const IncomingHttpHeaders = memoize(() => reference(httpSymbols.IncomingHttpHeadersNode()))
+        const IncomingHttpHeaders = memoize(() => type(httpSymbols.IncomingHttpHeadersNode()))
 
         writer.write(declare('class', node)).block(() => {
-            this.writeConstructor({ reference, value, writer })
+            this.writeConstructor({ type, value, writer })
 
             for (const item of this.pathItems) {
                 const { httpMethod, pathItem, path, operation, method } = item
-                const { securities } = this.security({ reference })
+                const { securities } = this.security({ type })
                 const request = this.requestBodies.get(item)
                 let hasBodyValidation = false
                 let requestValidationStr = ''
@@ -404,7 +406,7 @@ export class RestClientBuilder {
                     .map((p) => `${objectProperty(p.name)}${p.required === true ? '' : '?'}: ${p.type}`)
                     .join(', ')
 
-                const hasRequiredBody = request?.definition({ reference }) !== undefined
+                const hasRequiredBody = request?.definition({ type }) !== undefined
                 const hasRequiredPathArgument = pathArguments.length > 0
                 const hasRequiredQueryArguments = queryParameters.some((q) => q.required === true)
                 const hasRequiredHeaderArguments = headerParameters.some((q) => q.required === true)
@@ -415,7 +417,7 @@ export class RestClientBuilder {
                 const headerOptionalStr = hasRequiredHeaderArguments ? '' : '?'
                 const methodArgumentsInner = [
                     ...(request?.definition !== undefined
-                        ? [[request.name, `${request.name}: ${request.definition({ reference })}`]]
+                        ? [[request.name, `${request.name}: ${request.definition({ type })}`]]
                         : []),
                     ...(pathArguments.length > 0 ? [['path', `path: { ${pathArguments} }`]] : []),
                     ...(queryArguments.length > 0 ? [['query', `query${queryOptionalStr}: { ${queryArguments} }`]] : []),
@@ -529,7 +531,7 @@ export class RestClientBuilder {
                         const hasSyntaxSugarMethod = ['get', 'delete', 'post', 'put', 'patch'].includes(httpMethod)
                         writer.conditionalWriteLine(requestValidationStr !== '', `${requestValidationStr}\n`)
                         if (request?.precode !== undefined) {
-                            writer.writeLine(request.precode({ reference }))
+                            writer.writeLine(request.precode({ type }))
                         }
                         writer
                             .conditionalWrite(hasResponse, 'return this.awaitResponse(')
@@ -623,27 +625,27 @@ export class RestClientBuilder {
             }
 
             if (this.hasValidateRequestBody) {
-                writer.writeLine(this.writeValidateRequestBody(reference))
+                writer.writeLine(this.writeValidateRequestBody(type))
             }
 
             if (this.hasAwaitResponse) {
-                writer.writeLine(this.writeAwaitResponse(reference, this.options.validator))
+                writer.writeLine(this.writeAwaitResponse(type, this.options.validator))
             }
 
-            this.writeAuthenticator({ reference, writer })
+            this.writeAuthenticator({ type, writer })
         })
 
         return writer.toString()
     }
 
-    private writeAwaitResponse(reference: (node: Node) => string, validator: 'ajv' | 'zod') {
+    private writeAwaitResponse(type: (node: Node) => string, validator: 'ajv' | 'zod') {
         const statusAccessor = this.options.client === 'ky' ? 'status' : 'statusCode'
         const _body = this.options.client === 'ky' ? '_body' : 'result.body'
 
-        const RequestPromise = reference(this._client.RequestPromise())
+        const RequestPromise = type(this._client.RequestPromise())
         const writer = createWriter()
         if (this.options.useEither) {
-            const DefinedError = reference(ajvSymbols.DefinedError())
+            const DefinedError = type(ajvSymbols.DefinedError())
             writer
                 .newLine()
                 .conditionalWriteLine(
@@ -651,14 +653,14 @@ export class RestClientBuilder {
                     `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } }>>(response: `,
                 )
             if (validator === 'zod') {
-                const SafeParseReturnType = reference(zodSymbols.SafeParseReturnType())
+                const SafeParseReturnType = type(zodSymbols.SafeParseReturnType())
                 writer.writeLine(
                     `public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => ${SafeParseReturnType}<unknown, I> }>>(response: `,
                 )
             }
 
             if (this.options.client === 'got') {
-                const Response = reference(this._client.Response())
+                const Response = type(this._client.Response())
                 writer.writeLine(`${RequestPromise}<NoInfer<${Response}<I>>>`)
             }
 
@@ -728,7 +730,7 @@ export class RestClientBuilder {
                 )
 
             if (this.options.client === 'got') {
-                const Response = reference(this._client.Response())
+                const Response = type(this._client.Response())
                 writer.writeLine(`${RequestPromise}<${Response}>`)
             }
 
@@ -764,7 +766,7 @@ export class RestClientBuilder {
             )
 
         if (this.options.client === 'got') {
-            const Response = reference(this._client.Response())
+            const Response = type(this._client.Response())
             writer.writeLine(`${RequestPromise}<${Response}>`)
         }
 
@@ -856,18 +858,18 @@ export class RestClientBuilder {
     }
 
     public writeConstructor({
-        reference,
+        type,
         value,
         writer,
     }: {
         value: TypescriptTypeWalkerContext['value']
-        reference: TypescriptTypeWalkerContext['reference']
+        type: TypescriptTypeWalkerContext['type']
         writer: CodeBlockWriter
     }) {
         const { prefixUrl, defaultValue } = this.prefixConfiguration
-        const { authDeclaration, hasAuth } = this.security({ reference })
+        const { authDeclaration, hasAuth } = this.security({ type })
 
-        writer.writeLine(`public client: ${reference(this._client.type())}`).newLine()
+        writer.writeLine(`public client: ${type(this._client.type())}`).newLine()
         if (hasAuth) {
             writer
                 .write('public auth: ')
@@ -882,7 +884,7 @@ export class RestClientBuilder {
         }
 
         const isDefaultConstructable = defaultValue !== undefined && !hasAuth
-        const Options = reference(this._client.Options())
+        const Options = type(this._client.Options())
         writer
             .writeLine('public constructor(')
             .inlineBlock(() => {
@@ -896,7 +898,7 @@ export class RestClientBuilder {
             .inlineBlock(() => {
                 writer.writeLine(`prefixUrl${defaultValue !== undefined ? '?' : ''}: ${prefixUrl},`)
                 if (this.options.client === 'got') {
-                    writer.writeLine(`options?: ${Options} | ${reference(gotSymbols.OptionsInit())},`)
+                    writer.writeLine(`options?: ${Options} | ${type(gotSymbols.OptionsInit())},`)
                 }
                 writer.conditionalWriteLine(this.options.client === 'ky', `options?: ${Options},`)
                 if (hasAuth) {
@@ -905,7 +907,7 @@ export class RestClientBuilder {
                     })
                     writer.writeLine('defaultAuth?: string[][] | string[]')
                 }
-                writer.writeLine(`client?: ${reference(this._client.type())}`)
+                writer.writeLine(`client?: ${type(this._client.type())}`)
             })
             .conditionalWrite(isDefaultConstructable, ' = {}')
             .write(')')
@@ -930,17 +932,14 @@ export class RestClientBuilder {
             .newLine()
     }
 
-    public writeAuthenticator({
-        reference,
-        writer,
-    }: { reference: TypescriptTypeWalkerContext['reference']; writer: CodeBlockWriter }) {
-        const { securities } = this.security({ reference })
+    public writeAuthenticator({ type, writer }: { type: TypescriptTypeWalkerContext['type']; writer: CodeBlockWriter }) {
+        const { securities } = this.security({ type })
         if (securities.length > 0) {
             for (const sec of securities) {
                 writer.newLine().writeLine(sec.clientFunc).newLine()
             }
 
-            const clientType = reference(this._client.type())
+            const clientType = type(this._client.type())
             writer
                 .writeLine(
                     `protected buildClient(auths: string[][] | string[] | undefined = this.defaultAuth, client?: ${clientType}): ${clientType}`,
@@ -993,7 +992,7 @@ export class RestClientBuilder {
                     mimeType: jsonMimeType,
                     name: 'body',
                     type: 'json',
-                    definition: ({ reference }) => reference(validator),
+                    definition: ({ type }) => type(validator),
                 } satisfies AsRequestBody
             }
             return {
@@ -1036,11 +1035,11 @@ export class RestClientBuilder {
                         type: 'body',
                         schema: validator,
                         name: 'body',
-                        definition: ({ reference }) => reference(validator),
-                        precode: ({ reference }) =>
+                        definition: ({ type }) => type(validator),
+                        precode: ({ type }) =>
                             [
                                 'const _form = new FormData()',
-                                `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
+                                `for (const [key, value] of Object.entries(_body.right as ${type(validator)})) {`,
                                 '    if (value !== null && value !== undefined) {',
                                 '        _form.append(key, value as string)',
                                 '    }',
@@ -1053,11 +1052,11 @@ export class RestClientBuilder {
                     type: 'body',
                     schema: validator,
                     name: 'body',
-                    definition: ({ reference }) => reference(validator),
-                    precode: ({ reference }) =>
+                    definition: ({ type }) => type(validator),
+                    precode: ({ type }) =>
                         [
                             'const _form = new URLSearchParams()',
-                            `for (const [key, value] of Object.entries(_body.right as ${reference(validator)})) {`,
+                            `for (const [key, value] of Object.entries(_body.right as ${type(validator)})) {`,
                             '    if (value !== null && value !== undefined) {',
                             '        _form.set(key, value as string)',
                             '    }',
@@ -1071,7 +1070,7 @@ export class RestClientBuilder {
                 schema: validator,
                 name: 'body',
                 type: 'form',
-                definition: ({ reference }) => reference(validator),
+                definition: ({ type }) => type(validator),
             }
         }
 
@@ -1272,9 +1271,9 @@ export class RestClientBuilder {
         return { prefixUrl: args.join(' | '), defaultValue: defaultValues.length === 1 ? defaultValues[0] : undefined }
     }
 
-    private _security = ({ reference }: { reference: TypescriptTypeWalkerContext['reference'] }) => {
+    private _security = ({ type }: { type: TypescriptTypeWalkerContext['type'] }) => {
         const securityRequirements = this.openapi.components?.securitySchemes
-        const clientType = reference(this._client.type())
+        const clientType = type(this._client.type())
         const securities = entriesOf(securityRequirements ?? []).map(([name, securityRef]) => {
             const security = jsonPointer({ schema: this.openapi, ptr: securityRef }) as unknown as Partial<MappableSecurityScheme>
             const { type = 'http' } = security
@@ -1319,9 +1318,9 @@ export class RestClientBuilder {
     }
     private _securityCache: ReturnType<RestClientBuilder['_security']> | undefined
 
-    public security({ reference }: { reference: TypescriptTypeWalkerContext['reference'] }) {
+    public security({ type }: { type: TypescriptTypeWalkerContext['type'] }) {
         if (!this._securityCache) {
-            this._securityCache = this._security({ reference })
+            this._securityCache = this._security({ type })
         }
         return this._securityCache
     }

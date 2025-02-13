@@ -14,8 +14,8 @@ export const OtherModel = z.object({
 export type OtherModel = z.infer<typeof OtherModel>
 
 export type BusinessRelationModel = {
-    other?: z.infer<typeof OtherModel> | undefined
-    relations?: z.infer<typeof BusinessRelationModel>[] | undefined
+    other?: OtherModel | undefined
+    relations?: BusinessRelationModel[] | undefined
 }
 export const BusinessRelationModel: ZodType<BusinessRelationModel> = z.object({
     other: OtherModel.optional(),

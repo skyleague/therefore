@@ -6,8 +6,8 @@
 
 import type { DefinedError, ValidateFunction } from 'ajv'
 
-import { validate as MyUnionValidator } from './schemas/my-union.schema.js'
-import { validate as ValidatedUserValidator } from './schemas/user-schema.schema.js'
+import { validate as myUnionValidator } from './schemas/my-union.schema.js'
+import { validate as userSchemaValidator } from './schemas/user-schema.schema.js'
 
 export interface ValidatedUser {
     id: number
@@ -16,20 +16,20 @@ export interface ValidatedUser {
     attributes: Attributes
 }
 
-export const ValidatedUser = {
-    validate: ValidatedUserValidator as ValidateFunction<ValidatedUser>,
+export const userSchema = {
+    validate: userSchemaValidator as ValidateFunction<ValidatedUser>,
     get schema() {
-        return ValidatedUser.validate.schema
+        return userSchema.validate.schema
     },
     get errors() {
-        return ValidatedUser.validate.errors ?? undefined
+        return userSchema.validate.errors ?? undefined
     },
-    is: (o: unknown): o is ValidatedUser => ValidatedUser.validate(o) === true,
+    is: (o: unknown): o is ValidatedUser => userSchema.validate(o) === true,
     parse: (o: unknown): { right: ValidatedUser } | { left: DefinedError[] } => {
-        if (ValidatedUser.is(o)) {
+        if (userSchema.is(o)) {
             return { right: o }
         }
-        return { left: (ValidatedUser.errors ?? []) as DefinedError[] }
+        return { left: (userSchema.errors ?? []) as DefinedError[] }
     },
 } as const
 
@@ -49,20 +49,20 @@ export type MyUnion =
           error: unknown
       }
 
-export const MyUnion = {
-    validate: MyUnionValidator as ValidateFunction<MyUnion>,
+export const myUnion = {
+    validate: myUnionValidator as ValidateFunction<MyUnion>,
     get schema() {
-        return MyUnion.validate.schema
+        return myUnion.validate.schema
     },
     get errors() {
-        return MyUnion.validate.errors ?? undefined
+        return myUnion.validate.errors ?? undefined
     },
-    is: (o: unknown): o is MyUnion => MyUnion.validate(o) === true,
+    is: (o: unknown): o is MyUnion => myUnion.validate(o) === true,
     parse: (o: unknown): { right: MyUnion } | { left: DefinedError[] } => {
-        if (MyUnion.is(o)) {
+        if (myUnion.is(o)) {
             return { right: o }
         }
-        return { left: (MyUnion.errors ?? []) as DefinedError[] }
+        return { left: (myUnion.errors ?? []) as DefinedError[] }
     },
 } as const
 
