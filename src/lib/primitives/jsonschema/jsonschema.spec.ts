@@ -75,7 +75,13 @@ describe('person', () => {
                       "min": 0,
                       "minInclusive": true,
                     },
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "Age in years which must be equal to or greater than zero.",
+                        "minimum": 0,
+                        "type": "integer",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "integer",
                   },
@@ -114,7 +120,12 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "firstName",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "The person's first name.",
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -153,7 +164,12 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "lastName",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "The person's last name.",
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -179,7 +195,28 @@ describe('person', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "additionalProperties": false,
+                "properties": {
+                  "age": {
+                    "description": "Age in years which must be equal to or greater than zero.",
+                    "minimum": 0,
+                    "type": "integer",
+                  },
+                  "firstName": {
+                    "description": "The person's first name.",
+                    "type": "string",
+                  },
+                  "lastName": {
+                    "description": "The person's last name.",
+                    "type": "string",
+                  },
+                },
+                "title": "Person",
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -212,7 +249,13 @@ describe('person', () => {
                       "min": 0,
                       "minInclusive": true,
                     },
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "Age in years which must be equal to or greater than zero.",
+                        "minimum": 0,
+                        "type": "integer",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "integer",
                   },
@@ -251,7 +294,12 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "firstName",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "The person's first name.",
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -290,7 +338,12 @@ describe('person', () => {
                     "_isCommutative": true,
                     "_name": "lastName",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "description": "The person's last name.",
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -408,7 +461,13 @@ describe('coordinates', () => {
                   "max": 90,
                   "min": -90,
                 },
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -429,7 +488,13 @@ describe('coordinates', () => {
                   "max": 180,
                   "min": -180,
                 },
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -446,7 +511,31 @@ describe('coordinates', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "$id": "https://example.com/geographical-location.schema.json",
+                "additionalProperties": false,
+                "description": "A geographical coordinate.",
+                "properties": {
+                  "latitude": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "type": "number",
+                  },
+                  "longitude": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "type": "number",
+                  },
+                },
+                "required": [
+                  "latitude",
+                  "longitude",
+                ],
+                "title": "Longitude and Latitude Values",
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -467,7 +556,13 @@ describe('coordinates', () => {
                   "max": 90,
                   "min": -90,
                 },
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "maximum": 90,
+                    "minimum": -90,
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -488,7 +583,13 @@ describe('coordinates', () => {
                   "max": 180,
                   "min": -180,
                 },
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "maximum": 180,
+                    "minimum": -180,
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -621,7 +722,14 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "fruits",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -632,7 +740,14 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "fruits",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": StringType {
@@ -649,7 +764,14 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "fruits",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "string",
                     },
@@ -716,7 +838,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "boolean",
                               },
@@ -736,7 +863,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "string",
                               },
@@ -747,7 +879,26 @@ describe('array', () => {
                             "_isCommutative": false,
                             "_name": "veggie",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "veggieLike": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                  "veggieName": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "veggieName",
+                                  "veggieLike",
+                                ],
+                                "type": "object",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "object",
                             "shape": {
@@ -767,7 +918,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "boolean",
                               },
@@ -787,7 +943,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "string",
                               },
@@ -808,7 +969,14 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "$ref": "#/$defs/veggie",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "ref",
                       },
@@ -819,7 +987,14 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "$ref": "#/$defs/veggie",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": NodeTrait {
@@ -856,7 +1031,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "boolean",
                             },
@@ -876,7 +1056,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -887,7 +1072,26 @@ describe('array', () => {
                           "_isCommutative": false,
                           "_name": "veggie",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "veggieLike": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                                "veggieName": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "veggieName",
+                                "veggieLike",
+                              ],
+                              "type": "object",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "object",
                           "shape": {
@@ -907,7 +1111,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "boolean",
                             },
@@ -927,7 +1136,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -948,7 +1162,14 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "$ref": "#/$defs/veggie",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "ref",
                     },
@@ -973,7 +1194,48 @@ describe('array', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "$defs": {
+                  "veggie": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "veggieLike": {
+                        "description": "Do I like this vegetable?",
+                        "type": "boolean",
+                      },
+                      "veggieName": {
+                        "description": "The name of the vegetable.",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "veggieName",
+                      "veggieLike",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "$id": "https://example.com/arrays.schema.json",
+                "additionalProperties": false,
+                "description": "A representation of a person, company, organization, or place",
+                "properties": {
+                  "fruits": {
+                    "items": {
+                      "type": "string",
+                    },
+                    "type": "array",
+                  },
+                  "vegetables": {
+                    "items": {
+                      "$ref": "#/$defs/veggie",
+                    },
+                    "type": "array",
+                  },
+                },
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -1009,7 +1271,14 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "fruits",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -1020,7 +1289,14 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "fruits",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": StringType {
@@ -1037,7 +1313,14 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "fruits",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "string",
                     },
@@ -1104,7 +1387,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "boolean",
                               },
@@ -1124,7 +1412,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "string",
                               },
@@ -1135,7 +1428,26 @@ describe('array', () => {
                             "_isCommutative": false,
                             "_name": "veggie",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "veggieLike": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                  "veggieName": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "veggieName",
+                                  "veggieLike",
+                                ],
+                                "type": "object",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "object",
                             "shape": {
@@ -1155,7 +1467,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "Do I like this vegetable?",
+                                    "type": "boolean",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "boolean",
                               },
@@ -1175,7 +1492,12 @@ describe('array', () => {
                                 "_isCommutative": true,
                                 "_name": "veggie",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "description": "The name of the vegetable.",
+                                    "type": "string",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "string",
                               },
@@ -1196,7 +1518,14 @@ describe('array', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "$ref": "#/$defs/veggie",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "ref",
                       },
@@ -1207,7 +1536,14 @@ describe('array', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "$ref": "#/$defs/veggie",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": NodeTrait {
@@ -1244,7 +1580,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "boolean",
                             },
@@ -1264,7 +1605,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1275,7 +1621,26 @@ describe('array', () => {
                           "_isCommutative": false,
                           "_name": "veggie",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "veggieLike": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                                "veggieName": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "veggieName",
+                                "veggieLike",
+                              ],
+                              "type": "object",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "object",
                           "shape": {
@@ -1295,7 +1660,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "Do I like this vegetable?",
+                                  "type": "boolean",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "boolean",
                             },
@@ -1315,7 +1685,12 @@ describe('array', () => {
                               "_isCommutative": true,
                               "_name": "veggie",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "description": "The name of the vegetable.",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1336,7 +1711,14 @@ describe('array', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "$ref": "#/$defs/veggie",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "ref",
                     },
@@ -1513,7 +1895,15 @@ describe('object with nullable property', () => {
                             "_isCommutative": true,
                             "_name": "fruits",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "items": {
+                                  "type": "string",
+                                },
+                                "nullable": true,
+                                "type": "array",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1541,7 +1931,15 @@ describe('object with nullable property', () => {
                           "_isCommutative": true,
                           "_name": "fruits",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "items": {
+                                "type": "string",
+                              },
+                              "nullable": true,
+                              "type": "array",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -1552,7 +1950,15 @@ describe('object with nullable property', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "fruits",
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "nullable": true,
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "nullable",
                   },
@@ -1646,7 +2052,15 @@ describe('object with nullable property', () => {
                     "_id": "9",
                     "_isCommutative": true,
                     "_name": "store",
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "nullable": true,
+                        "type": [
+                          "string",
+                          "number",
+                        ],
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "nullable",
                   },
@@ -1692,7 +2106,14 @@ describe('object with nullable property', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -1703,7 +2124,14 @@ describe('object with nullable property', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": StringType {
@@ -1720,7 +2148,14 @@ describe('object with nullable property', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "string",
                     },
@@ -1745,7 +2180,35 @@ describe('object with nullable property', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "additionalProperties": false,
+                "description": "An object with nullable properties",
+                "properties": {
+                  "fruits": {
+                    "items": {
+                      "type": "string",
+                    },
+                    "nullable": true,
+                    "type": "array",
+                  },
+                  "store": {
+                    "nullable": true,
+                    "type": [
+                      "string",
+                      "number",
+                    ],
+                  },
+                  "vegetables": {
+                    "items": {
+                      "type": "string",
+                    },
+                    "type": "array",
+                  },
+                },
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -1790,7 +2253,15 @@ describe('object with nullable property', () => {
                             "_isCommutative": true,
                             "_name": "fruits",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "items": {
+                                  "type": "string",
+                                },
+                                "nullable": true,
+                                "type": "array",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1818,7 +2289,15 @@ describe('object with nullable property', () => {
                           "_isCommutative": true,
                           "_name": "fruits",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "items": {
+                                "type": "string",
+                              },
+                              "nullable": true,
+                              "type": "array",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -1829,7 +2308,15 @@ describe('object with nullable property', () => {
                     "_id": "3",
                     "_isCommutative": true,
                     "_name": "fruits",
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "nullable": true,
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "nullable",
                   },
@@ -1923,7 +2410,15 @@ describe('object with nullable property', () => {
                     "_id": "9",
                     "_isCommutative": true,
                     "_name": "store",
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "nullable": true,
+                        "type": [
+                          "string",
+                          "number",
+                        ],
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "nullable",
                   },
@@ -1969,7 +2464,14 @@ describe('object with nullable property', () => {
                         "_isCommutative": true,
                         "_name": "vegetables",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "items": {
+                              "type": "string",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -1980,7 +2482,14 @@ describe('object with nullable property', () => {
                     "_isCommutative": false,
                     "_name": "vegetables",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "array",
                     "element": StringType {
@@ -1997,7 +2506,14 @@ describe('object with nullable property', () => {
                       "_isCommutative": true,
                       "_name": "vegetables",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "items": {
+                            "type": "string",
+                          },
+                          "type": "array",
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "string",
                     },
@@ -2111,7 +2627,11 @@ describe('make optional properties nullable', () => {
                 "_isCommutative": true,
                 "_name": "bar",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -2147,7 +2667,11 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": true,
                         "_name": "foo",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "type": "string",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -2241,7 +2765,14 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": false,
                         "_name": "foobar",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "type": [
+                              "boolean",
+                              "number",
+                            ],
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "union",
                       },
@@ -2275,7 +2806,30 @@ describe('make optional properties nullable', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "additionalProperties": false,
+                "description": "An object with optional properties",
+                "properties": {
+                  "bar": {
+                    "type": "number",
+                  },
+                  "foo": {
+                    "type": "string",
+                  },
+                  "foobar": {
+                    "type": [
+                      "boolean",
+                      "number",
+                    ],
+                  },
+                },
+                "required": [
+                  "bar",
+                ],
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -2293,7 +2847,11 @@ describe('make optional properties nullable', () => {
                 "_isCommutative": true,
                 "_name": "bar",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "type": "number",
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "number",
               },
@@ -2329,7 +2887,11 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": true,
                         "_name": "foo",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "type": "string",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "string",
                       },
@@ -2423,7 +2985,14 @@ describe('make optional properties nullable', () => {
                         "_isCommutative": false,
                         "_name": "foobar",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "type": [
+                              "boolean",
+                              "number",
+                            ],
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "union",
                       },
@@ -2616,7 +3185,11 @@ describe('nullable array', () => {
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
-                                            "_origin": {},
+                                            "_origin": {
+                                              "jsonschema": {
+                                                "type": "string",
+                                              },
+                                            },
                                             "_recurrentCache": undefined,
                                             "_type": "string",
                                           },
@@ -2647,7 +3220,16 @@ describe('nullable array', () => {
                                 "_isCommutative": false,
                                 "_name": "Foo",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "properties": {
+                                      "bar": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "type": "object",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "object",
                                 "shape": {
@@ -2683,7 +3265,11 @@ describe('nullable array', () => {
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
-                                            "_origin": {},
+                                            "_origin": {
+                                              "jsonschema": {
+                                                "type": "string",
+                                              },
+                                            },
                                             "_recurrentCache": undefined,
                                             "_type": "string",
                                           },
@@ -2724,7 +3310,19 @@ describe('nullable array', () => {
                             "_isCommutative": true,
                             "_name": "foo",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "examples": [
+                                  {
+                                    "bar": "wut",
+                                  },
+                                ],
+                                "items": {
+                                  "$ref": "#/$defs/Foo",
+                                },
+                                "type": "array",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "ref",
                           },
@@ -2743,7 +3341,19 @@ describe('nullable array', () => {
                         "_isCommutative": false,
                         "_name": "foo",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "examples": [
+                              {
+                                "bar": "wut",
+                              },
+                            ],
+                            "items": {
+                              "$ref": "#/$defs/Foo",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "array",
                         "element": NodeTrait {
@@ -2796,7 +3406,11 @@ describe('nullable array', () => {
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
-                                          "_origin": {},
+                                          "_origin": {
+                                            "jsonschema": {
+                                              "type": "string",
+                                            },
+                                          },
                                           "_recurrentCache": undefined,
                                           "_type": "string",
                                         },
@@ -2827,7 +3441,16 @@ describe('nullable array', () => {
                               "_isCommutative": false,
                               "_name": "Foo",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "properties": {
+                                    "bar": {
+                                      "type": "string",
+                                    },
+                                  },
+                                  "type": "object",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "object",
                               "shape": {
@@ -2863,7 +3486,11 @@ describe('nullable array', () => {
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
-                                          "_origin": {},
+                                          "_origin": {
+                                            "jsonschema": {
+                                              "type": "string",
+                                            },
+                                          },
                                           "_recurrentCache": undefined,
                                           "_type": "string",
                                         },
@@ -2904,7 +3531,19 @@ describe('nullable array', () => {
                           "_isCommutative": true,
                           "_name": "foo",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "examples": [
+                                {
+                                  "bar": "wut",
+                                },
+                              ],
+                              "items": {
+                                "$ref": "#/$defs/Foo",
+                              },
+                              "type": "array",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "ref",
                         },
@@ -2939,7 +3578,35 @@ describe('nullable array', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "$defs": {
+                  "Foo": {
+                    "properties": {
+                      "bar": {
+                        "type": "string",
+                      },
+                    },
+                    "type": "object",
+                  },
+                },
+                "description": "An object with a nullable array that has a ref",
+                "properties": {
+                  "foo": {
+                    "examples": [
+                      {
+                        "bar": "wut",
+                      },
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/Foo",
+                    },
+                    "type": "array",
+                  },
+                },
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
@@ -3020,7 +3687,11 @@ describe('nullable array', () => {
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
-                                            "_origin": {},
+                                            "_origin": {
+                                              "jsonschema": {
+                                                "type": "string",
+                                              },
+                                            },
                                             "_recurrentCache": undefined,
                                             "_type": "string",
                                           },
@@ -3051,7 +3722,16 @@ describe('nullable array', () => {
                                 "_isCommutative": false,
                                 "_name": "Foo",
                                 "_options": {},
-                                "_origin": {},
+                                "_origin": {
+                                  "jsonschema": {
+                                    "properties": {
+                                      "bar": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "type": "object",
+                                  },
+                                },
                                 "_recurrentCache": undefined,
                                 "_type": "object",
                                 "shape": {
@@ -3087,7 +3767,11 @@ describe('nullable array', () => {
                                             "_isCommutative": true,
                                             "_name": "Foo",
                                             "_options": {},
-                                            "_origin": {},
+                                            "_origin": {
+                                              "jsonschema": {
+                                                "type": "string",
+                                              },
+                                            },
                                             "_recurrentCache": undefined,
                                             "_type": "string",
                                           },
@@ -3128,7 +3812,19 @@ describe('nullable array', () => {
                             "_isCommutative": true,
                             "_name": "foo",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "examples": [
+                                  {
+                                    "bar": "wut",
+                                  },
+                                ],
+                                "items": {
+                                  "$ref": "#/$defs/Foo",
+                                },
+                                "type": "array",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "ref",
                           },
@@ -3147,7 +3843,19 @@ describe('nullable array', () => {
                         "_isCommutative": false,
                         "_name": "foo",
                         "_options": {},
-                        "_origin": {},
+                        "_origin": {
+                          "jsonschema": {
+                            "examples": [
+                              {
+                                "bar": "wut",
+                              },
+                            ],
+                            "items": {
+                              "$ref": "#/$defs/Foo",
+                            },
+                            "type": "array",
+                          },
+                        },
                         "_recurrentCache": undefined,
                         "_type": "array",
                         "element": NodeTrait {
@@ -3200,7 +3908,11 @@ describe('nullable array', () => {
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
-                                          "_origin": {},
+                                          "_origin": {
+                                            "jsonschema": {
+                                              "type": "string",
+                                            },
+                                          },
                                           "_recurrentCache": undefined,
                                           "_type": "string",
                                         },
@@ -3231,7 +3943,16 @@ describe('nullable array', () => {
                               "_isCommutative": false,
                               "_name": "Foo",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "properties": {
+                                    "bar": {
+                                      "type": "string",
+                                    },
+                                  },
+                                  "type": "object",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "object",
                               "shape": {
@@ -3267,7 +3988,11 @@ describe('nullable array', () => {
                                           "_isCommutative": true,
                                           "_name": "Foo",
                                           "_options": {},
-                                          "_origin": {},
+                                          "_origin": {
+                                            "jsonschema": {
+                                              "type": "string",
+                                            },
+                                          },
                                           "_recurrentCache": undefined,
                                           "_type": "string",
                                         },
@@ -3308,7 +4033,19 @@ describe('nullable array', () => {
                           "_isCommutative": true,
                           "_name": "foo",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "examples": [
+                                {
+                                  "bar": "wut",
+                                },
+                              ],
+                              "items": {
+                                "$ref": "#/$defs/Foo",
+                              },
+                              "type": "array",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "ref",
                         },
@@ -3408,7 +4145,12 @@ describe('const', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "const": {},
+                "title": "  ",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "const",
             "const": {},
@@ -3500,7 +4242,11 @@ describe('edge cases', () => {
                     "_isCommutative": true,
                     "_name": "OrgId",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -3510,7 +4256,18 @@ describe('edge cases', () => {
                 "_id": "3",
                 "_isCommutative": false,
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "properties": {
+                      "OrgId": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "OrgId",
+                    ],
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "object",
                 "shape": {
@@ -3528,7 +4285,11 @@ describe('edge cases', () => {
                     "_isCommutative": true,
                     "_name": "OrgId",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -3557,7 +4318,11 @@ describe('edge cases', () => {
                     "_isCommutative": true,
                     "_name": "PrvtId",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -3567,7 +4332,18 @@ describe('edge cases', () => {
                 "_id": "5",
                 "_isCommutative": false,
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "properties": {
+                      "PrvtId": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "PrvtId",
+                    ],
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "object",
                 "shape": {
@@ -3585,7 +4361,11 @@ describe('edge cases', () => {
                     "_isCommutative": true,
                     "_name": "PrvtId",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "type": "string",
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "string",
                   },
@@ -3599,7 +4379,33 @@ describe('edge cases', () => {
             "_loaded": true,
             "_name": undefined,
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "OrgId": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "OrgId",
+                    ],
+                  },
+                  {
+                    "properties": {
+                      "PrvtId": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "PrvtId",
+                    ],
+                  },
+                ],
+                "type": "object",
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "union",
           }

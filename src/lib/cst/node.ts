@@ -75,6 +75,7 @@ export class Node {
 
     public _origin: {
         zod?: ZodType
+        jsonschema?: JsonSchema
     } = {}
 
     public _isCommutative = true

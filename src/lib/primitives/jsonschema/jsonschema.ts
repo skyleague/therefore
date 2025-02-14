@@ -361,7 +361,11 @@ export function buildContext({
                 childProperty,
                 name: n,
             }: { childProperty?: keyof Pick<JsonSchema, 'items'> | undefined; name?: string | undefined } = {},
-        ) => walkJsonschema({ node: schema, visitor: schemaWalker, context, childProperty, name: n ?? name }),
+        ) => {
+            const value = walkJsonschema({ node: schema, visitor: schemaWalker, context, childProperty, name: n ?? name })
+            value._origin.jsonschema = schema
+            return value
+        },
         annotate: (node, schema) => asNullable(annotateNode(node, schema, context), schema),
     }
     return context
