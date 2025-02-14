@@ -42,7 +42,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "complete",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "boolean",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "boolean",
             },
@@ -82,7 +86,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -122,7 +132,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 198772,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -162,7 +178,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 7,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -201,7 +223,12 @@ ObjectType {
               "_options": {
                 "format": "date-time",
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "date-time",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -241,7 +268,18 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "Order Status",
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered",
+                  ],
+                  "example": "approved",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -268,7 +306,48 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "complete": {
+              "type": "boolean",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "petId": {
+              "example": 198772,
+              "format": "int64",
+              "type": "integer",
+            },
+            "quantity": {
+              "example": 7,
+              "format": "int32",
+              "type": "integer",
+            },
+            "shipDate": {
+              "format": "date-time",
+              "type": "string",
+            },
+            "status": {
+              "description": "Order Status",
+              "enum": [
+                "placed",
+                "approved",
+                "delivered",
+              ],
+              "example": "approved",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "order",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -295,7 +374,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "complete",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "boolean",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "boolean",
             },
@@ -335,7 +418,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -375,7 +464,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 198772,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -415,7 +510,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 7,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -454,7 +555,12 @@ ObjectType {
               "_options": {
                 "format": "date-time",
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "date-time",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -494,7 +600,18 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "Order Status",
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered",
+                  ],
+                  "example": "approved",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -583,7 +700,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -620,7 +742,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -657,7 +784,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -694,7 +826,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -715,7 +852,32 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Address",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "city": {
+                              "example": "Palo Alto",
+                              "type": "string",
+                            },
+                            "state": {
+                              "example": "CA",
+                              "type": "string",
+                            },
+                            "street": {
+                              "example": "437 Lytton",
+                              "type": "string",
+                            },
+                            "zip": {
+                              "example": "94301",
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "address",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -742,7 +904,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -779,7 +946,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -816,7 +988,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -853,7 +1030,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -884,7 +1066,18 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "address",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Address",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "name": "addresses",
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -895,7 +1088,18 @@ ObjectType {
               "_isCommutative": false,
               "_name": "address",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Address",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "name": "addresses",
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -939,7 +1143,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -976,7 +1185,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1013,7 +1227,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1050,7 +1269,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1071,7 +1295,32 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Address",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "city": {
+                            "example": "Palo Alto",
+                            "type": "string",
+                          },
+                          "state": {
+                            "example": "CA",
+                            "type": "string",
+                          },
+                          "street": {
+                            "example": "437 Lytton",
+                            "type": "string",
+                          },
+                          "zip": {
+                            "example": "94301",
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "address",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -1098,7 +1347,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1135,7 +1389,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1172,7 +1431,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1209,7 +1473,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1240,7 +1509,18 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "address",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Address",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "name": "addresses",
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -1281,7 +1561,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 100000,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -1318,7 +1604,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "fehguy",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -1340,7 +1631,35 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "address": {
+              "items": {
+                "$ref": "#/components/schemas/Address",
+              },
+              "type": "array",
+              "xml": {
+                "name": "addresses",
+                "wrapped": true,
+              },
+            },
+            "id": {
+              "example": 100000,
+              "format": "int64",
+              "type": "integer",
+            },
+            "username": {
+              "example": "fehguy",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "customer",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -1403,7 +1722,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1440,7 +1764,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1477,7 +1806,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1514,7 +1848,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1535,7 +1874,32 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Address",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "city": {
+                              "example": "Palo Alto",
+                              "type": "string",
+                            },
+                            "state": {
+                              "example": "CA",
+                              "type": "string",
+                            },
+                            "street": {
+                              "example": "437 Lytton",
+                              "type": "string",
+                            },
+                            "zip": {
+                              "example": "94301",
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "address",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -1562,7 +1926,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1599,7 +1968,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1636,7 +2010,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1673,7 +2052,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -1704,7 +2088,18 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "address",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Address",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "name": "addresses",
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -1715,7 +2110,18 @@ ObjectType {
               "_isCommutative": false,
               "_name": "address",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Address",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "name": "addresses",
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -1759,7 +2165,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1796,7 +2207,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1833,7 +2249,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1870,7 +2291,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1891,7 +2317,32 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Address",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "city": {
+                            "example": "Palo Alto",
+                            "type": "string",
+                          },
+                          "state": {
+                            "example": "CA",
+                            "type": "string",
+                          },
+                          "street": {
+                            "example": "437 Lytton",
+                            "type": "string",
+                          },
+                          "zip": {
+                            "example": "94301",
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "address",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -1918,7 +2369,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1955,7 +2411,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -1992,7 +2453,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -2029,7 +2495,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -2060,7 +2531,18 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "address",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Address",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "name": "addresses",
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -2101,7 +2583,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 100000,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -2138,7 +2626,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "fehguy",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2186,7 +2679,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "city",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Palo Alto",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2223,7 +2721,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "state",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "CA",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2260,7 +2763,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "street",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "437 Lytton",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2297,7 +2805,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "zip",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "94301",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2319,7 +2832,32 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "city": {
+              "example": "Palo Alto",
+              "type": "string",
+            },
+            "state": {
+              "example": "CA",
+              "type": "string",
+            },
+            "street": {
+              "example": "437 Lytton",
+              "type": "string",
+            },
+            "zip": {
+              "example": "94301",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "address",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -2346,7 +2884,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "city",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Palo Alto",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2383,7 +2926,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "state",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "CA",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2420,7 +2968,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "street",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "437 Lytton",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2457,7 +3010,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "zip",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "94301",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2508,7 +3066,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 1,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -2545,7 +3109,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Dogs",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2567,7 +3136,25 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "id": {
+              "example": 1,
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "example": "Dogs",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "category",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -2597,7 +3184,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 1,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -2634,7 +3227,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Dogs",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2682,7 +3280,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "email",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "john@email.com",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2719,7 +3322,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "firstName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "John",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2759,7 +3367,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -2796,7 +3410,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "lastName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "James",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2833,7 +3452,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "password",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2870,7 +3494,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "phone",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2907,7 +3536,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "theUser",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -2949,7 +3583,14 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "User Status",
+                  "example": 1,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -2971,7 +3612,51 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "email": {
+              "example": "john@email.com",
+              "type": "string",
+            },
+            "firstName": {
+              "example": "John",
+              "type": "string",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "lastName": {
+              "example": "James",
+              "type": "string",
+            },
+            "password": {
+              "example": "12345",
+              "type": "string",
+            },
+            "phone": {
+              "example": "12345",
+              "type": "string",
+            },
+            "userStatus": {
+              "description": "User Status",
+              "example": 1,
+              "format": "int32",
+              "type": "integer",
+            },
+            "username": {
+              "example": "theUser",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "user",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -2998,7 +3683,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "email",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "john@email.com",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3035,7 +3725,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "firstName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "John",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3075,7 +3770,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -3112,7 +3813,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "lastName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "James",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3149,7 +3855,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "password",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3186,7 +3897,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "phone",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3228,7 +3944,14 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "User Status",
+                  "example": 1,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -3265,7 +3988,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "theUser",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3316,7 +4044,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -3353,7 +4086,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3375,7 +4112,23 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "id": {
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "tag",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -3405,7 +4158,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -3442,7 +4200,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3520,7 +4282,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -3557,7 +4325,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -3578,7 +4351,25 @@ ObjectType {
                   "_isCommutative": false,
                   "_name": "Category",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "properties": {
+                        "id": {
+                          "example": 1,
+                          "format": "int64",
+                          "type": "integer",
+                        },
+                        "name": {
+                          "example": "Dogs",
+                          "type": "string",
+                        },
+                      },
+                      "type": "object",
+                      "xml": {
+                        "name": "category",
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "object",
                   "shape": {
@@ -3608,7 +4399,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -3645,7 +4442,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -3676,7 +4478,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "category",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "$ref": "#/components/schemas/Category",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "ref",
             },
@@ -3716,7 +4522,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -3744,7 +4556,12 @@ ObjectType {
           "_isCommutative": true,
           "_name": "name",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "example": "doggie",
+              "type": "string",
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "string",
         },
@@ -3771,7 +4588,20 @@ ObjectType {
               "_isCommutative": true,
               "_name": "photoUrls",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "type": "string",
+                    "xml": {
+                      "name": "photoUrl",
+                    },
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -3782,7 +4612,20 @@ ObjectType {
           "_isCommutative": false,
           "_name": "photoUrls",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "array",
           "element": StringType {
@@ -3799,7 +4642,20 @@ ObjectType {
             "_isCommutative": true,
             "_name": "photoUrls",
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "items": {
+                  "type": "string",
+                  "xml": {
+                    "name": "photoUrl",
+                  },
+                },
+                "type": "array",
+                "xml": {
+                  "wrapped": true,
+                },
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "string",
           },
@@ -3830,7 +4686,17 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -3911,7 +4777,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -3948,7 +4819,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -3969,7 +4844,23 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Tag",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "id": {
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                            "name": {
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "tag",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -3999,7 +4890,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -4036,7 +4932,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -4067,7 +4967,17 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "tags",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Tag",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -4078,7 +4988,17 @@ ObjectType {
               "_isCommutative": false,
               "_name": "tags",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Tag",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -4125,7 +5045,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -4162,7 +5087,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -4183,7 +5112,23 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Tag",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "id": {
+                            "format": "int64",
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "tag",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -4213,7 +5158,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -4250,7 +5200,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -4281,7 +5235,17 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "tags",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Tag",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -4304,7 +5268,62 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "category": {
+              "$ref": "#/components/schemas/Category",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "example": "doggie",
+              "type": "string",
+            },
+            "photoUrls": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+            "status": {
+              "description": "pet status in the store",
+              "enum": [
+                "available",
+                "pending",
+                "sold",
+              ],
+              "type": "string",
+            },
+            "tags": {
+              "items": {
+                "$ref": "#/components/schemas/Tag",
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
+          "required": [
+            "name",
+            "photoUrls",
+          ],
+          "type": "object",
+          "xml": {
+            "name": "pet",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -4361,7 +5380,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -4398,7 +5423,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -4419,7 +5449,25 @@ ObjectType {
                   "_isCommutative": false,
                   "_name": "Category",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "properties": {
+                        "id": {
+                          "example": 1,
+                          "format": "int64",
+                          "type": "integer",
+                        },
+                        "name": {
+                          "example": "Dogs",
+                          "type": "string",
+                        },
+                      },
+                      "type": "object",
+                      "xml": {
+                        "name": "category",
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "object",
                   "shape": {
@@ -4449,7 +5497,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -4486,7 +5540,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -4517,7 +5576,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "category",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "$ref": "#/components/schemas/Category",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "ref",
             },
@@ -4557,7 +5620,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -4585,7 +5654,12 @@ ObjectType {
           "_isCommutative": true,
           "_name": "name",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "example": "doggie",
+              "type": "string",
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "string",
         },
@@ -4612,7 +5686,20 @@ ObjectType {
               "_isCommutative": true,
               "_name": "photoUrls",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "type": "string",
+                    "xml": {
+                      "name": "photoUrl",
+                    },
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -4623,7 +5710,20 @@ ObjectType {
           "_isCommutative": false,
           "_name": "photoUrls",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "array",
           "element": StringType {
@@ -4640,7 +5740,20 @@ ObjectType {
             "_isCommutative": true,
             "_name": "photoUrls",
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "items": {
+                  "type": "string",
+                  "xml": {
+                    "name": "photoUrl",
+                  },
+                },
+                "type": "array",
+                "xml": {
+                  "wrapped": true,
+                },
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "string",
           },
@@ -4671,7 +5784,17 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -4752,7 +5875,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -4789,7 +5917,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -4810,7 +5942,23 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Tag",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "id": {
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                            "name": {
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "tag",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -4840,7 +5988,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -4877,7 +6030,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -4908,7 +6065,17 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "tags",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Tag",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -4919,7 +6086,17 @@ ObjectType {
               "_isCommutative": false,
               "_name": "tags",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Tag",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -4966,7 +6143,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -5003,7 +6185,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -5024,7 +6210,23 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Tag",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "id": {
+                            "format": "int64",
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "tag",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -5054,7 +6256,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -5091,7 +6298,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -5122,7 +6333,17 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "tags",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Tag",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -5174,7 +6395,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -5211,7 +6437,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "message",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5248,7 +6478,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "type",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5270,7 +6504,26 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "code": {
+              "format": "int32",
+              "type": "integer",
+            },
+            "message": {
+              "type": "string",
+            },
+            "type": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "##default",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -5300,7 +6553,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -5337,7 +6595,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "message",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5374,7 +6636,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "type",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5432,7 +6698,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "city",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Palo Alto",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5469,7 +6740,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "state",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "CA",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5506,7 +6782,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "street",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "437 Lytton",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5543,7 +6824,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "zip",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "94301",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5565,7 +6851,32 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "city": {
+              "example": "Palo Alto",
+              "type": "string",
+            },
+            "state": {
+              "example": "CA",
+              "type": "string",
+            },
+            "street": {
+              "example": "437 Lytton",
+              "type": "string",
+            },
+            "zip": {
+              "example": "94301",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "address",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -5592,7 +6903,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "city",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Palo Alto",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5629,7 +6945,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "state",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "CA",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5666,7 +6987,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "street",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "437 Lytton",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5703,7 +7029,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "zip",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "94301",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5754,7 +7085,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -5791,7 +7127,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "message",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5828,7 +7168,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "type",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5850,7 +7194,26 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "code": {
+              "format": "int32",
+              "type": "integer",
+            },
+            "message": {
+              "type": "string",
+            },
+            "type": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "##default",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -5880,7 +7243,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -5917,7 +7285,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "message",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -5954,7 +7326,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "type",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -6005,7 +7381,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 1,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -6042,7 +7424,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Dogs",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -6064,7 +7451,25 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "id": {
+              "example": 1,
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "example": "Dogs",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "category",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -6094,7 +7499,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 1,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -6131,7 +7542,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "Dogs",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -6215,7 +7631,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6252,7 +7673,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6289,7 +7715,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6326,7 +7757,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6347,7 +7783,32 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Address",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "city": {
+                              "example": "Palo Alto",
+                              "type": "string",
+                            },
+                            "state": {
+                              "example": "CA",
+                              "type": "string",
+                            },
+                            "street": {
+                              "example": "437 Lytton",
+                              "type": "string",
+                            },
+                            "zip": {
+                              "example": "94301",
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "address",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -6374,7 +7835,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6411,7 +7877,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6448,7 +7919,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6485,7 +7961,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -6516,7 +7997,18 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "address",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Address",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "name": "addresses",
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -6527,7 +8019,18 @@ ObjectType {
               "_isCommutative": false,
               "_name": "address",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Address",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "name": "addresses",
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -6571,7 +8074,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6608,7 +8116,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6645,7 +8158,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6682,7 +8200,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6703,7 +8226,32 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Address",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "city": {
+                            "example": "Palo Alto",
+                            "type": "string",
+                          },
+                          "state": {
+                            "example": "CA",
+                            "type": "string",
+                          },
+                          "street": {
+                            "example": "437 Lytton",
+                            "type": "string",
+                          },
+                          "zip": {
+                            "example": "94301",
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "address",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -6730,7 +8278,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6767,7 +8320,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6804,7 +8362,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6841,7 +8404,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -6872,7 +8440,18 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "address",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Address",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "name": "addresses",
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -6913,7 +8492,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 100000,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -6950,7 +8535,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "fehguy",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -6972,7 +8562,35 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "address": {
+              "items": {
+                "$ref": "#/components/schemas/Address",
+              },
+              "type": "array",
+              "xml": {
+                "name": "addresses",
+                "wrapped": true,
+              },
+            },
+            "id": {
+              "example": 100000,
+              "format": "int64",
+              "type": "integer",
+            },
+            "username": {
+              "example": "fehguy",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "customer",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -7035,7 +8653,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7072,7 +8695,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7109,7 +8737,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7146,7 +8779,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7167,7 +8805,32 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Address",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "city": {
+                              "example": "Palo Alto",
+                              "type": "string",
+                            },
+                            "state": {
+                              "example": "CA",
+                              "type": "string",
+                            },
+                            "street": {
+                              "example": "437 Lytton",
+                              "type": "string",
+                            },
+                            "zip": {
+                              "example": "94301",
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "address",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -7194,7 +8857,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "Palo Alto",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7231,7 +8899,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "CA",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7268,7 +8941,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "437 Lytton",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7305,7 +8983,12 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Address",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "example": "94301",
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -7336,7 +9019,18 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "address",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Address",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "name": "addresses",
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -7347,7 +9041,18 @@ ObjectType {
               "_isCommutative": false,
               "_name": "address",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Address",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "name": "addresses",
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -7391,7 +9096,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7428,7 +9138,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7465,7 +9180,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7502,7 +9222,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7523,7 +9248,32 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Address",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "city": {
+                            "example": "Palo Alto",
+                            "type": "string",
+                          },
+                          "state": {
+                            "example": "CA",
+                            "type": "string",
+                          },
+                          "street": {
+                            "example": "437 Lytton",
+                            "type": "string",
+                          },
+                          "zip": {
+                            "example": "94301",
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "address",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -7550,7 +9300,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "Palo Alto",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7587,7 +9342,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "CA",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7624,7 +9384,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "437 Lytton",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7661,7 +9426,12 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Address",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "example": "94301",
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -7692,7 +9462,18 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "address",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Address",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "name": "addresses",
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -7733,7 +9514,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 100000,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -7770,7 +9557,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "fehguy",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -7818,7 +9610,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "complete",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "boolean",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "boolean",
             },
@@ -7858,7 +9654,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -7898,7 +9700,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 198772,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -7938,7 +9746,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 7,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -7977,7 +9791,12 @@ ObjectType {
               "_options": {
                 "format": "date-time",
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "date-time",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -8017,7 +9836,18 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "Order Status",
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered",
+                  ],
+                  "example": "approved",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -8044,7 +9874,48 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "complete": {
+              "type": "boolean",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "petId": {
+              "example": 198772,
+              "format": "int64",
+              "type": "integer",
+            },
+            "quantity": {
+              "example": 7,
+              "format": "int32",
+              "type": "integer",
+            },
+            "shipDate": {
+              "format": "date-time",
+              "type": "string",
+            },
+            "status": {
+              "description": "Order Status",
+              "enum": [
+                "placed",
+                "approved",
+                "delivered",
+              ],
+              "example": "approved",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "order",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -8071,7 +9942,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "complete",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "boolean",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "boolean",
             },
@@ -8111,7 +9986,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -8151,7 +10032,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 198772,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -8191,7 +10078,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 7,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -8230,7 +10123,12 @@ ObjectType {
               "_options": {
                 "format": "date-time",
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "date-time",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -8270,7 +10168,18 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "Order Status",
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered",
+                  ],
+                  "example": "approved",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -8353,7 +10262,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -8390,7 +10305,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -8411,7 +10331,25 @@ ObjectType {
                   "_isCommutative": false,
                   "_name": "Category",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "properties": {
+                        "id": {
+                          "example": 1,
+                          "format": "int64",
+                          "type": "integer",
+                        },
+                        "name": {
+                          "example": "Dogs",
+                          "type": "string",
+                        },
+                      },
+                      "type": "object",
+                      "xml": {
+                        "name": "category",
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "object",
                   "shape": {
@@ -8441,7 +10379,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -8478,7 +10422,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -8509,7 +10458,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "category",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "$ref": "#/components/schemas/Category",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "ref",
             },
@@ -8549,7 +10502,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -8577,7 +10536,12 @@ ObjectType {
           "_isCommutative": true,
           "_name": "name",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "example": "doggie",
+              "type": "string",
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "string",
         },
@@ -8604,7 +10568,20 @@ ObjectType {
               "_isCommutative": true,
               "_name": "photoUrls",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "type": "string",
+                    "xml": {
+                      "name": "photoUrl",
+                    },
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -8615,7 +10592,20 @@ ObjectType {
           "_isCommutative": false,
           "_name": "photoUrls",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "array",
           "element": StringType {
@@ -8632,7 +10622,20 @@ ObjectType {
             "_isCommutative": true,
             "_name": "photoUrls",
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "items": {
+                  "type": "string",
+                  "xml": {
+                    "name": "photoUrl",
+                  },
+                },
+                "type": "array",
+                "xml": {
+                  "wrapped": true,
+                },
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "string",
           },
@@ -8663,7 +10666,17 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -8744,7 +10757,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -8781,7 +10799,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -8802,7 +10824,23 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Tag",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "id": {
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                            "name": {
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "tag",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -8832,7 +10870,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -8869,7 +10912,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -8900,7 +10947,17 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "tags",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Tag",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -8911,7 +10968,17 @@ ObjectType {
               "_isCommutative": false,
               "_name": "tags",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Tag",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -8958,7 +11025,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -8995,7 +11067,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -9016,7 +11092,23 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Tag",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "id": {
+                            "format": "int64",
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "tag",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -9046,7 +11138,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -9083,7 +11180,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -9114,7 +11215,17 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "tags",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Tag",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -9137,7 +11248,62 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "category": {
+              "$ref": "#/components/schemas/Category",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "example": "doggie",
+              "type": "string",
+            },
+            "photoUrls": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+            "status": {
+              "description": "pet status in the store",
+              "enum": [
+                "available",
+                "pending",
+                "sold",
+              ],
+              "type": "string",
+            },
+            "tags": {
+              "items": {
+                "$ref": "#/components/schemas/Tag",
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
+          "required": [
+            "name",
+            "photoUrls",
+          ],
+          "type": "object",
+          "xml": {
+            "name": "pet",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -9194,7 +11360,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -9231,7 +11403,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -9252,7 +11429,25 @@ ObjectType {
                   "_isCommutative": false,
                   "_name": "Category",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "properties": {
+                        "id": {
+                          "example": 1,
+                          "format": "int64",
+                          "type": "integer",
+                        },
+                        "name": {
+                          "example": "Dogs",
+                          "type": "string",
+                        },
+                      },
+                      "type": "object",
+                      "xml": {
+                        "name": "category",
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "object",
                   "shape": {
@@ -9282,7 +11477,13 @@ ObjectType {
                             "maxInclusive": true,
                             "minInclusive": true,
                           },
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": 1,
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "integer",
                         },
@@ -9319,7 +11520,12 @@ ObjectType {
                           "_isCommutative": true,
                           "_name": "Category",
                           "_options": {},
-                          "_origin": {},
+                          "_origin": {
+                            "jsonschema": {
+                              "example": "Dogs",
+                              "type": "string",
+                            },
+                          },
                           "_recurrentCache": undefined,
                           "_type": "string",
                         },
@@ -9350,7 +11556,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "category",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "$ref": "#/components/schemas/Category",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "ref",
             },
@@ -9390,7 +11600,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -9418,7 +11634,12 @@ ObjectType {
           "_isCommutative": true,
           "_name": "name",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "example": "doggie",
+              "type": "string",
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "string",
         },
@@ -9445,7 +11666,20 @@ ObjectType {
               "_isCommutative": true,
               "_name": "photoUrls",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "type": "string",
+                    "xml": {
+                      "name": "photoUrl",
+                    },
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -9456,7 +11690,20 @@ ObjectType {
           "_isCommutative": false,
           "_name": "photoUrls",
           "_options": {},
-          "_origin": {},
+          "_origin": {
+            "jsonschema": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+          },
           "_recurrentCache": undefined,
           "_type": "array",
           "element": StringType {
@@ -9473,7 +11720,20 @@ ObjectType {
             "_isCommutative": true,
             "_name": "photoUrls",
             "_options": {},
-            "_origin": {},
+            "_origin": {
+              "jsonschema": {
+                "items": {
+                  "type": "string",
+                  "xml": {
+                    "name": "photoUrl",
+                  },
+                },
+                "type": "array",
+                "xml": {
+                  "wrapped": true,
+                },
+              },
+            },
             "_recurrentCache": undefined,
             "_type": "string",
           },
@@ -9504,7 +11764,17 @@ ObjectType {
               "_isNamed": false,
               "_name": "status",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "enum",
               "enum": [
@@ -9585,7 +11855,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -9622,7 +11897,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -9643,7 +11922,23 @@ ObjectType {
                       "_isCommutative": false,
                       "_name": "Tag",
                       "_options": {},
-                      "_origin": {},
+                      "_origin": {
+                        "jsonschema": {
+                          "properties": {
+                            "id": {
+                              "format": "int64",
+                              "type": "integer",
+                            },
+                            "name": {
+                              "type": "string",
+                            },
+                          },
+                          "type": "object",
+                          "xml": {
+                            "name": "tag",
+                          },
+                        },
+                      },
                       "_recurrentCache": undefined,
                       "_type": "object",
                       "shape": {
@@ -9673,7 +11968,12 @@ ObjectType {
                                 "maxInclusive": true,
                                 "minInclusive": true,
                               },
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "format": "int64",
+                                  "type": "integer",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "integer",
                             },
@@ -9710,7 +12010,11 @@ ObjectType {
                               "_isCommutative": true,
                               "_name": "Tag",
                               "_options": {},
-                              "_origin": {},
+                              "_origin": {
+                                "jsonschema": {
+                                  "type": "string",
+                                },
+                              },
                               "_recurrentCache": undefined,
                               "_type": "string",
                             },
@@ -9741,7 +12045,17 @@ ObjectType {
                   "_isCommutative": true,
                   "_name": "tags",
                   "_options": {},
-                  "_origin": {},
+                  "_origin": {
+                    "jsonschema": {
+                      "items": {
+                        "$ref": "#/components/schemas/Tag",
+                      },
+                      "type": "array",
+                      "xml": {
+                        "wrapped": true,
+                      },
+                    },
+                  },
                   "_recurrentCache": undefined,
                   "_type": "ref",
                 },
@@ -9752,7 +12066,17 @@ ObjectType {
               "_isCommutative": false,
               "_name": "tags",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Tag",
+                  },
+                  "type": "array",
+                  "xml": {
+                    "wrapped": true,
+                  },
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "array",
               "element": NodeTrait {
@@ -9799,7 +12123,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -9836,7 +12165,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -9857,7 +12190,23 @@ ObjectType {
                     "_isCommutative": false,
                     "_name": "Tag",
                     "_options": {},
-                    "_origin": {},
+                    "_origin": {
+                      "jsonschema": {
+                        "properties": {
+                          "id": {
+                            "format": "int64",
+                            "type": "integer",
+                          },
+                          "name": {
+                            "type": "string",
+                          },
+                        },
+                        "type": "object",
+                        "xml": {
+                          "name": "tag",
+                        },
+                      },
+                    },
                     "_recurrentCache": undefined,
                     "_type": "object",
                     "shape": {
@@ -9887,7 +12236,12 @@ ObjectType {
                               "maxInclusive": true,
                               "minInclusive": true,
                             },
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "format": "int64",
+                                "type": "integer",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "integer",
                           },
@@ -9924,7 +12278,11 @@ ObjectType {
                             "_isCommutative": true,
                             "_name": "Tag",
                             "_options": {},
-                            "_origin": {},
+                            "_origin": {
+                              "jsonschema": {
+                                "type": "string",
+                              },
+                            },
                             "_recurrentCache": undefined,
                             "_type": "string",
                           },
@@ -9955,7 +12313,17 @@ ObjectType {
                 "_isCommutative": true,
                 "_name": "tags",
                 "_options": {},
-                "_origin": {},
+                "_origin": {
+                  "jsonschema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Tag",
+                    },
+                    "type": "array",
+                    "xml": {
+                      "wrapped": true,
+                    },
+                  },
+                },
                 "_recurrentCache": undefined,
                 "_type": "ref",
               },
@@ -10007,7 +12375,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10044,7 +12417,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10066,7 +12443,23 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "id": {
+              "format": "int64",
+              "type": "integer",
+            },
+            "name": {
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "tag",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -10096,7 +12489,12 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10133,7 +12531,11 @@ ObjectType {
               "_isCommutative": true,
               "_name": "name",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10181,7 +12583,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "email",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "john@email.com",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10218,7 +12625,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "firstName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "John",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10258,7 +12670,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10295,7 +12713,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "lastName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "James",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10332,7 +12755,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "password",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10369,7 +12797,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "phone",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10406,7 +12839,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "theUser",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10448,7 +12886,14 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "User Status",
+                  "example": 1,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10470,7 +12915,51 @@ ObjectType {
       "_loaded": true,
       "_name": undefined,
       "_options": {},
-      "_origin": {},
+      "_origin": {
+        "jsonschema": {
+          "properties": {
+            "email": {
+              "example": "john@email.com",
+              "type": "string",
+            },
+            "firstName": {
+              "example": "John",
+              "type": "string",
+            },
+            "id": {
+              "example": 10,
+              "format": "int64",
+              "type": "integer",
+            },
+            "lastName": {
+              "example": "James",
+              "type": "string",
+            },
+            "password": {
+              "example": "12345",
+              "type": "string",
+            },
+            "phone": {
+              "example": "12345",
+              "type": "string",
+            },
+            "userStatus": {
+              "description": "User Status",
+              "example": 1,
+              "format": "int32",
+              "type": "integer",
+            },
+            "username": {
+              "example": "theUser",
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "xml": {
+            "name": "user",
+          },
+        },
+      },
       "_recurrentCache": undefined,
       "_type": "object",
       "shape": {
@@ -10497,7 +12986,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "email",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "john@email.com",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10534,7 +13028,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "firstName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "John",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10574,7 +13073,13 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": 10,
+                  "format": "int64",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10611,7 +13116,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "lastName",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "James",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10648,7 +13158,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "password",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10685,7 +13200,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "phone",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "12345",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },
@@ -10727,7 +13247,14 @@ ObjectType {
                 "maxInclusive": true,
                 "minInclusive": true,
               },
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "description": "User Status",
+                  "example": 1,
+                  "format": "int32",
+                  "type": "integer",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "integer",
             },
@@ -10764,7 +13291,12 @@ ObjectType {
               "_isCommutative": true,
               "_name": "username",
               "_options": {},
-              "_origin": {},
+              "_origin": {
+                "jsonschema": {
+                  "example": "theUser",
+                  "type": "string",
+                },
+              },
               "_recurrentCache": undefined,
               "_type": "string",
             },

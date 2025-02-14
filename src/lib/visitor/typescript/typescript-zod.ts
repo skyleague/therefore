@@ -381,7 +381,10 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         const { element, _options: options } = node
         const writer = createWriter()
 
-        if (options.set === true) {
+        // When converting from JSON Schema, we keep arrays as arrays rather than Sets
+        // because JSON data structures use arrays for collections, not Sets.
+        // Converting to z.set() would require transforming the data which breaks JSON compatibility
+        if (options.set === true && node._origin.jsonschema === undefined) {
             writer.write(`${context.value(zodSymbols.z())}.set(${context.render(element)})`)
 
             if (options.minItems !== undefined && options.maxItems !== undefined && options.minItems === options.maxItems) {
