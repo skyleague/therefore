@@ -37,7 +37,7 @@
   "dependencies": {
     "@skyleague/axioms": "^6.5.1",
     "@typeschema/main": "^0.14.1",
-    "@urql/introspection": "^1.1.0",
+    "@urql/introspection": "^1.2.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
@@ -53,23 +53,23 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^10.0.0",
+    "@skyleague/node-standards": "^10.0.1",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",
-    "got": "^14.4.5",
+    "got": "^14.4.6",
     "js-yaml": "^4.1.0",
     "json-schema-to-zod": "^2.6.0",
-    "ky": "^1.7.4",
-    "nock": "^13.5.6",
-    "tsx": "^4.19.2",
+    "ky": "^1.7.5",
+    "nock": "^14.0.1",
+    "tsx": "^4.19.3",
     "type-testing": "^0.2.0",
-    "typescript": "^5.7.3",
-    "zod": "^3.24.1",
-    "zod-to-json-schema": "^3.24.1"
+    "typescript": "^5.8.2",
+    "zod": "^3.24.2",
+    "zod-to-json-schema": "^3.24.5"
   },
   "peerDependencies": {
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.3"
   },
   "engines": {
     "node": ">=22"

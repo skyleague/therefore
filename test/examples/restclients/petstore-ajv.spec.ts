@@ -1,10 +1,10 @@
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
-    FindPetsByStatusResponse,
-    FindPetsByTagsResponse,
-    GetInventoryResponse,
-    LoginUserResponse,
+    FindPetsByStatusResponse200,
+    FindPetsByTagsResponse200,
+    GetInventoryResponse200,
+    LoginUserResponse200,
     Order,
     Pet,
     User,
@@ -113,7 +113,8 @@ describe('methods', () => {
             }
             if (result.status === 'client-error') {
                 expectTypeOf(result).toEqualTypeOf<
-                    | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
+                    | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
+                    | FailureResponse<'422', unknown, 'response:statuscode', IncomingHttpHeaders>
                     | FailureResponse<
                           `1${number}` | `3${number}` | `4${number}` | `5${number}`,
                           unknown,
@@ -353,10 +354,8 @@ describe('methods', () => {
                 statusCode: '200',
                 status: 'success',
                 success: true,
-                left: '',
+                right: '',
                 headers: {},
-                validationErrors: undefined,
-                where: 'response:body',
             })
             if ('right' in result) {
                 expectTypeOf(result.right).toEqualTypeOf<unknown>()
@@ -378,18 +377,15 @@ describe('methods', () => {
                 statusCode: '200',
                 status: 'success',
                 success: true,
-                left: '',
+                right: '',
                 headers: {},
-                validationErrors: undefined,
-                where: 'response:body',
             })
 
             if ('right' in result) {
                 expectTypeOf(result.right).toEqualTypeOf<unknown>()
                 expectTypeOf(result.headers).toEqualTypeOf<IncomingHttpHeaders>()
-                expectTypeOf(result.statusCode).toEqualTypeOf<StatusCode>()
-                // we dont have any 2xx status codes in this client
-                expectTypeOf(result.success).toEqualTypeOf<false>()
+                expectTypeOf(result.statusCode).toEqualTypeOf<'200'>()
+                expectTypeOf(result.success).toEqualTypeOf<true>()
             } else {
                 expectTypeOf(result.left).toEqualTypeOf<unknown>()
                 expectTypeOf(result.statusCode).toEqualTypeOf<StatusCode>()
@@ -440,16 +436,19 @@ describe('methods', () => {
                 >()
             }
             if (result.status === 'success') {
-                expectTypeOf(result).toEqualTypeOf<FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>>()
+                expectTypeOf(result).toEqualTypeOf<
+                    FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders> | SuccessResponse<'200', unknown>
+                >()
             }
             if (result.status === 'client-error') {
                 expectTypeOf(result).toEqualTypeOf<
-                    FailureResponse<
-                        `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                        unknown,
-                        'response:statuscode',
-                        IncomingHttpHeaders
-                    >
+                    | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
+                    | FailureResponse<
+                          `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                          unknown,
+                          'response:statuscode',
+                          IncomingHttpHeaders
+                      >
                 >()
             }
             if (result.status === 'server-error') {
@@ -464,17 +463,10 @@ describe('methods', () => {
             }
 
             if (result.success) {
-                expectTypeOf(result).toEqualTypeOf<
-                    | FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>
-                    | FailureResponse<
-                          `1${number}` | `3${number}` | `4${number}` | `5${number}`,
-                          unknown,
-                          'response:statuscode',
-                          IncomingHttpHeaders
-                      >
-                >()
+                expectTypeOf(result).toEqualTypeOf<SuccessResponse<'200', unknown>>()
             } else {
                 expectTypeOf(result).toEqualTypeOf<
+                    | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
                     | FailureResponse<`2${number}`, string, 'response:body', IncomingHttpHeaders>
                     | FailureResponse<
                           `1${number}` | `3${number}` | `4${number}` | `5${number}`,
@@ -507,10 +499,8 @@ describe('methods', () => {
                 statusCode: '200',
                 status: 'success',
                 success: true,
-                left: '',
+                right: '',
                 headers: {},
-                validationErrors: undefined,
-                where: 'response:body',
             })
 
             if ('right' in result) {
@@ -520,7 +510,7 @@ describe('methods', () => {
     })
 
     it('findPetsByStatus', async () => {
-        await asyncForAll(arbitrary(FindPetsByStatusResponse), async (response) => {
+        await asyncForAll(arbitrary(FindPetsByTagsResponse200), async (response) => {
             nock.cleanAll()
 
             const nockClient = $nockClient(client)
@@ -532,13 +522,13 @@ describe('methods', () => {
             expect(eitherToError(result)).toEqual(response)
 
             if ('right' in result) {
-                expectTypeOf(result.right).toEqualTypeOf<FindPetsByStatusResponse>()
+                expectTypeOf(result.right).toEqualTypeOf<FindPetsByStatusResponse200>()
             }
         })
     })
 
     it('findPetsByTags', async () => {
-        await asyncForAll(arbitrary(FindPetsByTagsResponse), async (response) => {
+        await asyncForAll(arbitrary(FindPetsByTagsResponse200), async (response) => {
             nock.cleanAll()
 
             const nockClient = $nockClient(client)
@@ -550,7 +540,7 @@ describe('methods', () => {
             expect(eitherToError(result)).toEqual(response)
 
             if ('right' in result) {
-                expectTypeOf(result.right).toEqualTypeOf<FindPetsByTagsResponse>()
+                expectTypeOf(result.right).toEqualTypeOf<FindPetsByTagsResponse200>()
             }
         })
     })
@@ -623,16 +613,15 @@ describe('methods', () => {
         }
         if (result.status === 'client-error') {
             expectTypeOf(result).toEqualTypeOf<
-                | FailureResponse<'405', unknown, 'response:statuscode', IncomingHttpHeaders>
+                | FailureResponse<'400', unknown, 'response:statuscode', IncomingHttpHeaders>
                 | FailureResponse<
-                      `1${number}` | `3${number}` | `4${number}` | `5${number}`,
+                      `3${number}` | `1${number}` | `4${number}` | `5${number}`,
                       unknown,
                       'response:statuscode',
                       IncomingHttpHeaders
                   >
-                | FailureResponse<'400', unknown, 'response:statuscode'>
-                | FailureResponse<'404', unknown, 'response:statuscode'>
-                | FailureResponse<'405', unknown, 'response:statuscode'>
+                | FailureResponse<'404', unknown, 'response:statuscode', IncomingHttpHeaders>
+                | FailureResponse<'422', unknown, 'response:statuscode', IncomingHttpHeaders>
             >()
         }
         if (result.status === 'server-error') {
@@ -710,11 +699,11 @@ describe('entities satisfy arbitrary', () => {
     })
 
     it('FindPetsByStatusResponse', () => {
-        forAll(arbitrary(FindPetsByStatusResponse), (x) => FindPetsByStatusResponse.is(x))
+        forAll(arbitrary(FindPetsByStatusResponse200), (x) => FindPetsByStatusResponse200.is(x))
     })
 
     it('FindPetsByTagsResponse', () => {
-        forAll(arbitrary(FindPetsByTagsResponse), (x) => FindPetsByTagsResponse.is(x))
+        forAll(arbitrary(FindPetsByTagsResponse200), (x) => FindPetsByTagsResponse200.is(x))
     })
 
     it('ApiResponse', () => {
@@ -722,7 +711,7 @@ describe('entities satisfy arbitrary', () => {
     })
 
     it('GetInventoryResponse', () => {
-        forAll(arbitrary(GetInventoryResponse), (x) => GetInventoryResponse.is(x))
+        forAll(arbitrary(GetInventoryResponse200), (x) => GetInventoryResponse200.is(x))
     })
 
     it('Order', () => {
@@ -738,6 +727,6 @@ describe('entities satisfy arbitrary', () => {
     })
 
     it('LoginUserResponse', () => {
-        forAll(arbitrary(LoginUserResponse), (x) => LoginUserResponse.is(x))
+        forAll(arbitrary(LoginUserResponse200), (x) => LoginUserResponse200.is(x))
     })
 })

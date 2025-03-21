@@ -366,7 +366,7 @@ export function buildContext({
             value._origin.jsonschema = schema
             return value
         },
-        annotate: (node, schema) => asNullable(annotateNode(node, schema, context), schema),
+        annotate: (node, schema) => annotateNode(asNullable(node, schema), schema, context),
     }
     return context
 }
