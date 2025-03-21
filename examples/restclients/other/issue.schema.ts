@@ -71,3 +71,48 @@ export const openapi: OpenapiV3 = {
 }
 
 export const issue = $restclient(openapi, { strict: false, validator: 'zod' })
+
+export const issue2 = $restclient(
+    {
+        openapi: '3.0.1',
+        info: {
+            title: 'Test',
+            version: '1.0.0',
+        },
+        paths: {
+            '/search': {
+                post: {
+                    requestBody: {
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/foobar',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '204': {
+                            description: 'OK',
+                        },
+                    },
+                },
+            },
+        },
+        components: {
+            schemas: {
+                foobar: {
+                    type: 'object',
+                    properties: {
+                        prop: {
+                            type: 'string',
+                            description: 'foobar',
+                            nullable: true,
+                        },
+                    },
+                },
+            },
+        },
+    },
+    { strict: false, validator: 'zod' },
+)

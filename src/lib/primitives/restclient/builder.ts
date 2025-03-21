@@ -69,7 +69,9 @@ export function methodName(
             action ?? methodToName[method],
             ...staticParts,
             ...(dynamicParts.length > 0 && !hasAction ? ['by', dynamicParts.join('_and_')] : []),
-        ].join('_'),
+        ]
+            .map((x) => sanitizeTypescriptTypeName(x ?? ''))
+            .join('_'),
     )
 }
 

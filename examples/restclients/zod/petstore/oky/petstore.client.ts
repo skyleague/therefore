@@ -10,10 +10,10 @@ import type { KyInstance, Options, ResponsePromise } from 'ky'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
-    FindPetsByStatusResponse,
-    FindPetsByTagsResponse,
-    GetInventoryResponse,
-    LoginUserResponse,
+    FindPetsByStatusResponse200,
+    FindPetsByTagsResponse200,
+    GetInventoryResponse200,
+    LoginUserResponse200,
     Order,
     Pet,
     User,
@@ -23,7 +23,7 @@ import {
  * Swagger Petstore - OpenAPI 3.0
  *
  * This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
- * Swagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+ * Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
  * You can now help us improve the API whether it's by making changes to the definition itself or to the code.
  * That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
  *
@@ -67,7 +67,7 @@ export class PetStoreOptionsKy {
     /**
      * POST /pet
      *
-     * Add a new pet to the store
+     * Add a new pet to the store.
      */
     public addPet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
         this.validateRequestBody(Pet, body)
@@ -78,7 +78,8 @@ export class PetStoreOptionsKy {
             }),
             {
                 200: Pet,
-                405: { parse: (x: unknown): string => x as string },
+                400: { parse: (x: unknown): string => x as string },
+                422: { parse: (x: unknown): string => x as string },
             },
             'json',
         )
@@ -87,7 +88,7 @@ export class PetStoreOptionsKy {
     /**
      * POST /user
      *
-     * Create user
+     * Create user.
      *
      * This can only be done by the logged in user.
      */
@@ -99,7 +100,7 @@ export class PetStoreOptionsKy {
                 json: body,
             }),
             {
-                default: User,
+                200: User,
             },
             'json',
         )
@@ -108,7 +109,7 @@ export class PetStoreOptionsKy {
     /**
      * POST /user/createWithList
      *
-     * Creates list of users with given input array
+     * Creates list of users with given input array.
      */
     public createUsersWithListInput({ body }: { body: CreateUsersWithListInputRequest }) {
         this.validateRequestBody(CreateUsersWithListInputRequest, body)
@@ -127,14 +128,15 @@ export class PetStoreOptionsKy {
     /**
      * DELETE /store/order/{orderId}
      *
-     * Delete purchase order by ID
+     * Delete purchase order by identifier.
      *
-     * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
+     * For valid response try integer IDs with value < 1000. Anything above 1000 or non-integers will generate API errors.
      */
     public deleteOrder({ path }: { path: { orderId: string } }) {
         return this.awaitResponse(
             this.client.delete(`store/order/${path.orderId}`, {}),
             {
+                200: { parse: (x: unknown): string => x as string },
                 400: { parse: (x: unknown): string => x as string },
                 404: { parse: (x: unknown): string => x as string },
             },
@@ -145,7 +147,9 @@ export class PetStoreOptionsKy {
     /**
      * DELETE /pet/{petId}
      *
-     * Deletes a pet
+     * Deletes a pet.
+     *
+     * Delete a pet.
      */
     public deletePet({
         path,
@@ -157,6 +161,7 @@ export class PetStoreOptionsKy {
                 headers: headers ?? {},
             }),
             {
+                200: { parse: (x: unknown): string => x as string },
                 400: { parse: (x: unknown): string => x as string },
             },
             'text',
@@ -166,7 +171,7 @@ export class PetStoreOptionsKy {
     /**
      * DELETE /user/{username}
      *
-     * Delete user
+     * Delete user resource.
      *
      * This can only be done by the logged in user.
      */
@@ -174,6 +179,7 @@ export class PetStoreOptionsKy {
         return this.awaitResponse(
             this.client.delete(`user/${path.username}`, {}),
             {
+                200: { parse: (x: unknown): string => x as string },
                 400: { parse: (x: unknown): string => x as string },
                 404: { parse: (x: unknown): string => x as string },
             },
@@ -184,9 +190,9 @@ export class PetStoreOptionsKy {
     /**
      * GET /pet/findByStatus
      *
-     * Finds Pets by status
+     * Finds Pets by status.
      *
-     * Multiple status values can be provided with comma separated strings
+     * Multiple status values can be provided with comma separated strings.
      */
     public findPetsByStatus({
         query,
@@ -197,7 +203,7 @@ export class PetStoreOptionsKy {
                 searchParams: query ?? {},
             }),
             {
-                200: FindPetsByStatusResponse,
+                200: FindPetsByStatusResponse200,
                 400: { parse: (x: unknown): string => x as string },
             },
             'json',
@@ -207,7 +213,7 @@ export class PetStoreOptionsKy {
     /**
      * GET /pet/findByTags
      *
-     * Finds Pets by tags
+     * Finds Pets by tags.
      *
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
@@ -220,7 +226,7 @@ export class PetStoreOptionsKy {
                 searchParams: query ?? {},
             }),
             {
-                200: FindPetsByTagsResponse,
+                200: FindPetsByTagsResponse200,
                 400: { parse: (x: unknown): string => x as string },
             },
             'json',
@@ -230,15 +236,15 @@ export class PetStoreOptionsKy {
     /**
      * GET /store/inventory
      *
-     * Returns pet inventories by status
+     * Returns pet inventories by status.
      *
-     * Returns a map of status codes to quantities
+     * Returns a map of status codes to quantities.
      */
     public getInventory({ auth = [['apiKey']] }: { auth?: string[][] | string[] } = {}) {
         return this.awaitResponse(
             this.buildClient(auth).get('store/inventory', {}),
             {
-                200: GetInventoryResponse,
+                200: GetInventoryResponse200,
             },
             'json',
         )
@@ -247,7 +253,7 @@ export class PetStoreOptionsKy {
     /**
      * GET /store/order/{orderId}
      *
-     * Find purchase order by ID
+     * Find purchase order by ID.
      *
      * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
      */
@@ -266,9 +272,9 @@ export class PetStoreOptionsKy {
     /**
      * GET /pet/{petId}
      *
-     * Find pet by ID
+     * Find pet by ID.
      *
-     * Returns a single pet
+     * Returns a single pet.
      */
     public getPetById({
         path,
@@ -288,7 +294,9 @@ export class PetStoreOptionsKy {
     /**
      * GET /user/{username}
      *
-     * Get user by user name
+     * Get user by user name.
+     *
+     * Get user detail based on username.
      */
     public getUserByName({ path }: { path: { username: string } }) {
         return this.awaitResponse(
@@ -305,7 +313,9 @@ export class PetStoreOptionsKy {
     /**
      * GET /user/login
      *
-     * Logs user into the system
+     * Logs user into the system.
+     *
+     * Log into the system.
      */
     public loginUser({ query }: { query?: { username?: string; password?: string } } = {}) {
         return this.awaitResponse(
@@ -313,7 +323,7 @@ export class PetStoreOptionsKy {
                 searchParams: query ?? {},
             }),
             {
-                200: LoginUserResponse,
+                200: LoginUserResponse200,
                 400: { parse: (x: unknown): string => x as string },
             },
             'json',
@@ -323,18 +333,26 @@ export class PetStoreOptionsKy {
     /**
      * GET /user/logout
      *
-     * Logs out current logged in user session
+     * Logs out current logged in user session.
+     *
+     * Log user out of the system.
      */
     public logoutUser() {
-        return this.awaitResponse(this.client.get('user/logout', {}), {}, 'text')
+        return this.awaitResponse(
+            this.client.get('user/logout', {}),
+            {
+                200: { parse: (x: unknown): string => x as string },
+            },
+            'text',
+        )
     }
 
     /**
      * POST /store/order
      *
-     * Place an order for a pet
+     * Place an order for a pet.
      *
-     * Place a new order in the store
+     * Place a new order in the store.
      */
     public placeOrder({ body }: { body: Order }) {
         this.validateRequestBody(Order, body)
@@ -345,7 +363,8 @@ export class PetStoreOptionsKy {
             }),
             {
                 200: Order,
-                405: { parse: (x: unknown): string => x as string },
+                400: { parse: (x: unknown): string => x as string },
+                422: { parse: (x: unknown): string => x as string },
             },
             'json',
         )
@@ -354,9 +373,9 @@ export class PetStoreOptionsKy {
     /**
      * PUT /pet
      *
-     * Update an existing pet
+     * Update an existing pet.
      *
-     * Update an existing pet by Id
+     * Update an existing pet by Id.
      */
     public updatePet({ body, auth = [['petstoreAuth']] }: { body: Pet; auth?: string[][] | string[] }) {
         this.validateRequestBody(Pet, body)
@@ -369,7 +388,7 @@ export class PetStoreOptionsKy {
                 200: Pet,
                 400: { parse: (x: unknown): string => x as string },
                 404: { parse: (x: unknown): string => x as string },
-                405: { parse: (x: unknown): string => x as string },
+                422: { parse: (x: unknown): string => x as string },
             },
             'json',
         )
@@ -378,7 +397,9 @@ export class PetStoreOptionsKy {
     /**
      * POST /pet/{petId}
      *
-     * Updates a pet in the store with form data
+     * Updates a pet in the store with form data.
+     *
+     * Updates a pet resource based on the form data.
      */
     public updatePetWithForm({
         path,
@@ -390,16 +411,17 @@ export class PetStoreOptionsKy {
                 searchParams: query ?? {},
             }),
             {
-                405: { parse: (x: unknown): string => x as string },
+                200: Pet,
+                400: { parse: (x: unknown): string => x as string },
             },
-            'text',
+            'json',
         )
     }
 
     /**
      * PUT /user/{username}
      *
-     * Update user
+     * Update user resource.
      *
      * This can only be done by the logged in user.
      */
@@ -410,7 +432,11 @@ export class PetStoreOptionsKy {
             this.client.put(`user/${path.username}`, {
                 json: body,
             }),
-            {},
+            {
+                200: { parse: (x: unknown): string => x as string },
+                400: { parse: (x: unknown): string => x as string },
+                404: { parse: (x: unknown): string => x as string },
+            },
             'text',
         )
     }
@@ -418,7 +444,9 @@ export class PetStoreOptionsKy {
     /**
      * POST /pet/{petId}/uploadImage
      *
-     * uploads an image
+     * Uploads an image.
+     *
+     * Upload image of the pet.
      */
     public uploadFile({
         body,
@@ -438,6 +466,8 @@ export class PetStoreOptionsKy {
             }),
             {
                 200: ApiResponse,
+                400: { parse: (x: unknown): string => x as string },
+                404: { parse: (x: unknown): string => x as string },
             },
             'json',
         )

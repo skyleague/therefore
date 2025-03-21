@@ -56,21 +56,21 @@ export const CreateUsersWithListInputRequest = User.array()
 
 export type CreateUsersWithListInputRequest = z.infer<typeof CreateUsersWithListInputRequest>
 
-export const FindPetsByStatusResponse = Pet.array()
+export const FindPetsByStatusResponse200 = Pet.array()
 
-export type FindPetsByStatusResponse = z.infer<typeof FindPetsByStatusResponse>
+export type FindPetsByStatusResponse200 = z.infer<typeof FindPetsByStatusResponse200>
 
-export const FindPetsByTagsResponse = Pet.array()
+export const FindPetsByTagsResponse200 = Pet.array()
 
-export type FindPetsByTagsResponse = z.infer<typeof FindPetsByTagsResponse>
+export type FindPetsByTagsResponse200 = z.infer<typeof FindPetsByTagsResponse200>
 
-export const GetInventoryResponse = z.record(z.number().int().optional())
+export const GetInventoryResponse200 = z.record(z.number().int().optional())
 
-export type GetInventoryResponse = z.infer<typeof GetInventoryResponse>
+export type GetInventoryResponse200 = z.infer<typeof GetInventoryResponse200>
 
-export const LoginUserResponse = z.string()
+export const LoginUserResponse200 = z.string()
 
-export type LoginUserResponse = z.infer<typeof LoginUserResponse>
+export type LoginUserResponse200 = z.infer<typeof LoginUserResponse200>
 
 export const Order = z.object({
     complete: z.boolean().optional(),

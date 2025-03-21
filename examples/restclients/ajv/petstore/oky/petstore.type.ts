@@ -9,10 +9,10 @@ import type { DefinedError, ValidateFunction } from 'ajv'
 
 import { validate as ApiResponseValidator } from './schemas/api-response.schema.js'
 import { validate as CreateUsersWithListInputRequestValidator } from './schemas/create-users-with-list-input-request.schema.js'
-import { validate as FindPetsByStatusResponseValidator } from './schemas/find-pets-by-status-response.schema.js'
-import { validate as FindPetsByTagsResponseValidator } from './schemas/find-pets-by-tags-response.schema.js'
-import { validate as GetInventoryResponseValidator } from './schemas/get-inventory-response.schema.js'
-import { validate as LoginUserResponseValidator } from './schemas/login-user-response.schema.js'
+import { validate as FindPetsByStatusResponse200Validator } from './schemas/find-pets-by-status-response200.schema.js'
+import { validate as FindPetsByTagsResponse200Validator } from './schemas/find-pets-by-tags-response200.schema.js'
+import { validate as GetInventoryResponse200Validator } from './schemas/get-inventory-response200.schema.js'
+import { validate as LoginUserResponse200Validator } from './schemas/login-user-response200.schema.js'
 import { validate as OrderValidator } from './schemas/order.schema.js'
 import { validate as PetValidator } from './schemas/pet.schema.js'
 import { validate as UserValidator } from './schemas/user.schema.js'
@@ -144,101 +144,101 @@ export const CreateUsersWithListInputRequest = {
     },
 } as const
 
-export type FindPetsByStatusResponse = Pet[]
+export type FindPetsByStatusResponse200 = Pet[]
 
-export const FindPetsByStatusResponse = {
-    validate: FindPetsByStatusResponseValidator as ValidateFunction<FindPetsByStatusResponse>,
+export const FindPetsByStatusResponse200 = {
+    validate: FindPetsByStatusResponse200Validator as ValidateFunction<FindPetsByStatusResponse200>,
     get schema() {
-        return FindPetsByStatusResponse.validate.schema
+        return FindPetsByStatusResponse200.validate.schema
     },
     get errors() {
-        return FindPetsByStatusResponse.validate.errors ?? undefined
+        return FindPetsByStatusResponse200.validate.errors ?? undefined
     },
-    is: (o: unknown): o is FindPetsByStatusResponse => FindPetsByStatusResponse.validate(o) === true,
+    is: (o: unknown): o is FindPetsByStatusResponse200 => FindPetsByStatusResponse200.validate(o) === true,
     assert: (o: unknown) => {
-        if (!FindPetsByStatusResponse.validate(o)) {
-            throw new ValidationError(FindPetsByStatusResponse.errors ?? [])
+        if (!FindPetsByStatusResponse200.validate(o)) {
+            throw new ValidationError(FindPetsByStatusResponse200.errors ?? [])
         }
     },
-    parse: (o: unknown): { right: FindPetsByStatusResponse } | { left: DefinedError[] } => {
-        if (FindPetsByStatusResponse.is(o)) {
+    parse: (o: unknown): { right: FindPetsByStatusResponse200 } | { left: DefinedError[] } => {
+        if (FindPetsByStatusResponse200.is(o)) {
             return { right: o }
         }
-        return { left: (FindPetsByStatusResponse.errors ?? []) as DefinedError[] }
+        return { left: (FindPetsByStatusResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
 
-export type FindPetsByTagsResponse = Pet[]
+export type FindPetsByTagsResponse200 = Pet[]
 
-export const FindPetsByTagsResponse = {
-    validate: FindPetsByTagsResponseValidator as ValidateFunction<FindPetsByTagsResponse>,
+export const FindPetsByTagsResponse200 = {
+    validate: FindPetsByTagsResponse200Validator as ValidateFunction<FindPetsByTagsResponse200>,
     get schema() {
-        return FindPetsByTagsResponse.validate.schema
+        return FindPetsByTagsResponse200.validate.schema
     },
     get errors() {
-        return FindPetsByTagsResponse.validate.errors ?? undefined
+        return FindPetsByTagsResponse200.validate.errors ?? undefined
     },
-    is: (o: unknown): o is FindPetsByTagsResponse => FindPetsByTagsResponse.validate(o) === true,
+    is: (o: unknown): o is FindPetsByTagsResponse200 => FindPetsByTagsResponse200.validate(o) === true,
     assert: (o: unknown) => {
-        if (!FindPetsByTagsResponse.validate(o)) {
-            throw new ValidationError(FindPetsByTagsResponse.errors ?? [])
+        if (!FindPetsByTagsResponse200.validate(o)) {
+            throw new ValidationError(FindPetsByTagsResponse200.errors ?? [])
         }
     },
-    parse: (o: unknown): { right: FindPetsByTagsResponse } | { left: DefinedError[] } => {
-        if (FindPetsByTagsResponse.is(o)) {
+    parse: (o: unknown): { right: FindPetsByTagsResponse200 } | { left: DefinedError[] } => {
+        if (FindPetsByTagsResponse200.is(o)) {
             return { right: o }
         }
-        return { left: (FindPetsByTagsResponse.errors ?? []) as DefinedError[] }
+        return { left: (FindPetsByTagsResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
 
-export interface GetInventoryResponse {
+export interface GetInventoryResponse200 {
     [k: string]: number | undefined
 }
 
-export const GetInventoryResponse = {
-    validate: GetInventoryResponseValidator as ValidateFunction<GetInventoryResponse>,
+export const GetInventoryResponse200 = {
+    validate: GetInventoryResponse200Validator as ValidateFunction<GetInventoryResponse200>,
     get schema() {
-        return GetInventoryResponse.validate.schema
+        return GetInventoryResponse200.validate.schema
     },
     get errors() {
-        return GetInventoryResponse.validate.errors ?? undefined
+        return GetInventoryResponse200.validate.errors ?? undefined
     },
-    is: (o: unknown): o is GetInventoryResponse => GetInventoryResponse.validate(o) === true,
+    is: (o: unknown): o is GetInventoryResponse200 => GetInventoryResponse200.validate(o) === true,
     assert: (o: unknown) => {
-        if (!GetInventoryResponse.validate(o)) {
-            throw new ValidationError(GetInventoryResponse.errors ?? [])
+        if (!GetInventoryResponse200.validate(o)) {
+            throw new ValidationError(GetInventoryResponse200.errors ?? [])
         }
     },
-    parse: (o: unknown): { right: GetInventoryResponse } | { left: DefinedError[] } => {
-        if (GetInventoryResponse.is(o)) {
+    parse: (o: unknown): { right: GetInventoryResponse200 } | { left: DefinedError[] } => {
+        if (GetInventoryResponse200.is(o)) {
             return { right: o }
         }
-        return { left: (GetInventoryResponse.errors ?? []) as DefinedError[] }
+        return { left: (GetInventoryResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
 
-export type LoginUserResponse = string
+export type LoginUserResponse200 = string
 
-export const LoginUserResponse = {
-    validate: LoginUserResponseValidator as ValidateFunction<LoginUserResponse>,
+export const LoginUserResponse200 = {
+    validate: LoginUserResponse200Validator as ValidateFunction<LoginUserResponse200>,
     get schema() {
-        return LoginUserResponse.validate.schema
+        return LoginUserResponse200.validate.schema
     },
     get errors() {
-        return LoginUserResponse.validate.errors ?? undefined
+        return LoginUserResponse200.validate.errors ?? undefined
     },
-    is: (o: unknown): o is LoginUserResponse => LoginUserResponse.validate(o) === true,
+    is: (o: unknown): o is LoginUserResponse200 => LoginUserResponse200.validate(o) === true,
     assert: (o: unknown) => {
-        if (!LoginUserResponse.validate(o)) {
-            throw new ValidationError(LoginUserResponse.errors ?? [])
+        if (!LoginUserResponse200.validate(o)) {
+            throw new ValidationError(LoginUserResponse200.errors ?? [])
         }
     },
-    parse: (o: unknown): { right: LoginUserResponse } | { left: DefinedError[] } => {
-        if (LoginUserResponse.is(o)) {
+    parse: (o: unknown): { right: LoginUserResponse200 } | { left: DefinedError[] } => {
+        if (LoginUserResponse200.is(o)) {
             return { right: o }
         }
-        return { left: (LoginUserResponse.errors ?? []) as DefinedError[] }
+        return { left: (LoginUserResponse200.errors ?? []) as DefinedError[] }
     },
 } as const
 

@@ -22,3 +22,9 @@ export const Company = z.object({
 })
 
 export type Company = z.infer<typeof Company>
+
+export const Foobar = z.object({
+    prop: z.string().nullable().describe('foobar').optional(),
+})
+
+export type Foobar = z.infer<typeof Foobar>

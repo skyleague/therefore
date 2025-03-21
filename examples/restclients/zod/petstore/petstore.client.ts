@@ -12,10 +12,10 @@ import type { SafeParseReturnType, ZodError } from 'zod'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
-    FindPetsByStatusResponse,
-    FindPetsByTagsResponse,
-    GetInventoryResponse,
-    LoginUserResponse,
+    FindPetsByStatusResponse200,
+    FindPetsByTagsResponse200,
+    GetInventoryResponse200,
+    LoginUserResponse200,
     Order,
     Pet,
     User,
@@ -25,7 +25,7 @@ import {
  * Swagger Petstore - OpenAPI 3.0
  *
  * This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
- * Swagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
+ * Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!
  * You can now help us improve the API whether it's by making changes to the definition itself or to the code.
  * That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
  *
@@ -71,17 +71,18 @@ export class PetStore {
     /**
      * POST /pet
      *
-     * Add a new pet to the store
+     * Add a new pet to the store.
      */
     public addPet({
         body,
         auth = [['petstoreAuth']],
     }: { body: Pet; auth?: string[][] | string[] }): Promise<
         | SuccessResponse<'200', Pet>
-        | FailureResponse<'405', unknown, 'response:statuscode'>
+        | FailureResponse<'400', unknown, 'response:statuscode'>
+        | FailureResponse<'422', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '422'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         const _body = this.validateRequestBody(Pet, body)
         if ('left' in _body) {
@@ -95,7 +96,8 @@ export class PetStore {
             }),
             {
                 200: Pet,
-                405: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                422: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['addPet']>
     }
@@ -103,14 +105,14 @@ export class PetStore {
     /**
      * POST /user
      *
-     * Create user
+     * Create user.
      *
      * This can only be done by the logged in user.
      */
     public createUser({
         body,
     }: { body: User }): Promise<
-        | SuccessResponse<StatusCode<2>, User>
+        | SuccessResponse<'200', User>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
@@ -126,7 +128,7 @@ export class PetStore {
                 responseType: 'json',
             }),
             {
-                default: User,
+                200: User,
             },
         ) as ReturnType<this['createUser']>
     }
@@ -134,7 +136,7 @@ export class PetStore {
     /**
      * POST /user/createWithList
      *
-     * Creates list of users with given input array
+     * Creates list of users with given input array.
      */
     public createUsersWithListInput({
         body,
@@ -163,13 +165,14 @@ export class PetStore {
     /**
      * DELETE /store/order/{orderId}
      *
-     * Delete purchase order by ID
+     * Delete purchase order by identifier.
      *
-     * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
+     * For valid response try integer IDs with value < 1000. Anything above 1000 or non-integers will generate API errors.
      */
     public deleteOrder({
         path,
     }: { path: { orderId: string } }): Promise<
+        | SuccessResponse<'200', unknown>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -180,6 +183,7 @@ export class PetStore {
                 responseType: 'text',
             }),
             {
+                200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 404: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
@@ -189,13 +193,16 @@ export class PetStore {
     /**
      * DELETE /pet/{petId}
      *
-     * Deletes a pet
+     * Deletes a pet.
+     *
+     * Delete a pet.
      */
     public deletePet({
         path,
         headers,
         auth = [['petstoreAuth']],
     }: { path: { petId: string }; headers?: { api_key?: string }; auth?: string[][] | string[] }): Promise<
+        | SuccessResponse<'200', unknown>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
@@ -206,6 +213,7 @@ export class PetStore {
                 responseType: 'text',
             }),
             {
+                200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['deletePet']>
@@ -214,13 +222,14 @@ export class PetStore {
     /**
      * DELETE /user/{username}
      *
-     * Delete user
+     * Delete user resource.
      *
      * This can only be done by the logged in user.
      */
     public deleteUser({
         path,
     }: { path: { username: string } }): Promise<
+        | SuccessResponse<'200', unknown>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -231,6 +240,7 @@ export class PetStore {
                 responseType: 'text',
             }),
             {
+                200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 404: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
@@ -240,15 +250,15 @@ export class PetStore {
     /**
      * GET /pet/findByStatus
      *
-     * Finds Pets by status
+     * Finds Pets by status.
      *
-     * Multiple status values can be provided with comma separated strings
+     * Multiple status values can be provided with comma separated strings.
      */
     public findPetsByStatus({
         query,
         auth = [['petstoreAuth']],
     }: { query?: { status?: string }; auth?: string[][] | string[] } = {}): Promise<
-        | SuccessResponse<'200', FindPetsByStatusResponse>
+        | SuccessResponse<'200', FindPetsByStatusResponse200>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
@@ -259,7 +269,7 @@ export class PetStore {
                 responseType: 'json',
             }),
             {
-                200: FindPetsByStatusResponse,
+                200: FindPetsByStatusResponse200,
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['findPetsByStatus']>
@@ -268,7 +278,7 @@ export class PetStore {
     /**
      * GET /pet/findByTags
      *
-     * Finds Pets by tags
+     * Finds Pets by tags.
      *
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
@@ -276,7 +286,7 @@ export class PetStore {
         query,
         auth = [['petstoreAuth']],
     }: { query?: { tags?: string }; auth?: string[][] | string[] } = {}): Promise<
-        | SuccessResponse<'200', FindPetsByTagsResponse>
+        | SuccessResponse<'200', FindPetsByTagsResponse200>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
@@ -287,7 +297,7 @@ export class PetStore {
                 responseType: 'json',
             }),
             {
-                200: FindPetsByTagsResponse,
+                200: FindPetsByTagsResponse200,
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['findPetsByTags']>
@@ -296,14 +306,14 @@ export class PetStore {
     /**
      * GET /store/inventory
      *
-     * Returns pet inventories by status
+     * Returns pet inventories by status.
      *
-     * Returns a map of status codes to quantities
+     * Returns a map of status codes to quantities.
      */
     public getInventory({
         auth = [['apiKey']],
     }: { auth?: string[][] | string[] } = {}): Promise<
-        | SuccessResponse<'200', GetInventoryResponse>
+        | SuccessResponse<'200', GetInventoryResponse200>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
@@ -312,7 +322,7 @@ export class PetStore {
                 responseType: 'json',
             }),
             {
-                200: GetInventoryResponse,
+                200: GetInventoryResponse200,
             },
         ) as ReturnType<this['getInventory']>
     }
@@ -320,7 +330,7 @@ export class PetStore {
     /**
      * GET /store/order/{orderId}
      *
-     * Find purchase order by ID
+     * Find purchase order by ID.
      *
      * For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.
      */
@@ -348,9 +358,9 @@ export class PetStore {
     /**
      * GET /pet/{petId}
      *
-     * Find pet by ID
+     * Find pet by ID.
      *
-     * Returns a single pet
+     * Returns a single pet.
      */
     public getPetById({
         path,
@@ -377,7 +387,9 @@ export class PetStore {
     /**
      * GET /user/{username}
      *
-     * Get user by user name
+     * Get user by user name.
+     *
+     * Get user detail based on username.
      */
     public getUserByName({
         path,
@@ -403,12 +415,14 @@ export class PetStore {
     /**
      * GET /user/login
      *
-     * Logs user into the system
+     * Logs user into the system.
+     *
+     * Log into the system.
      */
     public loginUser({
         query,
     }: { query?: { username?: string; password?: string } } = {}): Promise<
-        | SuccessResponse<'200', LoginUserResponse>
+        | SuccessResponse<'200', LoginUserResponse200>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
@@ -419,7 +433,7 @@ export class PetStore {
                 responseType: 'json',
             }),
             {
-                200: LoginUserResponse,
+                200: LoginUserResponse200,
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['loginUser']>
@@ -428,9 +442,12 @@ export class PetStore {
     /**
      * GET /user/logout
      *
-     * Logs out current logged in user session
+     * Logs out current logged in user session.
+     *
+     * Log user out of the system.
      */
     public logoutUser(): Promise<
+        | SuccessResponse<'200', unknown>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
     > {
@@ -438,25 +455,28 @@ export class PetStore {
             this.client.get('user/logout', {
                 responseType: 'text',
             }),
-            {},
+            {
+                200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+            },
         ) as ReturnType<this['logoutUser']>
     }
 
     /**
      * POST /store/order
      *
-     * Place an order for a pet
+     * Place an order for a pet.
      *
-     * Place a new order in the store
+     * Place a new order in the store.
      */
     public placeOrder({
         body,
     }: { body: Order }): Promise<
         | SuccessResponse<'200', Order>
-        | FailureResponse<'405', unknown, 'response:statuscode'>
+        | FailureResponse<'400', unknown, 'response:statuscode'>
+        | FailureResponse<'422', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '422'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         const _body = this.validateRequestBody(Order, body)
         if ('left' in _body) {
@@ -470,7 +490,8 @@ export class PetStore {
             }),
             {
                 200: Order,
-                405: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                422: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['placeOrder']>
     }
@@ -478,9 +499,9 @@ export class PetStore {
     /**
      * PUT /pet
      *
-     * Update an existing pet
+     * Update an existing pet.
      *
-     * Update an existing pet by Id
+     * Update an existing pet by Id.
      */
     public updatePet({
         body,
@@ -489,11 +510,11 @@ export class PetStore {
         | SuccessResponse<'200', Pet>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<'404', unknown, 'response:statuscode'>
-        | FailureResponse<'405', unknown, 'response:statuscode'>
+        | FailureResponse<'422', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
         | FailureResponse<
-              Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404' | '405'>,
+              Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404' | '422'>,
               unknown,
               'response:statuscode',
               IncomingHttpHeaders
@@ -513,7 +534,7 @@ export class PetStore {
                 200: Pet,
                 400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
                 404: { safeParse: (x: unknown) => ({ success: true, data: x }) },
-                405: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                422: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['updatePet']>
     }
@@ -521,24 +542,28 @@ export class PetStore {
     /**
      * POST /pet/{petId}
      *
-     * Updates a pet in the store with form data
+     * Updates a pet in the store with form data.
+     *
+     * Updates a pet resource based on the form data.
      */
     public updatePetWithForm({
         path,
         query,
         auth = [['petstoreAuth']],
     }: { path: { petId: string }; query?: { name?: string; status?: string }; auth?: string[][] | string[] }): Promise<
-        | FailureResponse<'405', unknown, 'response:statuscode'>
+        | SuccessResponse<'200', Pet>
+        | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '405'>, unknown, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}`, {
                 searchParams: query ?? {},
-                responseType: 'text',
+                responseType: 'json',
             }),
             {
-                405: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                200: Pet,
+                400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['updatePetWithForm']>
     }
@@ -546,7 +571,7 @@ export class PetStore {
     /**
      * PUT /user/{username}
      *
-     * Update user
+     * Update user resource.
      *
      * This can only be done by the logged in user.
      */
@@ -554,9 +579,12 @@ export class PetStore {
         body,
         path,
     }: { body: User; path: { username: string } }): Promise<
+        | SuccessResponse<'200', unknown>
+        | FailureResponse<'400', unknown, 'response:statuscode'>
+        | FailureResponse<'404', unknown, 'response:statuscode'>
         | FailureResponse<undefined, unknown, 'request:body', undefined>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         const _body = this.validateRequestBody(User, body)
         if ('left' in _body) {
@@ -568,14 +596,20 @@ export class PetStore {
                 json: _body.right,
                 responseType: 'text',
             }),
-            {},
+            {
+                200: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                404: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+            },
         ) as ReturnType<this['updateUser']>
     }
 
     /**
      * POST /pet/{petId}/uploadImage
      *
-     * uploads an image
+     * Uploads an image.
+     *
+     * Upload image of the pet.
      */
     public uploadFile({
         body,
@@ -589,8 +623,10 @@ export class PetStore {
         auth?: string[][] | string[]
     }): Promise<
         | SuccessResponse<'200', ApiResponse>
+        | FailureResponse<'400', unknown, 'response:statuscode'>
+        | FailureResponse<'404', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
-        | FailureResponse<StatusCode<1 | 3 | 4 | 5>, string, 'response:statuscode', IncomingHttpHeaders>
+        | FailureResponse<Exclude<StatusCode<1 | 3 | 4 | 5>, '400' | '404'>, unknown, 'response:statuscode', IncomingHttpHeaders>
     > {
         return this.awaitResponse(
             this.buildClient(auth).post(`pet/${path.petId}/uploadImage`, {
@@ -600,6 +636,8 @@ export class PetStore {
             }),
             {
                 200: ApiResponse,
+                400: { safeParse: (x: unknown) => ({ success: true, data: x }) },
+                404: { safeParse: (x: unknown) => ({ success: true, data: x }) },
             },
         ) as ReturnType<this['uploadFile']>
     }
