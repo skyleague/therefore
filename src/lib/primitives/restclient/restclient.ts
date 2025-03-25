@@ -1,15 +1,16 @@
-import type { OpenapiV3 } from '../../../types/openapi.type.js'
-import { EitherHelper, RestClientBuilder } from './builder.js'
-
+import path from 'node:path'
+import { omit } from '@skyleague/axioms'
+import type { Options as GotOptions, OptionsInit as GotOptionsInit } from 'got'
+import type { Options as KyOptions } from 'ky'
+import type { Jsonifiable, Jsonify } from 'type-fest'
 import { replaceExtension } from '../../../common/template/path.js'
+import type { OpenapiV3 } from '../../../types/openapi.type.js'
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { type Hooks, Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
+import { EitherHelper, RestClientBuilder } from './builder.js'
 
-import path from 'node:path'
-import { omit } from '@skyleague/axioms'
-
-export interface RestClientOptions {
+export interface RestClientOptions<Options extends Jsonifiable = Jsonifiable> {
     filename?: string | undefined
 
     /**
@@ -75,9 +76,11 @@ export interface RestClientOptions {
      * @defaultValue ajv
      */
     validator?: 'zod' | 'ajv'
+
+    options?: Options
 }
 
-export class RestclientType extends Node {
+export class RestclientType<Options extends Jsonifiable = Jsonifiable> extends Node {
     public override _type = 'restclient' as const
     public override _children: Node[]
 
@@ -86,7 +89,7 @@ export class RestclientType extends Node {
     public _builder: RestClientBuilder
     public override _canReference: false = false
 
-    private constructor(builder: RestClientBuilder, options: SchemaOptions<RestClientOptions>) {
+    private constructor(builder: RestClientBuilder, options: SchemaOptions<RestClientOptions<Options>>) {
         super({
             ...omit(options, ['validator']),
             description: builder.openapi.info.description,
@@ -107,7 +110,10 @@ export class RestclientType extends Node {
         }
     }
 
-    public static async from(definition: OpenapiV3, options: SchemaOptions<RestClientOptions>) {
+    public static async from<Options extends Jsonifiable = Jsonifiable>(
+        definition: OpenapiV3,
+        options: SchemaOptions<RestClientOptions<Options>>,
+    ) {
         return new RestclientType(await RestClientBuilder.from(definition, options), options)
     }
 
@@ -169,6 +175,20 @@ export class RestclientType extends Node {
  *
  * @group Schema
  */
+export function $restclient(
+    definition: unknown,
+    options?: Omit<Partial<RestClientOptions>, 'options'> & {
+        client?: 'got'
+        options?: Jsonify<Omit<GotOptions | GotOptionsInit, 'prefixUrl' | 'throwHttpErrors'>>
+    },
+): Promise<RestclientType>
+export function $restclient(
+    definition: unknown,
+    options: Omit<Partial<RestClientOptions>, 'options'> & {
+        client: 'ky'
+        options?: Jsonify<Omit<KyOptions, 'prefixUrl' | 'throwHttpErrors'>>
+    },
+): Promise<RestclientType>
 export function $restclient(definition: unknown, options: Partial<RestClientOptions> = {}): Promise<RestclientType> {
     return RestclientType.from(definition as OpenapiV3, options)
 }
