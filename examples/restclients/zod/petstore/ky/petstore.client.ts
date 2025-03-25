@@ -53,7 +53,7 @@ export class PetStoreKy {
         defaultAuth?: string[][] | string[]
         client?: KyInstance
     }) {
-        this.client = client.extend({ prefixUrl, throwHttpErrors: false, ...options })
+        this.client = client.extend({ prefixUrl, throwHttpErrors: false, timeout: 4000, ...options })
         this.auth = auth
         this.availableAuth = new Set(Object.keys(auth))
         this.defaultAuth = defaultAuth

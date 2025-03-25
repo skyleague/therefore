@@ -264,6 +264,7 @@ export class RestClientBuilder {
             formats = true,
             client = 'got',
             validator = constants.defaultValidator,
+            options = {},
         }: Partial<RestClientOptions> = {},
     ) {
         this.openapi = openapi
@@ -279,6 +280,7 @@ export class RestClientBuilder {
             formats,
             client,
             validator,
+            options,
         }
         this.pathItems = this._pathItems
 
@@ -917,11 +919,11 @@ export class RestClientBuilder {
                     this.options.client === 'got',
                     `this.client = client.extend(...[{ prefixUrl${
                         this.options.useEither ? ', throwHttpErrors: false' : ''
-                    } }, options].filter((o): o is ${Options} => o !== undefined))`,
+                    }${this.options.options && Object.keys(this.options.options).length > 0 ? `, ${JSON.stringify(this.options.options).slice(1, -1)}` : ''} }, options].filter((o): o is ${Options} => o !== undefined))`,
                 )
                 writer.conditionalWriteLine(
                     this.options.client === 'ky',
-                    `this.client = client.extend({ prefixUrl${this.options.useEither ? ', throwHttpErrors: false' : ''}, ...options })`,
+                    `this.client = client.extend({ prefixUrl${this.options.useEither ? ', throwHttpErrors: false' : ''}${this.options.options && Object.keys(this.options.options).length > 0 ? `, ${JSON.stringify(this.options.options).slice(1, -1)}` : ''}, ...options })`,
                 )
 
                 writer.conditionalWriteLine(hasAuth, 'this.auth = auth')
