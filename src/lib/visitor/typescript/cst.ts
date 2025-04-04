@@ -5,6 +5,7 @@ import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import type { TypescriptOutput } from '../../cst/cst.js'
 import type { Node } from '../../cst/node.js'
+import { mustBeLazyDefined } from '../prepass/prepass.js'
 import { buildTypescriptTypeContext } from './typescript-type.js'
 import { buildTypescriptZodContext } from './typescript-zod.js'
 
@@ -44,7 +45,7 @@ const defaultZodOutput = (node: Node) => {
             }
         },
         definition: (self, context) => {
-            if (self._isRecurrent) {
+            if (mustBeLazyDefined(self)) {
                 return undefined
             }
 

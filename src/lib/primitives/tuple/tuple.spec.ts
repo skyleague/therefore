@@ -56,7 +56,6 @@ it('expand', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -66,7 +65,6 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "tuple",
         "items": [
           StringType {
@@ -83,7 +81,6 @@ it('expand', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -116,7 +113,6 @@ it('example', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -134,7 +130,6 @@ it('example', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "tuple",
         "items": [
           StringType {
@@ -151,7 +146,6 @@ it('example', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -187,7 +181,6 @@ it('default', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -201,7 +194,6 @@ it('default', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "tuple",
         "items": [
           StringType {
@@ -218,7 +210,6 @@ it('default', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],

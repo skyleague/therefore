@@ -14,8 +14,8 @@ type Local2 = string
 
 type Local = string
 
-export type Ref1 = Local
+export type Ref1 = Local2
 
-export type Ref2 = Local2
+export type Ref2 = Local
 
 export type Unevaluated = string

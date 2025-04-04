@@ -4,7 +4,6 @@ import type { Node } from '../../cst/node.js'
 import { type ThereforeVisitor, walkTherefore } from '../../cst/visitor.js'
 import type { _ExtendType, _OmitType, _PickType } from '../../primitives/object/object.js'
 import type { RecordType } from '../../primitives/record/record.js'
-import { ValidatorType } from '../../primitives/validator/validator.js'
 import { createWriter } from '../../writer.js'
 import type { DefinedTypescriptOutput } from './cst.js'
 import { stringLiteral, toLiteral } from './literal.js'
@@ -86,7 +85,12 @@ export function buildTypescriptZodTypeContext({
         locals,
     })
     const originalReference = context.reference
-    context.reference = (node) => `${originalReference(zodSymbols.z())}.infer<typeof ${originalReference(node)}>`
+    context.reference = (node) => {
+        if (node._attributes.validatorType?._options.type === 'zod' && node._attributes.validatorType._options.types) {
+            return originalReference(node)
+        }
+        return `${originalReference(zodSymbols.z())}.infer<typeof ${originalReference(node)}>`
+    }
     return context
 }
 
@@ -445,12 +449,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         if (reference._sourcePath === undefined && context.locals.find(([l]) => l._id === reference._id) === undefined) {
             context.locals.push([reference, (out) => out.subtype === 'zod'])
         }
-        if (
-            context.symbol === reference ||
-            (context.symbol instanceof ValidatorType && context.symbol._children[0] === reference)
-        ) {
-            return `${context.value(zodSymbols.z())}.lazy(() => ${context.value(reference)})`
-        }
+
         return context.value(reference)
     },
     default: (node, context) => {

@@ -29,7 +29,6 @@ it('string', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -38,7 +37,6 @@ it('string', () => {
         "_id": "2",
         "_isCommutative": true,
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "optional",
       }
     `)
@@ -69,7 +67,6 @@ it('string expanded', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -78,7 +75,6 @@ it('string expanded', () => {
         "_id": "2",
         "_isCommutative": true,
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "optional",
       }
     `)

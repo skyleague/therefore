@@ -95,7 +95,6 @@ it('expand', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -105,7 +104,6 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "foo": StringType {
@@ -122,7 +120,6 @@ it('expand', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -134,7 +131,6 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "intersection",
       }
     `)
@@ -174,7 +170,6 @@ it('example', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -184,7 +179,6 @@ it('example', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "foo": StringType {
@@ -201,7 +195,6 @@ it('example', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -221,7 +214,6 @@ it('example', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "intersection",
       }
     `)
@@ -261,7 +253,6 @@ it('default', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -271,7 +262,6 @@ it('default', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "foo": StringType {
@@ -288,7 +278,6 @@ it('default', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -304,7 +293,6 @@ it('default', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "intersection",
       }
     `)
@@ -348,7 +336,6 @@ it('object intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -358,7 +345,6 @@ it('object intersection', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "foo": StringType {
@@ -375,7 +361,6 @@ it('object intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -403,7 +388,6 @@ it('object intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -413,7 +397,6 @@ it('object intersection', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "bar": StringType {
@@ -430,7 +413,6 @@ it('object intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -451,7 +433,6 @@ it('object intersection', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "intersection",
       }
     `)
@@ -494,7 +475,6 @@ it('reference intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -504,7 +484,6 @@ it('reference intersection', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {
               "foo": StringType {
@@ -521,7 +500,6 @@ it('reference intersection', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             },
@@ -558,7 +536,6 @@ it('reference intersection', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                 ],
@@ -568,7 +545,6 @@ it('reference intersection', () => {
                 "_isCommutative": false,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "object",
                 "shape": {
                   "bar": StringType {
@@ -585,7 +561,6 @@ it('reference intersection', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                 },
@@ -605,7 +580,6 @@ it('reference intersection', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "ref",
           },
         ],
@@ -624,7 +598,6 @@ it('reference intersection', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "intersection",
       }
     `)

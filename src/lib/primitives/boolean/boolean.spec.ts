@@ -57,7 +57,6 @@ it('example', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "boolean",
       }
     `)
@@ -83,7 +82,6 @@ it('default', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "boolean",
       }
     `)

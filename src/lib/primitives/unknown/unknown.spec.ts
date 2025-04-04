@@ -24,7 +24,6 @@ it('simple', () => {
           "restrictToJson": false,
         },
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "unknown",
       }
     `)

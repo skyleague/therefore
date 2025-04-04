@@ -7,24 +7,23 @@
 import { z } from 'zod'
 import type { ZodType } from 'zod'
 
+export type BusinessRelationModel = {
+    other?: OtherModel | undefined
+    relations?: BusinessRelationModel[] | undefined
+}
+export const BusinessRelationModel: ZodType<BusinessRelationModel> = z.lazy(() =>
+    z.object({
+        other: OtherModel.optional(),
+        relations: BusinessRelationModel.array().optional(),
+    }),
+)
+
+export const GetBusinessesResponse = BusinessRelationModel.array()
+
+export type GetBusinessesResponse = z.infer<typeof GetBusinessesResponse>
+
 export const OtherModel = z.object({
     name: z.string().optional(),
 })
 
 export type OtherModel = z.infer<typeof OtherModel>
-
-export type BusinessRelationModel = {
-    other?: z.infer<typeof OtherModel> | undefined
-    relations?: z.infer<typeof BusinessRelationModel>[] | undefined
-}
-export const BusinessRelationModel: ZodType<BusinessRelationModel> = z.object({
-    other: OtherModel.optional(),
-    relations: z
-        .lazy(() => BusinessRelationModel)
-        .array()
-        .optional(),
-})
-
-export const GetBusinessesResponse = BusinessRelationModel.array()
-
-export type GetBusinessesResponse = z.infer<typeof GetBusinessesResponse>

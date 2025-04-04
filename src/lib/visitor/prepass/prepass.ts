@@ -174,7 +174,72 @@ export function autoRef<T extends Node>(obj: T & { autoref?: true }, symbols: We
     if (obj.autoref !== true) {
         const evaluated: T & { autoref?: true } = walkTherefore(obj, autoRefVisitor) as unknown as T & { autoref?: true }
         evaluated.autoref = true
+
+        if (!evaluated._isCommutative) {
+            sweepBackEdges(evaluated)
+        }
+
         return evaluated
     }
     return obj
+}
+
+export const isSwept = new WeakSet<Node>()
+export const isBackEdged = new Set<string>()
+
+export function mustBeLazyDefined(node: Node) {
+    return isBackEdged.has(node._id)
+}
+
+const _visitedInHypergraph = new Set<string>() // All visited nodes
+export function sweepBackEdges(node: Node) {
+    const inCurrentPath = new Set<string>() // Nodes in current DFS path
+
+    const backEdgeVisitor: ThereforeVisitor<Node> = {
+        default: (node) => {
+            if (isSwept.has(node)) {
+                return node
+            }
+            isSwept.add(node)
+
+            const processNode = (current: Node) => {
+                const currentId = current._id
+
+                // Skip if already visited
+                if (_visitedInHypergraph.has(currentId)) {
+                    return
+                }
+
+                // Mark as visited and in current path
+                _visitedInHypergraph.add(currentId)
+                inCurrentPath.add(currentId)
+
+                // Process children
+                for (const child of current._children ?? []) {
+                    const childId = child._id
+
+                    // If child is in current path, we found a back edge
+                    if (inCurrentPath.has(childId)) {
+                        isBackEdged.add(childId)
+                    } else {
+                        processNode(child)
+                    }
+                }
+
+                // Remove from current path when backtracking
+                inCurrentPath.delete(currentId)
+            }
+
+            // Process the node and its validator type
+            processNode(node)
+            if (node._attributes.validatorType) {
+                processNode(node._attributes.validatorType)
+            }
+
+            return node
+        },
+    }
+
+    // Start the sweep from the root node
+    walkTherefore(node, backEdgeVisitor)
 }

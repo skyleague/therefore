@@ -77,7 +77,6 @@ it('expand', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -87,7 +86,6 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "element": StringType {
               "_attributes": {
@@ -103,7 +101,6 @@ it('expand', () => {
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
-              "_recurrentCache": undefined,
               "_type": "string",
             },
             "shape": {},
@@ -123,7 +120,6 @@ it('expand', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "ref",
       }
     `)
@@ -155,7 +151,6 @@ it('self reference', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
           NodeTrait {
@@ -192,7 +187,6 @@ it('self reference', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "ref",
               },
             ],
@@ -202,7 +196,6 @@ it('self reference', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
@@ -229,7 +222,6 @@ it('self reference', () => {
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
-              "_recurrentCache": undefined,
               "_type": "ref",
             },
           },
@@ -258,7 +250,6 @@ it('self reference', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "ref",
           },
         ],
@@ -268,7 +259,6 @@ it('self reference', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)
@@ -301,7 +291,6 @@ it('uuid reference', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -319,7 +308,6 @@ it('uuid reference', () => {
         "_isCommutative": true,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "ref",
       }
     `)
@@ -351,7 +339,6 @@ it('description ', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
           NodeTrait {
@@ -391,7 +378,6 @@ it('description ', () => {
                 "_name": "json",
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "ref",
               },
             ],
@@ -401,7 +387,6 @@ it('description ', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "array",
             "element": NodeTrait {
               "_attributes": {
@@ -431,7 +416,6 @@ it('description ', () => {
               "_name": "json",
               "_options": {},
               "_origin": {},
-              "_recurrentCache": undefined,
               "_type": "ref",
             },
           },
@@ -442,7 +426,6 @@ it('description ', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "union",
       }
     `)

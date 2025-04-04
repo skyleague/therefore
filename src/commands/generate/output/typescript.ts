@@ -5,7 +5,7 @@ import camelcase from 'camelcase'
 import { renderTemplate } from '../../../common/template/template.js'
 import type { Node, SourceNode } from '../../../lib/cst/node.js'
 import type { GeneratorHooks } from '../../../lib/primitives/therefore.js'
-import { generateNode, loadNode } from '../../../lib/visitor/prepass/prepass.js'
+import { generateNode, loadNode, mustBeLazyDefined } from '../../../lib/visitor/prepass/prepass.js'
 import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../../../lib/visitor/typescript/cst.js'
 import type { TypescriptTypeWalkerContext } from '../../../lib/visitor/typescript/typescript-type.js'
 import { createWriter } from '../../../lib/writer.js'
@@ -410,6 +410,7 @@ export class TypescriptFileOutput {
 
             const connection = validatedToValidator.get(node._id) ?? node._id
             const currentRoot = rootNodes.has(connection) ? connection : rootId
+
             if (currentRoot && !nodeToRoot.has(node._id)) {
                 nodeToRoot.set(node._id, currentRoot)
             }
@@ -431,13 +432,13 @@ export class TypescriptFileOutput {
         }
 
         // Phase 2: Build dependency graphs between root nodes
-        const buildDependencyGraph = (node: Node, visited = new Set<string>()) => {
-            if (visited.has(node._id)) {
+        const buildDependencyGraph = (_from: Node, to: Node, visited = new Set<string>()) => {
+            if (visited.has(to._id)) {
                 return
             }
-            visited.add(node._id)
+            visited.add(to._id)
 
-            const nodeRootId = nodeToRoot.get(node._id)
+            const nodeRootId = nodeToRoot.get(to._id)
             if (!nodeRootId) {
                 return
             }
@@ -463,16 +464,17 @@ export class TypescriptFileOutput {
                 }
             }
 
-            if (node._connections) {
-                for (const conn of node._connections) {
+            const isLazyDefined = mustBeLazyDefined(to)
+            if (to._connections && !isLazyDefined) {
+                for (const conn of to._connections) {
                     processConnection(conn)
-                    buildDependencyGraph(conn, visited)
+                    buildDependencyGraph(to, conn, visited)
                 }
             }
-            if (node._children) {
-                for (const child of node._children) {
+            if (to._children && !isLazyDefined) {
+                for (const child of to._children) {
                     processConnection(child)
-                    buildDependencyGraph(child, visited)
+                    buildDependencyGraph(to, child, visited)
                 }
             }
         }
@@ -488,7 +490,7 @@ export class TypescriptFileOutput {
         for (const rootId of rootNodes) {
             const rootNode = this.content.find(([node]) => node._id === rootId)?.[0]
             if (rootNode) {
-                buildDependencyGraph(rootNode)
+                buildDependencyGraph(rootNode, rootNode)
             }
         }
 

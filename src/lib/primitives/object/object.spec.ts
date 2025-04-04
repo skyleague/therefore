@@ -283,7 +283,6 @@ it('expand', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         ],
@@ -293,7 +292,6 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "foo": StringType {
@@ -310,7 +308,6 @@ it('expand', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         },
@@ -341,7 +338,6 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {},
           },
@@ -352,7 +348,6 @@ it('expand', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "foo": ObjectType {
@@ -370,7 +365,6 @@ it('expand', () => {
             "_isCommutative": false,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "object",
             "shape": {},
           },
@@ -404,7 +398,6 @@ it('example', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {},
       }
@@ -435,7 +428,6 @@ it('default', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {},
       }
@@ -504,7 +496,6 @@ it('complex', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -518,7 +509,6 @@ it('complex', () => {
               "minItems": 1,
             },
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "array",
             "element": StringType {
               "_attributes": {
@@ -534,7 +524,6 @@ it('complex', () => {
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
-              "_recurrentCache": undefined,
               "_type": "string",
             },
           },
@@ -554,7 +543,6 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
           BooleanType {
@@ -574,7 +562,6 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -586,7 +573,6 @@ it('complex', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "object",
         "shape": {
           "booleans": BooleanType {
@@ -606,7 +592,6 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "boolean",
           },
           "ids": NodeTrait {
@@ -632,7 +617,6 @@ it('complex', () => {
                 "_isCommutative": true,
                 "_options": {},
                 "_origin": {},
-                "_recurrentCache": undefined,
                 "_type": "string",
               },
             ],
@@ -646,7 +630,6 @@ it('complex', () => {
               "minItems": 1,
             },
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "array",
             "element": StringType {
               "_attributes": {
@@ -662,7 +645,6 @@ it('complex', () => {
               "_isCommutative": true,
               "_options": {},
               "_origin": {},
-              "_recurrentCache": undefined,
               "_type": "string",
             },
           },
@@ -682,7 +664,6 @@ it('complex', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "string",
           },
         },

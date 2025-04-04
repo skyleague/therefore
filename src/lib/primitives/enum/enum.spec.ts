@@ -51,7 +51,6 @@ it('values', () => {
         "_isNamed": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "enum",
         "enum": [
           "1",
@@ -85,7 +84,6 @@ it('named', () => {
         "_isNamed": true,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "enum",
         "enum": {
           "foo": "bar",

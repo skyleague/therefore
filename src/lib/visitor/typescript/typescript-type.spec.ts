@@ -409,7 +409,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -419,7 +418,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -435,7 +433,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -475,7 +472,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -485,7 +481,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -501,7 +496,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -529,7 +523,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -539,7 +532,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -555,7 +547,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -583,7 +574,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -593,7 +583,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -609,7 +598,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -646,7 +634,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -656,7 +643,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -672,7 +658,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -721,7 +706,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -731,7 +715,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -747,7 +730,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -787,7 +769,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -797,7 +778,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -813,7 +793,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -841,7 +820,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -851,7 +829,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -867,7 +844,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -895,7 +871,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -905,7 +880,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -921,7 +895,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -958,7 +931,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -968,7 +940,6 @@ describe('typescriptVisitor', () => {
                   "_isCommutative": false,
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -984,7 +955,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -1033,7 +1003,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -1044,7 +1013,6 @@ describe('typescriptVisitor', () => {
                   "_name": "foo-bar",
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -1060,7 +1028,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -1100,7 +1067,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -1111,7 +1077,6 @@ describe('typescriptVisitor', () => {
                   "_name": "foo-bar",
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -1127,7 +1092,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -1155,7 +1119,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -1166,7 +1129,6 @@ describe('typescriptVisitor', () => {
                   "_name": "foo-bar",
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -1182,7 +1144,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -1210,7 +1171,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -1221,7 +1181,6 @@ describe('typescriptVisitor', () => {
                   "_name": "foo-bar",
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -1237,7 +1196,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},
@@ -1274,7 +1232,6 @@ describe('typescriptVisitor', () => {
                       "_isCommutative": true,
                       "_options": {},
                       "_origin": {},
-                      "_recurrentCache": undefined,
                       "_type": "string",
                     },
                   ],
@@ -1285,7 +1242,6 @@ describe('typescriptVisitor', () => {
                   "_name": "foo-bar",
                   "_options": {},
                   "_origin": {},
-                  "_recurrentCache": undefined,
                   "_type": "object",
                   "element": StringType {
                     "_attributes": {
@@ -1301,7 +1257,6 @@ describe('typescriptVisitor', () => {
                     "_isCommutative": true,
                     "_options": {},
                     "_origin": {},
-                    "_recurrentCache": undefined,
                     "_type": "string",
                   },
                   "shape": {},

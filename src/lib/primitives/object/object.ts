@@ -9,6 +9,7 @@ import { EnumType } from '../enum/enum.js'
 import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
 import type { Shape } from '../../../../examples/runtypes/shapes.type.js'
+import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import { $optional, OptionalType } from '../optional/optional.js'
 
 export type ObjectShape<Shape extends Record<string, Node> = Record<string, Node>> = {
@@ -203,7 +204,7 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 subtype: 'zod',
                 isTypeOnly: false,
                 definition: (node, context) => {
-                    if (node._isRecurrent) {
+                    if (mustBeLazyDefined(node)) {
                         return undefined
                     }
                     if (node._origin.zod !== undefined) {
