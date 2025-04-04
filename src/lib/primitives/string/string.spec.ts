@@ -31,7 +31,6 @@ it('pattern', () => {
           "regex": /foo/,
         },
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)
@@ -59,7 +58,6 @@ it('format', () => {
           "format": "date",
         },
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)
@@ -91,7 +89,6 @@ it('all', () => {
           "regex": /foo/,
         },
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "string",
       }
     `)

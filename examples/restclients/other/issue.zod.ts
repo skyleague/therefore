@@ -7,15 +7,43 @@
 import { z } from 'zod'
 import type { ZodType } from 'zod'
 
-export type ICompany = {
-    owns?: z.infer<typeof ICompany>[] | undefined
+export type EntityType = {
+    hasRelationA?: ParentRelationRegistrationType | undefined
+    hasRelationB?: ChildrenRelationRegistrationType | undefined
 }
-export const ICompany: ZodType<ICompany> = z.object({
-    owns: z
-        .lazy(() => ICompany)
-        .array()
-        .optional(),
+export const EntityType: ZodType<EntityType> = z.lazy(() =>
+    z.object({
+        hasRelationA: ParentRelationRegistrationType.optional(),
+        hasRelationB: ChildrenRelationRegistrationType.optional(),
+    }),
+)
+
+export const EntityRelationRegistrationType = z.object({
+    entity: EntityType.optional(),
 })
+
+export type EntityRelationRegistrationType = z.infer<typeof EntityRelationRegistrationType>
+
+export type ICompany = {
+    owns?: ICompany[] | undefined
+}
+export const ICompany: ZodType<ICompany> = z.lazy(() =>
+    z.object({
+        owns: ICompany.array().optional(),
+    }),
+)
+
+export const ParentType = z.object({
+    hasChildren: EntityRelationRegistrationType.array().optional(),
+})
+
+export type ParentType = z.infer<typeof ParentType>
+
+export const ChildrenRelationRegistrationType = z.object({
+    children: EntityType.array().optional(),
+})
+
+export type ChildrenRelationRegistrationType = z.infer<typeof ChildrenRelationRegistrationType>
 
 export const Company = z.object({
     owns: ICompany.array().nullable().optional(),
@@ -28,3 +56,9 @@ export const Foobar = z.object({
 })
 
 export type Foobar = z.infer<typeof Foobar>
+
+export const ParentRelationRegistrationType = z.object({
+    parent: ParentType.optional(),
+})
+
+export type ParentRelationRegistrationType = z.infer<typeof ParentRelationRegistrationType>

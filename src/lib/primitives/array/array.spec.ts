@@ -34,7 +34,6 @@ it('simple', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -44,7 +43,6 @@ it('simple', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
@@ -60,7 +58,6 @@ it('simple', () => {
           "_isCommutative": true,
           "_options": {},
           "_origin": {},
-          "_recurrentCache": undefined,
           "_type": "boolean",
         },
       }
@@ -92,7 +89,6 @@ it('simple unexpanded', () => {
             "_isCommutative": true,
             "_options": {},
             "_origin": {},
-            "_recurrentCache": undefined,
             "_type": "boolean",
           },
         ],
@@ -102,7 +98,6 @@ it('simple unexpanded', () => {
         "_isCommutative": false,
         "_options": {},
         "_origin": {},
-        "_recurrentCache": undefined,
         "_type": "array",
         "element": BooleanType {
           "_attributes": {
@@ -118,7 +113,6 @@ it('simple unexpanded', () => {
           "_isCommutative": true,
           "_options": {},
           "_origin": {},
-          "_recurrentCache": undefined,
           "_type": "boolean",
         },
       }

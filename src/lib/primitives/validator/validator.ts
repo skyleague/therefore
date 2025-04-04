@@ -1,4 +1,3 @@
-import { generatedAjv } from '../../../commands/generate/constants.js'
 import { defaultAjvConfig } from '../../ajv/defaults.js'
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
 import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols } from '../../cst/module.js'
@@ -12,9 +11,11 @@ import decamelize from 'decamelize'
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { generatedAjv } from '../../../commands/generate/constants.js'
 import { replaceExtension } from '../../../common/template/path.js'
 import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
+import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
 import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
 import { type ValidatorInputOptions, type ValidatorOptions, defaultAjvValidatorOptions } from './types.js'
@@ -294,7 +295,7 @@ export class ValidatorType<T extends Node = Node> extends Node {
 
                     const writer = createWriter()
                     if (options.types) {
-                        if (child._isRecurrent) {
+                        if (mustBeLazyDefined(child)) {
                             const typeContext = buildTypescriptZodTypeContext({
                                 symbol,
                                 exportSymbol: true,
@@ -302,22 +303,22 @@ export class ValidatorType<T extends Node = Node> extends Node {
                                 locals: context.locals,
                             })
                             writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
+                            //.write('// lazy')
                         } else {
                             writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
                         }
                     }
 
                     if (child._attributes.validator?.type === 'zod') {
-                        if (child._isRecurrent) {
+                        if (mustBeLazyDefined(child)) {
                             writer
                                 .write(
                                     `${context.declare('const', child)}: ${context.reference(zodSymbols.ZodType())}<${context.reference(child)}> = `,
                                 )
-                                // .write('z.lazy(() => ')
+                                .write(`${context.value(zodSymbols.z())}.lazy(() => `)
                                 .write(context.render(child))
-                            // .write(')')
-                        } else {
-                            // writer.write(`${context.declare('const', child)} = `).write(context.render(child))
+                                .write(')')
+                            // .write('//lazy')
                         }
                     }
                     return writer.toString()
