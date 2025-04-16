@@ -10,6 +10,7 @@ export default defineConfig({
             reportsDirectory: './.coverage',
             exclude: ['**/*.schema.js', '**/*.schema.ts', '**/*.client.ts', '**/*.type.ts', ...coverageConfigDefaults.exclude],
         },
+        pool: 'threads',
         fakeTimers: {
             now: new Date(2022, 1, 10).getTime(),
         },

@@ -31,8 +31,7 @@
     "lint:fix": "node --run lint -- --write --unsafe",
     "package": "rm -rf .dist && node --run build",
     "prepare": "husky || true",
-    "test": "vitest run",
-    "prebuild:docs": "npm ci"
+    "test": "vitest run"
   },
   "dependencies": {
     "@skyleague/axioms": "^6.5.1",
@@ -53,18 +52,18 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^10.0.1",
+    "@skyleague/node-standards": "^11.0.1",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",
-    "got": "^14.4.6",
+    "got": "^14.4.7",
     "js-yaml": "^4.1.0",
-    "json-schema-to-zod": "^2.6.0",
-    "ky": "^1.7.5",
-    "nock": "^14.0.1",
+    "json-schema-to-zod": "^2.6.1",
+    "ky": "^1.8.0",
+    "nock": "^14.0.3",
     "tsx": "^4.19.3",
     "type-testing": "^0.2.0",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "zod": "^3.24.2",
     "zod-to-json-schema": "^3.24.5"
   },
@@ -81,6 +80,6 @@
   },
   "node-standards": {
     "extends": ["yargs-cli"],
-    "ignorePatterns": ["bin/run.js"]
+    "ignorePatterns": ["bin/run.js", "vitest.config.ts"]
   }
 }
