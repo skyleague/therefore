@@ -8,7 +8,7 @@ import { EnumType, type _KeyOfType } from '../enum/enum.js'
 
 import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
-import type { TypescriptTypeWalkerContext } from '../../visitor/typescript/typescript-type.js'
+import { type TypescriptTypeWalkerContext, isSmallFullDefinition } from '../../visitor/typescript/typescript-type.js'
 import type { TypescriptZodWalkerContext } from '../../visitor/typescript/typescript-zod.js'
 import { $optional, OptionalType } from '../optional/optional.js'
 
@@ -177,11 +177,13 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         const clone = ObjectType._clone(this)
         clone._from({ shape: pick(this.shape, properties) as unknown as Shape })
         clone._resetTypeProperties()
-        clone._picked = {
-            mask: properties,
-            origin: this as ObjectType,
+        if (properties.length > 0) {
+            clone._picked = {
+                mask: properties,
+                origin: this as ObjectType,
+            }
+            clone._children = [this]
         }
-        clone._children = [this]
         return clone as unknown as ObjectType<Simplify<Pick<Shape, Key>>>
     }
 
@@ -189,11 +191,13 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
         const clone = ObjectType._clone(this)
         clone._from({ shape: omit(this.shape, properties) as unknown as Shape })
         clone._resetTypeProperties()
-        clone._omitted = {
-            mask: properties,
-            origin: this as ObjectType,
+        if (properties.length > 0) {
+            clone._omitted = {
+                mask: properties,
+                origin: this as ObjectType,
+            }
+            clone._children = [this]
         }
-        clone._children = [this]
         return clone as unknown as ObjectType<Simplify<Omit<Shape, Key>>>
     }
 
@@ -254,9 +258,10 @@ export class ObjectType<Shape extends Record<string, Node> = Record<string, Node
                 definition: (node, context) => {
                     node._attributes.typescript['type:path'] = context.targetPath
                     if (node._type === 'object' && !hasOptionalPrimitive(node) && !hasNullablePrimitive(node) && !this.key) {
+                        const isSmall = isSmallFullDefinition(node)
                         if (
                             (node as _OmitType)._omitted !== undefined ||
-                            (node as _PickType)._picked !== undefined ||
+                            ((node as _PickType)._picked !== undefined && !isSmall) ||
                             (node as _MergeType)._merged !== undefined ||
                             (node as _ExtendType)._extended !== undefined
                         ) {

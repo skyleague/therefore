@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 import type {
+    DeleteCommandInput,
     GetCommandInput,
     PutCommandInput,
     QueryCommandInput,
@@ -14,11 +15,9 @@ import type {
 
 import type {
     CreatePetInput,
+    DeletePetInput,
     GetPetInput,
-    ListCategoriesByOwnerInput,
     ListPetEntityCollectionInput,
-    ListPetsByOwnerInput,
-    ListPetsBySkInput,
     UpdatePetName1Input,
     UpdatePetNameInput,
     UpsertPetNameInput,
@@ -26,10 +25,10 @@ import type {
 
 export const upsertPetNameCommand = ({
     tableName,
-    input: { ownerId, id, name },
+    args: { id, ownerId, name },
 }: {
     tableName: string
-    input: UpsertPetNameInput
+    args: UpsertPetNameInput
 }): UpdateCommandInput => {
     return {
         TableName: tableName,
@@ -37,14 +36,12 @@ export const upsertPetNameCommand = ({
             pk: `owner#${ownerId}`,
             sk: `pet#${id}`,
         },
-        UpdateExpression:
-            'SET #name = if_not_exists(#name, :name), createdAt = if_not_exists(createdAt, :createdAt0), updatedAt = :createdAt0, entityType = if_not_exists(entityType, :entityType0)',
+        UpdateExpression: 'SET #name = if_not_exists(#name, :name), entityType = if_not_exists(entityType, :entityType0)',
         ExpressionAttributeNames: {
             '#name': 'name',
         },
         ExpressionAttributeValues: {
             ':name': name,
-            ':createdAt0': (() => new Date().toISOString())(),
             ':entityType0': 'pet',
         },
     }
@@ -52,13 +49,11 @@ export const upsertPetNameCommand = ({
 
 export const createPetCommand = ({
     tableName,
-    input: { ownerId, id, category, name, photoUrls, status, tags, createdAt, updatedAt },
+    args: { createdAt, updatedAt, category, id, name, photoUrls, status, tags, ownerId },
 }: {
     tableName: string
-    input: CreatePetInput
+    args: CreatePetInput
 }): PutCommandInput => {
-    const _now = new Date().toISOString()
-
     return {
         TableName: tableName,
         ConditionExpression: 'attribute_not_exists(sk)',
@@ -68,28 +63,45 @@ export const createPetCommand = ({
                 pk: `owner#${ownerId}`,
                 sk: `pet#${id}`,
                 entityType: 'pet',
-                createdAt: createdAt ?? _now,
-                updatedAt: updatedAt ?? _now,
 
                 // Other properties
                 category,
+                createdAt,
                 id,
                 name,
                 ownerId,
                 photoUrls,
                 status,
                 tags,
+                updatedAt,
             }).filter(([, v]) => v !== undefined),
         ),
     }
 }
 
-export const getPetCommand = ({
+export const deletePetCommand = ({
     tableName,
-    input: { ownerId, id },
+    args: { id, ownerId },
 }: {
     tableName: string
-    input: GetPetInput
+    args: DeletePetInput
+}): DeleteCommandInput => {
+    return {
+        TableName: tableName,
+        Key: {
+            pk: `owner#${ownerId}`,
+            sk: `pet#${id}`,
+        },
+        ConditionExpression: 'attribute_exists(sk)',
+    }
+}
+
+export const getPetCommand = ({
+    tableName,
+    args: { id, ownerId },
+}: {
+    tableName: string
+    args: GetPetInput
 }): GetCommandInput => {
     return {
         TableName: tableName,
@@ -106,10 +118,8 @@ export const getPetCommand = ({
 
 export const listCategoriesByOwnerCommand = ({
     tableName,
-    input: { ownerId },
 }: {
     tableName: string
-    input: ListCategoriesByOwnerInput
 }): QueryCommandInput => {
     return {
         TableName: tableName,
@@ -124,16 +134,16 @@ export const listCategoriesByOwnerCommand = ({
 
 export const listPetEntityCollectionCommand = ({
     tableName,
-    input: { ownerId },
+    args: { pk },
 }: {
     tableName: string
-    input: ListPetEntityCollectionInput
+    args: ListPetEntityCollectionInput
 }): QueryCommandInput => {
     return {
         TableName: tableName,
-        KeyConditionExpression: 'pk = :pk0',
+        KeyConditionExpression: 'pk = :pk',
         ExpressionAttributeValues: {
-            ':pk0': `owner#${ownerId}`,
+            ':pk': pk,
         },
     }
 }
@@ -155,10 +165,8 @@ export const listPetsCommand = ({
 
 export const listPetsByOwnerCommand = ({
     tableName,
-    input: { ownerId },
 }: {
     tableName: string
-    input: ListPetsByOwnerInput
 }): QueryCommandInput => {
     return {
         TableName: tableName,
@@ -172,10 +180,8 @@ export const listPetsByOwnerCommand = ({
 
 export const listPetsBySkCommand = ({
     tableName,
-    input: { id },
 }: {
     tableName: string
-    input: ListPetsBySkInput
 }): QueryCommandInput => {
     return {
         TableName: tableName,
@@ -189,10 +195,10 @@ export const listPetsBySkCommand = ({
 
 export const updatePetNameCommand = ({
     tableName,
-    input: { ownerId, id, name },
+    args: { id, ownerId, name },
 }: {
     tableName: string
-    input: UpdatePetNameInput
+    args: UpdatePetNameInput
 }): UpdateCommandInput => {
     return {
         TableName: tableName,
@@ -200,15 +206,13 @@ export const updatePetNameCommand = ({
             pk: `owner#${ownerId}`,
             sk: `pet#${id}`,
         },
-        UpdateExpression:
-            'SET #name = if_not_exists(#name, :name), createdAt = if_not_exists(createdAt, :createdAt0), updatedAt = :createdAt0, entityType = if_not_exists(entityType, :entityType0)',
+        UpdateExpression: 'SET #name = if_not_exists(#name, :name), entityType = if_not_exists(entityType, :entityType0)',
         ConditionExpression: 'attribute_exists(sk)',
         ExpressionAttributeNames: {
             '#name': 'name',
         },
         ExpressionAttributeValues: {
             ':name': name,
-            ':createdAt0': (() => new Date().toISOString())(),
             ':entityType0': 'pet',
         },
     }
@@ -216,10 +220,10 @@ export const updatePetNameCommand = ({
 
 export const updatePetName1Command = ({
     tableName,
-    input: { ownerId, id, name, category },
+    args: { id, ownerId, name, category },
 }: {
     tableName: string
-    input: UpdatePetName1Input
+    args: UpdatePetName1Input
 }): UpdateCommandInput => {
     return {
         TableName: tableName,
@@ -228,7 +232,7 @@ export const updatePetName1Command = ({
             sk: `pet#${id}`,
         },
         UpdateExpression:
-            'SET category = :category, #name = if_not_exists(#name, :name), createdAt = if_not_exists(createdAt, :createdAt0), updatedAt = :createdAt0, entityType = if_not_exists(entityType, :entityType0)',
+            'SET category = :category, #name = if_not_exists(#name, :name), entityType = if_not_exists(entityType, :entityType0)',
         ConditionExpression: 'category = :category0',
         ExpressionAttributeNames: {
             '#name': 'name',
@@ -236,11 +240,9 @@ export const updatePetName1Command = ({
         ExpressionAttributeValues: {
             ':category': category,
             ':name': name,
-            ':category0': (() => 'foo')(),
-            ':createdAt0': (() => new Date().toISOString())(),
+            ':category0': 'foo',
             ':entityType0': 'pet',
         },
-
         // Extra options
         ReturnValues: 'ALL_NEW',
     }

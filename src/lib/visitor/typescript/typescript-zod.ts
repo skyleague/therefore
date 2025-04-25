@@ -379,13 +379,13 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
                 ? context.value(omitType._omitted.origin)
                 : context.render(omitType._omitted.origin, undefined, { allowToZod: true })
 
-            writer.writeLine(`${origin}.omit({ ${omitType._omitted.mask.map((m) => `'${m}': true`).join(', ')} })`)
+            writer.writeLine(`${origin}.omit({\n${omitType._omitted.mask.map((m) => `'${m}': true`).join(',\n')} })`)
         } else if (pickType._picked !== undefined) {
             const origin = isReferenceable(pickType._picked.origin)
                 ? context.value(pickType._picked.origin)
                 : context.render(pickType._picked.origin, undefined, { allowToZod: true })
 
-            writer.writeLine(`${origin}.pick({ ${pickType._picked.mask.map((m) => `'${m}': true`).join(', ')} })`)
+            writer.writeLine(`${origin}.pick({\n${pickType._picked.mask.map((m) => `'${m}': true`).join(',\n')} })`)
         } else if (extendType._extended !== undefined) {
             const origin = isReferenceable(extendType._extended.origin)
                 ? context.value(extendType._extended.origin)

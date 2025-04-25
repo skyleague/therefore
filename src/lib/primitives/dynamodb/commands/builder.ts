@@ -1,312 +1,350 @@
 import { isDefined } from '@skyleague/axioms'
+import type CodeBlockWriter from 'code-block-writer'
 import type { Node } from '../../../cst/node.js'
-import type { TypescriptTypeWalkerContext } from '../../../visitor/typescript/typescript-type.js'
-import { createWriter } from '../../../writer.js'
-import { $object, ObjectType } from '../../object/object.js'
-import type { DynamoDbEntityType } from '../entity.js'
-import type { FormattedOperand } from '../expressions/attributes.js'
+import { $object, type ObjectType } from '../../object/object.js'
+import type { DynamoDbEntityType, StorageShapeType } from '../entity.js'
+import { FormattedOperand, type ValueOperand } from '../expressions/attributes.js'
 import { type ConditionBuilder, conditionExpression } from '../expressions/condition.js'
-import type { DynamodbExpressionContext } from '../expressions/context.js'
 import { type ProjectionBuilder, projectionExpression } from '../expressions/projection.js'
 import { type UpdateBuilder, updateExpression } from '../expressions/update.js'
+import { isReservedWord } from '../reserved.js'
 import type { IndexDefinition } from '../table.js'
 
-export class DynamodbCommandBuilder {
-    public context: DynamodbExpressionContext
-    public input: ObjectType | undefined
-    public result: ObjectType | undefined
-    public key: Record<string, FormattedOperand> | undefined
-    public projection: ReturnType<typeof projectionExpression> | undefined
-    public condition: ReturnType<typeof conditionExpression> | undefined
-    public filter: ReturnType<typeof conditionExpression> | undefined
-    public keyCondition: ReturnType<typeof conditionExpression> | undefined
-    public update: ReturnType<typeof updateExpression> | undefined
+export class DynamodbCommandSchemaBuilder<
+    Entity extends ObjectType = ObjectType,
+    BaseShape extends ObjectType = ObjectType,
+    const Pk extends keyof Entity['shape'] & string = keyof Entity['shape'] & string,
+    const Sk extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const CreatedAt extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const UpdatedAt extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const EntityType extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const Indexes extends Record<string, IndexDefinition<string, string[], string | undefined>> | undefined = Record<
+        string,
+        IndexDefinition<string, string[], string | undefined>
+    >,
+    const AttributeFormatters extends Record<string, (keys: Record<string, string>) => string> | undefined =
+        | Record<string, (keys: Record<string, string>) => string>
+        | undefined,
+> {
+    public readonly entity: DynamoDbEntityType<
+        Entity,
+        BaseShape,
+        Pk,
+        Sk,
+        CreatedAt,
+        UpdatedAt,
+        EntityType,
+        Indexes,
+        AttributeFormatters
+    >
+
+    public readonly keySchema: Record<string, FormattedOperand> | undefined
+    public readonly condition: ReturnType<typeof conditionExpression> | undefined
+    public readonly update: ReturnType<typeof updateExpression> | undefined
+    public readonly projection: ReturnType<typeof projectionExpression> | undefined
+    public readonly keyCondition: ReturnType<typeof conditionExpression> | undefined
+    public readonly filter: ReturnType<typeof conditionExpression> | undefined
+
+    public readonly indexKey: string | undefined
+    public _usedAttributes: Set<keyof StorageShapeType<Entity, BaseShape>['shape']> = new Set()
+
+    public _attributeNames: Record<string, string> = {}
+    public _attributeValues: Record<string, string> = {}
+    public _attributeConstValues: Record<string, unknown> = {}
+
+    public _args: Record<string, Node> = {}
+
+    public _createArguments: ((self: typeof this) => ObjectType<any> | undefined) | undefined
+    public _createResult: ((self: typeof this) => ObjectType<any> | undefined) | undefined
 
     public constructor({
-        context,
+        entity,
+        inferKeySchema = false,
+        condition,
+        update,
+        projection,
+        keyCondition,
+        filter,
+        createArguments,
+        createResult,
+        indexKey,
     }: {
-        context: DynamodbExpressionContext
+        entity: DynamoDbEntityType<Entity, BaseShape, Pk, Sk, CreatedAt, UpdatedAt, EntityType, Indexes, AttributeFormatters>
+        inferKeySchema?: boolean
+        condition?: ConditionBuilder<StorageShapeType<Entity, BaseShape>> | undefined
+        update?: UpdateBuilder<StorageShapeType<Entity, BaseShape>> | undefined
+        projection?: ProjectionBuilder<StorageShapeType<Entity, BaseShape>> | undefined
+        keyCondition?: ConditionBuilder<StorageShapeType<Entity, BaseShape>> | undefined
+        filter?: ConditionBuilder<StorageShapeType<Entity, BaseShape>> | undefined
+        createArguments?:
+            | ((
+                  self: DynamodbCommandSchemaBuilder<
+                      Entity,
+                      BaseShape,
+                      Pk,
+                      Sk,
+                      CreatedAt,
+                      UpdatedAt,
+                      EntityType,
+                      Indexes,
+                      AttributeFormatters
+                  >,
+              ) => ObjectType<any> | undefined)
+            | undefined
+        createResult?:
+            | ((
+                  self: DynamodbCommandSchemaBuilder<
+                      Entity,
+                      BaseShape,
+                      Pk,
+                      Sk,
+                      CreatedAt,
+                      UpdatedAt,
+                      EntityType,
+                      Indexes,
+                      AttributeFormatters
+                  >,
+              ) => ObjectType<any> | undefined)
+            | undefined
+        indexKey?: string | undefined
     }) {
-        this.context = context
+        this.entity = entity
+        this.keySchema = inferKeySchema ? this.schemaKeyOperands : undefined
+
+        this.condition = condition ? conditionExpression({ build: condition, schema: this }) : undefined
+        this.update = update ? updateExpression({ entity, build: update, schema: this }) : undefined
+        this.projection = projection ? projectionExpression({ build: projection, schema: this }) : undefined
+        this.keyCondition = keyCondition ? conditionExpression({ build: keyCondition, schema: this }) : undefined
+        this.filter = filter ? conditionExpression({ build: filter, schema: this }) : undefined
+        this._createArguments = createArguments
+        this._createResult = createResult
+        this.indexKey = indexKey
     }
 
-    public addKey(entity: DynamoDbEntityType) {
-        this.key = Object.fromEntries(
-            [entity.table.definition.pk, entity.table.definition.sk]
-                .filter(isDefined)
-                .map((k) => [k, entity.formatAttribute(k, this.context)]),
+    /**
+     * @deprecated
+     */
+    public attributeValue({ key }: { key: string }): string {
+        this._attributeValues[key] = `:${key}`
+        return this._attributeValues[key]
+    }
+
+    /**
+     * @deprecated
+     */
+    public attributeName({ key }: { key: string }): string {
+        let path = key
+        // see note https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html#Expressions.ExpressionAttributeNames.RepeatingAttributeNames
+        if (key.includes('.') || key.includes('-')) {
+            path = this._attributeNames[path] ??= `#${key.replaceAll('.', '_').replaceAll('-', '_')}`
+        } else if (isReservedWord(key)) {
+            path = this._attributeNames[path] ??= `#${key}`
+        }
+        return path
+    }
+
+    // /**
+    //  * @deprecated
+    //  */
+    // public referenceAttribute(value: ValueOperand) {
+    //     // this._usedAttributes.add(value.shapeKey)
+    //     return value.image
+    // }
+
+    public setArgumentValue({ key, operand, value }: { key: string; operand: ValueOperand; value: Node }) {
+        this._args[key] = value
+        return operand.image
+    }
+
+    public referenceValue({ inputKey, value }: { value: unknown; inputKey?: string | undefined }): string {
+        const constValue =
+            value instanceof Function
+                ? `(${value.toString()})()`
+                : value instanceof FormattedOperand
+                  ? value.image
+                  : JSON.stringify(value)
+        const [existing] = Object.entries(this._attributeConstValues).find(([, v]) => v === constValue) ?? []
+        if (existing) {
+            return existing
+        }
+        const base = `:${inputKey ?? 'const'}`
+        let image = `${base}0`
+        let i = 0
+        while (image in this._attributeConstValues) {
+            image = `${base}${++i}`
+        }
+
+        this._attributeConstValues[image] = constValue
+        return image
+    }
+
+    public get definedSchemaKeys() {
+        return [this.entity.table.definition.pk, this.entity.table.definition.sk, ...this.indexDefinedSchemaKeys].filter(
+            isDefined,
         )
-        return this.key
     }
 
-    public addInput(input: ObjectType | Record<string, Node>) {
-        this.input = input instanceof ObjectType ? input : $object(input)
-
-        this.input._transform ??= {}
-        this.input._transform['type:source'] = (name) => `${name}Input`
-        this.input._transform['value:source'] = (name) => `${name}Input`
-
-        this.context.command._connections ??= []
-        this.context.command._connections.push(this.input)
-
-        return this.input
+    public get indexDefinedSchemaKeys() {
+        return Object.values(this.entity.table.definition.indexes ?? {})
+            .flatMap((i: any) => [i.pk, i.sk])
+            .filter(isDefined)
     }
 
-    public addResult(result: ObjectType | Record<string, Node>) {
-        this.result = result instanceof ObjectType ? result : $object(result)
-
-        this.result._transform ??= {}
-        this.result._transform['type:source'] = (name) => `${name}Result`
-        this.result._transform['value:source'] = (name) => `${name}Result`
-
-        this.context.command._connections ??= []
-        this.context.command._connections.push(this.result)
-
-        return this.result
+    public get schemaKeyOperands(): Record<string, FormattedOperand> {
+        return Object.fromEntries(this.definedSchemaKeys.map((k) => [k, this.entity.asFormattedOperand(k)]))
     }
 
-    public addIndexResult<Entity extends DynamoDbEntityType, Index extends IndexDefinition<string, string[], string | undefined>>(
-        entity: Entity,
-        index: Index | undefined,
-    ) {
-        if (this.result !== undefined || index === undefined || index.projectionType === 'ALL') {
-            return
+    public get schemaKeyInputFields(): string[] {
+        return Object.values(this.schemaKeyOperands).flatMap((k) => k._inputKeys)
+    }
+
+    public '~arguments': ObjectType<any> | undefined = undefined
+    public get arguments() {
+        if (this['~arguments'] !== undefined) {
+            return this['~arguments']
         }
-
-        const { pk: _pk, sk: _sk } = entity.table.definition
-        const { pk, sk } = index
-        const keys = [pk, sk, _pk, _sk]
-        if (index.projectionType === 'INCLUDE') {
-            keys.push(...index.nonKeyAttributes)
-        }
-
-        this.addResult(
-            Object.fromEntries(
-                [...new Set(keys.filter(isDefined))]
-                    .sort()
-                    .map((key) => [key, this.context.getShapeSchema({ key, shouldUnwrap: false })]),
-            ),
-        )
-    }
-
-    public addProjectionExpression<Shape extends ObjectType>(build: ProjectionBuilder<Shape> | undefined) {
-        if (isDefined(build)) {
-            this.projection = projectionExpression({ build, context: this.context as never })
-            return this.addResult(this.projection.schema)
-        }
-
-        return undefined
-    }
-
-    public addConditionExpression<Entity extends DynamoDbEntityType>(build: ConditionBuilder<Entity['shape']> | undefined) {
-        if (isDefined(build)) {
-            this.condition = conditionExpression({ build, context: this.context })
-        }
-    }
-
-    public addFilterExpression<Entity extends DynamoDbEntityType>(build: ConditionBuilder<Entity['shape']> | undefined) {
-        if (isDefined(build)) {
-            this.filter = conditionExpression({ build, context: this.context })
-        }
-    }
-
-    public addKeyConditionExpression<Entity extends DynamoDbEntityType>(
-        build:
-            | ConditionBuilder<
-                  ObjectType<
-                      Pick<
-                          Entity['shape']['shape'],
-                          NonNullable<Entity['table']['definition']['pk'] | Entity['table']['definition']['sk']>
-                      >
-                  >
-              >
-            | undefined,
-    ) {
-        if (isDefined(build)) {
-            this.keyCondition = conditionExpression({ build, context: this.context as never })
-        }
-    }
-
-    public addUpdateExpression<Entity extends DynamoDbEntityType>(
-        build: UpdateBuilder<Entity['shape']> | undefined,
-        entity: Entity,
-    ) {
-        if (isDefined(build)) {
-            this.update = updateExpression({ entity, build, context: this.context })
-        }
-    }
-
-    public writeKey() {
-        const writer = createWriter()
-        writer
-            .writeLine('Key: ')
-            .inlineBlock(() => {
-                for (const [key, value] of Object.entries(this.key ?? {})) {
-                    writer.write(`${key}: \`${value.image}\`,`)
+        const createArguments =
+            this._createArguments ??
+            (() => {
+                let base = undefined
+                if (this.keySchema !== undefined) {
+                    const usedKeyArguments = this.schemaKeyInputFields
+                    base = this.entity.storageShape
+                        .pick(...usedKeyArguments) //, ...this._usedAttributes)
+                        .required(...usedKeyArguments)
                 }
-            })
-            .write(',')
 
-        return writer.toString()
+                if (Object.values(this._args).length > 0) {
+                    base = base?.merge($object(this._args)) ?? $object(this._args)
+                }
+
+                // if (this._usedAttributes.size > 0) {
+                //     const picked = this.entity.storageShape.pick(...Array.from(this._usedAttributes))
+
+                //     return Object.values(this._args).length > 0 ? $object(this._args) : picked
+                // }
+                return base
+            })
+        const args = createArguments(this)
+
+        if (args !== undefined) {
+            args._transform ??= {}
+            args._transform['type:source'] = (name) => `${name}Input`
+            args._transform['value:source'] = (name) => `${name}Input`
+        }
+
+        this['~arguments'] = args
+
+        return args
     }
 
-    public writeAttributeValues() {
-        if (Object.keys(this.context._attributeValues).length > 0 || Object.keys(this.context._attributeConstValues).length > 0) {
-            const writer = createWriter()
-            writer
-                .writeLine('ExpressionAttributeValues: ')
-                .block(() => {
-                    for (const [input, alias] of Object.entries(this.context._attributeValues)) {
-                        writer.writeLine(`${JSON.stringify(alias)}: ${input},`)
+    public '~result': ObjectType<any> | undefined = undefined
+    public get result() {
+        if (this['~result'] !== undefined) {
+            return this['~result']
+        }
+
+        const createResult =
+            this._createResult ??
+            (() => {
+                if (this.projection?.result !== undefined) {
+                    return this.projection.result
+                }
+                if (this.indexKey !== undefined) {
+                    const selectedIndex = this.entity.table.definition.indexes?.[this.indexKey]
+                    if (selectedIndex === undefined || selectedIndex.projectionType === 'ALL') {
+                        return undefined
                     }
-                    for (const [alias, input] of Object.entries(this.context._attributeConstValues)) {
-                        writer.writeLine(`${JSON.stringify(alias)}: ${input},`)
+                    const { pk: _pk, sk: _sk } = this.entity.table.definition
+                    const { pk, sk } = selectedIndex
+                    const keys = [pk, sk, _pk, _sk]
+                    if (selectedIndex.projectionType === 'INCLUDE') {
+                        keys.push(...selectedIndex.nonKeyAttributes)
+                    }
+                    return this.entity.storageShape.pick(...new Set(keys.filter(isDefined)))
+                }
+
+                return undefined
+            })
+
+        const result = createResult(this)
+
+        if (result !== undefined) {
+            result._transform ??= {}
+            result._transform['type:source'] = (name) => `${name}Result`
+            result._transform['value:source'] = (name) => `${name}Result`
+        }
+
+        this['~result'] = result
+
+        return result
+    }
+
+    public writeCommand({
+        writer,
+        commandOptions,
+        writeKey = true,
+    }: { writer: CodeBlockWriter; commandOptions: Record<string, unknown>; writeKey?: boolean }) {
+        if (writeKey && this.keySchema !== undefined) {
+            writer
+                .writeLine('Key: ')
+                .inlineBlock(() => {
+                    for (const [key, value] of Object.entries(this.keySchema ?? {})) {
+                        writer.write(`${key}: ${value.image},`)
                     }
                 })
                 .write(',')
-
-            return writer.toString()
         }
 
-        return undefined
-    }
+        if (this.keyCondition !== undefined) {
+            writer.writeLine(`KeyConditionExpression: ${JSON.stringify(this.keyCondition.expression)},`)
+        }
 
-    public writeAttributeNames() {
-        if (Object.keys(this.context._attributeNames).length > 0) {
-            const writer = createWriter()
+        if (this.update !== undefined) {
+            writer.writeLine(`UpdateExpression: ${JSON.stringify(this.update.expression)},`)
+        }
+        if (this.condition !== undefined) {
+            writer.writeLine(`ConditionExpression: ${JSON.stringify(this.condition.expression)},`)
+        }
+        if (this.filter !== undefined) {
+            writer.writeLine(`FilterExpression: ${JSON.stringify(this.filter.expression)},`)
+        }
+
+        if (this.projection !== undefined) {
+            writer.write(`ProjectionExpression: ${JSON.stringify(this.projection.stored)},`)
+        }
+
+        if (Object.keys(this._attributeNames).length > 0) {
             writer
                 .writeLine('ExpressionAttributeNames: ')
                 .block(() => {
-                    for (const [input, alias] of Object.entries(this.context._attributeNames)) {
+                    for (const [input, alias] of Object.entries(this._attributeNames)) {
                         writer.writeLine(`${JSON.stringify(alias)}: ${JSON.stringify(input)},`)
                     }
                 })
                 .write(',')
-
-            return writer.toString()
         }
 
-        return undefined
-    }
-
-    public writeProjectionExpression() {
-        if (this.projection !== undefined) {
-            return `ProjectionExpression: ${JSON.stringify(this.projection.expression)},`
+        if (Object.keys(this._attributeValues).length > 0 || Object.keys(this._attributeConstValues).length > 0) {
+            writer
+                .writeLine('ExpressionAttributeValues: ')
+                .block(() => {
+                    for (const [input, alias] of Object.entries(this._attributeValues)) {
+                        writer.writeLine(`${JSON.stringify(alias)}: ${input},`)
+                    }
+                    for (const [alias, input] of Object.entries(this._attributeConstValues)) {
+                        writer.writeLine(`${JSON.stringify(alias)}: ${input},`)
+                    }
+                })
+                .write(',')
         }
 
-        return undefined
-    }
-
-    public writeConditionExpression() {
-        if (this.condition !== undefined) {
-            return `ConditionExpression: ${JSON.stringify(this.condition.expression)},`
-        }
-
-        return undefined
-    }
-
-    public writeKeyConditionExpression() {
-        if (this.keyCondition !== undefined) {
-            return `KeyConditionExpression: ${JSON.stringify(this.keyCondition.expression)},`
-        }
-
-        return undefined
-    }
-
-    public writeFilterExpression() {
-        if (this.filter !== undefined) {
-            return `FilterExpression: ${JSON.stringify(this.filter.expression)},`
-        }
-
-        return undefined
-    }
-
-    public writeUpdateExpression() {
-        if (this.update !== undefined) {
-            return `UpdateExpression: ${JSON.stringify(this.update?.expression)},`
-        }
-
-        return undefined
-    }
-
-    public writeCommandOptions(commandOptions: Record<string, unknown>) {
-        const filteredOptions = Object.entries(commandOptions).filter(([_, v]) => v !== undefined)
+        const filteredOptions = Object.entries(commandOptions ?? {}).filter(([_, v]) => v !== undefined)
         if (filteredOptions.length > 0) {
-            const writer = createWriter()
             writer.writeLine('// Extra options')
             for (const [key, value] of filteredOptions) {
                 writer.writeLine(`${key}: ${typeof value === 'string' ? JSON.stringify(value) : value},`)
             }
-
-            return writer.toString().trim()
         }
-
-        return undefined
-    }
-
-    public writeCommand({
-        node,
-        context,
-        commandInput,
-        prefixLines,
-        commandLines,
-    }: {
-        node: Node
-        context: TypescriptTypeWalkerContext
-        commandInput: string
-        prefixLines?: () => Generator<string | undefined>
-        commandLines: () => Generator<string | undefined>
-    }) {
-        const writer = createWriter()
-        writer.write(`${context.declare('const', node)} = (`)
-        const input = this.input
-        if (isDefined(input) && Object.values(input.shape).filter(isDefined).length > 0) {
-            writer
-                .inlineBlock(() => {
-                    writer
-                        .write('tableName,')
-                        .write('input: ')
-                        .inlineBlock(() => {
-                            for (const key in input.shape) {
-                                writer.write(`${key},`)
-                            }
-                        })
-                })
-                .write(':')
-                .inlineBlock(() => {
-                    writer.write('tableName: string;').write('input: ').write(context.type(input))
-                })
-        } else {
-            writer
-                .inlineBlock(() => {
-                    writer.write('tableName,')
-                })
-                .write(':')
-                .inlineBlock(() => {
-                    writer.write('tableName: string;')
-                })
-        }
-
-        writer.write(`) : ${commandInput} => `).block(() => {
-            for (const line of prefixLines?.() ?? []) {
-                if (isDefined(line)) {
-                    writer.writeLine(line)
-                }
-            }
-            writer
-                .blankLine()
-                .write('return')
-                .block(() => {
-                    writer.writeLine('TableName: tableName,')
-
-                    for (const line of commandLines()) {
-                        if (isDefined(line)) {
-                            writer.writeLine(line)
-                        }
-                    }
-                })
-        })
-
-        return writer.toString()
     }
 }

@@ -24,49 +24,29 @@ export const PetEntity = entity
 
 export type PetEntity = z.infer<typeof PetEntity>
 
-export const GetPetResult = z.object({
-    name: z.string(),
-    category: z
-        .object({
-            id: z.number().int().optional(),
-            name: z.string().optional(),
-        })
-        .optional(),
+export const GetPetResult = PetEntity.pick({
+    name: true,
+    category: true,
 })
 
 export type GetPetResult = z.infer<typeof GetPetResult>
 
-export const ListCategoriesByOwnerResult = z.object({
-    category: z
-        .object({
-            id: z.number().int().optional(),
-            name: z.string().optional(),
-        })
-        .optional(),
+export const ListCategoriesByOwnerResult = PetEntity.pick({
+    category: true,
 })
 
 export type ListCategoriesByOwnerResult = z.infer<typeof ListCategoriesByOwnerResult>
 
-export const ListPetsResult = z.object({
-    category: z
-        .object({
-            id: z.number().int().optional(),
-            name: z.string().optional(),
-        })
-        .optional(),
+export const ListPetsResult = PetEntity.pick({
+    category: true,
 })
 
 export type ListPetsResult = z.infer<typeof ListPetsResult>
 
-export const ListPetsBySkResult = z.object({
-    category: z
-        .object({
-            id: z.number().int().optional(),
-            name: z.string().optional(),
-        })
-        .optional(),
-    pk: z.string(),
-    sk: z.string(),
+export const ListPetsBySkResult = PetEntity.pick({
+    sk: true,
+    pk: true,
+    category: true,
 })
 
 export type ListPetsBySkResult = z.infer<typeof ListPetsBySkResult>

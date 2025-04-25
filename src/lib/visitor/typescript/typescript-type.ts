@@ -181,6 +181,11 @@ export function isReferenceable(node: Node): boolean {
     return true
 }
 
+// @TODO
+export function isSmallFullDefinition(node: Node) {
+    return true
+}
+
 export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalkerContext> = {
     optional: (node, context) => {
         return toMaybePrimitive(node, context)
@@ -230,7 +235,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         }
 
         const pickType = node as _PickType
-        if (pickType._picked !== undefined) {
+        if (pickType._picked !== undefined && !isSmallFullDefinition(pickType)) {
             const originRef = isReferenceable(pickType._picked.origin)
                 ? context.type(pickType._picked.origin)
                 : context.render(pickType._picked.origin)

@@ -1,40 +1,49 @@
 import type { Node } from '../../../cst/node.js'
-import { $object, type ObjectType } from '../../object/object.js'
+import type { ObjectType } from '../../object/object.js'
+import type { DynamodbCommandSchemaBuilder } from '../commands/builder.js'
 import { PathOperand } from './attributes.js'
-import type { DynamodbExpressionContext } from './context.js'
 
 type ProjectionExpression = [PathOperand<Node>, ...PathOperand<Node>[]]
 
 interface Projection {
-    expression: string
-    schema: ObjectType
+    stored: string
+    result: ObjectType
 }
 
 export type ProjectionBuilder<T extends ObjectType> = (args: {
-    existing: { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }
-    context: DynamodbExpressionContext<T>
+    stored: { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }
 }) => ProjectionExpression
 
 export function projectionExpression<T extends ObjectType>({
     build,
-    context,
+    schema,
 }: {
     build: ProjectionBuilder<T>
-    context: DynamodbExpressionContext<NoInfer<T>>
+    schema: DynamodbCommandSchemaBuilder<T>
 }): Projection {
-    const existing = new Proxy({} as { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }, {
+    const stored = new Proxy({} as { [k in keyof T['infer']]-?: PathOperand<T['shape'][k]> }, {
         get: (_, key: string) => {
-            const path = context.attributeName({ key })
+            const path = schema.attributeName({ key })
 
-            return new PathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: false }), context)
+            return new PathOperand({
+                image: path,
+                originalKey: key,
+                schema: schema as DynamodbCommandSchemaBuilder,
+
+                shape: schema.entity.storageShape.shape[key],
+
+                // schema: context.getShapeSchema({ key, shouldUnwrap: false }),
+            })
         },
     })
-    const expression = build({ existing, context })
+    const expression = build({ stored })
 
     return {
-        expression: expression.map((x) => x.image).join(', '),
-        schema: $object(
-            Object.fromEntries(expression.map((x) => [x._context.lookupAttributeName({ path: x.image }), x.shape])),
-        ).validator(),
+        stored: expression.map((x) => x.image).join(', '),
+        result: schema.entity.storageShape.pick(...expression.map((x) => x.originalKey)),
+        // schema: {},
+        // $object(
+        //     Object.fromEntries(expression.map((x) => [context.lookupAttributeName({ path: x.image }), x.shape])),
+        // ).validator(),
     }
 }

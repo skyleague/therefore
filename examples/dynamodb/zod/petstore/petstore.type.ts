@@ -5,14 +5,15 @@
 /* eslint-disable */
 
 export interface CreatePetInput {
-    ownerId: string
-    id: number
+    createdAt: string
+    updatedAt: string
     category?:
         | {
               id?: number | undefined
               name?: string | undefined
           }
         | undefined
+    id: number
     name: string
     photoUrls: string[]
     /**
@@ -25,8 +26,12 @@ export interface CreatePetInput {
               name?: string | undefined
           }[]
         | undefined
-    createdAt?: string | undefined
-    updatedAt?: string | undefined
+    ownerId: string
+}
+
+export interface DeletePetInput {
+    id: number
+    ownerId: string
 }
 
 export interface Entity {
@@ -38,46 +43,37 @@ export interface Entity {
 }
 
 export interface GetPetInput {
-    ownerId: string
     id: number
-}
-
-export interface ListCategoriesByOwnerInput {
     ownerId: string
 }
 
 export interface ListPetEntityCollectionInput {
-    ownerId: string
+    pk: string
 }
 
-export interface ListPetsInput {}
-
-export interface ListPetsByOwnerInput {
-    ownerId: string
-}
-
-export interface ListPetsBySkInput {
+export type UpdatePetNameInput = {
     id: number
-}
-
-export interface UpdatePetNameInput {
     ownerId: string
-    id: number
+} & {
     name: string
 }
 
-export interface UpdatePetName1Input {
-    ownerId: string
+export type UpdatePetName1Input = {
     id: number
+    ownerId: string
+} & {
     name: string
-    category: {
-        id?: number | undefined
-        name?: string | undefined
-    }
+    category?:
+        | {
+              id?: number | undefined
+              name?: string | undefined
+          }
+        | undefined
 }
 
-export interface UpsertPetNameInput {
-    ownerId: string
+export type UpsertPetNameInput = {
     id: number
+    ownerId: string
+} & {
     name: string
 }

@@ -1,13 +1,16 @@
-import { evaluate } from '@skyleague/axioms'
+import { evaluate, mapValues } from '@skyleague/axioms'
 import type { Node } from '../../../cst/node.js'
 import type { ObjectType } from '../../object/object.js'
+import type { DynamodbCommandSchemaBuilder } from '../commands/builder.js'
+import type { StorageShapeType } from '../entity.js'
+import type { IndexDefinition } from '../table.js'
 import { type DynamodbOperand, type FormattedOperand, PathOperand, ValueOperand } from './attributes.js'
-import type { DynamodbExpressionContext } from './context.js'
 
 type ConditionExpression =
     | Condition
-    | { and: [ConditionExpression, ...ConditionExpression[]] }
-    | { or: [ConditionExpression, ...ConditionExpression[]] }
+    | { and: [ConditionExpression, ConditionExpression, ...ConditionExpression[]] }
+    | { or: [ConditionExpression, ConditionExpression, ...ConditionExpression[]] }
+
 export class Condition {
     public expression: string
     public comparands: string[]
@@ -110,41 +113,79 @@ class ConditionPathOperand<Shape extends Node> extends PathOperand<Shape> {
         return new Condition(`attribute_type(${this.image}, ${type})`, [this.originalKey])
     }
 
-    public contains(value: ValueOperand | FormattedOperand) {
-        return new Condition(`contains(${this.image}, ${this._ref(value)})`, [this.originalKey])
+    public contains(value: ValueOperand | FormattedOperand | undefined) {
+        return new Condition(`contains(${this.image}, ${this._ref(value, { element: true })})`, [this.originalKey])
     }
 
     public size() {
-        return new ValueOperand(`size(${this.image})`, '_', this._context)
+        return new ValueOperand(`size(${this.image})`, '_')
     }
 }
 
-export type ConditionBuilder<T extends ObjectType> = (args: {
-    existing: { [k in keyof T['infer']]-?: ConditionPathOperand<T['shape'][k]> }
-    input: Record<string, ValueOperand>
-    context: DynamodbExpressionContext<T>
+export type ConditionBuilder<T extends ObjectType, AttributeFormatters> = (args: {
+    stored: { [k in keyof T['infer']]-?: ConditionPathOperand<T['shape'][k]> }
+    args: { [k in keyof T['infer']]: ValueOperand } & { [key: string]: ValueOperand }
+    formatters: AttributeFormatters
 }) => ConditionExpression
 
-export function conditionExpression<T extends ObjectType>({
+export function conditionExpression<
+    Entity extends ObjectType = ObjectType,
+    BaseShape extends ObjectType = ObjectType,
+    const Pk extends keyof Entity['shape'] & string = keyof Entity['shape'] & string,
+    const Sk extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const CreatedAt extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const UpdatedAt extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const EntityType extends (keyof Entity['shape'] & string) | undefined = (keyof Entity['shape'] & string) | undefined,
+    const Indexes extends Record<string, IndexDefinition<string, string[], string | undefined>> | undefined = Record<
+        string,
+        IndexDefinition<string, string[], string | undefined>
+    >,
+    const AttributeFormatters extends Record<string, (keys: Record<string, string>) => string> | undefined =
+        | Record<string, (keys: Record<string, string>) => string>
+        | undefined,
+>({
     build,
-    context,
+    schema,
 }: {
-    build: ConditionBuilder<T>
-    context: DynamodbExpressionContext<NoInfer<T>>
+    build: ConditionBuilder<StorageShapeType<Entity, BaseShape>, AttributeFormatters>
+    schema: DynamodbCommandSchemaBuilder<
+        Entity,
+        BaseShape,
+        Pk,
+        Sk,
+        CreatedAt,
+        UpdatedAt,
+        EntityType,
+        Indexes,
+        AttributeFormatters
+    >
 }) {
-    const existing = new Proxy({} as { [k in keyof T['infer']]-?: ConditionPathOperand<T['shape'][k]> }, {
+    const stored = new Proxy({} as { [k in keyof Entity['infer']]-?: ConditionPathOperand<Entity['shape'][k]> }, {
         get: (_, key: string) => {
-            const path = context.attributeName({ key })
+            const path = schema.attributeName({ key })
 
-            return new ConditionPathOperand(path, key, context.getShapeSchema({ key, shouldUnwrap: true }), context)
+            return new ConditionPathOperand({
+                image: path,
+                originalKey: key,
+                schema: schema as DynamodbCommandSchemaBuilder,
+
+                shape: schema.entity.storageShape.shape[key],
+                // shape: _context.getShapeSchema({ key, shouldUnwrap: true }),
+            })
         },
     })
-    const input = new Proxy({} as Record<string, Exclude<ValueOperand, undefined>>, {
+    const args = new Proxy({} as Record<string, ValueOperand> & { [key: string]: ValueOperand }, {
         get: (_, key: string) => {
-            return new ValueOperand(context.attributeValue({ key }), key, context)
+            return ValueOperand.from({ shapeKey: key, schema })
         },
     })
-    const expression = Condition.from(build({ existing, input, context }))
+    const expression = Condition.from(
+        build({
+            stored,
+            args,
+            formatters: mapValues(schema.entity._attributeFormatters ?? {}, (f, key) => schema.entity._attributeFormatters[key]),
+        }),
+    )
     return {
         expression: expression.expression,
         comparands: expression.comparands,

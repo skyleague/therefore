@@ -3,9 +3,9 @@ import { Pet } from '../../../../examples/restclients/ajv/petstore/petstore.type
 import { $object } from '../object/object.js'
 import { $ref } from '../ref/ref.js'
 import { $string } from '../string/string.js'
+import { DynamodbCommandSchemaBuilder } from './commands/builder.js'
 import { $dynamodb } from './dynamodb.js'
 import { conditionExpression } from './expressions/condition.js'
-import { DynamodbExpressionContext } from './expressions/context.js'
 import { updateExpression } from './expressions/update.js'
 
 function createMockEntity() {
@@ -23,18 +23,23 @@ function createMockEntity() {
         validator: 'ajv',
     })
 
-    const mockEntity = mockTable.entity({
+    const entity = mockTable.entity({
         entityType: 'pet',
         shape: $ref(Pet).extend({
             ownerId: $string,
         }),
         formatters: {
-            pk: 'owner#{ownerId}',
-            sk: 'pet#{id}',
+            pk: ({ ownerId }) => `owner#${ownerId}`,
+            sk: ({ id }) => `pet#${id}`,
         },
     })
 
-    return { mockEntity, mockContext: new DynamodbExpressionContext(mockEntity, {} as any) }
+    return {
+        entity,
+        schema: new DynamodbCommandSchemaBuilder({
+            entity,
+        }),
+    }
 }
 
 describe('getItem', () => {
@@ -45,20 +50,19 @@ describe('getItem', () => {
 
 describe('query', () => {
     it('should build a condition expression', () => {
-        const { mockContext } = createMockEntity()
-
+        const { schema } = createMockEntity()
         expect(
             conditionExpression({
-                build: ({ existing, input }) => ({
+                schema,
+                build: ({ stored, args }) => ({
                     and: [
-                        existing.name!.eq(input.name),
-                        existing.category!.eq(input.category),
+                        stored.name!.eq(args.name),
+                        stored.category!.eq(args.category),
                         {
-                            or: [existing.status!.eq(input.status), existing.name!.eq(input.name)],
+                            or: [stored.status!.eq(args.status), stored.name!.eq(args.name)],
                         },
                     ],
                 }),
-                context: mockContext,
             }),
         ).toMatchInlineSnapshot(`
           {
@@ -76,17 +80,17 @@ describe('query', () => {
 
 describe('update', () => {
     it('should build an update expression', () => {
-        const { mockEntity, mockContext } = createMockEntity()
+        const { entity, schema } = createMockEntity()
 
         expect(
             updateExpression({
-                entity: mockEntity,
-                build: ({ existing, input }) => [
-                    existing.name!.set(input.name),
-                    existing.tags!.listAppend(input.tags),
-                    existing.photoUrls!.remove(),
+                entity,
+                build: ({ stored, args }) => [
+                    stored.name!.set(args.name),
+                    stored.tags!.listAppend(args.tags),
+                    stored.photoUrls!.remove(),
                 ],
-                context: mockContext,
+                schema,
             }),
         ).toMatchInlineSnapshot(`
           {
@@ -96,13 +100,13 @@ describe('update', () => {
 
         expect(
             updateExpression({
-                entity: mockEntity,
-                build: ({ existing, input }) => ({
-                    name: input.name,
-                    tags: existing.tags!.listAppend(input.tags),
-                    photoUrls: existing.photoUrls!.remove(),
+                entity: entity,
+                build: ({ stored, args }) => ({
+                    name: args.name,
+                    tags: stored.tags!.listAppend(args.tags),
+                    photoUrls: stored.photoUrls!.remove(),
                 }),
-                context: mockContext,
+                schema,
             }),
         ).toMatchInlineSnapshot(`
           {

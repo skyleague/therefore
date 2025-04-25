@@ -5,11 +5,12 @@
 /* eslint-disable */
 
 import type { DynamoDBServiceException } from '@aws-sdk/client-dynamodb'
-import { GetCommand, PutCommand, UpdateCommand, paginateQuery, paginateScan } from '@aws-sdk/lib-dynamodb'
+import { DeleteCommand, GetCommand, PutCommand, UpdateCommand, paginateQuery, paginateScan } from '@aws-sdk/lib-dynamodb'
 import type { DynamoDBDocument } from '@aws-sdk/lib-dynamodb'
 
 import {
     createPetCommand,
+    deletePetCommand,
     getPetCommand,
     listCategoriesByOwnerCommand,
     listPetEntityCollectionCommand,
@@ -22,11 +23,9 @@ import {
 } from './petstore.command.js'
 import type {
     CreatePetInput,
+    DeletePetInput,
     GetPetInput,
-    ListCategoriesByOwnerInput,
     ListPetEntityCollectionInput,
-    ListPetsByOwnerInput,
-    ListPetsBySkInput,
     UpdatePetName1Input,
     UpdatePetNameInput,
     UpsertPetNameInput,
@@ -41,62 +40,86 @@ export class PetEntityClient {
         this.table = table
     }
 
-    public async updatePetNameCommand(input: UpdatePetNameInput) {
-        const command = updatePetNameCommand({ tableName: this.table.tableName, input })
+    public async updatePetNameCommand(args: UpdatePetNameInput) {
+        const command = updatePetNameCommand({ tableName: this.table.tableName, args })
 
         try {
             const result = await this.table.client.send(new UpdateCommand(command))
             return { right: null, $response: result }
         } catch (error) {
-            return { left: error as DynamoDBServiceException, $response: error }
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 
-    public async upsertPetNameCommand(input: UpsertPetNameInput) {
-        const command = upsertPetNameCommand({ tableName: this.table.tableName, input })
+    public async upsertPetNameCommand(args: UpsertPetNameInput) {
+        const command = upsertPetNameCommand({ tableName: this.table.tableName, args })
 
         try {
             const result = await this.table.client.send(new UpdateCommand(command))
             return { right: null, $response: result }
         } catch (error) {
-            return { left: error as DynamoDBServiceException, $response: error }
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 
-    public async updatePetName1Command(input: UpdatePetName1Input) {
-        const command = updatePetName1Command({ tableName: this.table.tableName, input })
+    public async updatePetName1Command(args: UpdatePetName1Input) {
+        const command = updatePetName1Command({ tableName: this.table.tableName, args })
 
         try {
             const result = await this.table.client.send(new UpdateCommand(command))
             const data = PetEntity.parse(result.Attributes ?? {})
             return { ...data, $response: result }
         } catch (error) {
-            return { left: error as DynamoDBServiceException, $response: error }
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 
-    public async getPetCommand(input: GetPetInput) {
-        const command = getPetCommand({ tableName: this.table.tableName, input })
+    public async getPetCommand(args: GetPetInput) {
+        const command = getPetCommand({ tableName: this.table.tableName, args })
 
         try {
             const result = await this.table.client.send(new GetCommand(command))
             if (result.Item === undefined) {
-                return { right: null, $response: result }
+                return { right: undefined, $response: result }
             }
-            return { ...GetPetResult.parse(result.Item), $response: result }
+            const parsed = GetPetResult.safeParse(result.Item)
+            if (parsed.success) {
+                return { success: true, right: parsed.data, $response: result }
+            }
+            return { success: false, left: parsed.error, $response: result }
         } catch (error) {
-            return { left: error as DynamoDBServiceException, $response: error }
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 
-    public async createPetCommand(input: CreatePetInput) {
-        const command = createPetCommand({ tableName: this.table.tableName, input })
+    public async createPetCommand(args: CreatePetInput) {
+        const command = createPetCommand({ tableName: this.table.tableName, args })
 
         try {
             const result = await this.table.client.send(new PutCommand(command))
-            return { right: null, $response: result }
+            return { right: undefined, $response: result }
         } catch (error) {
-            return { left: error as DynamoDBServiceException, $response: error }
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 
@@ -106,16 +129,26 @@ export class PetEntityClient {
         try {
             for await (const page of paginateScan({ client: this.table.client }, command)) {
                 for (const item of page.Items ?? []) {
-                    yield { ...ListPetsResult.parse(item), status: 'success' as const, $response: page }
+                    const parsed = ListPetsResult.safeParse(item)
+                    if (parsed.success) {
+                        yield { success: true, right: parsed.data, $response: page }
+                    } else {
+                        yield { success: false, left: parsed.error, $response: page }
+                    }
                 }
             }
         } catch (error) {
-            yield { left: error as DynamoDBServiceException, status: 'error' as const, $response: error }
+            yield {
+                success: false,
+                left: error as DynamoDBServiceException,
+                status: 'error' as const,
+                $response: error,
+            }
         }
     }
 
-    public async *listPetsByOwnerCommand(input: ListPetsByOwnerInput) {
-        const command = listPetsByOwnerCommand({ tableName: this.table.tableName, input })
+    public async *listPetsByOwnerCommand() {
+        const command = listPetsByOwnerCommand({ tableName: this.table.tableName })
 
         try {
             for await (const page of paginateQuery({ client: this.table.client }, command)) {
@@ -124,12 +157,17 @@ export class PetEntityClient {
                 }
             }
         } catch (error) {
-            yield { left: error as DynamoDBServiceException, status: 'error' as const, $response: error }
+            yield {
+                success: false,
+                left: error as DynamoDBServiceException,
+                status: 'error' as const,
+                $response: error,
+            }
         }
     }
 
-    public async *listCategoriesByOwnerCommand(input: ListCategoriesByOwnerInput) {
-        const command = listCategoriesByOwnerCommand({ tableName: this.table.tableName, input })
+    public async *listCategoriesByOwnerCommand() {
+        const command = listCategoriesByOwnerCommand({ tableName: this.table.tableName })
 
         try {
             for await (const page of paginateQuery({ client: this.table.client }, command)) {
@@ -138,12 +176,17 @@ export class PetEntityClient {
                 }
             }
         } catch (error) {
-            yield { left: error as DynamoDBServiceException, status: 'error' as const, $response: error }
+            yield {
+                success: false,
+                left: error as DynamoDBServiceException,
+                status: 'error' as const,
+                $response: error,
+            }
         }
     }
 
-    public async *listPetEntityCollectionCommand(input: ListPetEntityCollectionInput) {
-        const command = listPetEntityCollectionCommand({ tableName: this.table.tableName, input })
+    public async *listPetEntityCollectionCommand(args: ListPetEntityCollectionInput) {
+        const command = listPetEntityCollectionCommand({ tableName: this.table.tableName, args })
 
         try {
             for await (const page of paginateQuery({ client: this.table.client }, command)) {
@@ -152,12 +195,17 @@ export class PetEntityClient {
                 }
             }
         } catch (error) {
-            yield { left: error as DynamoDBServiceException, status: 'error' as const, $response: error }
+            yield {
+                success: false,
+                left: error as DynamoDBServiceException,
+                status: 'error' as const,
+                $response: error,
+            }
         }
     }
 
-    public async *listPetsBySkCommand(input: ListPetsBySkInput) {
-        const command = listPetsBySkCommand({ tableName: this.table.tableName, input })
+    public async *listPetsBySkCommand() {
+        const command = listPetsBySkCommand({ tableName: this.table.tableName })
 
         try {
             for await (const page of paginateQuery({ client: this.table.client }, command)) {
@@ -166,7 +214,27 @@ export class PetEntityClient {
                 }
             }
         } catch (error) {
-            yield { left: error as DynamoDBServiceException, status: 'error' as const, $response: error }
+            yield {
+                success: false,
+                left: error as DynamoDBServiceException,
+                status: 'error' as const,
+                $response: error,
+            }
+        }
+    }
+
+    public async deletePetCommand(args: DeletePetInput) {
+        const command = deletePetCommand({ tableName: this.table.tableName, args })
+
+        try {
+            const result = await this.table.client.send(new DeleteCommand(command))
+            return { right: null, $response: result }
+        } catch (error) {
+            return {
+                success: false,
+                left: error as DynamoDBServiceException,
+                $response: error,
+            }
         }
     }
 }

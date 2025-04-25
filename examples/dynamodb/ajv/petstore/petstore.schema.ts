@@ -26,58 +26,61 @@ export const petDataTable = $dynamodb.table({
     validator: 'ajv',
 })
 
+petDataTable.definition
+
 export const pet = petDataTable.entity({
     entityType: 'pet',
     shape: $ref(Pet).extend({
         ownerId: $string,
     }),
     formatters: {
-        pk: 'owner#{ownerId}',
-        sk: 'pet#{id}',
+        pk: ({ ownerId }) => `owner#${ownerId}`,
+        sk: ({ id }) => `pet#${id}`,
     },
 })
 
 export const updatePetName = pet.updateItem({
-    condition: ({ existing }) => existing.sk.exists(),
-    update: ({ existing, input }) => ({
-        name: existing.name.ifNotExists(input.name),
+    condition: ({ stored }) => stored.sk.exists(),
+    update: ({ stored, args }) => ({
+        name: stored.name.ifNotExists(args.name),
     }),
 })
 export const upsertPetName = pet.updateItem({
-    update: ({ existing, input }) => ({
-        name: existing.name.ifNotExists(input.name),
+    update: ({ stored: existing, args }) => ({
+        name: existing.name.ifNotExists(args.name),
     }),
 })
 
 export const updatePetName1 = pet
     .updateItem({
-        condition: ({ existing }) => existing.category.eq(() => 'foo'),
-        update: ({ existing, input }) => ({
-            category: input.category,
-            name: existing.name.ifNotExists(input.name),
+        condition: ({ stored }) => stored.category.eq(() => 'foo'),
+        update: ({ stored, args }) => ({
+            category: args.category,
+            name: stored.name.ifNotExists(args.name),
         }),
     })
     .options({ ReturnValues: 'ALL_NEW' })
 
-export const getPet = pet.getItem({ projection: ({ existing }) => [existing.name, existing.category] })
-export const createPet = pet.putItem({ condition: ({ existing }) => ({ and: [existing.sk.notExists()] }) })
+export const getPet = pet.getItem({ projection: ({ stored }) => [stored.name, stored.category] })
+export const createPet = pet.putItem({ condition: ({ stored }) => ({ and: [stored.sk.notExists()] }) })
 
 export const listPets = pet.scan({
-    filter: ({ existing }) => existing.entityType.eq(pet.entityType),
-    projection: ({ existing }) => [existing.category],
+    filter: ({ stored }) => stored.entityType.eq(pet.entityType),
+    projection: ({ stored }) => [stored.category],
 })
 
 export const listPetsByOwner = pet.query({
-    key: ({ existing }) => existing.sk.beginsWith(`${pet.entityType}#`),
+    key: ({ stored }) => stored.sk.beginsWith(`${pet.entityType}#`),
 })
 
 export const listCategoriesByOwner = pet.query({
-    key: ({ existing }) => existing.sk.beginsWith(`${pet.entityType}#`),
-    projection: ({ existing }) => [existing.category],
+    key: ({ stored }) => stored.sk.beginsWith(`${pet.entityType}#`),
+    projection: ({ stored }) => [stored.category],
 })
 
 export const listPetEntityCollection = pet.queryTable({
-    key: ({ existing, context }) => existing.pk.eq(pet.formatAttribute('pk', context)),
+    // key: ({ stored, context }) => stored.pk.eq(pet.formatAttribute('pk', context)),
+    key: ({ stored, args, formatters }) => stored.pk.eq(formatters.pk(args)),
 })
 
 export const listPetsBySk = pet.queryIndex('sk-pk-index', {

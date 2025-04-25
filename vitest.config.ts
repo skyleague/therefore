@@ -5,7 +5,7 @@ export default defineConfig({
     test: {
         globalSetup: fs.existsSync('./test/__test__/global.ts') ? ['./test/__test__/global.ts'] : [],
         setupFiles: ['./test/__test__/setup.ts'],
-        include: ['./src/**/*.{test,spec}.{ts,js}', './test/**/*.{test,spec}.{ts,js}'],
+        include: ['./{src,examples}/**/*.{test,spec}.{ts,js}', './test/**/*.{test,spec}.{ts,js}'],
         coverage: {
             reportsDirectory: './.coverage',
             exclude: ['**/*.schema.js', '**/*.schema.ts', '**/*.client.ts', '**/*.type.ts', ...coverageConfigDefaults.exclude],
