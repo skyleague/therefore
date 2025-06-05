@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { Pet } from '../examples/restclients/zod/petstore/petstore.zod.js'
+import { Pet } from '../examples/restclients/zod-v3/petstore/petstore.zod.js'
 import { $ref } from '../src/lib/primitives/ref/ref.js'
 import { Therefore } from '../src/lib/primitives/therefore.js'
 

@@ -931,6 +931,7 @@ export class Hey2 {
             parameterArray: string
             parameterDictionary: string
             parameterEnum: string
+            parameterTuple: string
         }
     }): Promise<
         | SuccessResponse<'200', TypesResponse200>
