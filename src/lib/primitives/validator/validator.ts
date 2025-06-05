@@ -1,6 +1,6 @@
 import { defaultAjvConfig } from '../../ajv/defaults.js'
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
-import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols } from '../../cst/module.js'
+import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols, zodV4Symbols } from '../../cst/module.js'
 import { type Hooks, Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import { createWriter } from '../../writer.js'
@@ -17,7 +17,7 @@ import { constants } from '../../constants.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
-import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
+import { buildTypescriptZodV3TypeContext } from '../../visitor/typescript/typescript-zod3.js'
 import { type ValidatorInputOptions, type ValidatorOptions, defaultAjvValidatorOptions } from './types.js'
 
 export function ajvOptions(node?: Node): Options {
@@ -204,12 +204,14 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     if (symbolPath === undefined) {
                         throw new Error('path is undefined, node was not properly initialized.')
                     }
+
+                    const zodZ = child._validator.type === 'zod/v4' ? zodV4Symbols.z() : zodSymbols.z()
                     const writer = createWriter()
                     writer
                         .writeLine('/**')
                         .writeLine(' * @deprecated')
                         .writeLine(' */')
-                        .writeLine(`export type ${symbolName} = ${value(zodSymbols.z())}.infer<typeof ${value(symbolNameAlias)}>`)
+                        .writeLine(`export type ${symbolName} = ${value(zodZ)}.infer<typeof ${value(symbolNameAlias)}>`)
                         .writeLine('/**')
                         .writeLine(
                             ` * @deprecated Use \`${symbolName}.safeParse\` instead. To migrate: 1) Replace \`${symbolName}.validate(data)\` with \`${symbolName}.safeParse(data)\` 2) Check result with \`.success\` instead of the return value 3) Access parsed data via \`.data\` or validation errors via \`.error.issues\` on the result object`,
@@ -277,7 +279,10 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 subtype: 'zod',
                 isTypeOnly: false,
                 enabled: (node) =>
-                    (node._attributes.isGenerated && node._attributes.validator?.type === 'zod') ||
+                    (node._attributes.isGenerated &&
+                        (node._attributes.validator?.type === 'zod' ||
+                            node._attributes.validator?.type === 'zod/v3' ||
+                            node._attributes.validator?.type === 'zod/v4')) ||
                     (!constants.generateInterop &&
                         constants.migrateToValidator === 'zod' &&
                         node._attributes.validator === undefined),
@@ -289,14 +294,15 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     this._attributes.typescript.referenceName = context.reference(this)
 
                     const options = this._options
-                    if (options.type !== 'zod') {
+                    if (options.type !== 'zod' && options.type !== 'zod/v3' && options.type !== 'zod/v4') {
                         throw new Error('We expect the validator to be zod, but it is not.')
                     }
 
+                    const zodZ = child._validator.type === 'zod/v4' ? zodV4Symbols.z() : zodSymbols.z()
                     const writer = createWriter()
                     if (options.types) {
                         if (mustBeLazyDefined(child)) {
-                            const typeContext = buildTypescriptZodTypeContext({
+                            const typeContext = buildTypescriptZodV3TypeContext({
                                 symbol,
                                 exportSymbol: true,
                                 references: context.references,
@@ -305,17 +311,22 @@ export class ValidatorType<T extends Node = Node> extends Node {
                             writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
                             //.write('// lazy')
                         } else {
-                            writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                            writer.writeLine(`export type ${symbolName} = ${context.reference(zodZ)}.infer<typeof ${symbolName}>`)
                         }
                     }
 
-                    if (child._attributes.validator?.type === 'zod') {
+                    if (
+                        child._attributes.validator?.type === 'zod' ||
+                        child._attributes.validator?.type === 'zod/v3' ||
+                        child._attributes.validator?.type === 'zod/v4'
+                    ) {
                         if (mustBeLazyDefined(child)) {
+                            const zodZType = child._validator.type === 'zod/v4' ? zodV4Symbols.ZodType() : zodSymbols.ZodType()
                             writer
                                 .write(
-                                    `${context.declare('const', child)}: ${context.reference(zodSymbols.ZodType())}<${context.reference(child)}> = `,
+                                    `${context.declare('const', child)}: ${context.reference(zodZType)}<${context.reference(child)}> = `,
                                 )
-                                .write(`${context.value(zodSymbols.z())}.lazy(() => `)
+                                .write(`${context.value(zodZ)}.lazy(() => `)
                                 .write(context.render(child))
                                 .write(')')
                             // .write('//lazy')

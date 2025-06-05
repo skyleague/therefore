@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 import type { IncomingHttpHeaders } from 'node:http'
+
 import { got } from 'got'
 import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import type { SafeParseReturnType, ZodError } from 'zod'
@@ -50,7 +51,6 @@ export class Issue {
             },
         ) as ReturnType<this['companyGet']>
     }
-
     public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => SafeParseReturnType<unknown, I> }>>(
         response: CancelableRequest<NoInfer<Response<I>>>,
         schemas: S,
@@ -165,7 +165,6 @@ export class Issue2 {
         }
         return { right: _body.data }
     }
-
     public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => SafeParseReturnType<unknown, I> }>>(
         response: CancelableRequest<NoInfer<Response<I>>>,
         schemas: S,
@@ -297,7 +296,6 @@ export class Issue3 {
         }
         return { right: _body.data }
     }
-
     public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => SafeParseReturnType<unknown, I> }>>(
         response: CancelableRequest<NoInfer<Response<I>>>,
         schemas: S,

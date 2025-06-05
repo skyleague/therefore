@@ -1,6 +1,7 @@
 import { keysOf } from '@skyleague/axioms'
 import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
-import type { ZodType } from 'zod'
+import type { z as z3 } from 'zod'
+import type { z as z4 } from 'zod/v4'
 import type { JsonSchema } from '../../json.js'
 import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
@@ -10,6 +11,7 @@ import {
     type ValidatorOptions,
     defaultAjvValidatorOptions,
     defaultZodValidatorOptions,
+    defaultZodValidatorVersion,
 } from '../primitives/validator/types.js'
 import type { ValidatorType } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
@@ -74,7 +76,7 @@ export class Node {
     public _definition: ThereforeNodeDefinition<this['infer']> = {}
 
     public _origin: {
-        zod?: ZodType
+        zod?: z3.ZodType | z4.ZodType
         jsonschema?: JsonSchema
     } = {}
 
@@ -141,7 +143,7 @@ export class Node {
 
         if (validator.type === undefined) {
             if (node._origin.zod !== undefined) {
-                return { ...defaultZodValidatorOptions, ...validator, type: 'zod' }
+                return { ...defaultZodValidatorOptions, ...validator, type: defaultZodValidatorVersion }
             }
             return { ...defaultAjvValidatorOptions, ...validator, type: 'ajv' }
         }
@@ -155,7 +157,7 @@ export class Node {
             }
             return options
         }
-        if (validator.type === 'zod') {
+        if (validator.type === 'zod' || validator.type === 'zod/v3' || validator.type === 'zod/v4') {
             return { ...defaultZodValidatorOptions, ...validator }
         }
         throw new Error(`Unknown default validator: ${defaultValidator}`)

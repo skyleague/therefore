@@ -8,7 +8,7 @@ import {
     Order,
     Pet,
     User,
-} from '../../../examples/restclients/zod/petstore/petstore.zod.js'
+} from '../../../examples/restclients/zod-v3/petstore/petstore.zod.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
 import { arbitrary } from '../../../src/index.js'
 
@@ -23,7 +23,7 @@ import {
     PetStore,
     type StatusCode,
     type SuccessResponse,
-} from '../../../examples/restclients/zod/petstore/petstore.client.js'
+} from '../../../examples/restclients/zod-v3/petstore/petstore.client.js'
 import { $nockClient } from '../../../src/lib/primitives/restclient/mock.js'
 
 const prefixUrl = 'http://www.example.com'
