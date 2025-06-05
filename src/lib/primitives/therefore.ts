@@ -249,6 +249,12 @@ export class Therefore {
         for (const evaluated of allSymbols) {
             symbols.add(evaluated)
 
+            if (evaluated._origin.zod) {
+                if ('_zod' in evaluated._origin.zod) {
+                    const meta = evaluated._origin.zod.meta()
+                    evaluated._name ??= meta?.id ?? meta?.title
+                }
+            }
             if (evaluated._guessedTrace?.symbolName) {
                 evaluated._name ??= evaluated._guessedTrace.symbolName
             }

@@ -70,10 +70,17 @@ export const ajvFormatsSymbols = {
 }
 
 export const zodSymbols = {
-    z: moduleSymbol('zod', 'z'),
-    SafeParseReturnType: moduleSymbol('zod', 'SafeParseReturnType'),
-    ZodError: moduleSymbol('zod', 'ZodError'),
-    ZodType: moduleSymbol('zod', 'ZodType'),
+    z: moduleSymbol('zod/v3', 'z'),
+    SafeParseReturnType: moduleSymbol('zod/v3', 'SafeParseReturnType'),
+    ZodError: moduleSymbol('zod/v3', 'ZodError'),
+    ZodType: moduleSymbol('zod/v3', 'ZodType'),
+}
+
+export const zodV4Symbols = {
+    z: moduleSymbol('zod/v4', 'z'),
+    ZodSafeParseResult: moduleSymbol('zod/v4', 'ZodSafeParseResult'),
+    ZodError: moduleSymbol('zod/v4', 'ZodError'),
+    ZodType: moduleSymbol('zod/v4', 'ZodType'),
 }
 
 export const httpSymbols = {

@@ -9,7 +9,7 @@ import type { JsonSchema } from '../../../json.js'
 import type { OpenapiV3, Operation, Parameter, PathItem, RequestBody, Response, Responses } from '../../../types/openapi.type.js'
 import { constants } from '../../constants.js'
 import type { TypescriptOutput } from '../../cst/cst.js'
-import { ajvSymbols, gotSymbols, httpSymbols, kySymbols, zodSymbols } from '../../cst/module.js'
+import { ajvSymbols, gotSymbols, httpSymbols, kySymbols, zodSymbols, zodV4Symbols } from '../../cst/module.js'
 import { Node } from '../../cst/node.js'
 import { JSDoc } from '../../visitor/typescript/jsdoc.js'
 import { asString, objectProperty } from '../../visitor/typescript/literal.js'
@@ -128,19 +128,27 @@ export interface ResponseBodies {
 export const parseString = {
     ajv: '{ parse: (x: unknown) => ({ right: x }) }',
     zod: '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+    'zod/v3': '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+    'zod/v4': '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
 }
 export const parseUnknown = {
     ajv: '{ parse: (x: unknown) => ({ right: x }) }',
     zod: '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+    'zod/v3': '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
+    'zod/v4': '{ safeParse: (x: unknown) => ({ success: true, data: x }) }',
 }
 export const isStringIs = {
     ajv: '{is: (x: unknown): x is string => true}',
     zod: '{parse: (x: unknown): string => x as string}',
+    'zod/v3': '{parse: (x: unknown): string => x as string}',
+    'zod/v4': '{parse: (x: unknown): string => x as string}',
 }
 
 export const isUnknownIs = {
     ajv: '{is: (x: unknown): x is unknown => true}',
     zod: '{parse: (x: unknown): unknown => x}',
+    'zod/v3': '{parse: (x: unknown): unknown => x}',
+    'zod/v4': '{parse: (x: unknown): unknown => x}',
 }
 
 export interface AsPathItem {
@@ -185,8 +193,11 @@ export class EitherHelper extends Node {
                         .writeLine('statusCode: StatusCode')
                         .writeLine('status: Status<StatusCode>')
                         .writeLine(`headers: ${HeaderVar}`)
-                    if (this.builder.options.validator === 'zod') {
-                        const ZodError = reference(zodSymbols.ZodError())
+                    if (this.builder.options.validator === 'zod/v3' || this.builder.options.validator === 'zod/v4') {
+                        const ZodError =
+                            this.builder.options.validator === 'zod/v4'
+                                ? reference(zodV4Symbols.ZodError())
+                                : reference(zodSymbols.ZodError())
                         writer.writeLine(`error: ${ZodError}<T> | undefined`)
                     } else {
                         const DefinedError = reference(ajvSymbols.DefinedError())
@@ -634,25 +645,32 @@ export class RestClientBuilder {
         return writer.toString()
     }
 
-    private writeAwaitResponse(reference: (node: Node) => string, validator: 'ajv' | 'zod') {
+    private writeAwaitResponse(reference: (node: Node) => string, validator: 'ajv' | 'zod/v3' | 'zod/v4') {
         const statusAccessor = this.options.client === 'ky' ? 'status' : 'statusCode'
         const _body = this.options.client === 'ky' ? '_body' : 'result.body'
 
         const RequestPromise = reference(this._client.RequestPromise())
         const writer = createWriter()
         if (this.options.useEither) {
-            const DefinedError = reference(ajvSymbols.DefinedError())
-            writer
-                .newLine()
-                .conditionalWriteLine(
-                    validator === 'ajv',
-                    `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } }>>(response: `,
-                )
-            if (validator === 'zod') {
+            if (validator === 'zod/v3') {
                 const SafeParseReturnType = reference(zodSymbols.SafeParseReturnType())
                 writer.writeLine(
                     `public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => ${SafeParseReturnType}<unknown, I> }>>(response: `,
                 )
+            } else if (validator === 'zod/v4') {
+                const ZodSafeParseResult = reference(zodV4Symbols.ZodSafeParseResult())
+
+                writer.writeLine(
+                    `public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => ${ZodSafeParseResult}<I> }>>(response: `,
+                )
+            } else {
+                const DefinedError = reference(ajvSymbols.DefinedError())
+                writer
+                    .newLine()
+                    .conditionalWriteLine(
+                        validator === 'ajv',
+                        `public async awaitResponse<I, S extends Record<PropertyKey, { parse: (o: I) => { left: ${DefinedError}[] } | { right: unknown } }>>(response: `,
+                    )
             }
 
             if (this.options.client === 'got') {
@@ -695,7 +713,7 @@ export class RestClientBuilder {
                             .writeLine(
                                 `return {success: true as const, statusCode: result.${statusAccessor}.toString(), status, headers: result.headers, right: ${_body} }`,
                             )
-                    } else if (validator === 'zod') {
+                    } else if (validator === 'zod/v3' || validator === 'zod/v4') {
                         writer
                             .writeLine(`const body = validator?.safeParse?.(${_body})`)
                             .writeLine(`if (result.${statusAccessor} < 200 || result.${statusAccessor} >= 300)`)
@@ -718,7 +736,7 @@ export class RestClientBuilder {
                 .toString()
         }
 
-        if (this.options.validator === 'zod') {
+        if (this.options.validator === 'zod/v3' || this.options.validator === 'zod/v4') {
             writer
                 .newLine()
                 .writeLine(
@@ -815,7 +833,7 @@ export class RestClientBuilder {
                     })
                     .toString()
             }
-            if (this.options.validator === 'zod') {
+            if (this.options.validator === 'zod/v3') {
                 const SafeParseReturnType = reference(zodSymbols.SafeParseReturnType())
                 return writer
                     .newLine()
@@ -833,8 +851,26 @@ export class RestClientBuilder {
                     })
                     .toString()
             }
+            if (this.options.validator === 'zod/v4') {
+                const ZodSafeParseResult = reference(zodV4Symbols.ZodSafeParseResult())
+                return writer
+                    .newLine()
+                    .writeLine('public validateRequestBody<Body>(')
+                    .writeLine(`parser: { safeParse: (o: unknown) => ${ZodSafeParseResult}<Body> }, body: unknown )`)
+                    .write(": {right: Body } | FailureResponse<undefined, unknown, 'request:body', undefined>")
+                    .block(() => {
+                        writer.writeLine('const _body = parser.safeParse(body)')
+                        writer.writeLine('if (!_body.success)').block(() => {
+                            writer.writeLine(
+                                "return {success: false as const, statusCode: undefined, status: undefined, headers: undefined, left: body, error: _body.error, where: 'request:body' } satisfies FailureResponse<undefined, unknown, 'request:body', undefined>",
+                            )
+                        })
+                        writer.writeLine('return {right: _body.data}')
+                    })
+                    .toString()
+            }
         }
-        if (this.options.validator === 'zod') {
+        if (this.options.validator === 'zod/v3' || this.options.validator === 'zod/v4') {
             return writer
                 .newLine()
                 .writeLine('public validateRequestBody<Body>( parser: { parse: (o: unknown) => Body }, body: unknown )')
@@ -984,7 +1020,7 @@ export class RestClientBuilder {
                 document: this.openapi,
                 references: this.references,
                 exportAllSymbols: true,
-                validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
+                validator: this.options.validator === 'ajv' ? undefined : { type: this.options.validator },
                 formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
@@ -1026,7 +1062,7 @@ export class RestClientBuilder {
                 document: this.openapi,
                 references: this.references,
                 exportAllSymbols: true,
-                validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
+                validator: this.options.validator === 'ajv' ? undefined : { type: this.options.validator },
                 formats: this.options.formats,
                 ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
             })
@@ -1116,7 +1152,7 @@ export class RestClientBuilder {
                     document: this.openapi,
                     references: this.references,
                     exportAllSymbols: true,
-                    validator: this.options.validator === 'zod' ? { type: 'zod' } : undefined,
+                    validator: this.options.validator === 'ajv' ? undefined : { type: this.options.validator },
                     formats: this.options.formats,
                     ...pick(this.options, ['optionalNullable', 'allowIntersectionTypes']),
                 })

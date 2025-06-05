@@ -7,7 +7,8 @@ import type { TypescriptOutput } from '../../cst/cst.js'
 import type { Node } from '../../cst/node.js'
 import { mustBeLazyDefined } from '../prepass/prepass.js'
 import { buildTypescriptTypeContext } from './typescript-type.js'
-import { buildTypescriptZodContext } from './typescript-zod.js'
+import { buildTypescriptZodV3Context } from './typescript-zod3.js'
+import { buildTypescriptZodV4Context } from './typescript-zod4.js'
 
 const defaultZodOutput = (node: Node) => {
     const output = {
@@ -23,13 +24,22 @@ const defaultZodOutput = (node: Node) => {
             references?: References<'typescript'>
             locals?: [Node, ((output: DefinedTypescriptOutput) => boolean) | undefined][]
             exportSymbol: boolean
-        }) =>
-            buildTypescriptZodContext({
+        }) => {
+            if (node._validator.type === 'zod/v4') {
+                return buildTypescriptZodV4Context({
+                    symbol,
+                    exportSymbol,
+                    references,
+                    locals,
+                })
+            }
+            return buildTypescriptZodV3Context({
                 symbol,
                 exportSymbol,
                 references,
                 locals,
-            }),
+            })
+        },
         targetPath: ({ _sourcePath: sourcePath }) => {
             if (output.isGenerated(node)) {
                 return replaceExtension(sourcePath, constants.defaultZodTypescriptOutExtension)
@@ -51,7 +61,7 @@ const defaultZodOutput = (node: Node) => {
 
             return `${context.declare('const', self)} = ${context.render(self)}`
         },
-        enabled: (node) => node._validator.type === 'zod',
+        enabled: (node) => node._validator.type === 'zod/v3' || node._validator.type === 'zod/v4',
         isTypeOnly: false,
         isGenerated: (node) => node._attributes.isGenerated,
     } satisfies DefinedTypescriptOutput
@@ -117,7 +127,7 @@ export function defaultTypescriptOutput(node: Node): DefinedTypescriptOutput[] {
         if (node._validator.type === 'ajv') {
             generators.push(defaultAjv)
         }
-        if (node._validator.type === 'zod') {
+        if (node._validator.type === 'zod/v3' || node._validator.type === 'zod/v4') {
             generators.push(defaultZod)
         }
     }

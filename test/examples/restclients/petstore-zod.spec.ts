@@ -8,7 +8,7 @@ import {
     PetStore,
     type StatusCode,
     type SuccessResponse,
-} from '../../../examples/restclients/zod/petstore/petstore.client.js'
+} from '../../../examples/restclients/zod-v3/petstore/petstore.client.js'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
@@ -19,7 +19,7 @@ import {
     Order,
     Pet,
     User,
-} from '../../../examples/restclients/zod/petstore/petstore.zod.js'
+} from '../../../examples/restclients/zod-v3/petstore/petstore.zod.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
 import { arbitrary } from '../../../src/index.js'
 import { $nockClient } from '../../../src/lib/primitives/restclient/mock.js'
@@ -28,12 +28,19 @@ const prefixUrl = 'http://www.example.com'
 
 it('output generation', async () => {
     expect(
-        await compileOutput(['examples/restclients/zod/petstore/petstore.schema.ts'], {
+        await compileOutput(['examples/restclients/zod-v3/petstore/petstore.schema.ts'], {
             cwd: process.cwd(),
         }),
     ).toMatchSnapshot()
 })
 
+it('output generation - zod 4', async () => {
+    expect(
+        await compileOutput(['examples/restclients/zod-v4/petstore/petstore.schema.ts'], {
+            cwd: process.cwd(),
+        }),
+    ).toMatchSnapshot()
+})
 describe('methods', () => {
     beforeEach(() => nock.disableNetConnect())
     afterEach(() => {

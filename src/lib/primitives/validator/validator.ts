@@ -4,17 +4,16 @@ import { type ConstExpr, evaluate } from '@skyleague/axioms'
 import type { Options } from 'ajv'
 import decamelize from 'decamelize'
 import { generatedAjv } from '../../../commands/generate/constants.js'
-import { replaceExtension } from '../../../common/template/path.js'
 import { defaultAjvConfig } from '../../ajv/defaults.js'
 import { constants } from '../../constants.js'
 import type { GenericOutput, TypescriptOutput } from '../../cst/cst.js'
-import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols } from '../../cst/module.js'
+import { ajvFormatsSymbols, ajvSymbols, moduleSymbol, zodSymbols, zodV4Symbols } from '../../cst/module.js'
 import { type Hooks, Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import { toJsonSchema } from '../../visitor/jsonschema/jsonschema.js'
 import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import { toLiteral } from '../../visitor/typescript/literal.js'
-import { buildTypescriptZodTypeContext } from '../../visitor/typescript/typescript-zod.js'
+import { buildTypescriptZodV3TypeContext } from '../../visitor/typescript/typescript-zod3.js'
 import { createWriter } from '../../writer.js'
 import { defaultAjvValidatorOptions, type ValidatorInputOptions, type ValidatorOptions } from './types.js'
 
@@ -186,99 +185,10 @@ export class ValidatorType<T extends Node = Node> extends Node {
                 type: 'typescript',
                 subtype: 'zod',
                 isTypeOnly: false,
-                definition: ({ _attributes: { typescript } }, { value, references }) => {
-                    const child = this._children[0]
-                    const symbolName = references.reference(child, 'aliasName')
-                    const symbolNameAlias = moduleSymbol(
-                        `./${path.relative(path.dirname(this._attributes.typescript.path ?? ''), child._attributes.typescript.path ?? '')}`,
-                        symbolName,
-                        {
-                            alias: 'schema',
-                            transform: { aliasName: () => `${symbolName}Schema` },
-                        },
-                    )()
-
-                    const symbolPath = typescript.path
-                    if (symbolPath === undefined) {
-                        throw new Error('path is undefined, node was not properly initialized.')
-                    }
-                    const writer = createWriter()
-                    writer
-                        .writeLine('/**')
-                        .writeLine(' * @deprecated')
-                        .writeLine(' */')
-                        .writeLine(`export type ${symbolName} = ${value(zodSymbols.z())}.infer<typeof ${value(symbolNameAlias)}>`)
-                        .writeLine('/**')
-                        .writeLine(
-                            ` * @deprecated Use \`${symbolName}.safeParse\` instead. To migrate: 1) Replace \`${symbolName}.validate(data)\` with \`${symbolName}.safeParse(data)\` 2) Check result with \`.success\` instead of the return value 3) Access parsed data via \`.data\` or validation errors via \`.error.issues\` on the result object`,
-                        )
-                        .writeLine(' */')
-                        .writeLine(`export const ${symbolName} = Object.assign(${value(symbolNameAlias)}.refine(x => x), `)
-                        .block(() => {
-                            writer
-                                .writeLine('validate: (value: unknown): boolean => ')
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(value)`)
-                                        .writeLine('if (result.success && typeof value === "object" && value !== null) {')
-                                        .writeLine('    Object.assign(value, result.data)')
-                                        .writeLine('}')
-                                        .writeLine(
-                                            `${symbolName}.errors = result.success ? undefined : result.error.issues.map((issue) => ({`,
-                                        )
-                                        .writeLine('message: issue.message,')
-                                        .writeLine('params: issue.path,')
-                                        .writeLine("schemaPath: issue.path.join('/'),")
-                                        .writeLine('}))')
-                                        .writeLine('return result.success')
-                                })
-                                .write(',')
-                                .writeLine('errors: undefined as unknown[] | undefined,')
-                                .writeLine(`is: (o: unknown): o is ${symbolName} =>`)
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
-                                        .writeLine('if (result.success && typeof o === "object" && o !== null) {')
-                                        .writeLine('    Object.assign(o, result.data)')
-                                        .writeLine('}')
-                                        .writeLine('return result.success')
-                                })
-                                .write(',')
-                                .writeLine(`parse: (o: unknown): { right: ${symbolName} } | { left: unknown[] } => `)
-                                .inlineBlock(() => {
-                                    writer
-                                        .writeLine(`const result = ${value(symbolNameAlias)}.safeParse(o)`)
-                                        .writeLine('if (result.success) { return { right: result.data } }')
-                                        .writeLine('return {')
-                                        .writeLine('left: result.error.issues.map((issue) => ({')
-                                        .writeLine('message: issue.message,')
-                                        .writeLine('params: issue.path,')
-                                        .writeLine("schemaPath: issue.path.join('/')")
-                                        .writeLine('}))')
-                                        .writeLine('}')
-                                })
-                        })
-                        .write(')')
-                    return writer.toString()
-                },
                 enabled: (node) =>
-                    constants.migrate &&
-                    constants.migrateToValidator === 'zod' &&
-                    !node._attributes.isGenerated &&
-                    constants.generateInterop,
-                targetPath: ({ _sourcePath: sourcePath }) => {
-                    return replaceExtension(sourcePath, constants.defaultTypescriptOutExtension)
-                },
-            },
-            {
-                type: 'typescript',
-                subtype: 'zod',
-                isTypeOnly: false,
-                enabled: (node) =>
-                    (node._attributes.isGenerated && node._attributes.validator?.type === 'zod') ||
-                    (!constants.generateInterop &&
-                        constants.migrateToValidator === 'zod' &&
-                        node._attributes.validator === undefined),
+                    (node._attributes.isGenerated &&
+                        (node._attributes.validator?.type === 'zod/v3' || node._attributes.validator?.type === 'zod/v4')) ||
+                    (!constants.generateInterop && node._attributes.validator === undefined),
                 definition: (symbol, context) => {
                     // be a little cheeky to not mark duplicates in our detection
                     const child = this._children[0]
@@ -287,14 +197,15 @@ export class ValidatorType<T extends Node = Node> extends Node {
                     this._attributes.typescript.referenceName = context.reference(this)
 
                     const options = this._options
-                    if (options.type !== 'zod') {
+                    if (options.type !== 'zod/v3' && options.type !== 'zod/v4') {
                         throw new Error('We expect the validator to be zod, but it is not.')
                     }
 
+                    const zodZ = child._validator.type === 'zod/v4' ? zodV4Symbols.z() : zodSymbols.z()
                     const writer = createWriter()
                     if (options.types) {
                         if (mustBeLazyDefined(child)) {
-                            const typeContext = buildTypescriptZodTypeContext({
+                            const typeContext = buildTypescriptZodV3TypeContext({
                                 symbol,
                                 exportSymbol: true,
                                 references: context.references,
@@ -303,17 +214,18 @@ export class ValidatorType<T extends Node = Node> extends Node {
                             writer.writeLine(`export type ${symbolName} = ${typeContext.render(symbol)}`)
                             //.write('// lazy')
                         } else {
-                            writer.writeLine(`export type ${symbolName} = z.infer<typeof ${symbolName}>`)
+                            writer.writeLine(`export type ${symbolName} = ${context.reference(zodZ)}.infer<typeof ${symbolName}>`)
                         }
                     }
 
-                    if (child._attributes.validator?.type === 'zod') {
+                    if (child._attributes.validator?.type === 'zod/v3' || child._attributes.validator?.type === 'zod/v4') {
                         if (mustBeLazyDefined(child)) {
+                            const zodZType = child._validator.type === 'zod/v4' ? zodV4Symbols.ZodType() : zodSymbols.ZodType()
                             writer
                                 .write(
-                                    `${context.declare('const', child)}: ${context.reference(zodSymbols.ZodType())}<${context.reference(child)}> = `,
+                                    `${context.declare('const', child)}: ${context.reference(zodZType)}<${context.reference(child)}> = `,
                                 )
-                                .write(`${context.value(zodSymbols.z())}.lazy(() => `)
+                                .write(`${context.value(zodZ)}.lazy(() => `)
                                 .write(context.render(child))
                                 .write(')')
                             // .write('//lazy')

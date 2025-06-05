@@ -5,7 +5,7 @@
 // biome-ignore-all lint: this file is generated
 /* eslint-disable */
 
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 export const CreateUniqueTagRequest = z.object({
     tags: z.string().array(),

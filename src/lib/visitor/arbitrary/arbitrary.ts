@@ -33,7 +33,8 @@ import {
     uuidv4Arbitrary,
 } from '@skyleague/axioms'
 import { expand } from 'regex-to-strings'
-import type { ZodFirstPartySchemaTypes, ZodSchema, ZodString } from 'zod'
+import type { z as z3 } from 'zod/v3'
+import { z as z4 } from 'zod/v4'
 import type { JsonSchema } from '../../../json.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import { Node } from '../../cst/node.js'
@@ -96,8 +97,10 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
             let allowOffset = true
             let allowLocal = false
             let precision: number | undefined
-            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
-                const zodString = zod as ZodString
+
+            // zod v3
+            if (zod !== undefined && (zod as z3.ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+                const zodString = zod as z3.ZodString
                 const zodDatetime = zodString._def.checks?.find((check) => check.kind === 'datetime')
                 if (zodDatetime) {
                     allowOffset = zodDatetime.offset
@@ -105,6 +108,23 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
                     precision = zodDatetime.precision ?? undefined
                 }
             }
+
+            // zod v4
+            const zodV4 = zod as unknown as z4.core.$ZodISODateTime
+            if (
+                zodV4 !== undefined &&
+                '_zod' in zodV4 &&
+                zodV4._zod.def.type === 'string' &&
+                zodV4._zod.def.format === 'datetime'
+            ) {
+                const zodString = zodV4._zod.def
+                if (zodString) {
+                    allowOffset = zodString.offset
+                    allowLocal = zodString?.local === true
+                    precision = zodString.precision ?? undefined
+                }
+            }
+
             if (precision !== undefined) {
                 strArbitrary = strArbitrary.chain((x) => {
                     const [hms] = x.split('.') ?? []
@@ -141,8 +161,10 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
             const allowOffset = true
             let forceLocal = false
             let precision: number | undefined
-            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
-                const zodString = zod as ZodString
+
+            // zod v3
+            if (zod !== undefined && (zod as z3.ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+                const zodString = zod as z3.ZodString
 
                 const zodTime = zodString._def.checks?.find((check) => check.kind === 'time')
                 if (zodTime) {
@@ -151,6 +173,18 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
 
                 forceLocal = true
             }
+
+            // zod v4
+            const zodV4 = zod as unknown as z4.core.$ZodISOTime
+            if (zodV4 !== undefined && '_zod' in zodV4 && zodV4._zod.def.type === 'string' && zodV4._zod.def.format === 'time') {
+                const zodString = zodV4._zod.def
+                if (zodString) {
+                    precision = zodString.precision ?? undefined
+                }
+
+                forceLocal = true
+            }
+
             if (precision !== undefined) {
                 strArbitrary = strArbitrary.chain((x) => {
                     const [hms] = x.split('.') ?? []
@@ -219,8 +253,9 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
             })
         }
 
-        if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
-            const zodString = zod as ZodString
+        // zod v3
+        if (zod !== undefined && (zod as z3.ZodFirstPartySchemaTypes)._def.typeName === 'ZodString') {
+            const zodString = zod as z3.ZodString
             const startsWith = zodString._def.checks.find((c) => c.kind === 'startsWith')
             if (startsWith !== undefined) {
                 strArbitrary = strArbitrary.map((x) => `${startsWith.value}${x}`)
@@ -295,6 +330,70 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
                 strArbitrary = base64({ minLength: options.minLength, maxLength: options.maxLength }).map((x) =>
                     x.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_').replace(/\r?\n/g, ''),
                 )
+            }
+        }
+
+        // zod v4
+        if (zod !== undefined && '_zod' in zod && (zod as unknown as z4.ZodFirstPartySchemaTypes)._zod.def.type === 'string') {
+            const zodString = zod as z4.ZodString
+
+            if (zodString instanceof z4.core.$ZodNanoID) {
+                strArbitrary = nanoidArbitrary()
+            }
+
+            if (zodString instanceof z4.core.$ZodCUID) {
+                strArbitrary = cuidArbitrary()
+            }
+
+            if (zodString instanceof z4.core.$ZodCUID2) {
+                strArbitrary = cuid2Arbitrary()
+            }
+
+            if (zodString instanceof z4.core.$ZodEmoji) {
+                // Common emoji ranges
+                const emojiRanges = [
+                    [0x1f300, 0x1f9ff], // Miscellaneous Symbols and Pictographs, Emoticons, Transport/Map Symbols...
+                    [0x2600, 0x26ff], // Miscellaneous Symbols
+                    [0x2700, 0x27bf], // Dingbats
+                    [0xfe00, 0xfe0f], // Variation Selectors
+                    [0x1f1e6, 0x1f1ff], // Regional Indicator Symbols
+                ] as const
+
+                strArbitrary = oneOf(
+                    ...emojiRanges.map(([min, max]) => integer({ min, max }).map((x) => String.fromCodePoint(x))),
+                ).filter((s) => /^(\p{Extended_Pictographic}|\p{Emoji_Component})+$/u.test(s))
+            }
+
+            if (zodString instanceof z4.core.$ZodCIDRv4) {
+                strArbitrary = tuple(ipv4(), integer({ min: 0, max: 32 })).map(([ip, prefix]) => `${ip}/${prefix}`)
+            }
+
+            if (zodString instanceof z4.core.$ZodCIDRv6) {
+                strArbitrary = tuple(ipv6(), integer({ min: 0, max: 128 })).map(([ip, prefix]) => `${ip}/${prefix}`)
+            }
+
+            if (zodString instanceof z4.core.$ZodBase64URL) {
+                strArbitrary = base64({ minLength: options.minLength, maxLength: options.maxLength }).map((x) =>
+                    x.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_').replace(/\r?\n/g, ''),
+                )
+            }
+
+            const startsWith = zodString._zod.def.checks?.find((c) => c instanceof z4.core.$ZodCheckStartsWith)
+            if (startsWith !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${startsWith._zod.def.prefix}${x}`)
+            }
+            const endsWith = zodString._zod.def.checks?.find((c) => c instanceof z4.core.$ZodCheckEndsWith)
+            if (endsWith !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${x}${endsWith._zod.def.suffix}`)
+            }
+            const includes = zodString._zod.def.checks?.find((c) => c instanceof z4.core.$ZodCheckIncludes)
+            if (includes !== undefined) {
+                strArbitrary = strArbitrary.map((x) => `${x}${includes._zod.def.includes}`)
+            }
+
+            const overwrites = zodString._zod.def.checks?.filter((c) => c instanceof z4.core.$ZodCheckOverwrite)
+            for (const overwrite of overwrites ?? []) {
+                strArbitrary = strArbitrary.map((x) => overwrite._zod.def.tx(x) as string)
             }
         }
 
@@ -405,7 +504,13 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
                 ...restArbitrary,
             })
 
-            if (zod !== undefined && (zod as ZodFirstPartySchemaTypes)._def.typeName === 'ZodSet') {
+            // zod v3
+            if (zod !== undefined && (zod as z3.ZodFirstPartySchemaTypes)._def.typeName === 'ZodSet') {
+                return value.map((x) => new Set(x))
+            }
+
+            // zod v4
+            if (zod !== undefined && (zod as unknown as z4.ZodFirstPartySchemaTypes)._zod.def.type === 'set') {
                 return value.map((x) => new Set(x))
             }
 
@@ -466,7 +571,8 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
  * @group Arbitrary
  */
 export function arbitrary<S extends Schema<unknown>>(schema: S): S extends Schema<infer T> ? Dependent<T> : never
-export function arbitrary<T extends ZodSchema>(schema: T): Dependent<T['_output']>
+export function arbitrary<T extends z3.ZodSchema>(schema: T): Dependent<T['_output']>
+export function arbitrary<T extends z4.ZodSchema>(schema: T): Dependent<T['_output']>
 export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
 export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T })): Dependent<T> {
     const context = buildContext()

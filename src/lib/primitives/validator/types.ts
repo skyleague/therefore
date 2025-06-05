@@ -69,13 +69,14 @@ export type AjvValidatorInputOptions = SetOptional<
 > &
     DeprecatedAjvValidatorOptions
 
+export const defaultZodValidatorVersion = 'zod/v4'
 export const defaultZodValidatorOptions: ZodValidatorOptions = {
-    type: 'zod',
+    type: defaultZodValidatorVersion,
     types: true,
 }
 
 export interface ZodValidatorOptions {
-    type: 'zod'
+    type: 'zod/v3' | 'zod/v4'
 
     /**
      * Whether to generate types for the validator.

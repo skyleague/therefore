@@ -75,7 +75,7 @@ export interface RestClientOptions<Options extends Jsonifiable = Jsonifiable> {
      *
      * @defaultValue ajv
      */
-    validator?: 'zod' | 'ajv'
+    validator?: 'zod/v3' | 'zod/v4' | 'ajv'
 
     options?: Options
 }

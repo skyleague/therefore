@@ -60,15 +60,16 @@
     "js-yaml": "^4.1.0",
     "json-schema-to-zod": "^2.6.1",
     "ky": "^1.8.2",
-    "nock": "^14.0.5",
+    "nock": "^14.0.6",
     "tsx": "^4.20.3",
     "type-testing": "^0.2.0",
     "typescript": "^5.8.3",
-    "zod": "^3.25.76",
+    "zod": "^3.25.0",
     "zod-to-json-schema": "^3.24.6"
   },
   "peerDependencies": {
-    "tsx": "^4.20.3"
+    "tsx": "^4.20.3",
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "engines": {
     "node": ">=22"

@@ -1,6 +1,7 @@
 import { keysOf } from '@skyleague/axioms'
 import type { SetNonNullable, SetRequired } from '@skyleague/axioms/types'
-import type { ZodType } from 'zod'
+import type { z as z3 } from 'zod/v3'
+import type { z as z4 } from 'zod/v4'
 import type { JsonSchema } from '../../json.js'
 import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
@@ -8,6 +9,7 @@ import type { DefaultType } from '../primitives/optional/default.js'
 import {
     defaultAjvValidatorOptions,
     defaultZodValidatorOptions,
+    defaultZodValidatorVersion,
     type ValidatorInputOptions,
     type ValidatorOptions,
 } from '../primitives/validator/types.js'
@@ -68,13 +70,13 @@ export class Node {
         generic: {} as GenericAttributes,
         validator: undefined,
         validatorType: undefined,
-        isGenerated: !constants.migrate,
+        isGenerated: true,
     }
 
     public _definition: ThereforeNodeDefinition<this['infer']> = {}
 
     public _origin: {
-        zod?: ZodType
+        zod?: z3.ZodType | z4.ZodType
         jsonschema?: JsonSchema
     } = {}
 
@@ -124,7 +126,7 @@ export class Node {
 
     public validator(validator: ValidatorInputOptions | undefined = undefined): this {
         this._attributes.validator = validator ?? {
-            type: constants.migrateToValidator ?? constants.defaultValidator,
+            type: constants.defaultValidator,
         }
         return this
     }
@@ -134,14 +136,14 @@ export class Node {
     }
 
     private static _validatorOptions(node: Node, options: ValidatorInputOptions | undefined): ValidatorOptions {
-        const defaultValidator = constants.migrateToValidator ?? constants.defaultValidator
+        const defaultValidator = constants.defaultValidator
         const validator: ValidatorInputOptions = options ?? {
             type: defaultValidator,
         }
 
         if (validator.type === undefined) {
             if (node._origin.zod !== undefined) {
-                return { ...defaultZodValidatorOptions, ...validator, type: 'zod' }
+                return { ...defaultZodValidatorOptions, ...validator, type: defaultZodValidatorVersion }
             }
             return { ...defaultAjvValidatorOptions, ...validator, type: 'ajv' }
         }
@@ -155,7 +157,7 @@ export class Node {
             }
             return options
         }
-        if (validator.type === 'zod') {
+        if (validator.type === 'zod/v3' || validator.type === 'zod/v4') {
             return { ...defaultZodValidatorOptions, ...validator }
         }
         throw new Error(`Unknown default validator: ${defaultValidator}`)
