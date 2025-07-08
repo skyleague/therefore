@@ -4039,6 +4039,55 @@ describe('const', () => {
     })
 })
 
+describe('integer', () => {
+    const schema: JsonSchema = { minimum: 0, type: 'number' }
+    const therefore = () => $jsonschema(schema)
+
+    it('definition', () => {
+        expect(therefore()).toMatchInlineSnapshot(`
+          NumberType {
+            "_attributes": {
+              "generic": {},
+              "isGenerated": true,
+              "typescript": {},
+              "validator": undefined,
+              "validatorType": undefined,
+            },
+            "_definition": {},
+            "_guessedTrace": undefined,
+            "_id": "1",
+            "_isCommutative": true,
+            "_loaded": true,
+            "_name": undefined,
+            "_options": {
+              "min": 0,
+            },
+            "_origin": {
+              "jsonschema": {
+                "minimum": 0,
+                "type": "number",
+              },
+            },
+            "_type": "number",
+          }
+        `)
+    })
+
+    it('jsonschema', () => {
+        const json = buildContext().render(therefore())
+        expect(json).toMatchInlineSnapshot(`
+          {
+            "minimum": 0,
+            "type": "number",
+          }
+        `)
+    })
+
+    it('typescript', () => {
+        expect(TypescriptFileOutput.define({ symbol: therefore() })).toMatchInlineSnapshot(`"type {{1:symbolName}} = number"`)
+    })
+})
+
 describe('edge cases', () => {
     it('correctly handles oneOf', () => {
         const schema: JsonSchema = {

@@ -109,13 +109,13 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
 
         // Check for semantic number constraints
         if (options.min === 0) {
-            if (options.minInclusive === true) {
+            if (options.minInclusive === true || options.minInclusive === undefined) {
                 writer.write('.nonnegative()')
             } else {
                 writer.write('.positive()')
             }
         } else if (options.max === 0) {
-            if (options.maxInclusive === true) {
+            if (options.maxInclusive === true || options.maxInclusive === undefined) {
                 writer.write('.nonpositive()')
             } else {
                 writer.write('.negative()')
