@@ -210,7 +210,7 @@ export class Therefore {
         if (isFunction(node)) {
             node = await mapTry(node, (x) => x())
         }
-        if (!isNode(node)) {
+        if (!isNode(node) && node !== undefined && node !== null) {
             return mapTry(node, (x) => $ref(x as Node))
         }
         return node
