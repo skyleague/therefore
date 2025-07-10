@@ -110,7 +110,7 @@ export class Therefore {
 
         for (const [nodeName, nodePromise] of Object.entries(module)) {
             const node = await Therefore.awaitSymbol(nodePromise)
-            if (isFailure(node)) {
+            if (isFailure(node) || node === undefined || node === null) {
                 continue
             }
 
