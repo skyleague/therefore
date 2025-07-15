@@ -82,6 +82,8 @@ export class Therefore {
     public zodCache: WeakMap<ZodSchema, Node> | undefined = new WeakMap()
 
     public static moduleSymbols = new Map<string, Node[]>()
+    public static jsonSchemaCache = new WeakMap<Node, { schema: unknown; fallbackName?: string | undefined }>()
+
     public static async scanModule({
         entry,
         sourcePath,
@@ -274,12 +276,22 @@ export class Therefore {
     }
 
     public static async jsonschema(node: Node, { fallbackName }: { fallbackName?: string } = {}) {
+        // Check cache first
+        const cached = Therefore.jsonSchemaCache.get(node)
+        if (cached !== undefined && cached.fallbackName === fallbackName) {
+            return cached.schema
+        }
+
         const evaluated = await Therefore.loadSymbolTree(node, { fallbackName })
         const validator = toJsonSchema(evaluated, { formats: true, compile: false })
 
         const data = validator.references.resolveData(validator.references.data())
         const file = renderTemplate(validator.references.render(JSON.stringify(validator.schema)), data)
-        return JSON.parse(file)
+        const schema = JSON.parse(file)
+
+        // Cache the result
+        Therefore.jsonSchemaCache.set(node, { schema, fallbackName })
+        return schema
     }
 
     public loadSymbol(symbol: Node) {
