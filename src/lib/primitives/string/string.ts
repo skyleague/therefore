@@ -1,7 +1,6 @@
+import type { StringConstraints } from '@skyleague/axioms'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { SchemaOptions } from '../base.js'
-
-import type { StringConstraints } from '@skyleague/axioms'
 
 export const supportedFormats = [
     'date-time',

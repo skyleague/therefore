@@ -1,8 +1,7 @@
-import { $nullable } from './nullable.js'
+import { expect, it } from 'vitest'
 
 import { $string } from '../string/string.js'
-
-import { expect, it } from 'vitest'
+import { $nullable } from './nullable.js'
 
 it('string', () => {
     expect($nullable($string)).toMatchInlineSnapshot(`

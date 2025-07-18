@@ -1,1 +1,1 @@
-export { type IntegerType, type IntegerOptions, $integer } from './integer.js'
+export { $integer, type IntegerOptions, type IntegerType } from './integer.js'

@@ -1,2 +1,2 @@
-export { type ThereforeExpr, isNode } from './cst.js'
+export { isNode, type ThereforeExpr } from './cst.js'
 export { Node } from './node.js'

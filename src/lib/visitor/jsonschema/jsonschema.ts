@@ -1,8 +1,8 @@
 import { isObject, omitUndefined, unique } from '@skyleague/axioms'
 import type { Options as AjvOptions, Schema } from 'ajv'
 import { Ajv } from 'ajv'
-import addFormats, { type FormatName } from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
+import addFormats, { type FormatName } from 'ajv-formats'
 import camelcase from 'camelcase'
 import { References } from '../../../commands/generate/output/references.js'
 import type {
@@ -91,7 +91,12 @@ export function annotate({
     node,
     branch,
     version,
-}: { schema: JsonSchema; node: Node; branch: Node | undefined; version: 'openapi3' | 'draft-07' }): JsonAnnotations {
+}: {
+    schema: JsonSchema
+    node: Node
+    branch: Node | undefined
+    version: 'openapi3' | 'draft-07'
+}): JsonAnnotations {
     const hasType = schema.type !== undefined
 
     return {
@@ -469,7 +474,7 @@ export function convertRequiresToImports(code: string): string {
         }
 
         const alias = camelcase(module.replace(/[^a-zA-Z0-9]/g, '_'))
-        const cleanedProperty = property.replace(/[\.\[\]"]/g, '')
+        const cleanedProperty = property.replace(/[.[\]"]/g, '')
         importsMap.get(module)?.add(`${cleanedProperty} as ${camelcase(`${alias}_${cleanedProperty}`)}`)
         assignments.push({ fullMatch, variable, module, property: cleanedProperty, originalProperty })
     }

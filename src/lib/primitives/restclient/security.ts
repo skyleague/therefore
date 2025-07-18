@@ -51,13 +51,16 @@ export const toSecurityHook: {
                             .conditionalWriteLine(client === 'got', 'options.password = password')
                             .conditionalWriteLine(
                                 client === 'ky',
+                                // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                                 'options.headers.set("Authorization", `Basic ${btoa(`${username}:${password}`)}`)',
                             )
                     })
             } else if (s.scheme === 'bearer') {
                 hook.writeLine(`const ${name} = this.auth.${name}!`)
                     .writeLine(`const token = typeof ${name} === 'function' ? await ${name}() : ${name}`)
+                    // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                     .conditionalWriteLine(client === 'got', 'options.headers.Authorization = `Bearer ${token}`')
+                    // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                     .conditionalWriteLine(client === 'ky', 'options.headers.set(`Authorization`, `Bearer ${token}`)')
                 headers.push('Authorization')
             }

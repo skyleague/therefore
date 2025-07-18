@@ -1,9 +1,8 @@
+import { createRequire } from 'node:module'
 import type { ConditionalExcept, HasRequiredKeys, Simplify } from '@skyleague/axioms/types'
 import type { Got } from 'got'
 import type { KyInstance } from 'ky'
 import type { Interceptor, Scope } from 'nock'
-
-import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 
@@ -48,7 +47,7 @@ export function $nockClient<T extends RestClient>(client: T): NockClient<T> {
     let prefixUrl: string | URL = ''
     if (client.client.name === 'ky') {
         ;(client.client as KyInstance).extend((parent) => {
-            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            // biome-ignore lint/style/noNonNullAssertion: we know it's a string
             prefixUrl = parent.prefixUrl!
             return parent
         })

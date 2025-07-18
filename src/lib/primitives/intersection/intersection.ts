@@ -1,11 +1,10 @@
+import { evaluate } from '@skyleague/axioms'
 import type { Simplify, UnionToIntersection } from '@skyleague/axioms/types'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import type { SchemaOptions } from '../base.js'
 import type { ObjectType } from '../object/object.js'
-
-import { evaluate } from '@skyleague/axioms'
 
 export type IntersectionOptions = object
 

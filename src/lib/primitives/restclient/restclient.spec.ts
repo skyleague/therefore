@@ -1,7 +1,6 @@
+import { describe, expect, it } from 'vitest'
 import type { Operation } from '../../../types/openapi.type.js'
 import { methodName } from './builder.js'
-
-import { describe, expect, it } from 'vitest'
 
 describe('method name', () => {
     it('name from operation id', () => {

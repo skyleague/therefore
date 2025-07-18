@@ -47,25 +47,6 @@ export const openapi: OpenapiV3 = {
 
 export const edges = $restclient(openapi, { strict: false })
 
-export const swagger = {
-    swagger: '2.0',
-    info: { title: 'swagger', version: '1.0.0' },
-    paths: {
-        '/json-response': {
-            get: {
-                produces: ['application/json'],
-                responses: {
-                    '200': {
-                        description: 'OK',
-                    },
-                },
-            },
-        },
-    },
-}
-
-export const swaggerEdges = $restclient(swagger as unknown as OpenapiV3, { strict: false })
-
 export const doubleSuccess: OpenapiV3 = {
     openapi: '3.0.0',
     info: { title: 'openapi', version: '1.0.0' },

@@ -1,9 +1,8 @@
+import { type ConstExpr, evaluate } from '@skyleague/axioms'
 import type { ThereforeExpr } from '../../cst/cst.js'
 import type { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
 import { ObjectType } from '../object/object.js'
-
-import { type ConstExpr, evaluate } from '@skyleague/axioms'
 
 export type RecordOptions = object
 

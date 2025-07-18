@@ -1,5 +1,6 @@
-import { $ref } from './ref.js'
-
+import { forAll } from '@skyleague/axioms'
+import type { Equal, Expect } from 'type-testing'
+import { expect, expectTypeOf, it } from 'vitest'
 import { Typedoc } from '../../../../examples/typedoc/typedoc.type.js'
 import type { Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
@@ -9,10 +10,7 @@ import { $record } from '../record/record.js'
 import type { StringType } from '../string/string.js'
 import { $string } from '../string/string.js'
 import { $union } from '../union/union.js'
-
-import { forAll } from '@skyleague/axioms'
-import type { Equal, Expect } from 'type-testing'
-import { expect, expectTypeOf, it } from 'vitest'
+import { $ref } from './ref.js'
 
 const foo = $record($string)
 it('function', () => {

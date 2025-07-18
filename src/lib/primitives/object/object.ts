@@ -1,15 +1,14 @@
+import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
+import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
 import type { Simplify } from '@skyleague/axioms/types'
+import type { Shape } from '../../../../examples/runtypes/shapes.type.js'
 import type { GenericOutput, ThereforeExpr, TypescriptOutput } from '../../cst/cst.js'
 import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
+import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import type { SchemaOptions } from '../base.js'
 import { EnumType } from '../enum/enum.js'
-
-import { evaluate, mapValues, omit, pick } from '@skyleague/axioms'
-import type { ArbitrarySize, ConstExpr } from '@skyleague/axioms'
-import type { Shape } from '../../../../examples/runtypes/shapes.type.js'
-import { mustBeLazyDefined } from '../../visitor/prepass/prepass.js'
 import { $optional, OptionalType } from '../optional/optional.js'
 
 export type ObjectShape<Shape extends Record<string, Node> = Record<string, Node>> = {

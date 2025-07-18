@@ -1,1 +1,1 @@
-export { type EnumOptions, type EnumType, $enum } from './enum.js'
+export { $enum, type EnumOptions, type EnumType } from './enum.js'

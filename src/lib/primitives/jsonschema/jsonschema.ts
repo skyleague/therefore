@@ -12,7 +12,7 @@ import type {
     JsonStringInstance,
 } from '../../../json.js'
 import type { ThereforeNodeDefinition } from '../../cst/cst.js'
-import { type Node, definitionKeys } from '../../cst/node.js'
+import { definitionKeys, type Node } from '../../cst/node.js'
 import { loadNode } from '../../visitor/prepass/prepass.js'
 import { $array, type ArrayOptions } from '../array/array.js'
 import type { SchemaOptions } from '../base.js'
@@ -86,9 +86,9 @@ export function retrievePropertiesFromPattern(indexPattern: string) {
 }
 
 export function indexProperties(node: JsonAnnotations & JsonAnyInstance & JsonObjectInstance, context: JsonSchemaContext) {
-    let recordType: Node | undefined = undefined
-    let patternProperties: Record<string, Node> | undefined = undefined
-    let strict: boolean | undefined = undefined
+    let recordType: Node | undefined
+    let patternProperties: Record<string, Node> | undefined
+    let strict: boolean | undefined
     const properties: Record<string, JsonSchema> = {}
     if (node.additionalProperties !== undefined) {
         if (isBoolean(node.additionalProperties)) {

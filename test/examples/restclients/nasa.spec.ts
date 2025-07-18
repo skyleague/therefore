@@ -1,9 +1,8 @@
+import { forAll } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 import { Project } from '../../../examples/restclients/ajv/nasa/astroids/nasa.type.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
 import { arbitrary } from '../../../src/index.js'
-
-import { forAll } from '@skyleague/axioms'
-import { expect, it } from 'vitest'
 
 it('output generation - ajv', async () => {
     expect(

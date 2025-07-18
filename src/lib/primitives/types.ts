@@ -2,7 +2,6 @@ import type { ArrayType } from './array/array.js'
 import type { BooleanType } from './boolean/boolean.js'
 import type { ConstType } from './const/const.js'
 import type { EnumType, NativeEnumType } from './enum/enum.js'
-import type { GraphqlFieldType } from './graphql/field.js'
 import type { IntegerType } from './integer/integer.js'
 import type { IntersectionType } from './intersection/intersection.js'
 import type { NullableType } from './nullable/nullable.js'
@@ -31,7 +30,6 @@ export type ThereforeSchema =
     | TupleType
     | UnionType
     | UnknownType
-    | GraphqlFieldType
     | ValidatorType
     | NullableType
     | OptionalType
