@@ -1,8 +1,7 @@
+import { describe, expect, it } from 'vitest'
 import { XKCD } from '../../../examples/restclients/ajv/xkcd/xkcd.client.js'
 import type { Comic } from '../../../examples/restclients/ajv/xkcd/xkcd.type.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
-
-import { describe, expect, it } from 'vitest'
 
 it('output generation - ajv', async () => {
     expect(

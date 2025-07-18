@@ -1,8 +1,7 @@
-import type { OpenapiV3 } from '../../../../src/index.js'
-import { $restclient } from '../../../../src/index.js'
-
 import got from 'got'
 import yaml from 'js-yaml'
+import type { OpenapiV3 } from '../../../../src/index.js'
+import { $restclient } from '../../../../src/index.js'
 
 export const banking = got
     .get(

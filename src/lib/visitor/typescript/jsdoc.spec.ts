@@ -1,7 +1,6 @@
-import { JSDoc } from './jsdoc.js'
-
 import { array, boolean, forAll, json, object, string, tuple } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
+import { JSDoc } from './jsdoc.js'
 
 it('description', () => {
     expect(JSDoc.from({ key: 'foo', _definition: { description: 'lorum ipsum' } })).toMatchInlineSnapshot(`

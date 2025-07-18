@@ -1,6 +1,5 @@
-import { compileOutput } from '../src/commands/generate/generate.js'
-
 import { expect, it } from 'vitest'
+import { compileOutput } from '../src/commands/generate/generate.js'
 
 it('output generation', async () => {
     expect(

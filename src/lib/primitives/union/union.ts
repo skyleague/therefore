@@ -1,9 +1,8 @@
+import { type ConstExpr, evaluate } from '@skyleague/axioms'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { Node } from '../../cst/node.js'
 import type { Intrinsic } from '../../cst/types.js'
 import type { SchemaOptions } from '../base.js'
-
-import { type ConstExpr, evaluate } from '@skyleague/axioms'
 
 export type UnionOptions = object
 

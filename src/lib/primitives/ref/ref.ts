@@ -1,5 +1,4 @@
 import { type ConstExpr, isFunction, isObject } from '@skyleague/axioms'
-import type { Infer, Schema as TypeSchema } from '@typeschema/main'
 import type { JsonSchema } from '../../../json.js'
 import { isNode } from '../../cst/cst.js'
 import type { NodeTrait } from '../../cst/mixin.js'
@@ -38,12 +37,8 @@ export function $ref<Reference extends Node>(
 ): RefType<Intrinsic<Reference>>
 export function $ref<T extends ZodSchema>(reference: T, options?: SchemaOptions<RefOptions>): ZodSchemaAsNode<T>
 export function $ref<T>(reference: Schema<T>, options?: SchemaOptions<RefOptions>): SchemaAsNode<T>
-export function $ref<T extends TypeSchema>(
-    reference: T,
-    options?: SchemaOptions<RefOptions>,
-): Promise<RefType<NodeTrait & { infer: Infer<T> }>>
 export function $ref<const Reference extends Node, T extends ZodSchema>(
-    reference: ConstExpr<Reference> | Schema<unknown> | TypeSchema,
+    reference: ConstExpr<Reference> | Schema<unknown>,
     options: SchemaOptions<RefOptions, Reference['infer']> = {},
 ): RefType<Intrinsic<Reference>> | Promise<RefType<NodeTrait & { infer: unknown }>> | ZodSchemaAsNode<T> | SchemaAsNode<T> {
     if (isObject(reference)) {
@@ -55,14 +50,7 @@ export function $ref<const Reference extends Node, T extends ZodSchema>(
                 // biome-ignore lint/suspicious/noExplicitAny: just roll with it
                 return $zod(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
             }
-            return require('@typeschema/main').then(
-                // biome-ignore lint/suspicious/noExplicitAny: just roll with it
-                ({ toJSONSchema }: { toJSONSchema: any }) =>
-                    // biome-ignore lint/suspicious/noExplicitAny: just roll with it
-                    toJSONSchema(reference as never).then((schema: any) => $jsonschema(schema as any, options)) as Promise<
-                        RefType<NodeTrait & { infer: unknown }>
-                    >,
-            )
+            throw new Error('Unsupported reference')
         }
     }
 

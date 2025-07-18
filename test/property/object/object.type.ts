@@ -4,8 +4,8 @@
  */
 /* eslint-disable */
 
-import { ValidationError } from 'ajv'
 import type { DefinedError, ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 import { validate as AgeonlyPersonValidator } from './schemas/ageonly-person.schema.js'
 import { validate as MultipleOmitValidator } from './schemas/multiple-omit.schema.js'

@@ -1,6 +1,5 @@
-import { renderTemplate } from './template.js'
-
 import { expect, it } from 'vitest'
+import { renderTemplate } from './template.js'
 
 it('identity for normal strings', () => {
     expect(renderTemplate('foo')).toMatchInlineSnapshot(`"foo"`)

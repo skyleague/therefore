@@ -216,7 +216,7 @@ it.each(['draft-07', 'openapi3'] as const)(
             },
         )
     },
-    150000,
+    450000,
 )
 
 it.each(['draft-07', 'openapi3'] as const)(
@@ -290,5 +290,5 @@ it.each(['draft-07', 'openapi3'] as const)(
             },
         )
     },
-    150000,
+    450000,
 )

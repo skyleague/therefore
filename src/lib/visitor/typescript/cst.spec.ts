@@ -43,7 +43,7 @@ describe('default', () => {
         ['ajv', 'ajv' as const],
         ['zod', 'zod' as const],
         ['default', undefined],
-    ])('should generate %s output', async (_, validator) => {
+    ])('should generate %s output', (_, validator) => {
         const node = $string().validator()
 
         for (const child of [...(node._children ?? []), node]) {
@@ -91,7 +91,7 @@ describe('migrate', () => {
         // ['ajv', 'ajv' as const],
         ['zod', 'zod' as const],
         ['default', undefined],
-    ])('should generate %s output', async (_, validator) => {
+    ])('should generate %s output', (_, validator) => {
         const node = $string().validator()
 
         for (const child of [...(node._children ?? []), node]) {

@@ -1,8 +1,7 @@
-import { $record } from './record.js'
+import { expect, it } from 'vitest'
 
 import { $string } from '../string/string.js'
-
-import { expect, it } from 'vitest'
+import { $record } from './record.js'
 
 it('function', () => {
     expect($record).toMatchInlineSnapshot('[Function]')

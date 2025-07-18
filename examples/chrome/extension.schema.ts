@@ -1,11 +1,10 @@
-import { action } from './action.js'
-import { command } from './command.js'
-import { icon, uri } from './icon.js'
-
 import { $array, $boolean, $enum, $object, $ref, $string, $validator } from '../../src/index.js'
 import { $const } from '../../src/lib/primitives/const/const.js'
 import { $record } from '../../src/lib/primitives/record/record.js'
 import { $unknown } from '../../src/lib/primitives/unknown/unknown.js'
+import { action } from './action.js'
+import { command } from './command.js'
+import { icon, uri } from './icon.js'
 
 // https://json.schemastore.org/chrome-manifest
 
@@ -37,7 +36,7 @@ const glob_pattern = $string({
 const match_pattern = $string({
     name: 'match pattern',
     //format: 'match-pattern'
-}).regex(/^((\\*|http|https|file|ftp|chrome-extension):\/\/(\*|\*\.[^\/\*]+|[^\/\*]+)?(\/.*))|<all_urls>$/)
+}).regex(/^((\\*|http|https|file|ftp|chrome-extension):\/\/(\*|\*\.[^/*]+|[^/*]+)?(\/.*))|<all_urls>$/)
 
 const mime_type = $string({
     name: 'mime_type',

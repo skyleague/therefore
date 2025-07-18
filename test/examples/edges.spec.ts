@@ -1,9 +1,8 @@
-import { Edges } from '../../examples/edges/client.client.js'
-import { compileOutput } from '../../src/commands/generate/generate.js'
-
 import { eitherToError } from '@skyleague/axioms'
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { Edges } from '../../examples/edges/client.client.js'
+import { compileOutput } from '../../src/commands/generate/generate.js'
 
 describe('client', () => {
     beforeEach(() => nock.disableNetConnect())

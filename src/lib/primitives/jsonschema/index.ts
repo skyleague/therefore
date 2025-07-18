@@ -1,1 +1,1 @@
-export { type JsonSchemaOptions, $jsonschema } from './jsonschema.js'
+export { $jsonschema, type JsonSchemaOptions } from './jsonschema.js'

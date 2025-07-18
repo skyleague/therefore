@@ -1,8 +1,7 @@
-import type { InferSchemaType, Schema } from './types.js'
+import { expect, it } from 'vitest'
 
 import { Comic } from '../../examples/restclients/ajv/xkcd/xkcd.type.js'
-
-import { expect, it } from 'vitest'
+import type { InferSchemaType, Schema } from './types.js'
 
 it('Schema o InferSchemaType === identity', () => {
     type Foo = number | string

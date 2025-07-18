@@ -1,12 +1,10 @@
-import type { NumberType } from './number.js'
-import { $number } from './number.js'
-
-import type { Intrinsic } from '../../cst/types.js'
-import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
-
 import { constant, float, forAll, tuple } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
+import type { NumberType } from './number.js'
+import { $number } from './number.js'
 
 it('function', () => {
     expect($number).toMatchInlineSnapshot('[Function]')

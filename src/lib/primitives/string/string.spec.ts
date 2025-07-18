@@ -1,9 +1,7 @@
-import { $string } from './string.js'
-
-import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
-
 import { arbitraryContext, constant, forAll, natural, tuple, xoroshiro128plus } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
+import { $string } from './string.js'
 
 it('function', () => {
     expect($string).toMatchInlineSnapshot('[Function]')

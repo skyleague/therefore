@@ -1,5 +1,5 @@
-import { buildContext, toJsonSchema } from './jsonschema.js'
-
+import { pick } from '@skyleague/axioms'
+import { describe, expect, it } from 'vitest'
 import { $array } from '../../primitives/array/array.js'
 import { $boolean } from '../../primitives/boolean/boolean.js'
 import { $const } from '../../primitives/const/const.js'
@@ -15,9 +15,7 @@ import { $string } from '../../primitives/string/string.js'
 import { $tuple } from '../../primitives/tuple/tuple.js'
 import { $union } from '../../primitives/union/union.js'
 import { $unknown } from '../../primitives/unknown/unknown.js'
-
-import { pick } from '@skyleague/axioms'
-import { describe, expect, it } from 'vitest'
+import { buildContext, toJsonSchema } from './jsonschema.js'
 
 describe('toTypeDefinition', () => {
     it('string', () => {

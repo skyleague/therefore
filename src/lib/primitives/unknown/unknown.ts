@@ -1,7 +1,6 @@
+import type { UnknownGenerator } from '@skyleague/axioms'
 import { NodeTrait } from '../../cst/mixin.js'
 import type { SchemaOptions } from '../base.js'
-
-import type { UnknownGenerator } from '@skyleague/axioms'
 
 export interface UnknownOptions {
     /**

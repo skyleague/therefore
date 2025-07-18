@@ -1,7 +1,6 @@
-import { objectProperty, toLiteral } from './literal.js'
-
 import { equal, forAll, json, string, tuple } from '@skyleague/axioms'
 import { describe, expect, it } from 'vitest'
+import { objectProperty, toLiteral } from './literal.js'
 
 describe('objectProperty', () => {
     it('dot', () => {

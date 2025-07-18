@@ -1,9 +1,8 @@
-import { toLiteral } from './literal.js'
-
 import { omitUndefined } from '@skyleague/axioms'
 import type { Node } from '../../cst/node.js'
 import { NullableType } from '../../primitives/nullable/nullable.js'
 import { OptionalType } from '../../primitives/optional/optional.js'
+import { toLiteral } from './literal.js'
 
 function escapeComment(x: string) {
     return x.replaceAll(/\*\//g, '* /')

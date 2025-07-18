@@ -1,12 +1,10 @@
-import { $null } from './null.js'
-
-import type { Intrinsic } from '../../cst/types.js'
-import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
-import type { ConstType } from '../const/const.js'
-
 import { arbitraryContext, forAll, xoroshiro128plus } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
+import type { ConstType } from '../const/const.js'
+import { $null } from './null.js'
 
 it('value', () => {
     forAll(arbitrary($null()), (x) => {

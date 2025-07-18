@@ -1,12 +1,11 @@
+import { alpha, forAll, string, tuple } from '@skyleague/axioms'
+import ts from 'typescript'
+import { it } from 'vitest'
 import { TypescriptFileOutput } from '../../../commands/generate/output/typescript.js'
 import { $object } from '../../primitives/object/object.js'
 import { $string } from '../../primitives/string/string.js'
 import { $union } from '../../primitives/union/union.js'
 import { $unknown } from '../../primitives/unknown/unknown.js'
-
-import { alpha, forAll, string, tuple } from '@skyleague/axioms'
-import ts from 'typescript'
-import { it } from 'vitest'
 
 it('object declaration', () => {
     forAll(

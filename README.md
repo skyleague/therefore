@@ -87,7 +87,7 @@ Therefore deeply understands schemas and their relationships:
 Therefore can perform various operations on schemas:
 
 **Format Handling**
-- Convert between Zod, JSON Schema, OpenAPI, and GraphQL
+- Convert between Zod, JSON Schema, and OpenAPI
 - Preserve validation rules and type information
 - Handle complex type relationships
 
@@ -99,7 +99,7 @@ Therefore can perform various operations on schemas:
 **Output Generation**
 - Generate TypeScript types and validation
 - Create API clients from OpenAPI specs
-- Build GraphQL schemas and resolvers
+- Build type-safe validation code
 
 **Testing Support**
 - Create arbitrary test data from schemas
@@ -817,7 +817,6 @@ Therefore can generate various types of code from your schemas:
 1. **TypeScript Types**: Generate TypeScript interfaces and types
 2. **JSON Schema**: Generate JSON Schema definitions
 3. **API Clients**: Generate type-safe API clients from OpenAPI specs
-4. **GraphQL Types**: Generate GraphQL type definitions
 
 Example:
 ```bash
@@ -1013,49 +1012,6 @@ The generated client provides:
 **src/api/todo.zod.ts**
 
 [examples/docs/02-openapi-client.zod.ts](examples/docs/02-openapi-client.zod.ts ':include :type=code')
-
-<!-- tabs:end -->
-
-<!-- panels:end -->
-
-
-## GraphQL Support
-
-<!-- panels:start -->
-
-<!-- div:title-panel -->
-!> GraphQL support is currently in an experimental phase. The API and functionality may undergo significant changes in future releases. While usable, we recommend carefully evaluating it for production use. We welcome feedback and contributions to help stabilize this feature.
-
-
-<!-- div:left-panel -->
-
-Generate type-safe GraphQL schemas using Therefore's schema language:
-- Define schemas with type safety
-- Automatic resolver type generation
-- Circular references support
-- Schema composition and reuse
-
-<!-- div:right-panel -->
-
-<!-- tabs:start -->
-
-#### **Schema Definition**
-
-**src/schema/user.schema.ts**
-
-[examples/docs/04-graphql.schema.ts](examples/docs/04-graphql.schema.ts ':include :type=code')
-
-#### **Generated Types**
-
-**src/schema/user.type.ts**
-
-[examples/docs/04-graphql.type.ts](examples/docs/04-graphql.type.ts ':include :type=code')
-
-#### **Generated GraphQL Schema**
-
-**src/schema/user.graphql**
-
-[examples/docs/04-graphql.graphql](examples/docs/04-graphql.graphql ':include :type=code')
 
 <!-- tabs:end -->
 

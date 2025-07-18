@@ -6,7 +6,7 @@ export const eventTypes = $enum(['start', 'word', 'sentence', 'marker', 'end', '
 
 export const matchPattern = $string({
     name: 'match pattern',
-}).regex(/^((\\*|http|https|file|ftp|chrome-extension):\/\/(\*|\*\.[^\/\*]+|[^\/\*]+)?(\/.*))|<all_urls>$/)
+}).regex(/^((\\*|http|https|file|ftp|chrome-extension):\/\/(\*|\*\.[^/*]+|[^/*]+)?(\/.*))|<all_urls>$/)
 
 export const contentScripts = $object({
     matches: matchPattern

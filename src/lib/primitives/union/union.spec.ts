@@ -1,5 +1,5 @@
-import { $union } from './union.js'
-
+import type { Equal, Expect } from 'type-testing'
+import { expect, expectTypeOf, it } from 'vitest'
 import type { Intrinsic } from '../../cst/types.js'
 import type { BooleanType } from '../boolean/boolean.js'
 import { $boolean } from '../boolean/boolean.js'
@@ -7,9 +7,7 @@ import type { NumberType } from '../number/number.js'
 import { $number } from '../number/number.js'
 import type { StringType } from '../string/string.js'
 import { $string } from '../string/string.js'
-
-import type { Equal, Expect } from 'type-testing'
-import { expect, expectTypeOf, it } from 'vitest'
+import { $union } from './union.js'
 
 it('function', () => {
     expect($union).toMatchInlineSnapshot('[Function]')

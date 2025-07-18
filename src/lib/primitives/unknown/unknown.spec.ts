@@ -1,6 +1,5 @@
-import { $unknown } from './unknown.js'
-
 import { expect, it } from 'vitest'
+import { $unknown } from './unknown.js'
 
 it('function', () => {
     expect($unknown).toMatchInlineSnapshot('[Function]')

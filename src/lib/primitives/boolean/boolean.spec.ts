@@ -1,13 +1,11 @@
-import type { BooleanType } from './boolean.js'
-import { $boolean } from './boolean.js'
-
-import type { Intrinsic } from '../../cst/types.js'
-import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
-
 import { arbitraryContext, forAll, xoroshiro128plus } from '@skyleague/axioms'
 import type { Equal, Expect } from 'type-testing'
 import { expect, expectTypeOf, it } from 'vitest'
+import type { Intrinsic } from '../../cst/types.js'
+import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 import type { OptionalType } from '../optional/optional.js'
+import type { BooleanType } from './boolean.js'
+import { $boolean } from './boolean.js'
 
 it('function', () => {
     expect($boolean).toMatchInlineSnapshot('[Function]')

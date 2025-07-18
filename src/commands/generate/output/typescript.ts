@@ -10,7 +10,7 @@ import { type DefinedTypescriptOutput, defaultTypescriptOutput } from '../../../
 import type { TypescriptTypeWalkerContext } from '../../../lib/visitor/typescript/typescript-type.js'
 import { createWriter } from '../../../lib/writer.js'
 import { generatedBy } from '../constants.js'
-import { type Prettier, formatContent } from '../format.js'
+import { formatContent, type Prettier } from '../format.js'
 import { References } from './references.js'
 import type { ThereforeOutput } from './types.js'
 
@@ -102,14 +102,7 @@ export class TypescriptFileOutput {
     /**
      * @deprecated for testing purposes only
      */
-    public static define({
-        symbol,
-        render = false,
-    }: {
-        symbol: Node
-        context?: TypescriptTypeWalkerContext
-        render?: boolean
-    }) {
+    public static define({ symbol, render = false }: { symbol: Node; context?: TypescriptTypeWalkerContext; render?: boolean }) {
         for (const hook of TypescriptFileOutput.hooks.onLoad ?? []) {
             hook(symbol)
         }
@@ -237,6 +230,7 @@ export class TypescriptFileOutput {
                 .writeLine('* Do not manually touch this')
                 .newLineIfLastNot()
                 .closeComment()
+                .writeLine('// biome-ignore-all lint: this file is generated')
                 .writeLine('/* eslint-disable */')
                 .writeLine('')
         }

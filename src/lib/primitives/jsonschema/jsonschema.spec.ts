@@ -1,5 +1,6 @@
-import { $jsonschema } from './jsonschema.js'
-
+import { entriesOf, forAll } from '@skyleague/axioms'
+import got from 'got'
+import { describe, expect, it } from 'vitest'
 import { TypescriptFileOutput } from '../../../commands/generate/output/typescript.js'
 import type { JsonSchema } from '../../../json.js'
 import type { OpenapiV3 } from '../../../types/openapi.type.js'
@@ -8,10 +9,7 @@ import { arbitrary } from '../../visitor/arbitrary/arbitrary.js'
 import { buildContext, jsonSchemaVisitor } from '../../visitor/jsonschema/jsonschema.js'
 import { $object } from '../object/object.js'
 import type { StringType } from '../string/string.js'
-
-import { entriesOf, forAll } from '@skyleague/axioms'
-import got from 'got'
-import { describe, expect, it } from 'vitest'
+import { $jsonschema } from './jsonschema.js'
 
 describe('person', () => {
     const schema: JsonSchema = {

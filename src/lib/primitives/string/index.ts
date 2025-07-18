@@ -1,1 +1,1 @@
-export { type StringOptions, type StringType, $string } from './string.js'
+export { $string, type StringOptions, type StringType } from './string.js'

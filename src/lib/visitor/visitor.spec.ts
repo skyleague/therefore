@@ -1,5 +1,5 @@
-import { arbitrary } from './arbitrary/arbitrary.js'
-import { toJsonSchema } from './jsonschema/jsonschema.js'
+import { forAll } from '@skyleague/axioms'
+import { it } from 'vitest'
 
 import { $array } from '../primitives/array/array.js'
 import { $boolean } from '../primitives/boolean/boolean.js'
@@ -9,9 +9,8 @@ import { $number } from '../primitives/number/number.js'
 import { $object } from '../primitives/object/object.js'
 import { $string } from '../primitives/string/string.js'
 import { $unknown } from '../primitives/unknown/unknown.js'
-
-import { forAll } from '@skyleague/axioms'
-import { it } from 'vitest'
+import { arbitrary } from './arbitrary/arbitrary.js'
+import { toJsonSchema } from './jsonschema/jsonschema.js'
 
 it('string', () => {
     const arb = $string()

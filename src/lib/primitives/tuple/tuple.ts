@@ -1,9 +1,8 @@
+import type { ConstExpr } from '@skyleague/axioms'
+import { evaluate } from '@skyleague/axioms'
 import { NodeTrait } from '../../cst/mixin.js'
 import { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
-
-import type { ConstExpr } from '@skyleague/axioms'
-import { evaluate } from '@skyleague/axioms'
 
 type TupleToInfer<Elements extends Node[]> = {
     [K in keyof Elements]: Elements[K]['infer']

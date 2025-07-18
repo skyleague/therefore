@@ -1,3 +1,14 @@
+import type { IncomingHttpHeaders } from 'node:http'
+import { asyncForAll, constant, eitherToError, forAll, json, string, tuple } from '@skyleague/axioms'
+import nock from 'nock'
+import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
+import type { ZodError } from 'zod'
+import {
+    type FailureResponse,
+    PetStore,
+    type StatusCode,
+    type SuccessResponse,
+} from '../../../examples/restclients/zod/petstore/petstore.client.js'
 import {
     ApiResponse,
     CreateUsersWithListInputRequest,
@@ -11,19 +22,6 @@ import {
 } from '../../../examples/restclients/zod/petstore/petstore.zod.js'
 import { compileOutput } from '../../../src/commands/generate/generate.js'
 import { arbitrary } from '../../../src/index.js'
-
-import { asyncForAll, constant, eitherToError, forAll, json, string, tuple } from '@skyleague/axioms'
-
-import type { IncomingHttpHeaders } from 'node:http'
-import nock from 'nock'
-import { afterEach, beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
-import type { ZodError } from 'zod'
-import {
-    type FailureResponse,
-    PetStore,
-    type StatusCode,
-    type SuccessResponse,
-} from '../../../examples/restclients/zod/petstore/petstore.client.js'
 import { $nockClient } from '../../../src/lib/primitives/restclient/mock.js'
 
 const prefixUrl = 'http://www.example.com'

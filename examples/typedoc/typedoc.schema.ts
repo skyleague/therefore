@@ -1,6 +1,5 @@
-import { plugin } from './internal.js'
-
 import { $array, $boolean, $enum, $object, $string, $union, $validator } from '../../src/index.js'
+import { plugin } from './internal.js'
 
 const readme = $union([$enum(['none']), $string], {
     name: 'readme',

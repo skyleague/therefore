@@ -1,8 +1,7 @@
-import { Headers, Query } from '../../examples/http/http.type.js'
-import { compileOutput } from '../../src/commands/generate/generate.js'
-
 import { forAll, integer, isNumber, record, string, tuple, unknown } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
+import { Headers, Query } from '../../examples/http/http.type.js'
+import { compileOutput } from '../../src/commands/generate/generate.js'
 
 it('http', async () => {
     expect(

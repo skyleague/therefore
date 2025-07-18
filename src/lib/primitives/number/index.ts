@@ -1,1 +1,1 @@
-export { type NumberOptions, $number, type NumberType } from './number.js'
+export { $number, type NumberOptions, type NumberType } from './number.js'

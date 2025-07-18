@@ -85,6 +85,7 @@ export function getIndexSignatureType(indexPattern: string) {
             return { names: split.map((s) => `"${s}"?`) }
         }
         return {
+            // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
             type: `\`${!hasStartToken ? '${string}' : ''}${split.join(' | ')}${!hasEndToken ? '${string}' : ''}\``,
         }
     }
@@ -240,7 +241,7 @@ export const typescriptTypeVisitor: ThereforeVisitor<string, TypescriptTypeWalke
         return writer.toString()
     },
     array: (node, context) => {
-        let localReference: string | undefined = undefined
+        let localReference: string | undefined
         const element = node.element
         if (!isSmall(element) && element._origin.zod === undefined) {
             if (element._name === undefined) {

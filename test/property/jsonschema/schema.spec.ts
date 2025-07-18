@@ -1,6 +1,5 @@
 import { asyncForAll, constant, forAll, omitUndefined, tuple } from '@skyleague/axioms'
-import { type AnySchema, ValidationError } from 'ajv'
-import { Ajv } from 'ajv'
+import { Ajv, type AnySchema, ValidationError } from 'ajv'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
 import { GenericFileOutput } from '../../../src/commands/generate/output/generic.js'
@@ -167,7 +166,7 @@ it.each(['draft-07', 'openapi3'] as const)(
 
 it.each(['draft-07', 'openapi3'] as const)(
     '%s - value to literal',
-    async (target) => {
+    (target) => {
         forAll(
             jsonSchemaArbitrary({ target })
                 .map((schema) => {
