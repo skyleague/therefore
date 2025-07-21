@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
+
+import { type ArrayGenerator, type ConstExpr, evaluate } from '@skyleague/axioms'
 import type { NodeTrait } from '../../cst/mixin.js'
 import { Node } from '../../cst/node.js'
 import type { SchemaOptions } from '../base.js'
-
-import { type ArrayGenerator, type ConstExpr, evaluate } from '@skyleague/axioms'
 
 export interface ArrayOptions {
     /**

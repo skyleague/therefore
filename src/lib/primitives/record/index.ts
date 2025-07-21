@@ -1,1 +1,1 @@
-export { type RecordOptions as DictOptions, $dict, $record, type RecordType } from './record.js'
+export { $dict, $record, type RecordOptions as DictOptions, type RecordType } from './record.js'

@@ -1,7 +1,6 @@
+import { expect, expectTypeOf, it } from 'vitest'
 import { nameonlyPerson, nonamePerson } from './object.schema.js'
 import { AgeonlyPerson, NameonlyPerson, NonamePerson } from './object.type.js'
-
-import { expect, expectTypeOf, it } from 'vitest'
 
 it('should match name-only person type with expected type', () => {
     expectTypeOf(nameonlyPerson.infer).toEqualTypeOf<{ name: string }>()

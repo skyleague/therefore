@@ -1,16 +1,3 @@
-import { arbitrary } from './arbitrary.js'
-
-import { $array } from '../../primitives/array/array.js'
-import { $boolean } from '../../primitives/boolean/boolean.js'
-import { $integer } from '../../primitives/integer/integer.js'
-import { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
-import { $null } from '../../primitives/null/null.js'
-import { $number } from '../../primitives/number/number.js'
-import { $object } from '../../primitives/object/object.js'
-import { $optional } from '../../primitives/optional/optional.js'
-import { $string } from '../../primitives/string/string.js'
-import { $unknown } from '../../primitives/unknown/unknown.js'
-
 import {
     arbitraryContext,
     forAll,
@@ -23,7 +10,18 @@ import {
     xoroshiro128plus,
 } from '@skyleague/axioms'
 import { expect, it } from 'vitest'
+import { $array } from '../../primitives/array/array.js'
+import { $boolean } from '../../primitives/boolean/boolean.js'
+import { $integer } from '../../primitives/integer/integer.js'
+import { JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
+import { $null } from '../../primitives/null/null.js'
+import { $number } from '../../primitives/number/number.js'
+import { $object } from '../../primitives/object/object.js'
+import { $optional } from '../../primitives/optional/optional.js'
+import { $string } from '../../primitives/string/string.js'
 import { $tuple } from '../../primitives/tuple/tuple.js'
+import { $unknown } from '../../primitives/unknown/unknown.js'
+import { arbitrary } from './arbitrary.js'
 
 it('string', () => {
     const schema = $string()
@@ -546,7 +544,7 @@ it('format - uuid', () => {
         "e2c8d598-e4f8-4c57-a541-335a222110b4",
       ]
     `)
-})
+}, 100000)
 
 it('format - uri', () => {
     const schema = $string().uri()

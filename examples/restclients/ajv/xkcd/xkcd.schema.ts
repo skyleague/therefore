@@ -1,8 +1,7 @@
-import { $restclient } from '../../../../src/index.js'
-import type { OpenapiV3 } from '../../../../src/index.js'
-
 import got from 'got'
 import yaml from 'js-yaml'
+import type { OpenapiV3 } from '../../../../src/index.js'
+import { $restclient } from '../../../../src/index.js'
 
 export const XKCD = got
     .get('https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/xkcd.com/1.0.0/openapi.yaml')

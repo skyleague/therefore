@@ -1,16 +1,5 @@
-import type { Infer, Schema as TSchema } from '@typeschema/main'
-import type { JsonSchema } from '../../../json.js'
-import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
-import { Node } from '../../cst/node.js'
-import type { ThereforeVisitor } from '../../cst/visitor.js'
-import { walkTherefore } from '../../cst/visitor.js'
-import { $jsonschema, type JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
-import type { Schema } from '../../types.js'
-import { loadNode } from '../prepass/prepass.js'
-
 import type { Arbitrary, Dependent, Tree } from '@skyleague/axioms'
 import {
-    domain,
     allOf,
     array,
     base64,
@@ -21,6 +10,7 @@ import {
     date,
     datetime,
     dependentArbitrary,
+    domain,
     email,
     float,
     integer,
@@ -44,8 +34,16 @@ import {
 } from '@skyleague/axioms'
 import { expand } from 'regex-to-strings'
 import type { ZodFirstPartySchemaTypes, ZodSchema, ZodString } from 'zod'
+import type { JsonSchema } from '../../../json.js'
+import { hasNullablePrimitive, hasOptionalPrimitive } from '../../cst/graph.js'
+import { Node } from '../../cst/node.js'
+import type { ThereforeVisitor } from '../../cst/visitor.js'
+import { walkTherefore } from '../../cst/visitor.js'
+import { $jsonschema, type JSONObjectType } from '../../primitives/jsonschema/jsonschema.js'
 import type { RecordType } from '../../primitives/record/record.js'
 import { $ref } from '../../primitives/ref/ref.js'
+import type { Schema } from '../../types.js'
+import { loadNode } from '../prepass/prepass.js'
 
 export interface ArbitraryContext {
     references: Map<string, () => Arbitrary<unknown>>
@@ -470,8 +468,7 @@ export const arbitraryVisitor: ThereforeVisitor<Arbitrary<unknown>, ArbitraryCon
 export function arbitrary<S extends Schema<unknown>>(schema: S): S extends Schema<infer T> ? Dependent<T> : never
 export function arbitrary<T extends ZodSchema>(schema: T): Dependent<T['_output']>
 export function arbitrary<T = unknown>(schema: Node & { infer: T }): Dependent<T>
-export function arbitrary<T extends TSchema>(schema: T): Dependent<Infer<T>>
-export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T }) | TSchema): Dependent<T> {
+export function arbitrary<T = unknown>(schema: Pick<Schema<T>, 'is' | 'schema'> | (Node & { infer: T })): Dependent<T> {
     const context = buildContext()
     if ('schema' in schema) {
         // as the therefore schemas are very strict by default, we can allow intersection types here

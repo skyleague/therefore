@@ -3,7 +3,6 @@ import camelCase from 'camelcase'
 import type CodeBlockWriter from 'code-block-writer'
 import { capitalize, singularize } from 'inflection'
 import * as pointer from 'jsonpointer'
-import converter from 'swagger2openapi'
 import { sanitizeTypescriptTypeName } from '../../../commands/generate/output/typescript.js'
 import { jsonPointer } from '../../../common/json/json.js'
 import type { JsonSchema } from '../../../json.js'
@@ -173,6 +172,7 @@ export class EitherHelper extends Node {
 
                     const writer = createWriter()
                         .writeLine(
+                            // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                             "export type Status<Major> = Major extends string ? Major extends `1${number}`? 'informational': Major extends `2${number}` ? 'success' : Major extends `3${number}` ? 'redirection' : Major extends `4${number}` ? 'client-error' : 'server-error' : undefined",
                         )
                         .writeLine(
@@ -199,6 +199,7 @@ export class EitherHelper extends Node {
                             .writeLine('}')
                             // .writeLine('type ParseInt<T> = T extends `${infer N extends number}` ? N : never')
                             // .writeLine('type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9')
+                            // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                             .writeLine('export type StatusCode<Major extends number = 1 | 2 | 3 | 4 | 5> = `${Major}${number}`')
                             .newLine()
                             .toString()
@@ -237,15 +238,8 @@ export class RestClientBuilder {
     public hasAwaitResponse = false
     public hasValidateRequestBody = false
 
-    public static async from(definition: OpenapiV3, options: Partial<RestClientOptions> = {}) {
-        if ((definition as { swagger?: string }).swagger?.startsWith('2.')) {
-            console.warn('Loading swagger 2.0 definitions will be deprecated in the future, please use openapi 3.0/3.1 instead')
-        }
-        const converted: { openapi: OpenapiV3 } = await converter.convertObj(definition, {
-            path: true,
-        })
-        const openapi: OpenapiV3 =
-            options.transformOpenapi === undefined ? converted.openapi : options.transformOpenapi(converted.openapi)
+    public static from(definition: OpenapiV3, options: Partial<RestClientOptions> = {}) {
+        const openapi: OpenapiV3 = options.transformOpenapi === undefined ? definition : options.transformOpenapi(definition)
 
         return new RestClientBuilder(openapi, options)
     }
@@ -744,6 +738,7 @@ export class RestClientBuilder {
                 .block(() => {
                     writer
                         .writeLine(
+                            // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                             'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never',
                         )
                         .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
@@ -780,6 +775,7 @@ export class RestClientBuilder {
             .block(() => {
                 writer
                     .writeLine(
+                        // biome-ignore lint/suspicious/noTemplateCurlyInString: we know it's a string
                         'type FilterStartingWith<S extends PropertyKey, T extends string> = S extends number | string ? `${S}` extends `${T}${infer _X}` ? S : never : never',
                     )
                     .writeLine('type InferSchemaType<T> = T extends { is: (o: unknown) => o is infer S } ? S : never')
@@ -937,7 +933,10 @@ export class RestClientBuilder {
     public writeAuthenticator({
         reference,
         writer,
-    }: { reference: TypescriptTypeWalkerContext['reference']; writer: CodeBlockWriter }) {
+    }: {
+        reference: TypescriptTypeWalkerContext['reference']
+        writer: CodeBlockWriter
+    }) {
         const { securities } = this.security({ reference })
         if (securities.length > 0) {
             for (const sec of securities) {
@@ -1092,12 +1091,15 @@ export class RestClientBuilder {
     public asResponseBodies({
         responses,
         method,
-    }: { responses: Responses | undefined; method: string }): ResponseBodies | undefined {
+    }: {
+        responses: Responses | undefined
+        method: string
+    }): ResponseBodies | undefined {
         const result: [string, ResponseBodyDefinition][] = []
         const successCodesCount = keysOf(responses ?? {}).filter((s) => s.toString().startsWith('2') || s === 'default').length
         const success: ResponseBodyDefinition[] = []
         const failure: ResponseBodyDefinition[] = []
-        let def: ResponseBodyDefinition | undefined = undefined
+        let def: ResponseBodyDefinition | undefined
         for (const [statusCode, responseRef] of entriesOf(responses ?? {})) {
             const response = jsonPointer({ schema: this.openapi, ptr: responseRef ?? {} }) as unknown as Response
             const isOnlySuccess = (statusCode.startsWith('2') || statusCode === 'default') && successCodesCount <= 1
@@ -1105,7 +1107,7 @@ export class RestClientBuilder {
                 undefined,
                 undefined,
             ]
-            let found: ResponseBodyDefinition | undefined = undefined
+            let found: ResponseBodyDefinition | undefined
             if (jsonContent !== undefined) {
                 const schema = jsonContent.schema ?? {}
                 const name = `${method}Response${isOnlySuccess ? '' : capitalize(statusCode)}`

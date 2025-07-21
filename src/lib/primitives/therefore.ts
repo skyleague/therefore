@@ -2,14 +2,11 @@ import 'tsx'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { isFunction, mapTry } from '@skyleague/axioms'
-import { isFailure } from '@skyleague/axioms'
-import type { Schema } from '@typeschema/main'
+import { isFailure, isFunction, mapTry } from '@skyleague/axioms'
 import type { ThereforeOutput } from '../../commands/generate/output/types.js'
 import { setDefaultNames } from '../../commands/generate/output/typescript.js'
 import { renderTemplate } from '../../common/template/template.js'
 import type {} from '../../lib/cst/node.js'
-import {} from '../../lib/visitor/prepass/prepass.js'
 import { isNode } from '../cst/cst.js'
 import type { NameNode, Node, SourceNode } from '../cst/node.js'
 import { toJsonSchema } from '../visitor/jsonschema/jsonschema.js'
@@ -95,7 +92,7 @@ export class Therefore {
         entry: string
         sourcePath: string | undefined
         sourceFiles: Set<string>
-        require?: (module: string) => Promise<Record<string, Node | Schema | unknown>>
+        require?: (module: string) => Promise<Record<string, Node | unknown>>
         seenNodes?: WeakSet<Node>
         logger?: typeof console | undefined
     }) {

@@ -1,8 +1,7 @@
-import { $optional } from './optional.js'
+import { expect, it } from 'vitest'
 
 import { $string } from '../string/string.js'
-
-import { expect, it } from 'vitest'
+import { $optional } from './optional.js'
 
 it('string', () => {
     expect($optional($string)).toMatchInlineSnapshot(`

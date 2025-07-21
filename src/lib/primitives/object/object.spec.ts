@@ -43,11 +43,7 @@ it('types - modifiers', () => {
     >
 
     expectTypeOf(schema.default).toEqualTypeOf<
-        (args: {
-            bar: boolean | null
-            def?: string
-            foo?: string | undefined
-        }) => DefaultType<
+        (args: { bar: boolean | null; def?: string; foo?: string | undefined }) => DefaultType<
             ObjectType<{
                 foo: OptionalType<StringType>
                 bar: NullableType<BooleanType>

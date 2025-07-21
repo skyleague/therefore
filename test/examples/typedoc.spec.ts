@@ -1,9 +1,8 @@
+import { forAll } from '@skyleague/axioms'
+import { expect, it } from 'vitest'
 import { Theme, Typedoc } from '../../examples/typedoc/typedoc.type.js'
 import { compileOutput } from '../../src/commands/generate/generate.js'
 import { arbitrary } from '../../src/index.js'
-
-import { forAll } from '@skyleague/axioms'
-import { expect, it } from 'vitest'
 
 it('output generation', async () => {
     expect(

@@ -1,8 +1,7 @@
-import type { OpenapiV3 } from '../../../../src/index.js'
-import { $restclient } from '../../../../src/index.js'
-
 import got from 'got'
 import yaml from 'js-yaml'
+import type { OpenapiV3 } from '../../../../src/index.js'
+import { $restclient } from '../../../../src/index.js'
 
 const astroids = await got
     .get('https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nasa.gov/asteroids%20neows/3.4.0/openapi.yaml')

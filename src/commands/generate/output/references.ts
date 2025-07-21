@@ -1,7 +1,6 @@
+import { mapValues, partition, sha256 } from '@skyleague/axioms'
 import { renderTemplate } from '../../../common/template/template.js'
 import type { Node } from '../../../lib/cst/node.js'
-
-import { mapValues, partition, sha256 } from '@skyleague/axioms'
 
 export const referenceTypes = ['symbolName', 'referenceName', 'aliasName'] as const
 export type ReferenceType = (typeof referenceTypes)[number]

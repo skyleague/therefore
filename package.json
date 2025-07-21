@@ -21,7 +21,11 @@
   "bin": {
     "therefore": "bin/run.js"
   },
-  "files": ["bin", ".dist", "package.json"],
+  "files": [
+    "bin",
+    ".dist",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.dist.json",
     "check:coverage": "vitest run --coverage=true",
@@ -35,40 +39,36 @@
   },
   "dependencies": {
     "@skyleague/axioms": "^6.5.1",
-    "@typeschema/main": "^0.14.1",
-    "@urql/introspection": "^1.2.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "camelcase": "^8.0.0",
     "code-block-writer": "^13.0.3",
     "decamelize": "^6.0.0",
     "fast-glob": "^3.3.3",
-    "graphql": "^16.10.0",
     "inflection": "^3.0.2",
     "jsonpointer": "^5.0.1",
-    "make-synchronous": "^1.0.0",
+    "make-synchronous": "^2.0.1",
     "regex-to-strings": "^2.1.0",
-    "swagger2openapi": "^7.0.8",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "@skyleague/node-standards": "^11.0.1",
+    "@skyleague/node-standards": "^12.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/yargs": "^17.0.33",
     "ajv": "^8.17.1",
     "got": "^14.4.7",
     "js-yaml": "^4.1.0",
     "json-schema-to-zod": "^2.6.1",
-    "ky": "^1.8.0",
-    "nock": "^14.0.3",
-    "tsx": "^4.19.3",
+    "ky": "^1.8.2",
+    "nock": "^14.0.5",
+    "tsx": "^4.20.3",
     "type-testing": "^0.2.0",
     "typescript": "^5.8.3",
-    "zod": "^3.24.2",
-    "zod-to-json-schema": "^3.24.5"
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.24.6"
   },
   "peerDependencies": {
-    "tsx": "^4.19.3"
+    "tsx": "^4.20.3"
   },
   "engines": {
     "node": ">=22"
@@ -79,7 +79,11 @@
     "registry": "https://registry.npmjs.org"
   },
   "node-standards": {
-    "extends": ["yargs-cli"],
-    "ignorePatterns": ["bin/run.js", "vitest.config.ts"]
+    "extends": [
+      "yargs-cli"
+    ],
+    "ignorePatterns": [
+      "bin/run.js"
+    ]
   }
 }

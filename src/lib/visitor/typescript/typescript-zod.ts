@@ -291,7 +291,7 @@ export const typescriptZodVisitor: ThereforeVisitor<string, TypescriptZodWalkerC
         if (_children.length === 2) {
             return `${context.value(zodSymbols.z())}.intersection(${_children.map((child) => context.render(child)).join(', ')})`
         }
-        // biome-ignore lint/style/noNonNullAssertion:
+        // biome-ignore lint/style/noNonNullAssertion: we know it's an intersection
         return `${context.render(_children[0]!)}${_children
             .slice(1)
             .map((child) => `.and(${context.render(child)})`)

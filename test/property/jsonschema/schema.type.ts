@@ -4,8 +4,8 @@
  */
 /* eslint-disable */
 
-import { ValidationError } from 'ajv'
 import type { DefinedError, ValidateFunction } from 'ajv'
+import { ValidationError } from 'ajv'
 
 import { validate as JsonSchemaValidator } from './schemas/json-schema.schema.js'
 

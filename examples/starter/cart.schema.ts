@@ -1,6 +1,5 @@
-import { cartItem } from './item.schema.js'
-
 import { $array, $object, $string } from '../../src/index.js'
+import { cartItem } from './item.schema.js'
 
 export const cart = $object({
     id: $string,

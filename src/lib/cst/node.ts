@@ -6,15 +6,15 @@ import { constants } from '../constants.js'
 import type { ThereforeMeta } from '../primitives/base.js'
 import type { DefaultType } from '../primitives/optional/default.js'
 import {
-    type ValidatorInputOptions,
-    type ValidatorOptions,
     defaultAjvValidatorOptions,
     defaultZodValidatorOptions,
+    type ValidatorInputOptions,
+    type ValidatorOptions,
 } from '../primitives/validator/types.js'
 import type { ValidatorType } from '../primitives/validator/validator.js'
 import type { GenericAttributes, GenericOutput, ThereforeNodeDefinition, TypescriptAttributes, TypescriptOutput } from './cst.js'
 import { id } from './id.js'
-import { type NodeTrace, getGuessedTrace } from './trace.js'
+import { getGuessedTrace, type NodeTrace } from './trace.js'
 
 export const definitionKeys = keysOf({
     description: true,
@@ -100,7 +100,7 @@ export class Node {
         }
         if (definition.name !== undefined) {
             this._name = definition.name
-            // biome-ignore lint/performance/noDelete: we need to delete the name from the definition
+
             delete definition.name
         }
 
