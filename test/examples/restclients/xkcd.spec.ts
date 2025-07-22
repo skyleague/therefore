@@ -11,9 +11,17 @@ it('output generation - ajv', async () => {
     ).toMatchSnapshot()
 })
 
-it('output generation - zod', async () => {
+it('output generation - zod 3', async () => {
     expect(
-        await compileOutput(['examples/restclients/zod/xkcd/xkcd.schema.ts'], {
+        await compileOutput(['examples/restclients/zod-v3/xkcd/xkcd.schema.ts'], {
+            cwd: process.cwd(),
+        }),
+    ).toMatchSnapshot()
+})
+
+it('output generation - zod 4', async () => {
+    expect(
+        await compileOutput(['examples/restclients/zod-v4/xkcd/xkcd.schema.ts'], {
             cwd: process.cwd(),
         }),
     ).toMatchSnapshot()

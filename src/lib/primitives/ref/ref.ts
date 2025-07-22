@@ -9,7 +9,8 @@ import type { SchemaOptions } from '../base.js'
 import { $jsonschema } from '../jsonschema/jsonschema.js'
 import { therefore } from '../therefore.js'
 import type { ZodSchema, ZodSchemaAsNode } from '../zod/type.js'
-import { $zod } from '../zod/zod.js'
+import { $zod3 } from '../zod/zod3.js'
+import { $zod4 } from '../zod/zod4.js'
 import type { SchemaAsNode } from './node.js'
 import type { RefOptions } from './type.js'
 import { RefType } from './type.js'
@@ -46,9 +47,13 @@ export function $ref<const Reference extends Node, T extends ZodSchema>(
             return $jsonschema(reference.schema as JsonSchema, options) as unknown as SchemaAsNode<T>
         }
         if (!isNode(reference)) {
+            if ('def' in reference) {
+                // biome-ignore lint/suspicious/noExplicitAny: just roll with it
+                return $zod4(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
+            }
             if ('_def' in reference) {
                 // biome-ignore lint/suspicious/noExplicitAny: just roll with it
-                return $zod(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
+                return $zod3(reference as any, { ...(therefore.zodCache && { cache: therefore.zodCache }) }) as any
             }
             throw new Error('Unsupported reference')
         }

@@ -53,4 +53,4 @@ export const uniqueItemsTest: OpenapiV3 = {
     },
 }
 
-export const uniqueItemsClient = $restclient(uniqueItemsTest, { strict: false, validator: 'zod' })
+export const uniqueItemsClient = $restclient(uniqueItemsTest, { strict: false, validator: 'zod/v4' })

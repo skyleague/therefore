@@ -70,7 +70,7 @@ export const openapi: OpenapiV3 = {
     },
 }
 
-export const issue = $restclient(openapi, { strict: false, validator: 'zod' })
+export const issue = $restclient(openapi, { strict: false, validator: 'zod/v4' })
 
 export const issue2 = $restclient(
     {
@@ -114,7 +114,7 @@ export const issue2 = $restclient(
             },
         },
     },
-    { strict: false, validator: 'zod' },
+    { strict: false, validator: 'zod/v4' },
 )
 
 export const issue3 = $restclient(
@@ -269,5 +269,5 @@ export const issue3 = $restclient(
             },
         },
     },
-    { strict: false, validator: 'zod' },
+    { strict: false, validator: 'zod/v4' },
 )

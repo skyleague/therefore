@@ -9,9 +9,17 @@ it('output generation - ajv', async () => {
     ).toMatchSnapshot()
 })
 
-it('output generation - zod', async () => {
+it('output generation - zod 3', async () => {
     expect(
-        await compileOutput(['examples/restclients/zod/datumbox/datumbox.schema.ts'], {
+        await compileOutput(['examples/restclients/zod-v3/datumbox/datumbox.schema.ts'], {
+            cwd: process.cwd(),
+        }),
+    ).toMatchSnapshot()
+})
+
+it('output generation - zod 4', async () => {
+    expect(
+        await compileOutput(['examples/restclients/zod-v4/datumbox/datumbox.schema.ts'], {
             cwd: process.cwd(),
         }),
     ).toMatchSnapshot()

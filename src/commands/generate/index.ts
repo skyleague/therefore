@@ -37,8 +37,6 @@ export async function handler(argv: ReturnType<typeof builder>['argv']): Promise
     const { files = [], 'ignore-pattern': ignorePatterns, clean, 'migrate-to': migrateTo, interop } = await argv
 
     if (migrateTo) {
-        constants.migrateToValidator = migrateTo as 'zod' | 'ajv'
-        constants.migrate = true
         constants.generateInterop = interop
     }
     await generate({

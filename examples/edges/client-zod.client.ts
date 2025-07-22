@@ -6,11 +6,9 @@
 /* eslint-disable */
 
 import type { IncomingHttpHeaders } from 'node:http'
-
-import type { DefinedError } from 'ajv'
 import type { CancelableRequest, Got, Options, OptionsInit, Response } from 'got'
 import { got } from 'got'
-import type { SafeParseReturnType, ZodError } from 'zod'
+import type { ZodError, ZodSafeParseResult } from 'zod/v4'
 
 import { CreateUniqueTagRequest, CreateUniqueTagResponse } from './client-zod.zod.js'
 
@@ -93,7 +91,7 @@ export class UniqueItemsClient {
     }
 
     public validateRequestBody<Body>(
-        parser: { safeParse: (o: unknown) => SafeParseReturnType<unknown, Body> },
+        parser: { safeParse: (o: unknown) => ZodSafeParseResult<Body> },
         body: unknown,
     ): { right: Body } | FailureResponse<undefined, unknown, 'request:body', undefined> {
         const _body = parser.safeParse(body)
@@ -110,8 +108,7 @@ export class UniqueItemsClient {
         }
         return { right: _body.data }
     }
-
-    public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => SafeParseReturnType<unknown, I> }>>(
+    public async awaitResponse<I, S extends Record<PropertyKey, { safeParse: (o: unknown) => ZodSafeParseResult<I> }>>(
         response: CancelableRequest<NoInfer<Response<I>>>,
         schemas: S,
     ) {

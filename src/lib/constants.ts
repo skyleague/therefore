@@ -3,8 +3,6 @@ export const constants = {
     defaultZodTypescriptOutExtension: '.zod.ts',
     schemaExtension: '.schema.ts',
 
-    defaultValidator: 'ajv' as 'zod' | 'ajv',
-    migrateToValidator: undefined as 'zod' | 'ajv' | undefined,
+    defaultValidator: 'ajv' as 'zod/v4' | 'ajv',
     generateInterop: false,
-    migrate: false,
 }

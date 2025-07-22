@@ -3,13 +3,13 @@ import { ValidationError } from 'ajv'
 import { jsonSchemaToZod } from 'json-schema-to-zod'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
-import type { ZodSchema } from 'zod'
 import z from 'zod'
+import type { ZodSchema } from 'zod/v3'
 import { GenericFileOutput } from '../../../src/commands/generate/output/generic.js'
 import { TypescriptFileOutput } from '../../../src/commands/generate/output/typescript.js'
 import type * as JSONSchema from '../../../src/json.js'
 import { $jsonschema } from '../../../src/lib/primitives/jsonschema/jsonschema.js'
-import { $zod } from '../../../src/lib/primitives/zod/zod.js'
+import { $zod3 } from '../../../src/lib/primitives/zod/zod3.js'
 import { arbitrary } from '../../../src/lib/visitor/arbitrary/arbitrary.js'
 import { toJsonSchema } from '../../../src/lib/visitor/jsonschema/jsonschema.js'
 import { generateNode } from '../../../src/lib/visitor/prepass/prepass.js'
@@ -168,7 +168,7 @@ it.each(['draft-07', 'openapi3'] as const)(
                 const zodStr = jsonSchemaToZod(structuredClone(schema) as any, { module: 'cjs' })
                 // biome-ignore lint/security/noGlobalEval: needed here as part of the test
                 const zod = eval(zodStr)
-                const therefore = $zod(zod, { keepOriginalSchema: false })
+                const therefore = $zod3(zod, { keepOriginalSchema: false })
                 therefore._name = 'Root'
                 generateNode(therefore)
                 const converted = toJsonSchema(therefore, { target })
@@ -257,9 +257,9 @@ it.each(['draft-07', 'openapi3'] as const)(
                     allowIntersection: true,
                     dereference: false,
                     // make our own lives a whole lot easier
-                    validator: { type: 'zod' },
+                    validator: { type: 'zod/v3' },
                 }).validator({
-                    type: 'zod',
+                    type: 'zod/v3',
                 })
                 generateNode(therefore)
                 const declaration = TypescriptFileOutput.define({ symbol: therefore, render: true })

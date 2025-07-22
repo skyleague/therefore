@@ -5,8 +5,8 @@
 // biome-ignore-all lint: this file is generated
 /* eslint-disable */
 
-import type { ZodType } from 'zod'
-import { z } from 'zod'
+import type { ZodType } from 'zod/v4'
+import { z } from 'zod/v4'
 
 export type Recursion = Recursion[]
 export const Recursion: ZodType<Recursion> = z.lazy(() => Recursion.array())
