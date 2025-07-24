@@ -78,6 +78,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.validate.outputs.artifact-name }}
+          path: .dist
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
