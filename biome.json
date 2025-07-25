@@ -46,6 +46,9 @@
         "noUnusedVariables": "error",
         "noUnusedImports": "error",
         "useHookAtTopLevel": "error"
+      },
+      "nursery": {
+        "noMisusedPromises": "error"
       }
     }
   },
