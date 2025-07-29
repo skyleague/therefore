@@ -7,6 +7,7 @@ import { $array, ArrayType } from '../array/array.js'
 import { $boolean } from '../boolean/boolean.js'
 import { $const } from '../const/const.js'
 import { $enum } from '../enum/enum.js'
+import type { IntegerType } from '../integer/integer.js'
 import { $intersection } from '../intersection/intersection.js'
 import { $null } from '../null/null.js'
 import { $nullable } from '../nullable/nullable.js'
@@ -80,7 +81,7 @@ const checkVisitor: {
     [key in OtherChecks['_zod']['def']['check']]: (
         n: NumberType | StringType | ArrayType,
         check: Extract<OtherChecks['_zod']['def'], { check: key }>,
-    ) => NumberType | StringType | ArrayType
+    ) => NumberType | IntegerType | StringType | ArrayType
 } = {
     greater_than: (x, check) => {
         if (x instanceof NumberType && typeof check.value === 'number') {
@@ -152,6 +153,14 @@ const checkVisitor: {
         throw new Error('Function not implemented.')
     },
     number_format: (_x, _check) => {
+        if (_x instanceof NumberType) {
+            const fmt = _check.format
+            if (fmt === 'safeint') {
+                // sneaky
+                _x._type = 'integer' as 'number'
+                return _x
+            }
+        }
         // if (x instanceof NumberType) {
         //     const fmt = check.format
         //     const formatters: Record<typeof fmt, (() => NumberType) | undefined> = {
