@@ -113,12 +113,18 @@ const checkVisitor: {
         if (x instanceof StringType) {
             return x.maxLength(check.maximum)
         }
+        if (x instanceof ArrayType) {
+            return x.maxItems(check.maximum)
+        }
 
         throw new Error('Function not implemented.')
     },
     min_length: (x, check) => {
         if (x instanceof StringType) {
             return x.minLength(check.minimum)
+        }
+        if (x instanceof ArrayType) {
+            return x.minItems(check.minimum)
         }
 
         throw new Error('Function not implemented.')
