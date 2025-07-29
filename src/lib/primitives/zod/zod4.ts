@@ -374,8 +374,8 @@ export const zod4Visitor: {
     optional: (node, ctx) => {
         return $optional(ctx.render(node._zod.def.innerType as z4.ZodFirstPartySchemaTypes))
     },
-    pipe: () => {
-        throw new Error('Function not implemented.')
+    pipe: (node, ctx) => {
+        return ctx.render(node._zod.def.in as z4.ZodFirstPartySchemaTypes)
     },
     promise: () => {
         throw new Error('Function not implemented.')
