@@ -201,16 +201,10 @@ export class PetStoreOptions {
      *
      * Multiple status values can be provided with comma separated strings.
      */
-    public findPetsByStatus({
-        query,
-        auth = [['petstoreAuth']],
-    }: {
-        query?: { status?: string }
-        auth?: string[][] | string[]
-    } = {}) {
+    public findPetsByStatus({ query, auth = [['petstoreAuth']] }: { query: { status: string }; auth?: string[][] | string[] }) {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByStatus', {
-                searchParams: query ?? {},
+                searchParams: query,
                 responseType: 'json',
             }),
             {
@@ -227,16 +221,10 @@ export class PetStoreOptions {
      *
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
-    public findPetsByTags({
-        query,
-        auth = [['petstoreAuth']],
-    }: {
-        query?: { tags?: string }
-        auth?: string[][] | string[]
-    } = {}) {
+    public findPetsByTags({ query, auth = [['petstoreAuth']] }: { query: { tags: string }; auth?: string[][] | string[] }) {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByTags', {
-                searchParams: query ?? {},
+                searchParams: query,
                 responseType: 'json',
             }),
             {

@@ -206,7 +206,11 @@ export const typescriptZodV4Visitor: ThereforeVisitor<string, TypescriptZodV4Wal
                     writer.write(`${context.value(zodV4Symbols.z())}.url()`)
                     break
                 case 'uuid':
-                    writer.write(`${context.value(zodV4Symbols.z())}.uuid()`)
+                    if ((node as { _origin?: { jsonschema?: unknown } | undefined })._origin?.jsonschema !== undefined) {
+                        writer.write(`${context.value(zodV4Symbols.z())}.guid()`)
+                    } else {
+                        writer.write(`${context.value(zodV4Symbols.z())}.uuid()`)
+                    }
                     break
                 case 'ulid':
                     writer.write(`${context.value(zodV4Symbols.z())}.ulid()`)

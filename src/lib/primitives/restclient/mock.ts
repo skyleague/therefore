@@ -19,7 +19,7 @@ export type NockArgs<T> = Simplify<
     >
 >
 export type NockFn<Args extends object> = HasRequiredKeys<Args> extends true
-    ? (args: Args) => Interceptor
+    ? (args?: Args) => Interceptor
     : (args?: Args) => Interceptor
 
 export type RestClient = {
