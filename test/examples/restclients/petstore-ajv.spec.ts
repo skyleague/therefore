@@ -512,9 +512,9 @@ describe('methods', () => {
             nock.cleanAll()
 
             const nockClient = $nockClient(client)
-            nockClient.findPetsByStatus().reply(200, response)
+            nockClient.findPetsByStatus().query({ status: 'available' }).reply(200, response)
 
-            const result = await client.findPetsByStatus()
+            const result = await client.findPetsByStatus({ query: { status: 'available' } })
 
             expect(result.statusCode).toEqual('200')
             expect(eitherToError(result)).toEqual(response)
@@ -530,9 +530,9 @@ describe('methods', () => {
             nock.cleanAll()
 
             const nockClient = $nockClient(client)
-            nockClient.findPetsByTags().reply(200, response)
+            nockClient.findPetsByTags().query({ tags: 'tag1,tag2' }).reply(200, response)
 
-            const result = await client.findPetsByTags()
+            const result = await client.findPetsByTags({ query: { tags: 'tag1,tag2' } })
 
             expect(result.statusCode).toEqual('200')
             expect(eitherToError(result)).toEqual(response)

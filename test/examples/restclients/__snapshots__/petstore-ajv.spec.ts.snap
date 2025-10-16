@@ -223,7 +223,7 @@ export class PetStoreKy {
      * 
      * Multiple status values can be provided with comma separated strings.
      */
-    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query?: { status?: string }, auth?: string[][] | string[]} = {}): Promise<
+    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query: { status: string }, auth?: string[][] | string[]}): Promise<
     | SuccessResponse<'200', FindPetsByStatusResponse200>
     | FailureResponse<'400', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
@@ -231,7 +231,7 @@ export class PetStoreKy {
     >
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByStatus', {
-            searchParams: query ?? {},
+            searchParams: query,
         }), {
             200: FindPetsByStatusResponse200,400: { parse: (x: unknown) => ({ right: x }) },
         }
@@ -246,7 +246,7 @@ export class PetStoreKy {
      * 
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
-    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query?: { tags?: string }, auth?: string[][] | string[]} = {}): Promise<
+    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query: { tags: string }, auth?: string[][] | string[]}): Promise<
     | SuccessResponse<'200', FindPetsByTagsResponse200>
     | FailureResponse<'400', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
@@ -254,7 +254,7 @@ export class PetStoreKy {
     >
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByTags', {
-            searchParams: query ?? {},
+            searchParams: query,
         }), {
             200: FindPetsByTagsResponse200,400: { parse: (x: unknown) => ({ right: x }) },
         }
@@ -1088,10 +1088,10 @@ export class PetStoreOptionsKy {
      * 
      * Multiple status values can be provided with comma separated strings.
      */
-    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query?: { status?: string }, auth?: string[][] | string[]} = {})
+    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query: { status: string }, auth?: string[][] | string[]})
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByStatus', {
-            searchParams: query ?? {},
+            searchParams: query,
         }), {
             200: FindPetsByStatusResponse200,400: {is: (x: unknown): x is string => true},
         }
@@ -1106,10 +1106,10 @@ export class PetStoreOptionsKy {
      * 
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
-    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query?: { tags?: string }, auth?: string[][] | string[]} = {})
+    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query: { tags: string }, auth?: string[][] | string[]})
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByTags', {
-            searchParams: query ?? {},
+            searchParams: query,
         }), {
             200: FindPetsByTagsResponse200,400: {is: (x: unknown): x is string => true},
         }
@@ -1876,10 +1876,10 @@ export class PetStoreOptions {
      * 
      * Multiple status values can be provided with comma separated strings.
      */
-    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query?: { status?: string }, auth?: string[][] | string[]} = {})
+    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query: { status: string }, auth?: string[][] | string[]})
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByStatus', {
-            searchParams: query ?? {},responseType: 'json',
+            searchParams: query,responseType: 'json',
         }), {
             200: FindPetsByStatusResponse200,400: {is: (x: unknown): x is string => true},
         })
@@ -1892,10 +1892,10 @@ export class PetStoreOptions {
      * 
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
-    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query?: { tags?: string }, auth?: string[][] | string[]} = {})
+    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query: { tags: string }, auth?: string[][] | string[]})
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByTags', {
-            searchParams: query ?? {},responseType: 'json',
+            searchParams: query,responseType: 'json',
         }), {
             200: FindPetsByTagsResponse200,400: {is: (x: unknown): x is string => true},
         })
@@ -2970,7 +2970,7 @@ export class PetStore {
      * 
      * Multiple status values can be provided with comma separated strings.
      */
-    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query?: { status?: string }, auth?: string[][] | string[]} = {}): Promise<
+    public findPetsByStatus({query, auth = [['petstoreAuth']]}: {query: { status: string }, auth?: string[][] | string[]}): Promise<
     | SuccessResponse<'200', FindPetsByStatusResponse200>
     | FailureResponse<'400', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -2978,7 +2978,7 @@ export class PetStore {
     >
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByStatus', {
-            searchParams: query ?? {},responseType: 'json',
+            searchParams: query,responseType: 'json',
         }), {
             200: FindPetsByStatusResponse200,400: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["findPetsByStatus"]>
@@ -2991,7 +2991,7 @@ export class PetStore {
      * 
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
      */
-    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query?: { tags?: string }, auth?: string[][] | string[]} = {}): Promise<
+    public findPetsByTags({query, auth = [['petstoreAuth']]}: {query: { tags: string }, auth?: string[][] | string[]}): Promise<
     | SuccessResponse<'200', FindPetsByTagsResponse200>
     | FailureResponse<'400', unknown, 'response:statuscode'>
     | FailureResponse<StatusCode<2>, string, 'response:body', IncomingHttpHeaders>
@@ -2999,7 +2999,7 @@ export class PetStore {
     >
     {
         return this.awaitResponse(this.buildClient(auth).get('pet/findByTags', {
-            searchParams: query ?? {},responseType: 'json',
+            searchParams: query,responseType: 'json',
         }), {
             200: FindPetsByTagsResponse200,400: { parse: (x: unknown) => ({ right: x }) },
         }) as ReturnType<this["findPetsByTags"]>

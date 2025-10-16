@@ -269,9 +269,9 @@ export class PetStoreKy {
         query,
         auth = [['petstoreAuth']],
     }: {
-        query?: { status?: string }
+        query: { status: string }
         auth?: string[][] | string[]
-    } = {}): Promise<
+    }): Promise<
         | SuccessResponse<'200', FindPetsByStatusResponse200>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
@@ -279,7 +279,7 @@ export class PetStoreKy {
     > {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByStatus', {
-                searchParams: query ?? {},
+                searchParams: query,
             }),
             {
                 200: FindPetsByStatusResponse200,
@@ -300,9 +300,9 @@ export class PetStoreKy {
         query,
         auth = [['petstoreAuth']],
     }: {
-        query?: { tags?: string }
+        query: { tags: string }
         auth?: string[][] | string[]
-    } = {}): Promise<
+    }): Promise<
         | SuccessResponse<'200', FindPetsByTagsResponse200>
         | FailureResponse<'400', unknown, 'response:statuscode'>
         | FailureResponse<StatusCode<2>, string, 'response:body', Headers>
@@ -310,7 +310,7 @@ export class PetStoreKy {
     > {
         return this.awaitResponse(
             this.buildClient(auth).get('pet/findByTags', {
-                searchParams: query ?? {},
+                searchParams: query,
             }),
             {
                 200: FindPetsByTagsResponse200,
